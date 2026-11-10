@@ -376,6 +376,7 @@ const en: Record<string, string> = {
   'Capa D″': 'D″ layer',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': 'The lowest 150 to 300 km of the mantle, just above the core: very uneven, and about 1,000 °C hotter at the bottom than at the top',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': 'Temperatures are estimates from experiments and models: they differ by several hundred degrees from one study to another.',
+  'Tú': 'You',
   'Reflejo del agua': 'Water reflection',
   Estrellas: 'Stars',
   'Día y noche': 'Day and night',

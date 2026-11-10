@@ -792,6 +792,7 @@ void main() {
 export const STAR_VERT = glsl`
 uniform float uSidereal; // hora sidérea de Greenwich, en radianes
 uniform float uDpr;
+uniform float uTime;
 attribute float aColor;
 varying float vAlpha;
 varying vec3 vTint;
@@ -806,6 +807,10 @@ void main() {
   // Cada magnitud es 2,5 veces menos luz: las brillantes crecen y las débiles se atenúan.
   gl_PointSize = clamp(6.6 - 0.85 * mag, 1.8, 8.0) * uDpr;
   vAlpha = clamp(1.3 - 0.15 * mag, 0.32, 1.0);
+  // Parpadeo tenue, cada estrella a su ritmo (su fase sale de su posición). Es un guiño al cielo
+  // visto desde el suelo: lo causa el aire, y desde el espacio las estrellas no titilan.
+  float phase = fract(sin(position.x * 91.7 + position.y * 47.3) * 43758.5453) * 6.2831853;
+  vAlpha *= 1.0 + 0.2 * sin(uTime * (1.1 + 0.35 * phase) + phase) + 0.08 * sin(uTime * 2.9 + phase * 3.0);
   // Índice de color B−V: negativo = azulada, ~0,6 = como el Sol, >1,2 = anaranjada.
   vec3 blue = vec3(0.72, 0.82, 1.0);
   vec3 white = vec3(1.0, 0.98, 0.94);

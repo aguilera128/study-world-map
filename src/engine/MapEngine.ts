@@ -371,7 +371,7 @@ export class MapEngine {
     const screen = new BufferGeometry();
     screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
     this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
-    this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, this.own.stars, sky)), -1);
+    this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky)), -1);
     const ocean = oceanGeometry();
     this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);
     this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, this.own.fill)), 1);
@@ -1441,7 +1441,7 @@ export class MapEngine {
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior') && !this.reducedMotion && !this.seaTimer) {
+    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.
@@ -1570,6 +1570,11 @@ export class MapEngine {
       return true;
     }
     return fading || this.animating.size > 0;
+  }
+
+  /** Las estrellas están a la vista (globo, tema de noche): parpadean, así que hay que seguir dibujando. */
+  private get twinkling() {
+    return this.showStars && this.palette.stars > 0 && this.rig.morph > 0.7;
   }
 
   /** Qué se está viendo del planeta sobre el globo, si algo. */

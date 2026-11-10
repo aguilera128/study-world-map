@@ -125,7 +125,7 @@ export function RealTimeMarkers({
         <Tracked engine={engine} lon={location.lon} lat={location.lat}>
           <div className="you-marker">
             <span className="you-dot" />
-            <span className="you-label">Tú</span>
+            <span className="you-label">{t('Tú')}</span>
           </div>
         </Tracked>
       )}

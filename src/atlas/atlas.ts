@@ -181,9 +181,11 @@ async function getJson<T>(url: string): Promise<T> {
  */
 export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atlas> {
   const dir = map === 'world' ? '/data' : `/data/${map}`;
-  const [raw, names] = await Promise.all([
+  const [raw, names, worldNames] = await Promise.all([
     getJson<RawAtlas>(`${dir}/atlas.json`),
     lang === 'es' ? null : getJson<RawNames>(`${dir}/names.${lang}.json`),
+    // El decorado (los países de alrededor en el mapa de un país) toma su nombre del atlas del mundo.
+    lang === 'es' || map === 'world' ? null : getJson<RawNames>(`/data/names.${lang}.json`).catch(() => null),
   ]);
   if (raw.base === 'world') {
     // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
@@ -199,8 +201,12 @@ export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atla
     raw.continents = names.continents;
     for (const country of raw.countries) {
       const own = names.countries[country.id];
-      // El decorado (los países de alrededor en el mapa de un país) no se nombra: no se traduce.
-      if (!own) continue;
+      if (!own) {
+        // Decorado: solo el nombre, para el aviso al pasar el cursor.
+        const world = worldNames?.countries[country.id];
+        if (world) country.name = world.n;
+        continue;
+      }
       country.name = own.n;
       country.capital = own.c;
       country.aliases = own.a;

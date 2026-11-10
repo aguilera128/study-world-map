@@ -377,6 +377,7 @@ const ca: Record<string, string> = {
   'Capa D″': 'Capa D″',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': 'Els últims 150 a 300 km del mantell, just damunt del nucli: molt irregular, i per baix uns 1000 °C més calenta que per dalt',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': 'Les temperatures són estimacions a partir d’experiments i models: d’un estudi a un altre canvien uns quants centenars de graus.',
+  'Tú': 'Tu',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',

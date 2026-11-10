@@ -377,6 +377,7 @@ const eu: Record<string, string> = {
   'Capa D″': 'D″ geruza',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': 'Mantuaren azken 150-300 km-ak, nukleoaren gain-gainean: oso irregularra, eta behean goian baino 1000 °C inguru beroagoa',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': 'Tenperaturak esperimentuetan eta ereduetan oinarritutako estimazioak dira: ikerketa batetik bestera ehunka gradu aldatzen dira.',
+  'Tú': 'Zu',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',

@@ -376,6 +376,7 @@ const zh: Record<string, string> = {
   'Capa D″': 'D″ 层',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': '地幔最底部的 150 至 300 千米，紧贴地核之上：很不规则，底部比顶部高约 1000 °C',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': '温度是根据实验和模型得出的估计值：不同研究之间相差数百度。',
+  'Tú': '你',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

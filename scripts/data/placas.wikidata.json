@@ -82,7 +82,8 @@
    "de": "Australische Platte",
    "fr": "Plaque australienne",
    "en": "Australian Plate",
-   "es": "Placa Australiana"
+   "es": "Placa Australiana",
+   "gl": "Placa Australiana"
   },
   "Indian Plate": {
    "zh": "印度板块",
@@ -92,7 +93,9 @@
    "de": "Indische Platte",
    "fr": "Plaque indienne",
    "en": "Indian Plate",
-   "es": "Placa Índica"
+   "es": "Placa Índica",
+   "gl": "Placa India",
+   "eu": "Indiako plaka"
   },
   "Arabian Plate": {
    "zh": "阿拉伯板块",
@@ -103,7 +106,8 @@
    "de": "Arabische Platte",
    "fr": "Plaque arabique",
    "en": "Arabian Plate",
-   "es": "Placa arábiga"
+   "es": "Placa arábiga",
+   "gl": "Placa Arábiga"
   },
   "Nazca Plate": {
    "zh": "纳斯卡板块",
@@ -114,7 +118,8 @@
    "fr": "Plaque de Nazca",
    "en": "Nazca Plate",
    "es": "Placa de Nazca",
-   "eu": "Nazcako plaka"
+   "eu": "Nazcako plaka",
+   "gl": "Placa de Nazca"
   },
   "Caribbean Plate": {
    "zh": "加勒比板块",
@@ -125,7 +130,8 @@
    "de": "Karibische Platte",
    "fr": "Plaque caraïbe",
    "en": "Caribbean Plate",
-   "es": "Placa del Caribe"
+   "es": "Placa del Caribe",
+   "gl": "Placa do Caribe"
   },
   "Cocos Plate": {
    "zh": "科科斯板块",
@@ -136,7 +142,8 @@
    "de": "Cocosplatte",
    "fr": "Plaque de Cocos",
    "en": "Cocos Plate",
-   "es": "Placa de Cocos"
+   "es": "Placa de Cocos",
+   "gl": "Placa de Cocos"
   },
   "Philippine Sea Plate": {
    "zh": "菲律宾板块",
@@ -147,7 +154,8 @@
    "de": "Philippinische Platte",
    "fr": "Plaque philippine",
    "en": "Philippine Sea Plate",
-   "es": "Placa Filipina"
+   "es": "Placa Filipina",
+   "gl": "Placa Filipina"
   },
   "Scotia Plate": {
    "zh": "斯科舍板块",
@@ -158,7 +166,8 @@
    "de": "Scotia-Platte",
    "fr": "Plaque Scotia",
    "en": "Scotia Plate",
-   "es": "Placa Scotia"
+   "es": "Placa Scotia",
+   "gl": "Placa de Scotia"
   },
   "Somali Plate": {
    "zh": "索马里板块",
@@ -169,7 +178,8 @@
    "de": "Somaliaplatte",
    "fr": "Plaque somalienne",
    "en": "Somali Plate",
-   "es": "Placa Somalí"
+   "es": "Placa Somalí",
+   "gl": "Placa Somalí"
   },
   "Juan de Fuca Plate": {
    "zh": "胡安·德富卡板块",
@@ -180,7 +190,8 @@
    "de": "Juan-de-Fuca-Platte",
    "fr": "Plaque Juan de Fuca",
    "en": "Juan de Fuca Plate",
-   "es": "Placa de Juan de Fuca"
+   "es": "Placa de Juan de Fuca",
+   "gl": "Placa de Juan de Fuca"
   }
  }
 }

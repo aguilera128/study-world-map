@@ -376,6 +376,7 @@ const de: Record<string, string> = {
   'Capa D″': 'D″-Schicht',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': 'Die untersten 150 bis 300 km des Mantels, direkt über dem Kern: sehr unregelmäßig und unten etwa 1000 °C heißer als oben',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': 'Die Temperaturen sind Schätzungen aus Experimenten und Modellen: Sie weichen von Studie zu Studie um mehrere hundert Grad ab.',
+  'Tú': 'Du',
   'Reflejo del agua': 'Wasserspiegelung',
   Estrellas: 'Sterne',
   'Día y noche': 'Tag und Nacht',

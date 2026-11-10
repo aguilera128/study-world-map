@@ -376,6 +376,7 @@ const it: Record<string, string> = {
   'Capa D″': 'Strato D″',
   'Los últimos 150 a 300 km del manto, justo encima del núcleo: muy irregular, y por abajo unos 1000 °C más caliente que por arriba': 'Gli ultimi 150-300 km del mantello, subito sopra il nucleo: molto irregolare, e in basso circa 1000 °C più caldo che in alto',
   'Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.': 'Le temperature sono stime ricavate da esperimenti e modelli: da uno studio all’altro cambiano di diverse centinaia di gradi.',
+  'Tú': 'Tu',
   'Reflejo del agua': 'Riflesso dell’acqua',
   Estrellas: 'Stelle',
   'Día y noche': 'Giorno e notte',
