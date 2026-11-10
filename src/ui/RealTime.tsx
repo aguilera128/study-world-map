@@ -7,11 +7,11 @@ import { useMedia, useNow } from './hooks';
 import { Icon } from './Icon';
 
 /** Elemento que el motor mantiene centrado sobre un punto del mapa. */
-function Tracked({ engine, lon, lat, children }: { engine: MapEngine; lon: number; lat: number; children: ReactNode }) {
+function Tracked({ engine, lon, lat, alt = 0, children }: { engine: MapEngine; lon: number; lat: number; alt?: number; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (ref.current) return engine.track(ref.current, lon, lat);
-  }, [engine, lon, lat]);
+    if (ref.current) return engine.track(ref.current, lon, lat, alt);
+  }, [engine, lon, lat, alt]);
   return (
     <div ref={ref} className="map-pin centered">
       {children}
@@ -34,6 +34,11 @@ function MoonDisc({ phase, size = 22 }: { phase: MoonPhase; size?: number }) {
   );
 }
 
+// En el globo el Sol y la Luna flotan separados de la Tierra, la Luna más cerca. No es a escala
+// (la Luna está a 60 radios y el Sol a 23 500): solo indica desde qué lado alumbra cada uno.
+const SUN_ALT = 0.55;
+const MOON_ALT = 0.24;
+
 const percent = (lit: number) => `${Math.round(lit * 100)} %`;
 
 /** Lo que el modo de tiempo real pinta sobre el mapa: el Sol y la Luna en su cénit y dónde está el usuario. */
@@ -55,20 +60,20 @@ export function RealTimeMarkers({
   return (
     <>
       {layers.moon && (
-        <Tracked engine={engine} lon={moon.lon} lat={moon.lat}>
+        <Tracked engine={engine} lon={moon.lon} lat={moon.lat} alt={MOON_ALT}>
           <div className="sky-marker" role="img" aria-label={`Aquí la Luna está en lo más alto. ${phase.name}, ${percent(phase.lit)} iluminada`}>
-            <MoonDisc phase={phase} />
+            <MoonDisc phase={phase} size={18} />
             <span className="sky-tip">
-              Luna en el cénit · {phase.name.toLowerCase().replace('luna ', '')} ({percent(phase.lit)})
+              Luna · {phase.name.toLowerCase().replace('luna ', '')} ({percent(phase.lit)})
             </span>
           </div>
         </Tracked>
       )}
       {layers.sun && (
-        <Tracked engine={engine} lon={sun.lon} lat={sun.lat}>
+        <Tracked engine={engine} lon={sun.lon} lat={sun.lat} alt={SUN_ALT}>
           <div className="sky-marker" role="img" aria-label="Aquí es mediodía: el Sol está en lo más alto">
             <span className="sun-marker" />
-            <span className="sky-tip">Sol en el cénit · aquí es mediodía</span>
+            <span className="sky-tip">Sol · debajo de él es mediodía</span>
           </div>
         </Tracked>
       )}

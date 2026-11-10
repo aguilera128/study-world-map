@@ -244,8 +244,11 @@ export class CameraRig {
     return null;
   }
 
-  /** Posición en pantalla (píxeles CSS) de un punto del mapa. */
-  project(lon: number, lat: number, alt: number, out: ScreenPoint): ScreenPoint {
+  /**
+   * Posición en pantalla (píxeles CSS) de un punto del mapa. Con `floating`, el punto está separado
+   * del globo (el Sol, la Luna): se ve aunque quede detrás, salvo que la Tierra lo tape.
+   */
+  project(lon: number, lat: number, alt: number, out: ScreenPoint, floating = false): ScreenPoint {
     const s = surface(lon, lat, this.morph, alt, this.sample);
     const cam = this.camera;
     const facing =
@@ -254,6 +257,15 @@ export class CameraRig {
     out.x = ((v.x + 1) / 2) * this.width;
     out.y = ((1 - v.y) / 2) * this.height;
     out.visible = facing > 0 && v.z < 1;
+    if (floating && this.morph > 0.5 && !out.visible && v.z < 1) {
+      // ¿La recta de la cámara al punto atraviesa la esfera (radio 1, centrada en el origen)?
+      const c = cam.position;
+      const dx = s.px - c.x;
+      const dy = s.py - c.y;
+      const dz = s.pz - c.z;
+      const t = clamp(-(c.x * dx + c.y * dy + c.z * dz) / (dx * dx + dy * dy + dz * dz), 0, 1);
+      out.visible = Math.hypot(c.x + dx * t, c.y + dy * t, c.z + dz * t) > 1;
+    }
     return out;
   }
 

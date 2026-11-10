@@ -126,6 +126,8 @@ interface Tracked {
   el: HTMLElement;
   lon: number;
   lat: number;
+  /** Altura sobre el globo, en radios (0 = pegado al mapa). */
+  alt: number;
 }
 
 interface ResolvedStyle {
@@ -693,17 +695,22 @@ export class MapEngine {
 
   /**
    * Ancla un elemento HTML a un punto del mapa: en cada fotograma se le aplica un `transform` con
-   * su posición y el atributo `data-hidden` si queda en la cara oculta. Devuelve cómo soltarlo.
+   * su posición y el atributo `data-hidden` si queda en la cara oculta. Con `alt` flota sobre el
+   * globo, a esa altura en radios. Devuelve cómo soltarlo.
    */
-  track(el: HTMLElement, lon: number, lat: number): () => void {
-    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG };
+  track(el: HTMLElement, lon: number, lat: number, alt = 0): () => void {
+    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG, alt };
     this.tracked.add(item);
     this.place(item);
     return () => this.tracked.delete(item);
   }
 
   private place(item: Tracked) {
-    const p = this.rig.project(item.lon, item.lat, ALT.marker, this.screen);
+    // Lo que flota (el Sol, la Luna) solo se separa en el globo, y nunca más allá de media altura de
+    // la cámara: al acercarse baja hasta su punto del mapa en vez de quedar detrás del observador.
+    const rig = this.rig;
+    const alt = item.alt * rig.morph;
+    const p = rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
     item.el.toggleAttribute('data-hidden', !p.visible);
   }
