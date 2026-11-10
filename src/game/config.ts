@@ -9,7 +9,7 @@ export type { RegionFilterDef };
  * Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. `region` es
  * el equivalente a `continent` en el mapa de un país: a qué comunidad autónoma pertenece una provincia.
  */
-export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region' | 'coords';
+export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region' | 'coords' | 'population';
 
 /**
  * Variante del reto: cómo se responde.
@@ -84,6 +84,12 @@ export const MODES: ModeDef[] = [
     answers: ['choice', 'guided'],
   },
   {
+    id: 'population',
+    title: t('Población'),
+    summary: t('Di si la densidad de población de cada país es alta, media o baja.'),
+    answers: ['choice', 'guided'],
+  },
+  {
     // Leer latitud y longitud: se da un punto por sus coordenadas y hay que decir qué país hay ahí.
     id: 'coords',
     title: t('Coordenadas'),
@@ -108,7 +114,7 @@ export function modeDef(id: ModeId, map: MapId = 'world'): ModeDef {
 export const modesOf = (map: MapId): ModeDef[] => MAPS[map].modes.map((id) => modeDef(id, map));
 
 export function answerLabel(mode: ModeId, answer: AnswerKind, map: MapId = 'world'): string {
-  if (mode === 'continent' || mode === 'climate' || mode === 'region') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
+  if (mode === 'continent' || mode === 'climate' || mode === 'region' || mode === 'population') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
   if (mode === 'capital' && answer === 'map') return MAPS[map].text.findOwner;
   return { map: t('En el mapa'), choice: t('Con opciones'), guided: t('Con el mapa'), type: t('Escribiendo') }[answer];
 }

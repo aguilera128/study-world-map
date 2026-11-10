@@ -1,3 +1,4 @@
+import { levelLabel, levelOf } from '../game/population';
 import { climateText } from '../game/climate';
 import { useState, type CSSProperties } from 'react';
 import { formatGrade, formatTime, plural } from '../app/format';
@@ -22,6 +23,10 @@ function answerFor(country: Country, config: GameConfig, { continents, regions }
   if (config.mode === 'region') return regions[country.regions[0]].name;
   if (config.mode === 'continent') return continents[country.continents[0]];
   if (config.mode === 'climate') return climateText(country.climate, 2);
+  if (config.mode === 'population') {
+    const level = levelOf(country);
+    return level ? levelLabel(level) : null;
+  }
   return null;
 }
 

@@ -1,3 +1,4 @@
+import { density, levelLabel, levelOf } from '../game/population';
 import { climateText } from '../game/climate';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { formatArea, plural } from '../app/format';
@@ -28,6 +29,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
   const select = useApp((s) => s.select);
   const sovereign = country.sovereign ? atlas.byIdOrThrow(country.sovereign) : null;
   const neighbors = country.neighbors.map((i) => atlas.countries[i]).sort((a, b) => a.name.localeCompare(b.name, LOCALE));
+  const level = levelOf(country);
   const now = useNow(20_000);
   const time = country.tz ? clockIn(country.tz, now) : null;
   const offset = country.tz ? offsetMinutes(country.tz, now) : null;
@@ -62,6 +64,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
               {country.capitalNote && <span className="font-normal text-ink-soft"> ({country.capitalNote})</span>}
             </Fact>
           )}
+          {/* nivel de densidad, para el reto de población */}
           {country.continents.length > 0 && <Fact label={t('Continente')}>{atlas.continents[country.continents[0]]}</Fact>}
           {/* En el mundo, solo donde afina el continente (América); en el mapa de un país, la comunidad. */}
           {country.regions.length > 0 && (country.regions[0].startsWith('am-') || atlas.frame) && (
@@ -79,6 +82,12 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
           {country.climate.length > 0 && <Fact label={t('Clima')}>{climateText(country.climate)}</Fact>}
           {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
           {country.population && <Fact label={t('Población')}>{country.population.toLocaleString(LOCALE)}</Fact>}
+          {level && (
+            <Fact label={t('Densidad')}>
+              {t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}
+              <span className="font-normal text-ink-soft"> · {levelLabel(level).toLowerCase()}</span>
+            </Fact>
+          )}
           {neighbors.length > 0 && (
             <Fact label={t('Vecinos')}>
               <span className="flex flex-wrap gap-1.5">

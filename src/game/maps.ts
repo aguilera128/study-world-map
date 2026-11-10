@@ -67,7 +67,7 @@ export const MAPS: Record<MapId, MapDef> = {
   world: {
     id: 'world',
     title: t('Mundo'),
-    modes: ['locate', 'continent', 'name', 'capital', 'flag', 'climate', 'coords'],
+    modes: ['locate', 'continent', 'name', 'capital', 'flag', 'climate', 'population', 'coords'],
     filters: [
       { id: 'mundo', label: t('Mundo'), keys: [] },
       { id: 'europa', label: t('Europa'), keys: ['europa'] },

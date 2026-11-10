@@ -1,3 +1,4 @@
+import { density, levelLabel, levelOf } from '../game/population';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { formatCoords, formatTime } from '../app/format';
@@ -13,7 +14,7 @@ import { MODE_ICONS } from './modeIcons';
 import { useElapsed, useLast, usePad } from './hooks';
 import { Icon } from './Icon';
 import { Flag } from './primitives';
-import { t } from '../i18n';
+import { t, LOCALE } from '../i18n';
 import { tx } from '../i18n/tx';
 
 const STAMP: Record<Outcome, { text: string; className: string }> = {
@@ -43,6 +44,10 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
       break;
     case 'climate':
       label = t('¿Qué clima tiene?');
+      main = country.name;
+      break;
+    case 'population':
+      label = t('¿Su densidad de población es alta, media o baja?');
       main = country.name;
       break;
     case 'coords':
@@ -105,6 +110,19 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       );
     case 'climate':
       return <>{tx('Clima de {country}: {climate}.', { country: country.name, climate: strong(climateText(country.climate)) })}</>;
+    case 'population': {
+      const level = levelOf(country);
+      return (
+        <>
+          {tx('{country}: {n} habitantes y {d} hab./km². Densidad {level}.', {
+            country: country.name,
+            n: (country.population ?? 0).toLocaleString(LOCALE),
+            d: Math.round(density(country) ?? 0).toLocaleString(LOCALE),
+            level: strong(level ? levelLabel(level).toLowerCase() : ''),
+          })}
+        </>
+      );
+    }
     case 'capital':
       return (
         <>
@@ -134,6 +152,8 @@ function Options({ session, question, country }: { session: Session; question: Q
         ? country.climate.includes(id as ClimateKey)
         : session.config.mode === 'region'
           ? country.regions.includes(id)
+          : session.config.mode === 'population'
+            ? levelOf(country) === id
           : optionCountry === question.country;
   return (
     <div className={`grid gap-2 ${question.options.length > 4 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'}`}>

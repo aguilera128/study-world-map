@@ -10,6 +10,7 @@ export const MODE_ICONS: Record<ModeId, IconName> = {
   climate: 'thermo',
   region: 'continents',
   coords: 'globe',
+  population: 'chart',
 };
 
 export const ANSWER_ICONS: Record<AnswerKind, IconName> = { map: 'pin', choice: 'options', guided: 'eye', type: 'keyboard' };

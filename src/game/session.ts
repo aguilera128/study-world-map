@@ -4,6 +4,7 @@ import { CLIMATE_KEYS, climateLabel } from './climate';
 import { inputOf, MAX_ATTEMPTS, type GameConfig, type Scope } from './config';
 import { selectionWeight, type Outcome, type Progress } from './progress';
 import { matchesAnswer } from './text';
+import { LEVEL_KEYS, levelLabel, levelOf, levelRange } from './population';
 import { t } from '../i18n';
 
 // Lógica de una partida, sin interfaz ni mapa: funciones puras sobre un objeto `Session`.
@@ -123,6 +124,10 @@ function makeOptions(atlas: Atlas, config: GameConfig, pool: number[], country: 
     // Siempre los mismos continentes y en el mismo orden: aquí no hay que buscar la respuesta.
     return (Object.keys(atlas.continents) as ContinentKey[]).map((key) => ({ id: key, label: atlas.continents[key], country: -1 }));
   }
+  if (config.mode === 'population') {
+    // Siempre los tres niveles, de menos a más, con su tramo a la vista.
+    return LEVEL_KEYS.map((key) => ({ id: key, label: `${levelLabel(key)} · ${levelRange(key)}`, country: -1 }));
+  }
   if (config.mode === 'climate') {
     // El clima más extendido del país y tres que no tiene: cualquiera de los suyos vale como respuesta,
     // así que entre las opciones no puede haber dos correctas.
@@ -183,8 +188,9 @@ export function createSession(
   now: number,
   { only, rng = Math.random }: SessionOptions = {},
 ): Session {
-  const pool = scope.countries;
-  const source = only ?? pool;
+  // En el reto de población solo entran los países con dato de densidad.
+  const pool = config.mode === 'population' ? scope.countries.filter((i) => levelOf(atlas.countries[i]) !== null) : scope.countries;
+  const source = only ? only.filter((i) => pool.includes(i)) : pool;
   const n = only || config.length === 'all' ? source.length : Math.min(config.length, source.length);
   const chosen = weightedSample(source, n, (i) => selectionWeight(progress, atlas.countries[i].id, config.mode, now), rng);
   return {
@@ -294,6 +300,8 @@ export function submit(atlas: Atlas, session: Session, answer: Answer, now: numb
             ? target.climate.includes(option.id as ClimateKey)
             : session.config.mode === 'region'
               ? target.regions.includes(option.id)
+              : session.config.mode === 'population'
+                ? levelOf(target) === option.id
               : option.country === question.country;
       break;
     }

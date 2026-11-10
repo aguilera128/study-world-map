@@ -44,6 +44,7 @@ const RETOS: Record<string, ModeId> = {
   banderas: 'flag',
   climas: 'climate',
   coordenadas: 'coords',
+  poblacion: 'population',
 };
 
 /** Mapa, reto y zona pedidos en la dirección, o null si no hay ninguno válido. */
