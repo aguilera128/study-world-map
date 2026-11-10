@@ -16,12 +16,14 @@ export function density(country: Pick<Country, 'population' | 'areaKm2'>): numbe
 /** Tramo (0…4) de una densidad. */
 export const densityClass = (value: number): number => DENSITY_LIMITS.filter((limit) => value >= limit).length;
 
-// Para el reto «Población»: la densidad de un país, en tres niveles. Los cortes (25 y 100 hab./km²)
-// son una elección de esta web, no una norma: si el examen usa otros, se cambian aquí.
+// Para el reto «Población»: la densidad de un país, en tres niveles. No hay un criterio oficial;
+// se usan los cortes que aparecen en material de clase de Geografía de ESO: baja por debajo de
+// 10 hab./km² y alta por encima de 100 (la media mundial ronda los 50). Si el examen usa otros, se
+// cambian aquí.
 
 export type LevelKey = 'baja' | 'media' | 'alta';
 export const LEVEL_KEYS: LevelKey[] = ['baja', 'media', 'alta'];
-export const LEVEL_LIMITS = [25, 100];
+export const LEVEL_LIMITS = [10, 100];
 
 /** Nivel de densidad de un país, o null si no hay dato. */
 export function levelOf(country: Pick<Country, 'population' | 'areaKm2'>): LevelKey | null {
