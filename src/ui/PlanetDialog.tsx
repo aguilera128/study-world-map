@@ -268,44 +268,54 @@ export function PlanetButton({ labels }: { labels: string }) {
           e.stopPropagation();
           if (e.target === ref.current) setOpen(false);
         }}
-        className="planet-dialog m-auto max-h-[calc(100dvh-1.5rem)] w-[min(44rem,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-rule-strong bg-surface p-0 text-ink"
+        // En pantallas grandes se abre a lo ancho, en tres columnas, para que quepa todo sin desplazarse.
+        className="planet-dialog m-auto max-h-[calc(100dvh-1.5rem)] w-[min(44rem,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-rule-strong bg-surface p-0 text-ink min-[76rem]:w-[min(82rem,calc(100vw-3rem))]"
       >
         {open && (
-          <div className="p-5 wide:p-7">
-            <div className="flex items-start justify-between gap-4">
-              <h2 className="display text-2xl">{t('El planeta por dentro y por fuera')}</h2>
-              <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost min-h-10 px-3 text-sm">
-                {t('Cerrar')}
-              </button>
-            </div>
-            <div role="tablist" className="float mt-4 inline-flex p-0.5">
-              {(
-                [
-                  ['interior', t('Interior')],
-                  ['atmosphere', t('Atmósfera')],
-                ] as const
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === id}
-                  onClick={() => setTab(id)}
-                  className={`min-h-10 rounded-[9px] px-4 text-sm font-bold transition-colors ${tab === id ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'}`}
-                >
-                  {label}
+          <div className="p-4 wide:p-6">
+            {/* Una sola fila: título, pestañas y las dos acciones. En pantallas estrechas se parte sola. */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+              <h2 className="display text-xl wide:text-2xl">{t('El planeta por dentro y por fuera')}</h2>
+              <div role="tablist" className="float inline-flex p-0.5">
+                {(
+                  [
+                    ['interior', t('Interior')],
+                    ['atmosphere', t('Atmósfera')],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab === id}
+                    onClick={() => setTab(id)}
+                    className={`min-h-10 rounded-[9px] px-4 text-sm font-bold transition-colors ${tab === id ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <span className="ml-auto flex items-center gap-2">
+                <button type="button" onClick={() => show(tab)} className="btn btn-accent min-h-10 px-3.5 text-sm">
+                  <Icon name="globe" size={18} />
+                  {t('Verlo en el globo 3D')}
                 </button>
-              ))}
+                <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost min-h-10 px-3 text-sm">
+                  {t('Cerrar')}
+                </button>
+              </span>
             </div>
-            <div className="mt-5 grid items-center gap-6 wide:grid-cols-[19rem_1fr]">
-              {tab === 'interior' ? <Interior /> : <Atmosphere />}
-              <ul className="grid gap-3">
+            <div
+              className={`mt-4 grid items-start gap-x-7 gap-y-5 wide:grid-cols-[17rem_1fr] ${tab === 'interior' ? 'min-[76rem]:grid-cols-[18rem_1fr_1.2fr]' : 'min-[76rem]:grid-cols-[22rem_1fr]'}`}
+            >
+              <div className="mx-auto w-full max-w-[19rem] self-center">{tab === 'interior' ? <Interior /> : <Atmosphere />}</div>
+              <ul className="grid gap-2.5 self-center">
                 {layers.map((layer) => (
                   <li key={layer.id} className="flex items-start gap-3">
                     <span className="mt-1 h-4 w-4 shrink-0 rounded-[4px] border border-rule-strong" style={{ background: layer.color }} />
                     <span>
-                      <strong className="block">{layer.name}</strong>
-                      <span className="text-sm text-ink-soft">{layer.detail}</span>
+                      <strong className="block leading-tight">{layer.name}</strong>
+                      <span className="text-sm leading-snug text-ink-soft">{layer.detail}</span>
                       {'temp' in layer && (
                         <span className="tabular block text-sm text-ink-soft">
                           {t('Temperatura')}: {String(layer.temp)}
@@ -315,42 +325,35 @@ export function PlanetButton({ labels }: { labels: string }) {
                   </li>
                 ))}
               </ul>
+              {tab === 'interior' && (
+                <div className="border-t border-rule pt-4 wide:col-span-2 min-[76rem]:col-span-1 min-[76rem]:border-l min-[76rem]:border-t-0 min-[76rem]:pl-7 min-[76rem]:pt-0">
+                  <h3 className="label mb-2">{t('Discontinuidades')}</h3>
+                  <dl className="grid gap-x-5 gap-y-2 sm:grid-cols-2">
+                    {DISCONTINUITIES.map((item) => (
+                      <div key={item.id}>
+                        <dt className="text-sm font-bold leading-tight">{item.name}</dt>
+                        <dd className="text-[0.8125rem] leading-snug text-ink-soft">{item.detail}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <h3 className="label mb-2 mt-4">{t('Dentro del manto')}</h3>
+                  <dl className="grid gap-x-5 gap-y-2 sm:grid-cols-2">
+                    {MANTLE_ZONES.map((item) => (
+                      <div key={item.id}>
+                        <dt className="text-sm font-bold leading-tight">{item.name}</dt>
+                        <dd className="text-[0.8125rem] leading-snug text-ink-soft">{item.detail}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="mt-3 text-[0.8125rem] leading-snug text-ink-soft">
+                    {t('Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.')}
+                  </p>
+                </div>
+              )}
             </div>
-            {tab === 'interior' && (
-              <div className="mt-5 border-t border-rule pt-4">
-                <h3 className="label mb-2">{t('Discontinuidades')}</h3>
-                <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
-                  {DISCONTINUITIES.map((item) => (
-                    <div key={item.id}>
-                      <dt className="text-sm font-bold">{item.name}</dt>
-                      <dd className="text-sm text-ink-soft">{item.detail}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <h3 className="label mb-2 mt-4">{t('Dentro del manto')}</h3>
-                <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
-                  {MANTLE_ZONES.map((item) => (
-                    <div key={item.id}>
-                      <dt className="text-sm font-bold">{item.name}</dt>
-                      <dd className="text-sm text-ink-soft">{item.detail}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <p className="mt-3 text-sm text-ink-soft">
-                  {t('Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.')}
-                </p>
-                <p className="mt-3 text-sm text-ink-soft">
-                  {t('Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.')}
-                </p>
-              </div>
-            )}
-            <button type="button" onClick={() => show(tab)} className="btn btn-accent mt-5 min-h-11 px-4 text-sm">
-              <Icon name="globe" size={18} />
-              {t('Verlo en el globo 3D')}
-            </button>
-            <p className="mt-4 border-t border-rule pt-3 text-sm text-ink-soft">
+            <p className="mt-4 border-t border-rule pt-3 text-xs leading-snug text-ink-faint">
               {tab === 'interior'
-                ? t('Los grosores están a escala, salvo la corteza, que se ha engrosado para que se vea. El movimiento del manto y del núcleo es una ilustración. Las profundidades son las de USGS e IGN; varían un poco de un libro a otro.')
+                ? `${t('Los grosores están a escala, salvo la corteza, que se ha engrosado para que se vea. El movimiento del manto y del núcleo es una ilustración. Las profundidades son las de USGS e IGN; varían un poco de un libro a otro.')} ${t('Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.')}`
                 : t('Las alturas son aproximadas y el dibujo no está a escala: la troposfera sería una línea finísima.')}
             </p>
           </div>

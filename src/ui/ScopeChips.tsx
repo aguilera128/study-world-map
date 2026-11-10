@@ -21,7 +21,12 @@ export function ScopeChips({
   const saved = useSettings((s) => s.lists);
   const lists = def.extras ? saved : [];
   return (
-    <div role="radiogroup" aria-label={def.text.scopeAria} className="flex flex-wrap gap-1.5">
+    // En el móvil, una sola fila que se desliza con el dedo; en pantalla ancha, varias filas.
+    <div
+      role="radiogroup"
+      aria-label={def.text.scopeAria}
+      className="-mx-5 flex gap-1.5 overflow-x-auto px-5 [scrollbar-width:none] wide:mx-0 wide:flex-wrap wide:overflow-visible wide:px-0 [&>*]:shrink-0"
+    >
       {def.filters.map((r) => (
         <button
           key={r.id}

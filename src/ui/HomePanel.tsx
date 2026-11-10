@@ -98,10 +98,11 @@ export function HomePanel() {
   return (
     <Panel label={t('Elegir partida')}>
       {/* En pantallas anchas este rótulo va en la cabecera, junto a la marca. */}
-      <p className="label wide:hidden" style={order(0)}>
+      {/* En el móvil la hoja es corta: quien ya ha jugado no necesita el rótulo ni el titular. */}
+      <p className={`label wide:hidden ${played ? 'hidden' : ''}`} style={order(0)}>
         {t(def.text.count, { n: atlas.quizzable.length })}
       </p>
-      <h1 className="display mt-2.5 text-[clamp(1.6rem,8vw,2.1rem)] wide:mt-0 wide:text-[clamp(1.5rem,3.4vh,1.85rem)]" style={order(1)}>
+      <h1 className={`display mt-2.5 text-[clamp(1.45rem,7vw,2.1rem)] wide:mt-0 wide:block wide:text-[clamp(1.5rem,3.4vh,1.85rem)] ${played ? 'hidden' : ''}`} style={order(1)}>
         <span className="block whitespace-nowrap">{def.text.headline[0]}</span>
         <em className="block whitespace-nowrap font-semibold text-accent">{def.text.headline[1]}</em>
       </h1>
@@ -113,7 +114,8 @@ export function HomePanel() {
 
       <Segmented
         label={t('Mapa')}
-        className="mt-4"
+        // en el móvil, los tres mapas en una fila que se desliza, no en dos
+        className={`flex-nowrap! overflow-x-auto wide:flex-wrap! wide:overflow-visible [scrollbar-width:none] [&>*]:shrink-0 ${played ? 'wide:mt-4' : 'mt-4'}`}
         value={atlas.map}
         onChange={(map) => void setMap(map)}
         options={(Object.keys(MAPS) as MapId[]).map((id) => ({
@@ -135,7 +137,7 @@ export function HomePanel() {
           {groups.map((group) => (
             <div key={group.title ?? 'all'}>
               {group.title && <p className="mb-1 text-xs font-semibold text-ink-faint">{group.title}</p>}
-              <div className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
+              <div className="grid grid-cols-3 gap-1.5">
                 {group.modes.map((m) => (
                   <button
                     key={m.id}
@@ -145,7 +147,8 @@ export function HomePanel() {
                     onClick={() => setConfig({ mode: m.id })}
                     className="tile relative flex min-w-0 items-center gap-1.5 overflow-hidden px-1.5 py-2 text-left"
                   >
-                    <Icon name={MODE_ICONS[m.id]} size={16} className="shrink-0" />
+                    {/* tres por fila también en el móvil: ahí el icono cede su sitio al nombre */}
+                    <Icon name={MODE_ICONS[m.id]} size={16} className="hidden shrink-0 min-[26rem]:block" />
                     <span className="truncate text-[0.8125rem] font-bold leading-tight tracking-[-0.01em]">{m.title}</span>
                     {/* cuánto se domina este reto en la zona elegida: orienta qué practicar */}
                     {mastered[m.id] > 0 && <span aria-hidden="true" className="absolute bottom-0 left-0 h-[3px] bg-ok" style={{ width: `${mastered[m.id] * 100}%` }} />}
