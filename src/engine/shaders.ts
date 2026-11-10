@@ -743,16 +743,36 @@ uniform float uSidereal;
 uniform float uMorph;
 uniform float uStars;
 varying vec3 vDir;
+${NOISE3}
+
+// Polvo de estrellas: una estrella débil en algunas celdas del cielo, más cuanto más brilla la galaxia ahí.
+float dust(vec3 dir, float cells, float density) {
+  vec3 q = dir * cells;
+  vec3 cell = floor(q);
+  float h = hash(cell);
+  vec3 f = fract(q) - 0.5 - (vec3(hash(cell + 7.0), hash(cell + 13.0), hash(cell + 29.0)) - 0.5) * 0.5;
+  return step(1.0 - density, h) * smoothstep(0.3, 0.0, length(f)) * (0.4 + 0.6 * fract(h * 57.0));
+}
 
 void main() {
   vec3 dir = normalize(vDir);
-  float ra = atan(dir.x, dir.z) + uSidereal;
+  // Se deshace el giro de la hora sidérea: «sky» es la dirección en el cielo fijo (ecuatorial J2000).
+  float turn = uSidereal;
+  vec3 sky = vec3(dir.x * cos(turn) + dir.z * sin(turn), dir.y, dir.z * cos(turn) - dir.x * sin(turn));
+  float ra = atan(sky.x, sky.z);
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
-  vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(dir.y, -1.0, 1.0)) / 3.14159265);
+  vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
   vec3 glow = texture2D(uSky, uv).rgb;
-  float a = clamp(max(glow.r, max(glow.g, glow.b)) * 1.6, 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
+  float lum = max(glow.r, max(glow.g, glow.b));
+  // La imagen da dónde está la galaxia, cuánto brilla y de qué color (eso es real). A este aumento
+  // se vería como una mancha borrosa, así que su luz se reparte en un velo tenue y en un polvo de
+  // estrellas débiles: las estrellas sueltas de ese polvo son un dibujo, no un catálogo.
+  float grain = dust(sky, 520.0, lum * 0.55) + 0.7 * dust(sky, 1100.0, lum * 0.7) + 0.5 * dust(sky, 2300.0, lum * 0.8);
+  vec3 tint = glow / max(lum, 0.001);
+  vec3 color = glow * 0.5 + mix(vec3(1.0), tint, 0.6) * grain * (0.35 + lum);
+  float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
-  gl_FragColor = vec4(glow * 1.25 / max(a, 0.2), a * 0.9);
+  gl_FragColor = vec4(color / max(a, 0.001), a);
 }
 `;
 
