@@ -48,6 +48,7 @@ ${titularBlock()}
       <li>Cartografía: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (dominio público).</li>
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
+      <li>Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público).</li>
       <li>Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).</li>
     </ul>
 

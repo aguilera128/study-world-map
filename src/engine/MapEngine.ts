@@ -20,7 +20,7 @@ import type { Atlas } from '../atlas/atlas';
 import type { MeshData } from '../atlas/mesh';
 import type { Bounds } from '../atlas/types';
 import { CameraRig, type Padding, type Pose, type ScreenPoint } from './camera';
-import { fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, wallGeometry } from './geometry';
+import { fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
 import { rgb, Style, STYLE_COUNT, type Palette } from './palette';
 import { DEG, wrapLon } from './projection';
 import {
@@ -34,6 +34,8 @@ import {
   MARKER_VERT,
   OCEAN_FRAG,
   OCEAN_VERT,
+  STAR_FRAG,
+  STAR_VERT,
   SHEET_FRAG,
   SHEET_VERT,
   WALL_VERT,
@@ -178,6 +180,7 @@ export class MapEngine {
   private nightTarget = 0;
   private showGrid = true;
   private showGlint = true;
+  private showStars = true;
 
   // ── uniformes compartidos por todos los materiales ──
   private readonly uniforms = {
@@ -202,6 +205,7 @@ export class MapEngine {
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
+    stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
     marker: { uPxPerRad: { value: 1 }, uThreshold: { value: MARKER_THRESHOLD }, uMarkerPx: { value: 16 } },
     halo: {
@@ -275,6 +279,8 @@ export class MapEngine {
     this.uniforms.uCount.value = n;
 
     // ── capas, de abajo arriba ──
+    const sky = { transparent: true, depthWrite: false };
+    this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, this.own.stars, sky)), -1);
     const ocean = oceanGeometry();
     this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);
     this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill)), 1);
@@ -407,6 +413,7 @@ export class MapEngine {
     this.own.ocean.uGrid.value.copy(vec3(p.grid));
     this.own.ocean.uGridAlpha.value = this.showGrid ? p.gridAlpha : 0;
     this.own.ocean.uGlint.value = this.showGlint ? p.glint : 0;
+    this.own.stars.uStars.value = this.showStars ? p.stars : 0;
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
     this.own.halo.uFalloff.value = p.haloFalloff;
@@ -512,12 +519,20 @@ export class MapEngine {
     this.invalidate();
   }
 
-  /** Muestra u oculta la retícula y el reflejo del agua. */
-  setOcean(grid: boolean, glint: boolean) {
+  /** Muestra u oculta la retícula, el reflejo del agua y las estrellas. */
+  setLayers(grid: boolean, glint: boolean, stars: boolean) {
     this.showGrid = grid;
     this.showGlint = glint;
+    this.showStars = stars;
     this.own.ocean.uGridAlpha.value = grid ? this.palette.gridAlpha : 0;
     this.own.ocean.uGlint.value = glint ? this.palette.glint : 0;
+    this.own.stars.uStars.value = stars ? this.palette.stars : 0;
+    this.invalidate();
+  }
+
+  /** Gira el cielo: hora sidérea de Greenwich, en grados. */
+  setSidereal(deg: number) {
+    this.own.stars.uSidereal.value = deg * DEG;
     this.invalidate();
   }
 
@@ -1096,6 +1111,7 @@ export class MapEngine {
     const dpr = this.renderer.getPixelRatio();
     this.uniforms.uMorph.value = morph;
     this.uniforms.uViewport.value.set(rig.width * dpr, rig.height * dpr);
+    this.own.stars.uDpr.value = dpr;
     this.own.line.uWidth.value = LINE_WIDTH * dpr;
     this.own.line.uEmphWidth.value = LINE_WIDTH_EMPH * dpr;
     this.own.marker.uPxPerRad.value = 1 / rig.worldPerPixel;

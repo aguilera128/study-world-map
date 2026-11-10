@@ -32,6 +32,8 @@ export type ThemeChoice = 'auto' | 'paper' | 'night';
 export const LAYERS = {
   grid: 'Meridianos y paralelos',
   glint: 'Reflejo del agua',
+  // solo se ven en el globo con el tema oscuro
+  stars: 'Estrellas',
   dayNight: 'Día y noche',
   sun: 'Sol',
   moon: 'Luna',

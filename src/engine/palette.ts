@@ -36,6 +36,8 @@ export interface Palette {
   gridAlpha: number;
   /** Fuerza del reflejo del agua (0 = mate). */
   glint: number;
+  /** Brillo de las estrellas alrededor del globo (0 = sin estrellas: sobre papel no pegan). */
+  stars: number;
   /** Color y fuerza del borde claro del globo. */
   rim: string;
   rimAmount: number;
@@ -75,6 +77,7 @@ export const PAPER: Palette = {
   grid: '#5f8fa3',
   gridAlpha: 0.22,
   glint: 0.3,
+  stars: 0,
   rim: '#dcecf0',
   rimAmount: 0.3,
   rimPower: 2.8,
@@ -123,6 +126,7 @@ export const NIGHT: Palette = {
   grid: '#6f9cc0',
   gridAlpha: 0.14,
   glint: 0.32,
+  stars: 1,
   rim: '#6ea6d8',
   rimAmount: 0.42,
   rimPower: 2.4,

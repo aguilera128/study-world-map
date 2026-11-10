@@ -5,6 +5,12 @@ const RAD = Math.PI / 180;
 /** 1 de enero de 2000 a las 12:00 UTC (época J2000), en milisegundos Unix. */
 const J2000 = Date.UTC(2000, 0, 1, 12);
 
+/** Hora sidérea media de Greenwich, en grados: cuánto ha girado la Tierra respecto a las estrellas. */
+export function siderealAngle(date: Date): number {
+  const days = (date.getTime() - J2000) / 86_400_000;
+  return ((((18.697374558 + 24.06570982441908 * days) * 15) % 360) + 360) % 360;
+}
+
 export interface SunPosition {
   /** Punto subsolar: el lugar de la Tierra que tiene el Sol justo encima. En grados. */
   lon: number;

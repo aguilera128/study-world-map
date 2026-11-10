@@ -434,3 +434,50 @@ void main() {
   gl_FragColor = vec4(uColor, uAlpha);
 }
 `;
+
+// ───────────────────────── Estrellas ─────────────────────────
+//
+// Puntos en el infinito: solo les afecta el giro de la cámara, no su distancia. Como el mundo del
+// motor es la Tierra (ejes geográficos), la dirección de una estrella es la del punto que la tiene
+// en el cénit: longitud = ascensión recta − hora sidérea, latitud = declinación.
+
+export const STAR_VERT = glsl`
+uniform float uSidereal; // hora sidérea de Greenwich, en radianes
+uniform float uDpr;
+attribute float aColor;
+varying float vAlpha;
+varying vec3 vTint;
+
+void main() {
+  float lon = position.x - uSidereal;
+  float lat = position.y;
+  vec3 dir = vec3(cos(lat) * sin(lon), sin(lat), cos(lat) * cos(lon));
+  vec4 clip = projectionMatrix * vec4(mat3(viewMatrix) * dir, 0.0);
+  gl_Position = vec4(clip.xy, clip.w, clip.w); // al fondo del todo: la Tierra las tapa
+  float mag = position.z;
+  // Cada magnitud es 2,5 veces menos luz: las brillantes crecen y las débiles se atenúan.
+  gl_PointSize = clamp(6.6 - 0.85 * mag, 1.8, 8.0) * uDpr;
+  vAlpha = clamp(1.3 - 0.15 * mag, 0.32, 1.0);
+  // Índice de color B−V: negativo = azulada, ~0,6 = como el Sol, >1,2 = anaranjada.
+  vec3 blue = vec3(0.72, 0.82, 1.0);
+  vec3 white = vec3(1.0, 0.98, 0.94);
+  vec3 orange = vec3(1.0, 0.76, 0.52);
+  vTint = aColor < 0.5
+    ? mix(blue, white, clamp((aColor + 0.25) / 0.75, 0.0, 1.0))
+    : mix(white, orange, clamp((aColor - 0.5) / 1.2, 0.0, 1.0));
+}
+`;
+
+export const STAR_FRAG = glsl`
+uniform float uMorph;
+uniform float uStars; // 0 = ocultas
+varying float vAlpha;
+varying vec3 vTint;
+
+void main() {
+  float r = length(gl_PointCoord * 2.0 - 1.0);
+  float a = (1.0 - smoothstep(0.35, 1.0, r)) * vAlpha * uStars * smoothstep(0.7, 1.0, uMorph);
+  if (a <= 0.003) discard;
+  gl_FragColor = vec4(vTint, a);
+}
+`;

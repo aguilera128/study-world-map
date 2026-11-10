@@ -8,7 +8,7 @@ import type { Atlas } from '../atlas/atlas';
 import { buildMesh } from '../atlas/mesh';
 import { MapEngine } from '../engine/MapEngine';
 import { PALETTES } from '../engine/palette';
-import { sublunarPoint, subsolarPoint } from '../engine/sun';
+import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
 import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
@@ -130,7 +130,8 @@ export default function MapCanvas() {
   const playing = screen === 'play' || screen === 'results';
   const daylight = realTime && layers.dayNight;
   useEffect(() => engine?.setDaylight(daylight ? (playing ? 0.5 : 1) : 0), [engine, daylight, playing]);
-  useEffect(() => engine?.setOcean(layers.grid, layers.glint), [engine, layers.grid, layers.glint]);
+  useEffect(() => engine?.setLayers(layers.grid, layers.glint, layers.stars), [engine, layers.grid, layers.glint, layers.stars]);
+  useEffect(() => engine?.setSidereal(siderealAngle(now)), [engine, now]);
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);
 
   const mapState = useMemo(

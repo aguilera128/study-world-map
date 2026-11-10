@@ -35,6 +35,8 @@ el propio dispositivo.
 - **Sol, Luna y capas.** En tiempo real también se marca dónde está la Luna en el cénit, con su fase.
   El botón de capas (junto al zoom) oculta la retícula, el reflejo del agua, el día y la noche, el Sol,
   la Luna o la ubicación.
+- **Cielo real.** Con el tema oscuro, alrededor del globo se ven las 8404 estrellas visibles a simple vista
+  (magnitud ≤ 6,5), cada una en su sitio para la hora actual, con su brillo y su color.
 - **Progreso.** El mapa coloreado según lo bien que te sabes cada país, por reto y por zona.
 - Tema claro («papel») y oscuro, diseño adaptado a móvil, y respeto de la preferencia de
   movimiento reducido del sistema.
@@ -164,4 +166,6 @@ Para corregir un nombre o una capital, o cambiar qué países se preguntan, edit
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
 - Banderas: [flag-icons](https://github.com/lipis/flag-icons) (MIT).
+- Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público); recorte en `src/engine/stars.ts`,
+  generado con `scripts/build-stars.mjs`.
 - Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).

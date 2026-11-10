@@ -2,6 +2,7 @@ import { BufferAttribute, BufferGeometry, InstancedBufferAttribute, InstancedBuf
 import type { Atlas } from '../atlas/atlas';
 import type { MeshData } from '../atlas/mesh';
 import { DEG } from './projection';
+import { STARS } from './stars';
 
 // En todas las geometrías el atributo `position` no es una posición en el espacio, sino
 // (longitud, latitud, país): la posición real la calcula el sombreador según la vista.
@@ -137,5 +138,31 @@ export function quadGeometry(): BufferGeometry {
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0]), 3));
   geometry.setIndex(new BufferAttribute(new Uint16Array([0, 1, 2, 0, 2, 3]), 1));
+  return geometry;
+}
+
+/**
+ * Estrellas del cielo: `position` = (ascensión recta, declinación, magnitud) y `aColor` = índice B−V.
+ * El catálogo está en coordenadas J2000; se llevan a la fecha indicada con la precesión (unos 0,4°
+ * en 2026), que es el mismo equinoccio que usa la hora sidérea.
+ */
+export function starGeometry(date: Date): BufferGeometry {
+  const n = STARS.length / 4;
+  const centuries = (date.getTime() - Date.UTC(2000, 0, 1, 12)) / 86_400_000 / 36525;
+  const m = 1.2812 * DEG * centuries;
+  const k = 0.5567 * DEG * centuries;
+  const position = new Float32Array(n * 3);
+  const color = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const ra = (STARS[4 * i] / 100) * DEG;
+    const dec = (STARS[4 * i + 1] / 100) * DEG;
+    position[3 * i] = ra + m + k * Math.sin(ra) * Math.tan(dec);
+    position[3 * i + 1] = dec + k * Math.cos(ra);
+    position[3 * i + 2] = STARS[4 * i + 2] / 10;
+    color[i] = STARS[4 * i + 3] / 10;
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new BufferAttribute(position, 3));
+  geometry.setAttribute('aColor', new BufferAttribute(color, 1));
   return geometry;
 }

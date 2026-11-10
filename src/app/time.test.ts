@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
-import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude } from '../engine/sun';
+import { dayPhase, moonPhase, siderealAngle, sublunarPoint, subsolarPoint, sunAltitude } from '../engine/sun';
 import { clockIn, differenceLabel, offsetLabel, offsetMinutes } from './time';
 
 const atlas = new Atlas(JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas);
@@ -147,5 +147,19 @@ describe('luna', () => {
     expect(last.lit).toBeCloseTo(0.5, 1);
     expect(last.waxing).toBe(false);
     expect(last.name).toBe('Cuarto menguante');
+  });
+});
+
+describe('estrellas', () => {
+  it('Sirio pasa por el meridiano de Greenwich a medianoche de Año Nuevo', () => {
+    // Longitud del punto que tiene la estrella en el cénit = ascensión recta − hora sidérea.
+    const sirius = 101.29;
+    expect(Math.abs(sirius - siderealAngle(new Date('2026-01-01T00:00:00Z')))).toBeLessThan(1.5);
+  });
+
+  it('el cielo da una vuelta cada día sidéreo (23 h 56 min 4 s)', () => {
+    const t0 = new Date('2026-11-10T00:00:00Z');
+    const t1 = new Date(t0.getTime() + (23 * 3600 + 56 * 60 + 4.09) * 1000);
+    expect(siderealAngle(t1)).toBeCloseTo(siderealAngle(t0), 2);
   });
 });

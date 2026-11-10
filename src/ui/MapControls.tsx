@@ -18,7 +18,7 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
   );
 }
 
-const MAP_LAYERS: LayerId[] = ['grid', 'glint'];
+const MAP_LAYERS: LayerId[] = ['grid', 'glint', 'stars'];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
 /** Botón de capas: qué se dibuja sobre el mapa. */
