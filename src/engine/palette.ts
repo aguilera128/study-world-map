@@ -144,7 +144,7 @@ export const NIGHT: Palette = {
   nightDim: 0.4,
   sheetShadow: '#000000',
   sheetShadowAlpha: 0.4,
-  line: '#4b5868',
+  line: '#364250',
   lineEmph: '#f3ead7',
   wallTint: 0.6,
   hover: '#ffd866',
