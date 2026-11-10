@@ -153,10 +153,11 @@ export function ExplorePanel() {
 
   return (
     <Panel label={t('Explorar el mapa')}>
-      <p className="label" style={order(0)}>
+      {/* En el móvil, con un país abierto, el título se quita: la ficha es lo que importa y la hoja es corta. */}
+      <p className={`label ${selected >= 0 ? 'hidden wide:block' : ''}`} style={order(0)}>
         {t('Explorar y estudiar')}
       </p>
-      <h1 className="display mt-2.5 text-[1.75rem] wide:text-[2.1rem]" style={order(1)}>
+      <h1 className={`display mt-2.5 text-[1.75rem] wide:text-[2.1rem] ${selected >= 0 ? 'hidden wide:block' : ''}`} style={order(1)}>
         {text.study}
       </h1>
 

@@ -48,7 +48,9 @@ export function offsetMinutes(zone: string, date: Date): number | null {
   const p = parts(zone, date);
   if (!p) return null;
   const wall = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute);
-  return Math.round((wall - date.getTime()) / 60000);
+  // La hora de reloj no lleva segundos: se comparan minutos enteros. Si no, pasado el segundo 30
+  // de cada minuto el resultado salía un minuto corto («UTC−0:01»).
+  return Math.round((wall - Math.floor(date.getTime() / 60000) * 60000) / 60000);
 }
 
 /** Minutos de adelanto de la hora del propio dispositivo respecto a UTC. */

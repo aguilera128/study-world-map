@@ -21,6 +21,9 @@ describe('hora local', () => {
 
   it('calcula el desfase con UTC, también con medias horas y cuartos', () => {
     expect(offsetMinutes('Europe/Madrid', winter)).toBe(60);
+    // en cualquier segundo del minuto, no solo en el :00
+    expect(offsetMinutes('Europe/Madrid', new Date(winter.getTime() + 45_000))).toBe(60);
+    expect(offsetMinutes('Africa/Nouakchott', new Date(winter.getTime() + 59_000))).toBe(0);
     expect(offsetMinutes('Europe/Madrid', summer)).toBe(120);
     expect(offsetMinutes('America/St_Johns', winter)).toBe(-210);
     expect(offsetMinutes('Asia/Kathmandu', winter)).toBe(345);
