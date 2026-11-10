@@ -1,5 +1,5 @@
 // Genera las páginas HTML estáticas del sitio (sin JavaScript, legibles por buscadores y asistentes
-// de IA, que no ven nada de la aplicación), en cada idioma de scripts/data/paginas.mjs:
+// de IA, que no ven nada de la aplicación), en cada idioma de scripts/data/idiomas/:
 //   public/paises-y-capitales/ · public/en/countries-and-capitals/
 //       los 197 países por continente, con capital y bandera
 //   public/juego/<reto>-de-<zona>/ · public/en/game/<reto>-of-<zona>/
@@ -13,7 +13,7 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { legalPages } from './data/legales.mjs';
-import { INDEX, PAGINAS } from './data/paginas.mjs';
+import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
 import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
@@ -385,9 +385,29 @@ const index = readFileSync('index.html', 'utf8').replace(/\r/g, '');
 for (const lang of LANGS) {
   if (!index.includes(`hreflang="${lang}"`)) throw new Error(`build-pages: index.html no enlaza al idioma «${lang}» (hreflang).`);
   if (lang === 'es') continue;
+  const T = PAGINAS[lang];
+  const home = `${SITE}${base(lang)}`;
+  // Lo que cambia en todos los idiomas igual: códigos de idioma y direcciones…
+  const pairs = [
+    ['<html lang="es">', `<html lang="${lang}">`],
+    ['content="es_ES"', `content="${T.locale}"`],
+    [`<meta property="og:url" content="${SITE}/" />`, `<meta property="og:url" content="${home}" />`],
+    [`<link rel="canonical" href="${SITE}/" />`, `<link rel="canonical" href="${home}" />`],
+    [`"@type": "WebApplication",
+            "name": "Study World Map",
+            "url": "${SITE}/",`, `"@type": "WebApplication",
+            "name": "Study World Map",
+            "url": "${home}",`],
+    [`"inLanguage": "es",
+            "isAccessibleForFree"`, `"inLanguage": "${lang}",
+            "isAccessibleForFree"`],
+    // …y los textos, que cada idioma traduce en el mismo orden que es.mjs.
+    ...PAGINAS.es.index.map((text, i) => [text, T.index[i].replace('{paises}', paisesPath(lang))]),
+  ];
+  if (T.index.length !== PAGINAS.es.index.length) throw new Error(`build-pages: a «${lang}» le faltan o le sobran textos de index.html.`);
   let html = index;
-  for (const [from, to] of INDEX[lang]) {
-    if (!html.includes(from)) throw new Error(`build-pages: index.html ya no contiene «${from.slice(0, 60)}…» (scripts/data/paginas.mjs).`);
+  for (const [from, to] of pairs) {
+    if (!html.includes(from)) throw new Error(`build-pages: index.html ya no contiene «${from.slice(0, 60)}…» (scripts/data/idiomas/es.mjs).`);
     html = html.replaceAll(from, to);
   }
   mkdirSync(lang, { recursive: true });

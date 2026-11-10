@@ -15,7 +15,8 @@ public/aviso-legal/
 public/privacidad/
 public/cookies/
 public/donar/
-public/en/
-/en/
+# portadas y páginas de cada idioma (carpetas de dos letras)
+public/[a-z][a-z]/
+/[a-z][a-z]/
 public/juego/
 public/sitemap.xml

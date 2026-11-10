@@ -24,7 +24,7 @@ import { geoEquirectangular } from 'd3-geo';
 import { geoProject } from 'd3-geo-projection';
 import polylabel from 'polylabel';
 import * as topojson from 'topojson-client';
-import { NOMBRES } from './data/nombres.mjs';
+import { IDIOMAS } from './data/idiomas/index.mjs';
 import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './data/paises.mjs';
 
 const require = createRequire(import.meta.url);
@@ -492,17 +492,17 @@ mkdirSync(dirBanderas, { recursive: true });
 
 // Nombres en los demás idiomas: un fichero pequeño por idioma, que la aplicación carga encima del
 // atlas (ver src/atlas/atlas.ts). El país sale de CLDR, la capital de Wikidata y lo demás, de
-// ./data/nombres.mjs, que además corrige lo que haga falta.
+// ./data/idiomas/<idioma>.mjs, que además corrige lo que haga falta.
 const capitales = JSON.parse(readFileSync(join(ROOT, 'scripts', 'data', 'capitales.wikidata.json'), 'utf8'));
-const idiomas = Object.keys(NOMBRES);
+const idiomas = Object.keys(IDIOMAS).filter((idioma) => idioma !== 'es');
 for (const idioma of idiomas) {
-  const propio = NOMBRES[idioma];
+  const propio = IDIOMAS[idioma].nombres;
   const cldr = new Intl.DisplayNames([idioma], { type: 'region' });
   const paises = {};
   for (const e of entidades) {
     const extra = propio.paises[e.id] ?? {};
     // CLDR abrevia con «&»; en los nombres de la aplicación va la conjunción del idioma.
-    const name = extra.nombre ?? (e.a2 ? cldr.of(e.a2.toUpperCase()).replace(' & ', propio.y ?? ' and ') : null);
+    const name = extra.nombre ?? (e.a2 ? cldr.of(e.a2.toUpperCase()).replace(' & ', IDIOMAS[idioma].y) : null);
     if (!name) throw new Error(`names.${idioma}: falta el nombre de ${e.id}`);
     const entry = { n: name, a: extra.alias, t: extra.nota };
     if (e.kind === 'country') {

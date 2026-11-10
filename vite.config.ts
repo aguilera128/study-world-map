@@ -1,10 +1,10 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
 
 // Una portada por idioma: index.html (español) y las que genera scripts/build-pages.mjs en <idioma>/.
-const LANGS = ['en'].filter((lang) => existsSync(`${lang}/index.html`));
+const LANGS = readdirSync('.').filter((dir) => /^[a-z]{2}$/.test(dir) && existsSync(`${dir}/index.html`));
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
