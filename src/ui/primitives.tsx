@@ -74,9 +74,9 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
       animate={{ opacity: 1, x: 0, y: 0 }}
       exit={{ opacity: 0, x: wide ? -28 : 0, y: wide ? 0 : 40 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="panel fixed inset-x-0 bottom-0 z-30 max-h-[60dvh] overflow-y-auto overscroll-contain wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem]"
+      className="panel fixed inset-x-0 bottom-0 z-30 max-h-[60dvh] overflow-y-auto overscroll-contain wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem] wide:overflow-hidden"
     >
-      <div className="stagger wide:max-w-[30rem] px-5 pb-7 pt-5 wide:pb-8 wide:pl-10 wide:pr-[4.5rem] wide:pt-[clamp(4.75rem,10vh,6rem)]">{children}</div>
+      <div className="panel-body stagger wide:max-w-[30rem] px-5 pb-7 pt-5 wide:pb-8 wide:pl-10 wide:pr-[4.5rem] wide:pt-[clamp(4.75rem,10vh,6rem)]">{children}</div>
     </motion.aside>
   );
 }

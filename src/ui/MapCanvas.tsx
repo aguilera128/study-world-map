@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { setEngine } from '../app/engineRef';
 import { formatCompact, formatCoords } from '../app/format';
 import { climateText } from '../game/climate';
@@ -7,12 +7,13 @@ import { useApp, useProgress, useSettings, type MapLabel, type Tone } from '../a
 import { clockIn } from '../app/time';
 import type { Atlas } from '../atlas/atlas';
 import { buildMesh } from '../atlas/mesh';
-import { MapEngine } from '../engine/MapEngine';
+import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
 import { PALETTES } from '../engine/palette';
 import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
 import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
+import { INTERIOR } from './planetLayers';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
 import { lang, LOCALE, t } from '../i18n';
@@ -138,6 +139,20 @@ export default function MapCanvas() {
   const [engine, setLocalEngine] = useState<MapEngine | null>(null);
   const [failed, setFailed] = useState(false);
   const [hovered, setHovered] = useState(-1);
+  // Con el interior del planeta a la vista, la capa bajo el cursor en vez de un país.
+  const [layerId, setLayerId] = useState<PlanetLayer | null>(null);
+
+  // El aviso va a la derecha del cursor; si no cabe en la pantalla, a su izquierda. Se recoloca
+  // también cuando cambia su texto, porque cambia su ancho.
+  const pointerAt = useRef<{ x: number; y: number } | null>(null);
+  const placeTip = () => {
+    const [tip, at] = [tipRef.current, pointerAt.current];
+    if (!tip || !at) return;
+    const width = tip.offsetWidth;
+    const x = at.x + 16 + width > window.innerWidth - 8 ? Math.max(8, at.x - 16 - width) : at.x + 16;
+    tip.style.transform = `translate3d(${x}px, ${at.y + 18}px, 0)`;
+  };
+  useLayoutEffect(placeTip, [hovered, layerId]);
 
   // ── Crear el motor (una vez) ──
   useEffect(() => {
@@ -165,14 +180,10 @@ export default function MapCanvas() {
       engine.on('click', (hit) => useApp.getState().mapClick(hit)),
       engine.on('pointer', (info) => {
         setHovered(info ? info.index : -1);
-        const tip = tipRef.current;
-        if (tip && info) {
-          // A la derecha del cursor; si no cabe en la pantalla, a su izquierda.
-          const width = tip.offsetWidth;
-          const x = info.x + 16 + width > window.innerWidth - 8 ? Math.max(8, info.x - 16 - width) : info.x + 16;
-          tip.style.transform = `translate3d(${x}px, ${info.y + 18}px, 0)`;
-        }
-        if (coordsRef.current) coordsRef.current.textContent = info ? formatCoords(info.lon, info.lat) : '';
+        setLayerId(info?.layer ?? null);
+        if (info) pointerAt.current = info;
+        placeTip();
+        if (coordsRef.current) coordsRef.current.textContent = info && info.layer === undefined ? formatCoords(info.lon, info.lat) : '';
       }),
     ];
     return () => {
@@ -235,7 +246,8 @@ export default function MapCanvas() {
   }, [engine, mapState]);
 
   const country = hovered >= 0 && TOOLTIP_SCREENS.has(screen) ? atlas.countries[hovered] : null;
-  const showTip = !!country && (screen !== 'lists' || country.kind === 'country');
+  const layer = layerId ? INTERIOR.find((item) => item.id === layerId) : undefined;
+  const showTip = !!layer || (!!country && (screen !== 'lists' || country.kind === 'country'));
   const localTime = country?.tz ? clockIn(country.tz, now) : null;
 
   if (failed) {
@@ -279,7 +291,14 @@ export default function MapCanvas() {
         aria-hidden={!showTip}
         className={`float pointer-events-none fixed left-0 top-0 z-40 flex items-center gap-2 px-2.5 py-1.5 text-sm font-semibold transition-opacity duration-150 ${showTip ? 'opacity-100' : 'opacity-0'}`}
       >
-        {country && (
+        {layer && (
+          <>
+            <span className="h-3.5 w-3.5 shrink-0 rounded-[4px] border border-rule-strong" style={{ background: layer.color }} />
+            <span>{layer.name}</span>
+            <span className="font-normal text-ink-soft">· {layer.detail}</span>
+          </>
+        )}
+        {country && !layer && (
           <>
             {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={15} />}
             <span>{country.name}</span>

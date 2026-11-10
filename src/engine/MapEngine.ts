@@ -1,6 +1,8 @@
 import {
   LinearFilter,
   BufferAttribute,
+  BufferGeometry,
+  SphereGeometry,
   InstancedBufferAttribute,
   InstancedBufferGeometry,
   DataTexture,
@@ -16,7 +18,6 @@ import {
   Vector2,
   Vector3,
   WebGLRenderer,
-  type BufferGeometry,
   type IUniform,
   TextureLoader,
   RepeatWrapping,
@@ -35,6 +36,10 @@ import { DEG, wrapLon } from './projection';
 import {
   FILL_FRAG,
   FILL_VERT,
+  CORE_FRAG,
+  CORE_VERT,
+  CUT_FRAG,
+  CUT_VERT,
   HALO_FRAG,
   HALO_VERT,
   LINE_FRAG,
@@ -59,7 +64,16 @@ export interface PointerInfo {
   index: number;
   lon: number;
   lat: number;
+  /** Con el interior del planeta a la vista: la capa bajo el cursor, si hay alguna. */
+  layer?: PlanetLayer | null;
 }
+
+export type PlanetLayer = 'crust' | 'mantle' | 'outer' | 'inner';
+const SHELL_LAYERS: PlanetLayer[] = ['crust', 'mantle', 'outer', 'inner'];
+/** Radio exterior de cada capa (Tierra = 1): superficie, manto (corteza engrosada), núcleo externo e interno. */
+const SHELL_RADIUS = [1, 0.972, 3471 / 6371, 1221 / 6371];
+/** Cuánto se cierra el corte de cada capa respecto al gajo de la superficie, en radianes: los escalones. */
+const SHELL_STEP = [0, 7 * (Math.PI / 180), 14 * (Math.PI / 180)];
 
 export interface ViewInfo {
   lon: number;
@@ -205,6 +219,9 @@ export class MapEngine {
   private graticule: Mesh | null = null;
   private graticuleLabels: FeatureLabels | null = null;
   private zoneLabels: FeatureLabels | null = null;
+  private cutFaces: Mesh | null = null;
+  private core: Mesh | null = null;
+  private planetView: 'interior' | 'atmosphere' | null = null;
   private guideLabels: FeatureLabels | null = null;
   private showStars = true;
 
@@ -227,6 +244,8 @@ export class MapEngine {
     uNight: { value: 0 },
     uNightTint: { value: new Vector3() },
     uNightDim: { value: 0.5 },
+    uCut: { value: 0 },
+    uCutLon: { value: new Vector2(-20 * DEG, 70 * DEG) },
   };
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
@@ -248,6 +267,7 @@ export class MapEngine {
       uOutline: { value: new Vector3() },
       uOutlineAlpha: { value: 0 },
       uSilhouette: { value: 1 },
+      uShells: { value: 0 },
     },
     shadow: { uOffset: { value: new Vector2(0.03, -0.045) }, uColor: { value: new Vector3() }, uAlpha: { value: 0 } },
     frame: { uOffset: { value: new Vector2() }, uColor: { value: new Vector3() }, uAlpha: { value: 0 } },
@@ -646,6 +666,72 @@ export class MapEngine {
     return mesh;
   }
 
+  /**
+   * «El planeta por dentro y por fuera», sobre el propio globo: `interior` abre un gajo y enseña las
+   * capas de la Tierra en sus caras; `atmosphere` rodea el globo con las capas de la atmósfera.
+   * Solo tiene sentido con el globo formado: quien lo llama pone antes la vista en 3D.
+   */
+  setPlanetView(view: 'interior' | 'atmosphere' | null) {
+    this.planetView = view;
+    this.uniforms.uCut.value = view === 'interior' ? 1 : 0;
+    this.own.halo.uShells.value = view === 'atmosphere' ? 1 : 0;
+    if (view === 'interior' && !this.cutFaces) {
+      const [west, east] = [this.uniforms.uCutLon.value.x, this.uniforms.uCutLon.value.y];
+      const position: number[] = [];
+      const shade: number[] = [];
+      const radius: number[] = [];
+      const at = (lon: number, lat: number, r: number) => [r * Math.cos(lat) * Math.sin(lon), r * Math.sin(lat), r * Math.cos(lat) * Math.cos(lon)];
+      // Un trozo de superficie en malla: point(u, v) con u, v en 0..1. «tint» es el radio con el que
+      // se colorea un escalón (0 en las caras del corte, que se colorean por su distancia al centro).
+      const patch = (point: (u: number, v: number) => number[], light: number, tint = 0, nu = 40, nv = 12) => {
+        for (let i = 0; i < nu; i++) {
+          for (let j = 0; j < nv; j++) {
+            const [a, b, c, d] = [point(i / nu, j / nv), point((i + 1) / nu, j / nv), point((i + 1) / nu, (j + 1) / nv), point(i / nu, (j + 1) / nv)];
+            position.push(...a, ...b, ...c, ...a, ...c, ...d);
+            for (let k = 0; k < 6; k++) {
+              shade.push(light);
+              radius.push(tint);
+            }
+          }
+        }
+      };
+      const mix = (a: number, b: number, k: number) => a + (b - a) * k;
+      const top = Math.PI / 2;
+      for (let k = 0; k < 3; k++) {
+        const [outer, inner, step] = [SHELL_RADIUS[k], SHELL_RADIUS[k + 1], SHELL_STEP[k]];
+        // Las tres caras del corte de esta capa: dos sobre sus meridianos y el suelo.
+        patch((u, v) => at(west + step, mix(step, top, u), mix(inner, outer, v)), 0.82);
+        patch((u, v) => at(east - step, mix(step, top, u), mix(inner, outer, v)), 1);
+        patch((u, v) => at(mix(west + step, east - step, u), step, mix(inner, outer, v)), 0.9);
+        if (k === 0) continue;
+        // El escalón: la superficie de la capa que queda a la vista entre su corte y el de la capa de encima.
+        const [before, tint] = [SHELL_STEP[k - 1], outer - 0.012];
+        patch((u, v) => at(mix(west + before, west + step, v), mix(before, top, u), outer), 1.08, tint, 40, 4);
+        patch((u, v) => at(mix(east - step, east - before, v), mix(before, top, u), outer), 0.94, tint, 40, 4);
+        patch((u, v) => at(mix(west + step, east - step, u), mix(before, step, v), outer), 1.02, tint, 40, 4);
+      }
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new BufferAttribute(new Float32Array(position), 3));
+      geometry.setAttribute('aShade', new BufferAttribute(new Float32Array(shade), 1));
+      geometry.setAttribute('aRadius', new BufferAttribute(new Float32Array(radius), 1));
+      this.cutFaces = new Mesh(geometry, this.material(CUT_VERT, CUT_FRAG, 0, { uTime: this.own.ocean.uTime }));
+      this.add(this.cutFaces, 3);
+      // El núcleo interno (1220 km de radio), entero.
+      this.core = new Mesh(new SphereGeometry(SHELL_RADIUS[3], 48, 32), this.material(CORE_VERT, CORE_FRAG, 0, { uTime: this.own.ocean.uTime }));
+      this.add(this.core, 3);
+    }
+    if (this.cutFaces) this.cutFaces.visible = view === 'interior';
+    if (this.core) this.core.visible = view === 'interior';
+    if (view === 'interior') {
+      // De frente al gajo y un poco desde arriba, con el globo entero a la vista.
+      const { x, y } = this.uniforms.uCutLon.value;
+      this.flyTo({ lon: (x + y) / 2, lat: 24 * DEG });
+    }
+    // Las capas de la atmósfera ocupan bastante más que el globo: se aleja la cámara para que quepan.
+    if (view === 'atmosphere') this.flyTo({ h: this.rig.h * 1.7 });
+    this.invalidate();
+  }
+
   /** Husos horarios teóricos: franjas de 15° sobre el mar, cada una con su diferencia respecto a UTC. */
   setZones(on: boolean) {
     this.own.ocean.uZones.value = on ? 1 : 0;
@@ -977,6 +1063,8 @@ export class MapEngine {
   /** País (y coordenadas) bajo un píxel, teniendo en cuenta los marcadores de países pequeños. */
   pick(x: number, y: number, coarse = false): PointerInfo | null {
     if (!this.settled) return null;
+    // Con el planeta abierto no se señalan países: se señalan sus capas.
+    if (this.planetView === 'interior' && this.rig.morph > 0.999) return { x, y, index: -1, lon: 0, lat: 0, layer: this.layerAt(x, y) };
     const rig = this.rig;
     const geo = rig.screenToGeo(x, y);
     const pxPerRad = 1 / rig.worldPerPixel;
@@ -1003,6 +1091,60 @@ export class MapEngine {
     const lon = geo.lon / DEG;
     const lat = geo.lat / DEG;
     return { x, y, index: this.atlas.locate(lon, lat), lon, lat };
+  }
+
+  /**
+   * Capa del interior bajo un píxel: la primera superficie sólida que encuentra el rayo entre las
+   * del corte escalonado (esferas, meridianos y suelos de cada capa). Null fuera del gajo.
+   */
+  private layerAt(x: number, y: number): PlanetLayer | null {
+    const { o, d } = this.rig.screenRay(x, y);
+    const [west, east] = [this.uniforms.uCutLon.value.x, this.uniforms.uCutLon.value.y];
+    let best = Infinity;
+    let layer: PlanetLayer | null = null;
+    // Prueba un punto del rayo: «ok» recibe su radio, su latitud y lo que se adentra en el gajo por cada meridiano.
+    const tryAt = (t: number, hit: PlanetLayer | null, ok: (r: number, lat: number, w: number, e: number) => boolean) => {
+      if (!(t > 0) || t >= best) return;
+      const [px, py, pz] = [o.x + d.x * t, o.y + d.y * t, o.z + d.z * t];
+      const r = Math.hypot(px, py, pz);
+      const lon = Math.atan2(px, pz);
+      if (!ok(r, Math.asin(Math.max(-1, Math.min(1, py / r))), lon - west, east - lon)) return;
+      best = t;
+      layer = hit;
+    };
+    const quadratic = (a: number, b: number, c: number) => {
+      const disc = b * b - 4 * a * c;
+      if (disc < 0 || Math.abs(a) < 1e-12) return [];
+      const root = Math.sqrt(disc);
+      return [(-b - root) / (2 * a), (-b + root) / (2 * a)];
+    };
+    const EPS = 1e-4;
+    for (let k = 0; k < 4; k++) {
+      const [outer, inner, step] = [SHELL_RADIUS[k], SHELL_RADIUS[k + 1] ?? 0, SHELL_STEP[k] ?? Infinity];
+      // La esfera de la capa: sólida donde su propio corte no la ha quitado. La superficie no es ninguna capa.
+      for (const t of quadratic(1, 2 * o.dot(d), o.lengthSq() - outer * outer)) {
+        tryAt(t, k === 0 ? null : SHELL_LAYERS[k], (_r, lat, w, e) => Math.min(lat, w, e) < step);
+      }
+      if (k === 3) break;
+      const within = (r: number) => r >= inner - EPS && r <= outer + EPS;
+      // Sus dos caras sobre los meridianos…
+      for (const [lon, side] of [[west + step, 1], [east - step, -1]] as const) {
+        const [nx, nz] = [Math.cos(lon), -Math.sin(lon)];
+        const den = d.x * nx + d.z * nz;
+        if (Math.abs(den) < 1e-9) continue;
+        tryAt(-(o.x * nx + o.z * nz) / den, SHELL_LAYERS[k], (r, lat, w, e) => within(r) && lat >= step - EPS && Math.abs((side > 0 ? w : e) - step) < 0.01);
+      }
+      // …y su suelo: el ecuador en la corteza, un cono de latitud constante en las demás.
+      const slope = Math.tan(step) ** 2;
+      const floor =
+        k === 0
+          ? Math.abs(d.y) < 1e-9
+            ? []
+            : [-o.y / d.y]
+          : quadratic(d.y * d.y - slope * (d.x * d.x + d.z * d.z), 2 * (o.y * d.y - slope * (o.x * d.x + o.z * d.z)), o.y * o.y - slope * (o.x * o.x + o.z * o.z));
+      for (const t of floor) tryAt(t, SHELL_LAYERS[k], (r, lat, w, e) => within(r) && lat > -EPS && Math.min(w, e) >= step - EPS);
+    }
+    return layer;
   }
 
   // ───────────────────────── puntero ─────────────────────────
@@ -1232,7 +1374,7 @@ export class MapEngine {
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.showGlint || this.showCurrents) && !this.reducedMotion && !this.seaTimer) {
+    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior') && !this.reducedMotion && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.
@@ -1389,6 +1531,11 @@ export class MapEngine {
     this.own.halo.uAlpha.value = this.palette.haloAlpha * formed;
     this.own.halo.uOutlineAlpha.value = this.palette.outlineAlpha * formed;
     this.halo.visible = formed > 0.003;
+    const whole = morph > 0.999;
+    this.uniforms.uCut.value = this.planetView === 'interior' && whole ? 1 : 0;
+    this.own.halo.uShells.value = this.planetView === 'atmosphere' && whole ? 1 : 0;
+    if (this.cutFaces) this.cutFaces.visible = this.planetView === 'interior' && whole;
+    if (this.core) this.core.visible = this.planetView === 'interior' && whole;
     this.own.shadow.uAlpha.value = this.palette.sheetShadowAlpha * (1 - smoothstep(0, 0.4, morph));
     this.sheetShadow.visible = this.own.shadow.uAlpha.value > 0.003;
     this.own.frame.uAlpha.value = 0.9 * (1 - smoothstep(0, 0.5, morph));

@@ -73,20 +73,23 @@ export function HomePanel() {
     [progress, scope, atlas, config.mode],
   );
   const total = scope.countries.length;
+  const played = Object.keys(progress).length > 0;
   const questions = config.length === 'all' ? total : Math.min(config.length, total);
   const best = bestFor(bests, config);
 
   return (
     <Panel label={t('Elegir partida')}>
-      <p className="label" style={order(0)}>
+      {/* En pantallas anchas este rótulo va en la cabecera, junto a la marca. */}
+      <p className="label wide:hidden" style={order(0)}>
         {t(def.text.count, { n: atlas.quizzable.length })}
       </p>
-      <h1 className="display mt-2.5 text-[clamp(1.6rem,8vw,2.1rem)] wide:text-[clamp(1.9rem,4.4vh,2.3rem)]" style={order(1)}>
+      <h1 className="display mt-2.5 text-[clamp(1.6rem,8vw,2.1rem)] wide:mt-0 wide:text-[clamp(1.5rem,3.4vh,1.85rem)]" style={order(1)}>
         <span className="block whitespace-nowrap">{def.text.headline[0]}</span>
         <em className="block whitespace-nowrap font-semibold text-accent">{def.text.headline[1]}</em>
       </h1>
       {/* en el móvil la hoja es corta: la frase de presentación solo se enseña en pantallas anchas */}
-      <p className="mt-2.5 hidden max-w-[26rem] text-ink-soft wide:block" style={order(2)}>
+      {/* y solo la primera vez: quien ya ha jugado sabe cómo va */}
+      <p className={`mt-2 hidden max-w-[26rem] text-sm text-ink-soft ${played ? '' : 'wide:block'}`} style={order(2)}>
         {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
 

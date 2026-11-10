@@ -209,6 +209,13 @@ export class CameraRig {
     this.clampPose();
   }
 
+  /** Rayo que sale de la cámara por el píxel (x, y): origen y dirección unitaria. */
+  screenRay(x: number, y: number): { o: Vector3; d: Vector3 } {
+    const o = this.camera.position;
+    const d = new Vector3((2 * x) / this.width - 1, 1 - (2 * y) / this.height, 0.5).unproject(this.camera).sub(o).normalize();
+    return { o, d };
+  }
+
   /**
    * Punto del mapa bajo el píxel (x, y), o null si no hay mapa ahí.
    * Solo está definido con la vista asentada (globo o plano), no durante la transición.

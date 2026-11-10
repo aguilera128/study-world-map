@@ -78,6 +78,17 @@ uniform float uNight;     // 0 = sin efecto, 1 = día y noche visibles
 uniform vec3 uNightTint;
 uniform float uNightDim;
 
+// «El planeta por dentro»: se abre un gajo del globo (un cuarto de naranja sobre el ecuador, entre
+// dos meridianos) y lo que cae dentro no se dibuja. «geo» es el punto geográfico, unitario.
+uniform float uCut;    // 1 = gajo abierto
+uniform vec2 uCutLon;  // meridianos que lo limitan, en radianes (oeste, este)
+
+bool inCut(vec3 geo) {
+  if (uCut < 0.5 || geo.y < 0.0) return false;
+  float lon = atan(geo.x, geo.z);
+  return lon > uCutLon.x && lon < uCutLon.y;
+}
+
 vec3 daylight(vec3 color, vec3 geo) {
   float day = smoothstep(-0.14, 0.05, dot(normalize(geo), uSun));
   vec3 night = mix(color * uNightDim, uNightTint, 0.3);
@@ -257,6 +268,7 @@ void main() {
   float parallel = 1.0 - clamp(d.y, 0.0, 1.0);
   float line = max(meridian, parallel);
   vec3 geo = normalize(vGeo);
+  if (inCut(geo)) discard;
   vec4 flow = uFlowAmt + uFlowShow > 0.0 ? current(vLonLat) : vec4(0.0);
   vec3 water = sea(vLonLat);
   // Capa de corrientes: vetas claras que avanzan con el agua, más visibles cuanto más rápida va.
@@ -339,6 +351,7 @@ uniform sampler2D uRelief; // sombreado real del relieve (scripts/build-relief.p
 uniform float uReliefAmt; // 0 = sin relieve
 
 void main() {
+  if (inCut(normalize(vGeo))) discard;
   // En la textura, 206/255 es terreno llano: más oscuro, ladera en sombra; más claro, al sol.
   float relief = texture2D(uRelief, vec2(vLonLat.x / 6.283185307 + 0.5, vLonLat.y / 3.141592654 + 0.5)).r / 0.808;
   vec3 c = vColor * mix(1.0, relief, uReliefAmt);
@@ -364,8 +377,10 @@ uniform float uFlat; // 1 = línea que no es una frontera (un río, el ecuador):
 varying vec3 vColor;
 varying float vDist; // distancia al eje del tramo, en píxeles
 varying float vHalf;
+varying vec3 vGeoLine;
 
 void main() {
+  vGeoLine = geoVector(position.x < 0.5 ? aStart.xy : aEnd);
   // aStart.z < 0: el tramo va por el mar y no sube con ningún país
   float owned = step(0.0, aStart.z);
   vec4 state = stateOf(max(aStart.z, 0.0));
@@ -395,11 +410,19 @@ void main() {
 
 export const LINE_FRAG = glsl`
 uniform float uOpacity;
+uniform float uCut;
+uniform vec2 uCutLon;
 varying vec3 vColor;
 varying float vDist;
 varying float vHalf;
+varying vec3 vGeoLine;
 
 void main() {
+  // dentro del gajo abierto no hay fronteras, ríos ni líneas
+  if (uCut > 0.5 && vGeoLine.y > 0.0) {
+    float lon = atan(vGeoLine.x, vGeoLine.z);
+    if (lon > uCutLon.x && lon < uCutLon.y) discard;
+  }
   float a = clamp(vHalf + 0.5 - abs(vDist), 0.0, 1.0) * uOpacity;
   if (a <= 0.003) discard;
   gl_FragColor = vec4(vColor, a);
@@ -485,9 +508,33 @@ uniform vec2 uOffset;      // desplazamiento del resplandor (sombra proyectada s
 uniform vec3 uOutline;     // contorno fino pegado al globo
 uniform float uOutlineAlpha;
 uniform float uSilhouette; // radio aparente del globo en el plano del cuadrado
+uniform float uShells;     // 1 = capas de la atmósfera en vez del resplandor
 varying vec2 vPos;
 
+// Las cinco capas de la atmósfera como anillos alrededor del globo. La altura está muy exagerada
+// (a escala, las cuatro primeras no llegarían a un píxel) y los grosores solo guardan el orden.
+vec4 shells(float r) {
+  if (r < 1.0) return vec4(0.0);
+  vec3 color;
+  float edge;
+  if (r < 1.07) { color = vec3(0.66, 0.82, 0.94); edge = 1.07; }       // troposfera
+  else if (r < 1.16) { color = vec3(0.36, 0.58, 0.81); edge = 1.16; }  // estratosfera
+  else if (r < 1.27) { color = vec3(0.18, 0.36, 0.61); edge = 1.27; }  // mesosfera
+  else if (r < 1.45) { color = vec3(0.11, 0.21, 0.40); edge = 1.45; }  // termosfera
+  else { color = vec3(0.06, 0.10, 0.20); edge = 1.72; }                // exosfera
+  // una línea clara separa cada capa de la siguiente; la última se desvanece
+  float line = 1.0 - smoothstep(0.0, 2.5 * fwidth(r), edge - r);
+  float alpha = r < 1.45 ? 0.82 : 0.82 * (1.0 - smoothstep(1.45, 1.72, r));
+  return vec4(mix(color, vec3(0.9, 0.95, 1.0), line * 0.6 * step(r, 1.45)), alpha);
+}
+
 void main() {
+  if (uShells > 0.5) {
+    vec4 shell = shells(length(vPos) / uSilhouette);
+    if (shell.a <= 0.003) discard;
+    gl_FragColor = shell;
+    return;
+  }
   float glowR = length(vPos - uOffset) / uSilhouette;
   float glow = uAlpha * (glowR < 1.0 ? 1.0 : exp(-(glowR - 1.0) * uFalloff));
   float r = length(vPos) / uSilhouette;
@@ -496,6 +543,154 @@ void main() {
   float a = ring + glow * (1.0 - ring);
   if (a <= 0.003) discard;
   gl_FragColor = vec4((uOutline * ring + uColor * glow * (1.0 - ring)) / a, a);
+}
+`;
+
+// ───────────────────────── Interior de la Tierra (caras del gajo abierto) ─────────────────────────
+//
+// El corte es escalonado: cada capa se abre un poco menos que la de encima, así que asoma como un
+// escalón con su superficie esférica a la vista. La geometría la construye el motor (setPlanetView).
+// El color sale de la distancia al centro, así que las capas son esferas de verdad y a escala:
+// núcleo interno hasta 1220 km de radio, núcleo externo hasta 3470 y manto hasta la corteza, que se
+// dibuja engrosada porque a escala no se vería. El movimiento es una ilustración.
+
+const NOISE3 = glsl`
+// Ruido de valor en 3D y su suma por octavas: con él se hacen la roca, el metal fundido y las
+// corrientes. Se evalúa sobre el punto del espacio, así que el dibujo casa de una cara a otra.
+float hash(vec3 p) {
+  p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
+  p *= 17.0;
+  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float noise(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(hash(i), hash(i + vec3(1, 0, 0)), f.x), mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
+    mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y),
+    f.z
+  );
+}
+
+float fbm(vec3 p) {
+  float sum = 0.0;
+  float amp = 0.5;
+  for (int i = 0; i < 4; i++) {
+    sum += amp * noise(p);
+    p = p * 2.03 + vec3(1.7, 9.2, 3.1);
+    amp *= 0.5;
+  }
+  return sum;
+}
+`;
+
+export const CUT_VERT = glsl`
+attribute float aShade;
+attribute float aRadius; // > 0 en los escalones: radio con el que se colorea (el de su capa)
+varying vec3 vPos;
+varying float vShade;
+varying float vRadius;
+
+void main() {
+  vPos = position;
+  vShade = aShade;
+  vRadius = aRadius;
+  gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+}
+`;
+
+export const CUT_FRAG = glsl`
+uniform float uTime;
+varying vec3 vPos;
+varying float vShade;
+varying float vRadius;
+
+${NOISE3}
+void main() {
+  float r = vRadius > 0.0 ? vRadius : length(vPos);
+  vec3 dir = vPos / max(r, 1e-4);
+  float t = uTime;
+  vec3 color;
+
+  if (r < 0.1915) {
+    // (queda dentro de la esfera del núcleo interno, que se dibuja aparte y entera)
+    color = vec3(1.0, 0.9, 0.6);
+  } else if (r < 0.5447) {
+    // Núcleo externo: metal líquido. El dibujo se retuerce y gira alrededor del eje, con
+    // filamentos más calientes; es la capa que más se mueve.
+    float depth = (r - 0.1915) / (0.5447 - 0.1915);
+    float spin = t * 0.22;
+    vec3 q = vec3(vPos.x * cos(spin) - vPos.z * sin(spin), vPos.y, vPos.x * sin(spin) + vPos.z * cos(spin));
+    vec3 warp = vec3(fbm(q * 7.0 + vec3(0.0, t * 0.10, 0.0)), fbm(q * 7.0 + vec3(5.2, 1.3, t * 0.08)), fbm(q * 7.0 + vec3(2.8, t * 0.06, 7.1)));
+    float flow = fbm(q * 9.0 + (warp - 0.5) * 2.6);
+    float filament = pow(1.0 - abs(flow - 0.5) * 2.0, 5.0);
+    color = mix(vec3(0.86, 0.34, 0.05), vec3(1.0, 0.70, 0.18), flow);
+    color = mix(color, vec3(1.0, 0.93, 0.62), filament * 0.75);
+    color *= 1.08 - 0.22 * depth;
+  } else if (r < 0.972) {
+    // Manto: roca que fluye muy despacio. Más caliente y clara junto al núcleo, más fría y oscura
+    // bajo la corteza; penachos que suben y vetas incandescentes entre la roca.
+    float depth = (r - 0.5447) / (0.972 - 0.5447);
+    vec3 rise = dir * (t * 0.012);
+    float rock = fbm(vPos * 15.0 - rise * 15.0);
+    float plume = fbm(vec3(dir * 5.0) + vec3(0.0, 0.0, r * 3.0 - t * 0.035));
+    float vein = pow(1.0 - abs(fbm(vPos * 26.0 - rise * 26.0 + vec3(4.0)) - 0.5) * 2.0, 7.0);
+    vec3 hot = vec3(0.98, 0.46, 0.12);
+    vec3 cool = vec3(0.42, 0.11, 0.06);
+    color = mix(hot, cool, clamp(depth * 0.85 + (rock - 0.5) * 0.5, 0.0, 1.0));
+    color = mix(color, hot * 1.1, smoothstep(0.52, 0.78, plume) * (1.0 - depth) * 0.7);
+    color += vec3(1.0, 0.62, 0.20) * vein * 0.55 * (1.0 - 0.6 * depth);
+    color *= 0.86 + 0.28 * rock;
+  } else {
+    // Corteza: roca fría en estratos, engrosada para que se vea.
+    float strata = noise(vec3(r * 520.0, dir.x * 6.0, dir.z * 6.0));
+    float rock = fbm(vPos * 70.0);
+    color = mix(vec3(0.30, 0.24, 0.19), vec3(0.58, 0.47, 0.34), 0.5 * strata + 0.5 * rock);
+  }
+
+  // Los límites entre capas: un resplandor en los dos del núcleo y una línea oscura bajo la corteza.
+  float glow = exp(-abs(r - 0.1915) * 70.0) + 0.7 * exp(-abs(r - 0.5447) * 55.0);
+  color += vec3(1.0, 0.72, 0.30) * glow * 0.45;
+  color *= 0.45 + 0.55 * smoothstep(0.0, 0.005, abs(r - 0.972));
+  // algo más oscuro hacia el borde, para que la cara no parezca plana
+  color *= 1.0 - 0.18 * smoothstep(0.6, 1.0, r);
+  gl_FragColor = vec4(color * vShade, 1.0);
+}
+`;
+
+// El núcleo interno es una bola sólida: no se corta con el gajo, asoma entera en el hueco.
+export const CORE_VERT = glsl`
+varying vec3 vPos;
+varying vec3 vNormal;
+varying vec3 vToEye;
+
+void main() {
+  vPos = position;
+  vec4 mv = viewMatrix * vec4(position, 1.0);
+  vNormal = mat3(viewMatrix) * normalize(position);
+  vToEye = -mv.xyz;
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+export const CORE_FRAG = glsl`
+uniform float uTime;
+varying vec3 vPos;
+varying vec3 vNormal;
+varying vec3 vToEye;
+${NOISE3}
+
+void main() {
+  // Hierro sólido al rojo blanco: grano cristalino fijo, más claro de frente y un latido muy lento.
+  float facing = clamp(dot(normalize(vNormal), normalize(vToEye)), 0.0, 1.0);
+  float grain = fbm(vPos * 46.0);
+  float crystal = abs(noise(vPos * 24.0) - 0.5) * 2.0;
+  vec3 color = mix(vec3(1.0, 0.72, 0.28), vec3(1.0, 0.97, 0.84), 0.25 + 0.75 * facing);
+  color *= 0.88 + 0.18 * grain - 0.10 * crystal;
+  color += vec3(0.10, 0.08, 0.03) * sin(uTime * 0.9);
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 
