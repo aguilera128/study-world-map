@@ -1073,6 +1073,22 @@ export class MapEngine {
     return () => this.tracked.delete(item);
   }
 
+  /**
+   * Un astro, a su distancia real. No se oculta de golpe al pasar tras la Tierra: se recorta con el
+   * contorno del globo, así que asoma o se esconde poco a poco por el borde.
+   */
+  private placeFar(item: Tracked): ScreenPoint {
+    const p = this.rig.projectFar(item.lon, item.lat, 1 + item.alt, this.screen);
+    const disc = this.rig.earthDisc();
+    const [x, y, r] = [disc.x - p.x, disc.y - p.y, disc.r];
+    // Todo menos el círculo de la Tierra, en coordenadas del propio marcador.
+    item.el.style.clipPath = p.ahead
+      ? `path(evenodd, "M-3000 -3000H3000V3000H-3000Z M${(x - r).toFixed(1)} ${y.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(2 * r).toFixed(1)} 0a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(-2 * r).toFixed(1)} 0Z")`
+      : '';
+    p.visible = !!p.ahead;
+    return p;
+  }
+
   private place(item: Tracked) {
     // Lo que flota (el Sol, la Luna) solo se separa en el globo, y nunca más allá de media altura de
     // la cámara: al acercarse baja hasta su punto del mapa en vez de quedar detrás del observador.
@@ -1082,7 +1098,7 @@ export class MapEngine {
     // casi siempre quedan fuera de la pantalla o detrás de la Tierra, como de verdad.
     const p =
       item.alt > 10 && rig.morph > 0.999
-        ? rig.projectFar(item.lon, item.lat, 1 + item.alt, this.screen)
+        ? this.placeFar(item)
         : rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
     // Con el planeta abierto, lo que cae sobre el gajo quitado no tiene dónde apoyarse.
     if (this.planetView === 'interior' && rig.morph > 0.999 && item.alt <= 10 && item.lat > 0) {
@@ -1090,6 +1106,8 @@ export class MapEngine {
       const lon = Math.atan2(Math.sin(item.lon), Math.cos(item.lon));
       if (lon > x && lon < y) p.visible = false;
     }
+    // En el mapa plano los astros vuelven a su punto del mapa, sin recorte.
+    if (item.alt > 10 && rig.morph <= 0.999 && item.el.style.clipPath) item.el.style.clipPath = '';
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
     item.el.toggleAttribute('data-hidden', !p.visible);
   }

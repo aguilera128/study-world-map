@@ -37,6 +37,8 @@ export interface ScreenPoint {
   y: number;
   /** false si el punto queda en la cara oculta del globo. */
   visible: boolean;
+  /** Solo en projectFar: el astro está delante de la cámara (aunque lo tape la Tierra). */
+  ahead?: boolean;
 }
 
 const FOV = 28;
@@ -298,7 +300,27 @@ export class CameraRig {
     out.x = ((m[0] * v.x + m[8] * v.z) / -v.z + 1) * 0.5 * this.width;
     out.y = (1 - (m[5] * v.y + m[9] * v.z) / -v.z) * 0.5 * this.height;
     out.visible = ahead && clear;
+    out.ahead = ahead;
     return out;
+  }
+
+  /** El disco de la Tierra en pantalla (centro y radio en píxeles CSS), con el globo formado. */
+  earthDisc(): { x: number; y: number; r: number } {
+    const cam = this.camera;
+    cam.updateMatrixWorld();
+    const c = cam.position;
+    const d = c.length();
+    const alpha = Math.asin(Math.min(1, 1 / d));
+    // Un punto del contorno: desde la cámara, la dirección al centro girada el ángulo del borde.
+    const e = cam.matrixWorld.elements;
+    const side = new Vector3(e[0], e[1], e[2]);
+    const toCentre = c.clone().multiplyScalar(-1 / d);
+    side.addScaledVector(toCentre, -side.dot(toCentre)).normalize();
+    const reach = d * Math.cos(alpha);
+    const limb = c.clone().addScaledVector(toCentre, Math.cos(alpha) * reach).addScaledVector(side, Math.sin(alpha) * reach).project(cam);
+    const centre = new Vector3(0, 0, 0).project(cam);
+    const [x, y] = [((centre.x + 1) / 2) * this.width, ((1 - centre.y) / 2) * this.height];
+    return { x, y, r: Math.hypot(((limb.x + 1) / 2) * this.width - x, ((1 - limb.y) / 2) * this.height - y) };
   }
 
   /** Pose que encuadra un rectángulo geográfico en la vista indicada (1 = globo, 0 = plano). */
