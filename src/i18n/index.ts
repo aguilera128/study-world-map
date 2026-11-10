@@ -11,11 +11,12 @@ export const LANGS = {
   en: 'English',
   fr: 'Français',
   de: 'Deutsch',
+  it: 'Italiano',
 } as const;
 
 export type Lang = keyof typeof LANGS;
 
-const LOCALES: Record<Lang, string> = { de: 'de-DE', fr: 'fr-FR', es: 'es-ES', en: 'en-GB' };
+const LOCALES: Record<Lang, string> = { it: 'it-IT', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', en: 'en-GB' };
 
 /** Idioma de una dirección: el primer tramo de la ruta, si es uno de los disponibles. */
 export function pathLang(pathname: string): Lang {
