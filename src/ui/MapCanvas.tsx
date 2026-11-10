@@ -298,6 +298,7 @@ export default function MapCanvas() {
             <span className="h-3.5 w-3.5 shrink-0 rounded-[4px] border border-rule-strong" style={{ background: layer.color }} />
             <span>{layer.name}</span>
             <span className="font-normal text-ink-soft">· {layer.detail}</span>
+            {'temp' in layer && <span className="tabular font-normal text-ink-soft">· {String(layer.temp)}</span>}
           </>
         )}
         {country && !layer && (

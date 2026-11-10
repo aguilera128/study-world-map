@@ -5,7 +5,7 @@ import { useSettings } from '../app/store';
 import { t } from '../i18n';
 import { Icon } from './Icon';
 import { LAND_GLOBE, LAND_LIMB } from './planetLand';
-import { ATMOSPHERE, DISCONTINUITIES, EARTH_KM, INTERIOR } from './planetLayers';
+import { ATMOSPHERE, DISCONTINUITIES, EARTH_KM, INTERIOR, MANTLE_ZONES } from './planetLayers';
 
 // «El planeta»: el interior de la Tierra y las capas de la atmósfera, para estudiarlas.
 //
@@ -306,6 +306,11 @@ export function PlanetButton({ labels }: { labels: string }) {
                     <span>
                       <strong className="block">{layer.name}</strong>
                       <span className="text-sm text-ink-soft">{layer.detail}</span>
+                      {'temp' in layer && (
+                        <span className="tabular block text-sm text-ink-soft">
+                          {t('Temperatura')}: {String(layer.temp)}
+                        </span>
+                      )}
                     </span>
                   </li>
                 ))}
@@ -322,6 +327,18 @@ export function PlanetButton({ labels }: { labels: string }) {
                     </div>
                   ))}
                 </dl>
+                <h3 className="label mb-2 mt-4">{t('Dentro del manto')}</h3>
+                <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+                  {MANTLE_ZONES.map((item) => (
+                    <div key={item.id}>
+                      <dt className="text-sm font-bold">{item.name}</dt>
+                      <dd className="text-sm text-ink-soft">{item.detail}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-3 text-sm text-ink-soft">
+                  {t('Las temperaturas son estimaciones a partir de experimentos y modelos: de un estudio a otro cambian varios cientos de grados.')}
+                </p>
                 <p className="mt-3 text-sm text-ink-soft">
                   {t('Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.')}
                 </p>
