@@ -1,5 +1,6 @@
 import type { Atlas } from '../atlas/atlas';
-import type { ContinentKey } from '../atlas/types';
+import type { ClimateKey, ContinentKey } from '../atlas/types';
+import { CLIMATE_KEYS, climateLabel } from './climate';
 import { inputOf, MAX_ATTEMPTS, type GameConfig, type Scope } from './config';
 import { selectionWeight, type Outcome, type Progress } from './progress';
 import { matchesAnswer } from './text';
@@ -121,6 +122,18 @@ function makeOptions(atlas: Atlas, config: GameConfig, pool: number[], country: 
   if (config.mode === 'continent') {
     // Siempre los mismos continentes y en el mismo orden: aquí no hay que buscar la respuesta.
     return (Object.keys(atlas.continents) as ContinentKey[]).map((key) => ({ id: key, label: atlas.continents[key], country: -1 }));
+  }
+  if (config.mode === 'climate') {
+    // El clima más extendido del país y tres que no tiene: cualquiera de los suyos vale como respuesta,
+    // así que entre las opciones no puede haber dos correctas.
+    const own = atlas.countries[country].climate;
+    const others = shuffle(
+      CLIMATE_KEYS.filter((key) => !own.includes(key)),
+      rng,
+    ).slice(0, 3);
+    const picked = new Set([own[0], ...others]);
+    // En el orden de la leyenda (de la zona cálida a la fría), no al azar: ayuda a comparar.
+    return CLIMATE_KEYS.filter((key) => picked.has(key)).map((key) => ({ id: key, label: climateLabel(key), country: -1 }));
   }
   // Tres distractores entre los países más cercanos: son los que de verdad se confunden.
   let candidates = pool.filter((i) => i !== country);
@@ -262,7 +275,9 @@ export function submit(atlas: Atlas, session: Session, answer: Answer, now: numb
       right =
         session.config.mode === 'continent'
           ? target.continents.includes(option.id as ContinentKey)
-          : option.country === question.country;
+          : session.config.mode === 'climate'
+            ? target.climate.includes(option.id as ClimateKey)
+            : option.country === question.country;
       break;
     }
     case 'text': {

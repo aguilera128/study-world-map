@@ -280,6 +280,11 @@ const eu: Record<string, string> = {
   'Continental': 'Kontinentala',
   'Polar': 'Polarra',
   'De alta montaña': 'Goi-mendikoa',
+  'Climas': 'Klimak',
+  'Di qué clima tiene cada país.': 'Esan herrialde bakoitzak zer klima duen.',
+  '¿Qué clima tiene?': 'Zer klima du?',
+  'Clima de {country}: {climate}.': 'Klima ({country}): {climate}.',
+  'Colorear por clima': 'Klimaren arabera koloreztatu',
 };
 
 export default eu;

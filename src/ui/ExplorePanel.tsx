@@ -1,4 +1,4 @@
-import { climateText } from '../app/climate';
+import { climateText } from '../game/climate';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { formatArea, plural } from '../app/format';
 import { useApp, useSettings } from '../app/store';

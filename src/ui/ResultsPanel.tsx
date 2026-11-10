@@ -1,3 +1,4 @@
+import { climateText } from '../game/climate';
 import type { CSSProperties } from 'react';
 import { getEngine } from '../app/engineRef';
 import { formatGrade, formatTime, plural } from '../app/format';
@@ -19,6 +20,7 @@ const TONE: Record<Outcome, string> = { first: 'bg-ok', later: 'bg-help', failed
 function answerFor(country: Country, config: GameConfig, continents: Record<string, string>): string | null {
   if (config.mode === 'capital') return country.capital ?? null;
   if (config.mode === 'continent') return continents[country.continents[0]];
+  if (config.mode === 'climate') return climateText(country.climate, 2);
   return null;
 }
 

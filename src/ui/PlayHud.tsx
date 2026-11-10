@@ -3,7 +3,8 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type R
 import { formatTime } from '../app/format';
 import { useApp } from '../app/store';
 import type { Atlas } from '../atlas/atlas';
-import type { ContinentKey, Country } from '../atlas/types';
+import type { ClimateKey, ContinentKey, Country } from '../atlas/types';
+import { climateText } from '../game/climate';
 import { inputOf, MAX_ATTEMPTS, modeDef, type GameConfig } from '../game/config';
 import type { Outcome } from '../game/progress';
 import { currentQuestion, type Question, type Session } from '../game/session';
@@ -33,6 +34,10 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
       break;
     case 'continent':
       label = t('¿En qué continente está?');
+      main = country.name;
+      break;
+    case 'climate':
+      label = t('¿Qué clima tiene?');
       main = country.name;
       break;
     case 'name':
@@ -80,6 +85,8 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       return (
         <>{tx('{country} está en {where}.', { country: country.name, where: strong(atlas.continents[country.continents[0]]) })}</>
       );
+    case 'climate':
+      return <>{tx('Clima de {country}: {climate}.', { country: country.name, climate: strong(climateText(country.climate)) })}</>;
     case 'capital':
       return (
         <>
@@ -103,7 +110,11 @@ function Options({ session, question, country }: { session: Session; question: Q
   const answer = useApp((s) => s.answer);
   const resolved = session.status === 'resolved';
   const isRight = (id: string, optionCountry: number) =>
-    session.config.mode === 'continent' ? country.continents.includes(id as ContinentKey) : optionCountry === question.country;
+    session.config.mode === 'continent'
+      ? country.continents.includes(id as ContinentKey)
+      : session.config.mode === 'climate'
+        ? country.climate.includes(id as ClimateKey)
+        : optionCountry === question.country;
   return (
     <div className={`grid gap-2 ${question.options.length > 4 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'}`}>
       {question.options.map((option, i) => {

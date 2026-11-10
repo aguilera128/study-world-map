@@ -278,6 +278,11 @@ const zh: Record<string, string> = {
   'Continental': '大陆性气候',
   'Polar': '极地气候',
   'De alta montaña': '高山气候',
+  'Climas': '气候',
+  'Di qué clima tiene cada país.': '说出每个国家的气候类型。',
+  '¿Qué clima tiene?': '它是什么气候？',
+  'Clima de {country}: {climate}.': '{country}的气候：{climate}。',
+  'Colorear por clima': '按气候着色',
 };
 
 export default zh;

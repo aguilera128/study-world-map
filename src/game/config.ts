@@ -3,7 +3,7 @@ import type { Bounds, RegionKey } from '../atlas/types';
 import { t } from '../i18n';
 
 /** Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. */
-export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag';
+export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate';
 
 /**
  * Variante del reto: cómo se responde.
@@ -69,12 +69,18 @@ export const MODES: ModeDef[] = [
     summary: t('Reconoce de qué país es cada bandera.'),
     answers: ['map', 'choice'],
   },
+  {
+    id: 'climate',
+    title: t('Climas'),
+    summary: t('Di qué clima tiene cada país.'),
+    answers: ['choice', 'guided'],
+  },
 ];
 
 export const modeDef = (id: ModeId): ModeDef => MODES.find((m) => m.id === id)!;
 
 export function answerLabel(mode: ModeId, answer: AnswerKind): string {
-  if (mode === 'continent') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
+  if (mode === 'continent' || mode === 'climate') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
   if (mode === 'capital' && answer === 'map') return t('Buscando el país');
   return { map: t('En el mapa'), choice: t('Con opciones'), guided: t('Con el mapa'), type: t('Escribiendo') }[answer];
 }

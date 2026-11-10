@@ -35,6 +35,7 @@ export const LAYERS = {
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
   stars: t('Estrellas'),
+  climate: t('Colorear por clima'),
   dayNight: t('Día y noche'),
   sun: t('Sol'),
   moon: t('Luna'),
@@ -42,7 +43,9 @@ export const LAYERS = {
 };
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
-const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, true])) as Layers;
+/** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
+const OFF_BY_DEFAULT: LayerId[] = ['climate'];
+const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {
   theme: ThemeChoice;
@@ -100,8 +103,10 @@ export const useSettings = create<SettingsState>()(
           theme: saved.theme === 'paper' || saved.theme === 'night' ? saved.theme : 'auto',
           viewMode: saved.viewMode === 'flat' ? 'flat' : 'globe',
           realTime: saved.realTime === true,
-          // Una capa solo está oculta si se guardó así: las nuevas salen visibles.
-          layers: Object.fromEntries(Object.keys(LAYERS).map((id) => [id, saved.layers?.[id as LayerId] !== false])) as Layers,
+          // Cada capa conserva lo guardado; las nuevas toman su valor inicial.
+          layers: Object.fromEntries(
+            Object.keys(LAYERS).map((id) => [id, typeof saved.layers?.[id as LayerId] === 'boolean' ? saved.layers[id as LayerId] : ALL_LAYERS[id as LayerId]]),
+          ) as Layers,
           lists,
           config: sanitizeConfig(saved.config, lists),
         };

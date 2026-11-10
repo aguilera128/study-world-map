@@ -1,5 +1,6 @@
 import type { Atlas } from '../atlas/atlas';
 import { Style } from '../engine/palette';
+import { CLIMATE_KEYS } from '../game/climate';
 import { inputOf, resolveScope, showsTarget, type ModeId, type StudyList } from '../game/config';
 import { mastery, type Outcome, type Progress } from '../game/progress';
 import { currentQuestion, type Session } from '../game/session';
@@ -24,6 +25,8 @@ export interface MapInput {
   progressMode: ModeId;
   draft: StudyList | null;
   progress: Progress;
+  /** Capa de climas: el mapa político se colorea por clima. */
+  byClimate?: boolean;
 }
 
 const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help, failed: Style.fail };
@@ -33,13 +36,18 @@ const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help
  * mapa político para explorar, mapa mudo durante el juego, colores de dominio en el progreso…
  */
 export function computeMapState(input: MapInput): MapState {
-  const { atlas, screen, session, selected, progressMode, draft, progress } = input;
+  const { atlas, screen, session, selected, progressMode, draft, progress, byClimate } = input;
   const n = atlas.countries.length;
   const styles = new Uint8Array(n).fill(Style.muted);
   const active = new Uint8Array(n);
   const markers = new Uint8Array(n);
   let pulse = -1;
-  const political = (i: number) => (atlas.countries[i].id === 'ATA' ? Style.ice : Style.political + atlas.countries[i].color);
+  // Con la capa de climas, el mapa político se pinta por el clima más extendido de cada país.
+  const political = (i: number) => {
+    const country = atlas.countries[i];
+    if (byClimate && country.climate.length) return Style.climate + CLIMATE_KEYS.indexOf(country.climate[0]);
+    return country.id === 'ATA' ? Style.ice : Style.political + country.color;
+  };
 
   switch (screen) {
     case 'home':

@@ -39,6 +39,7 @@ const RETOS: Record<string, ModeId> = {
   nombrar: 'name',
   capitales: 'capital',
   banderas: 'flag',
+  climas: 'climate',
 };
 
 /** Reto y zona pedidos en la dirección, o null si no hay ninguno válido. */

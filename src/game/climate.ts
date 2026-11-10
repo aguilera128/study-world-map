@@ -16,6 +16,11 @@ const LABELS: Record<ClimateKey, string> = {
   montana: t('De alta montaña'),
 };
 
+/** Todos los climas, en el orden de la leyenda: de la zona cálida a la fría. */
+export const CLIMATE_KEYS = Object.keys(LABELS) as ClimateKey[];
+
+export const climateLabel = (key: ClimateKey) => LABELS[key];
+
 /** «Mediterráneo, Oceánico»: los `max` climas más extendidos de un país. */
 export const climateText = (climate: ClimateKey[], max = climate.length) =>
   climate

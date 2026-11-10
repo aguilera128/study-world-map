@@ -44,7 +44,7 @@ export function record(progress: Progress, country: string, mode: ModeId, outcom
   return { ...progress, [country]: { ...progress[country], [mode]: stats } };
 }
 
-const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag'];
+const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag', 'climate'];
 const isCount = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
 
 /**

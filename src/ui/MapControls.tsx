@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, useApp, useSettings, type LayerId } from '../app/store';
+import { PALETTES, Style } from '../engine/palette';
+import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
+import { useTheme } from './hooks';
 import { Icon, type IconName } from './Icon';
 import { t } from '../i18n';
 
@@ -19,7 +22,7 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
   );
 }
 
-const MAP_LAYERS: LayerId[] = ['grid', 'glint', 'stars'];
+const MAP_LAYERS: LayerId[] = ['climate', 'grid', 'glint', 'stars'];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
 /** Botón de capas: qué se dibuja sobre el mapa. */
@@ -29,6 +32,7 @@ function LayersMenu() {
   const layers = useSettings((s) => s.layers);
   const setLayer = useSettings((s) => s.setLayer);
   const realTime = useSettings((s) => s.realTime);
+  const theme = useTheme();
 
   // Se cierra con Escape o al pulsar fuera.
   useEffect(() => {
@@ -70,6 +74,20 @@ function LayersMenu() {
       {open && (
         <div className="float absolute bottom-0 right-12 flex w-52 flex-col gap-3 bg-surface! px-3.5 py-3" role="group" aria-label={t('Capas del mapa')}>
           {group(t('Mapa'), MAP_LAYERS)}
+          {layers.climate && (
+            // Leyenda del mapa de climas, con los mismos colores con los que se pinta.
+            <ul className="grid grid-cols-1 gap-y-1 text-xs font-semibold text-ink-soft" aria-label={t('Clima')}>
+              {CLIMATE_KEYS.map((key, i) => (
+                <li key={key} className="flex items-center gap-1.5">
+                  <span
+                    className="h-3 w-3 shrink-0 rounded-[3px] border border-rule-strong"
+                    style={{ background: PALETTES[theme].styles[Style.climate + i].color }}
+                  />
+                  {climateLabel(key)}
+                </li>
+              ))}
+            </ul>
+          )}
           {realTime ? (
             group(t('Tiempo real'), REAL_TIME_LAYERS)
           ) : (

@@ -279,6 +279,11 @@ const pt: Record<string, string> = {
   'Continental': 'Continental',
   'Polar': 'Polar',
   'De alta montaña': 'De alta montanha',
+  'Climas': 'Climas',
+  'Di qué clima tiene cada país.': 'Diga que clima tem cada país.',
+  '¿Qué clima tiene?': 'Que clima tem?',
+  'Clima de {country}: {climate}.': 'Clima ({country}): {climate}.',
+  'Colorear por clima': 'Colorir por clima',
 };
 
 export default pt;

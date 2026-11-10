@@ -439,3 +439,25 @@ describe('respuestas escritas en otras escrituras', () => {
     expect(matchesAnswer("n'djamena", ['N’Djamena'])).toBe(true);
   });
 });
+
+describe('reto de climas', () => {
+  it('ofrece cuatro climas, uno solo de los cuales es del país, y acepta cualquiera de los suyos', () => {
+    let session = start({ mode: 'climate', answer: 'choice', scope: 'mundo', length: 'all' });
+    for (let i = 0; i < 40; i++) {
+      const q = currentQuestion(session)!;
+      const own = atlas.countries[q.country].climate;
+      expect(q.options).toHaveLength(4);
+      expect(q.options.filter((o) => own.includes(o.id as (typeof own)[number]))).toHaveLength(1);
+      const verdict = submit(atlas, session, { kind: 'option', id: own[0] }, NOW);
+      expect(verdict.verdict).toBe('right');
+      session = advance(verdict.session, NOW);
+    }
+  });
+
+  it('un clima que el país no tiene cuenta como fallo', () => {
+    const session = start({ mode: 'climate', answer: 'choice', scope: 'europa', length: 10 });
+    const q = currentQuestion(session)!;
+    const wrong = q.options.find((o) => !atlas.countries[q.country].climate.includes(o.id as never))!;
+    expect(submit(atlas, session, { kind: 'option', id: wrong.id }, NOW).verdict).toBe('wrong');
+  });
+});

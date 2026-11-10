@@ -20,9 +20,11 @@ export const Style = {
   mastery: 12,
   /** La Antártida en el mapa político: hielo, no un color del reparto. */
   ice: 17,
+  /** Mapa de climas: climate + (0…9), en el orden de CLIMATE_KEYS. */
+  climate: 18,
 } as const;
 
-export const STYLE_COUNT = 18;
+export const STYLE_COUNT = 28;
 
 export interface StyleDef {
   color: string;
@@ -121,6 +123,17 @@ export const PAPER: Palette = {
     s('#c3dc94'),
     s('#62b77c'),
     s('#eef3f4'), // hielo
+    // mapa de climas (los colores habituales de los atlas escolares)
+    s('#4f9a5e'), // ecuatorial
+    s('#a9cf7e'), // tropical
+    s('#f0d77a'), // desértico
+    s('#e8b877'), // semiárido
+    s('#e58a5a'), // mediterráneo
+    s('#7fb9c9'), // oceánico
+    s('#b9b565'), // subtropical húmedo
+    s('#b497c9'), // continental
+    s('#dfeaf2'), // polar
+    s('#a8927d'), // alta montaña
   ],
 };
 
@@ -173,6 +186,17 @@ export const NIGHT: Palette = {
     s('#7c9a58'),
     s('#4fa36c'),
     s('#dbe6ee'), // hielo
+    // mapa de climas (los colores habituales de los atlas escolares)
+    s('#4a9160'), // ecuatorial
+    s('#93bd72'), // tropical
+    s('#d9c268'), // desértico
+    s('#d3a568'), // semiárido
+    s('#d37f58'), // mediterráneo
+    s('#6aa7b8'), // oceánico
+    s('#a6a35c'), // subtropical húmedo
+    s('#a086bb'), // continental
+    s('#cfdde8'), // polar
+    s('#9b8773'), // alta montaña
   ],
 };
 

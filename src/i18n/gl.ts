@@ -279,6 +279,11 @@ const gl: Record<string, string> = {
   'Continental': 'Continental',
   'Polar': 'Polar',
   'De alta montaña': 'De alta montaña',
+  'Climas': 'Climas',
+  'Di qué clima tiene cada país.': 'Di que clima ten cada país.',
+  '¿Qué clima tiene?': 'Que clima ten?',
+  'Clima de {country}: {climate}.': 'Clima de {country}: {climate}.',
+  'Colorear por clima': 'Colorear por clima',
 };
 
 export default gl;
