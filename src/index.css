@@ -492,11 +492,80 @@
   transform: translate(-50%, -50%);
 }
 
-/* Tiempo real: el Sol en su cénit y el punto donde está el usuario. */
+/* Tiempo real: el Sol y la Luna en su cénit y el punto donde está el usuario. */
+.sky-marker {
+  position: relative;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+}
+
+/* Disco con resplandor, sin rayos: tapa poco mapa y se lee sobre cualquier color. */
 .sun-marker {
   display: block;
-  color: #f7b500;
-  filter: drop-shadow(0 0 7px rgb(255 190 0 / 0.85)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, #fff6c9, #ffcd2e 55%, #f5a300);
+  box-shadow:
+    0 0 0 1px rgb(120 70 0 / 0.35),
+    0 0 10px 3px rgb(255 196 0 / 0.75),
+    0 0 26px 10px rgb(255 190 0 / 0.3);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sun-marker {
+    animation: sun-glow 4s ease-in-out infinite;
+  }
+}
+
+@keyframes sun-glow {
+  50% {
+    box-shadow:
+      0 0 0 1px rgb(120 70 0 / 0.35),
+      0 0 13px 4px rgb(255 196 0 / 0.85),
+      0 0 34px 14px rgb(255 190 0 / 0.36);
+  }
+}
+
+.moon-marker {
+  display: block;
+  filter: drop-shadow(0 0 5px rgb(220 228 240 / 0.6)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.35));
+}
+
+.moon-dark {
+  fill: #3b4658;
+}
+
+.moon-lit {
+  fill: #f1efe6;
+}
+
+.moon-edge {
+  fill: none;
+  stroke: rgb(20 30 45 / 0.55);
+  stroke-width: 1;
+}
+
+.sky-tip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  translate: -50% 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.sky-marker:hover .sky-tip {
+  opacity: 1;
 }
 
 .you-marker {

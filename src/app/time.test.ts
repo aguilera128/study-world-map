@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
-import { dayPhase, subsolarPoint, sunAltitude } from '../engine/sun';
+import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude } from '../engine/sun';
 import { clockIn, differenceLabel, offsetLabel, offsetMinutes } from './time';
 
 const atlas = new Atlas(JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas);
@@ -112,5 +112,40 @@ describe('sol', () => {
     expect(dayPhase(sunAltitude(sun, 0, 80))).toBe('day'); // sol de medianoche en el Ártico
     expect(dayPhase(-3)).toBe('twilight');
     expect(dayPhase(-10)).toBe('night');
+  });
+});
+
+describe('luna', () => {
+  const phaseAt = (iso: string) => {
+    const date = new Date(iso);
+    return moonPhase(subsolarPoint(date), sublunarPoint(date));
+  };
+
+  it('en un eclipse de Sol la Luna está delante del Sol', () => {
+    // Eclipse total del 8 de abril de 2024, máximo a las 18:17 UTC.
+    const date = new Date('2024-04-08T18:17:00Z');
+    const sun = subsolarPoint(date);
+    const moon = sublunarPoint(date);
+    expect(Math.abs(moon.lon - sun.lon)).toBeLessThan(1);
+    expect(Math.abs(moon.lat - sun.lat)).toBeLessThan(1);
+    expect(phaseAt('2024-04-08T18:17:00Z').name).toBe('Luna nueva');
+  });
+
+  it('en un eclipse de Luna está llena', () => {
+    // Eclipse total del 14 de marzo de 2025, máximo a las 06:59 UTC.
+    const phase = phaseAt('2025-03-14T06:59:00Z');
+    expect(phase.lit).toBeGreaterThan(0.995);
+    expect(phase.name).toBe('Luna llena');
+  });
+
+  it('los cuartos están a medio iluminar, creciendo o menguando', () => {
+    // Cuarto creciente el 6 de marzo de 2025 (16:32 UTC) y menguante el 22 (11:29 UTC).
+    const first = phaseAt('2025-03-06T16:32:00Z');
+    expect(first.lit).toBeCloseTo(0.5, 1);
+    expect(first.waxing).toBe(true);
+    const last = phaseAt('2025-03-22T11:29:00Z');
+    expect(last.lit).toBeCloseTo(0.5, 1);
+    expect(last.waxing).toBe(false);
+    expect(last.name).toBe('Cuarto menguante');
   });
 });

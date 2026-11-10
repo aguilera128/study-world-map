@@ -28,16 +28,31 @@ import { deviceZone } from './time';
 
 export type ThemeChoice = 'auto' | 'paper' | 'night';
 
+/** Capas del mapa que se pueden ocultar. Las cuatro últimas solo existen en el modo de tiempo real. */
+export const LAYERS = {
+  grid: 'Meridianos y paralelos',
+  glint: 'Reflejo del agua',
+  dayNight: 'Día y noche',
+  sun: 'Sol',
+  moon: 'Luna',
+  you: 'Mi ubicación',
+} as const;
+export type LayerId = keyof typeof LAYERS;
+export type Layers = Record<LayerId, boolean>;
+const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, true])) as Layers;
+
 interface SettingsState {
   theme: ThemeChoice;
   viewMode: ViewMode;
   /** Día y noche en tiempo real sobre el mapa. */
   realTime: boolean;
+  layers: Layers;
   config: GameConfig;
   lists: StudyList[];
   setTheme(theme: ThemeChoice): void;
   setViewMode(mode: ViewMode): void;
   setRealTime(on: boolean): void;
+  setLayer(id: LayerId, on: boolean): void;
   setConfig(patch: Partial<GameConfig>): void;
   saveList(list: StudyList): void;
   deleteList(id: string): void;
@@ -49,11 +64,13 @@ export const useSettings = create<SettingsState>()(
       theme: 'auto',
       viewMode: 'globe',
       realTime: false,
+      layers: ALL_LAYERS,
       config: DEFAULT_CONFIG,
       lists: [SAMPLE_LIST],
       setTheme: (theme) => set({ theme }),
       setViewMode: (viewMode) => set({ viewMode }),
       setRealTime: (realTime) => set({ realTime }),
+      setLayer: (id, on) => set((s) => ({ layers: { ...s.layers, [id]: on } })),
       setConfig: (patch) => set({ config: sanitizeConfig({ ...get().config, ...patch }, get().lists) }),
       saveList: (list) =>
         set((s) => ({
@@ -70,7 +87,7 @@ export const useSettings = create<SettingsState>()(
       // perder lo que ya esté guardado en el navegador.
       name: 'mapamundi:ajustes',
       version: 1,
-      partialize: ({ theme, viewMode, realTime, config, lists }) => ({ theme, viewMode, realTime, config, lists }),
+      partialize: ({ theme, viewMode, realTime, layers, config, lists }) => ({ theme, viewMode, realTime, layers, config, lists }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<SettingsState>;
@@ -80,6 +97,8 @@ export const useSettings = create<SettingsState>()(
           theme: saved.theme === 'paper' || saved.theme === 'night' ? saved.theme : 'auto',
           viewMode: saved.viewMode === 'flat' ? 'flat' : 'globe',
           realTime: saved.realTime === true,
+          // Una capa solo está oculta si se guardó así: las nuevas salen visibles.
+          layers: Object.fromEntries(Object.keys(LAYERS).map((id) => [id, saved.layers?.[id as LayerId] !== false])) as Layers,
           lists,
           config: sanitizeConfig(saved.config, lists),
         };

@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
-import { useApp, useSettings } from '../app/store';
+import { LAYERS, useApp, useSettings, type LayerId } from '../app/store';
 import { resolveScope } from '../game/config';
 import { Icon, type IconName } from './Icon';
 
@@ -14,6 +15,68 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
     >
       <Icon name={icon} size={19} />
     </button>
+  );
+}
+
+const MAP_LAYERS: LayerId[] = ['grid', 'glint'];
+const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
+
+/** Botón de capas: qué se dibuja sobre el mapa. */
+function LayersMenu() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const layers = useSettings((s) => s.layers);
+  const setLayer = useSettings((s) => s.setLayer);
+  const realTime = useSettings((s) => s.realTime);
+
+  // Se cierra con Escape o al pulsar fuera.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onDown = (e: PointerEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+
+  const group = (title: string, ids: LayerId[]) => (
+    <fieldset>
+      <legend className="label mb-1">{title}</legend>
+      {ids.map((id) => (
+        <label key={id} className="flex min-h-8 cursor-pointer items-center gap-2 text-sm">
+          <input type="checkbox" checked={layers[id]} onChange={(e) => setLayer(id, e.target.checked)} className="accent-(--accent)" />
+          {LAYERS[id]}
+        </label>
+      ))}
+    </fieldset>
+  );
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        title="Capas del mapa"
+        aria-label="Capas del mapa"
+        aria-expanded={open}
+        className={`grid h-10 w-10 place-items-center transition-colors hover:text-ink ${open ? 'text-ink' : 'text-ink-soft'}`}
+      >
+        <Icon name="layers" size={19} />
+      </button>
+      {open && (
+        <div className="float absolute bottom-0 right-12 flex w-52 flex-col gap-3 bg-surface! px-3.5 py-3" role="group" aria-label="Capas del mapa">
+          {group('Mapa', MAP_LAYERS)}
+          {realTime ? (
+            group('Tiempo real', REAL_TIME_LAYERS)
+          ) : (
+            <p className="text-xs text-ink-faint">Activa «Tiempo real» para ver el día y la noche, el Sol y la Luna.</p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -45,6 +108,7 @@ export function MapControls() {
         <Control icon="minus" label="Alejar" onClick={() => getEngine()?.zoomBy(1 / 0.6)} />
       </span>
       <Control icon="target" label="Vista general" onClick={reset} />
+      <LayersMenu />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import type { Atlas } from '../atlas/atlas';
 import { buildMesh } from '../atlas/mesh';
 import { MapEngine } from '../engine/MapEngine';
 import { PALETTES } from '../engine/palette';
-import { subsolarPoint } from '../engine/sun';
+import { sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
 import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
@@ -70,6 +70,8 @@ export default function MapCanvas() {
   // Marca el paso del tiempo: mueve el Sol y pone en hora el reloj de la descripción emergente.
   const now = useNow(20_000);
   const sun = useMemo(() => subsolarPoint(now), [now]);
+  const moon = useMemo(() => sublunarPoint(now), [now]);
+  const layers = useSettings((s) => s.layers);
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
 
@@ -126,7 +128,9 @@ export default function MapCanvas() {
   useEffect(() => engine?.setAutoRotate(screen === 'home'), [engine, screen]);
   // Durante la partida la noche se atenúa: los colores de las respuestas tienen que seguir leyéndose.
   const playing = screen === 'play' || screen === 'results';
-  useEffect(() => engine?.setDaylight(realTime ? (playing ? 0.5 : 1) : 0), [engine, realTime, playing]);
+  const daylight = realTime && layers.dayNight;
+  useEffect(() => engine?.setDaylight(daylight ? (playing ? 0.5 : 1) : 0), [engine, daylight, playing]);
+  useEffect(() => engine?.setOcean(layers.grid, layers.glint), [engine, layers.grid, layers.glint]);
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);
 
   const mapState = useMemo(
@@ -179,7 +183,7 @@ export default function MapCanvas() {
       />
 
       {/* Durante la partida no se marca dónde está el jugador: sería una pista. */}
-      {engine && realTime && <RealTimeMarkers engine={engine} sun={sun} showUser={!playing} />}
+      {engine && realTime && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
 
       <div

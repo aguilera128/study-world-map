@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import { useEffect, useRef, type ReactNode } from 'react';
-import { useApp } from '../app/store';
+import { useApp, useSettings, type Layers } from '../app/store';
 import type { MapEngine } from '../engine/MapEngine';
-import { dayPhase, subsolarPoint, sunAltitude, type DayPhase, type SunPosition } from '../engine/sun';
+import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude, type DayPhase, type MoonPhase, type SunPosition } from '../engine/sun';
 import { useMedia, useNow } from './hooks';
 import { Icon } from './Icon';
 
@@ -19,23 +19,60 @@ function Tracked({ engine, lon, lat, children }: { engine: MapEngine; lon: numbe
   );
 }
 
-/** Lo que el modo de tiempo real pinta sobre el mapa: el Sol en su cénit y dónde está el usuario. */
-export function RealTimeMarkers({ engine, sun, showUser }: { engine: MapEngine; sun: SunPosition; showUser: boolean }) {
+/** Disco de la Luna con su fase: la parte iluminada a la derecha si crece (como se ve desde el hemisferio norte). */
+function MoonDisc({ phase, size = 22 }: { phase: MoonPhase; size?: number }) {
+  const r = 9;
+  // El borde de la sombra es media elipse: plana en los cuartos, y se abomba hacia un lado u otro.
+  const rx = (r * Math.abs(1 - 2 * phase.lit)).toFixed(2);
+  const lit = `M0 ${-r}A${r} ${r} 0 0 1 0 ${r}A${rx} ${r} 0 0 ${phase.lit > 0.5 ? 1 : 0} 0 ${-r}z`;
+  return (
+    <svg className="moon-marker" width={size} height={size} viewBox="-11 -11 22 22" aria-hidden="true">
+      <circle r={r} className="moon-dark" />
+      <path d={lit} className="moon-lit" transform={phase.waxing ? undefined : 'scale(-1 1)'} />
+      <circle r={r} className="moon-edge" />
+    </svg>
+  );
+}
+
+const percent = (lit: number) => `${Math.round(lit * 100)} %`;
+
+/** Lo que el modo de tiempo real pinta sobre el mapa: el Sol y la Luna en su cénit y dónde está el usuario. */
+export function RealTimeMarkers({
+  engine,
+  sun,
+  moon,
+  layers,
+  showUser,
+}: {
+  engine: MapEngine;
+  sun: SunPosition;
+  moon: SunPosition;
+  layers: Layers;
+  showUser: boolean;
+}) {
   const location = useApp((s) => s.location);
+  const phase = moonPhase(sun, moon);
   return (
     <>
-      <Tracked engine={engine} lon={sun.lon} lat={sun.lat}>
-        <svg className="sun-marker" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="Aquí el Sol está en lo más alto">
-          <circle cx="15" cy="15" r="6" fill="currentColor" />
-          <path
-            d="M15 2.500v4M15 23.500v4M2.500 15h4M23.500 15h4M6.200 6.200 9 9M21 21l2.800 2.800M6.200 23.800 9 21M21 9l2.800-2.800"
-            stroke="currentColor"
-            strokeWidth="2.200"
-            strokeLinecap="round"
-          />
-        </svg>
-      </Tracked>
-      {location && showUser && (
+      {layers.moon && (
+        <Tracked engine={engine} lon={moon.lon} lat={moon.lat}>
+          <div className="sky-marker" role="img" aria-label={`Aquí la Luna está en lo más alto. ${phase.name}, ${percent(phase.lit)} iluminada`}>
+            <MoonDisc phase={phase} />
+            <span className="sky-tip">
+              Luna en el cénit · {phase.name.toLowerCase().replace('luna ', '')} ({percent(phase.lit)})
+            </span>
+          </div>
+        </Tracked>
+      )}
+      {layers.sun && (
+        <Tracked engine={engine} lon={sun.lon} lat={sun.lat}>
+          <div className="sky-marker" role="img" aria-label="Aquí es mediodía: el Sol está en lo más alto">
+            <span className="sun-marker" />
+            <span className="sky-tip">Sol en el cénit · aquí es mediodía</span>
+          </div>
+        </Tracked>
+      )}
+      {location && showUser && layers.you && (
         <Tracked engine={engine} lon={location.lon} lat={location.lat}>
           <div className="you-marker">
             <span className="you-dot" />
@@ -68,7 +105,10 @@ export function RealTimeStatus() {
   const roomy = useMedia('(min-width: 80rem)');
   if (screen === 'play' && !roomy) return null;
 
-  const phase = location ? dayPhase(sunAltitude(subsolarPoint(now), location.lon, location.lat)) : null;
+  const showMoon = useSettings((s) => s.layers.moon);
+  const sun = subsolarPoint(now);
+  const phase = location ? dayPhase(sunAltitude(sun, location.lon, location.lat)) : null;
+  const moon = moonPhase(sun, sublunarPoint(now));
   const country = location && location.country >= 0 ? atlas.countries[location.country].name : null;
 
   return (
@@ -97,6 +137,12 @@ export function RealTimeStatus() {
           'No sabemos en qué parte del mapa estás.'
         )}
       </p>
+      {showMoon && (
+        <p className="mt-1 flex items-center gap-1.5 text-[0.8125rem] text-ink-soft">
+          <MoonDisc phase={moon} size={15} />
+          {moon.name} · {percent(moon.lit)}
+        </p>
+      )}
       {!location?.exact && (
         <button
           type="button"

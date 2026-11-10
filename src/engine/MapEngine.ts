@@ -174,6 +174,8 @@ export class MapEngine {
   private pulseIndex = -1;
   private pulseStart = 0;
   private nightTarget = 0;
+  private showGrid = true;
+  private showGlint = true;
 
   // ── uniformes compartidos por todos los materiales ──
   private readonly uniforms = {
@@ -401,8 +403,8 @@ export class MapEngine {
     u.uNightDim.value = p.nightDim;
     this.own.ocean.uOcean.value.copy(vec3(p.ocean));
     this.own.ocean.uGrid.value.copy(vec3(p.grid));
-    this.own.ocean.uGridAlpha.value = p.gridAlpha;
-    this.own.ocean.uGlint.value = p.glint;
+    this.own.ocean.uGridAlpha.value = this.showGrid ? p.gridAlpha : 0;
+    this.own.ocean.uGlint.value = this.showGlint ? p.glint : 0;
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
     this.own.halo.uFalloff.value = p.haloFalloff;
@@ -505,6 +507,15 @@ export class MapEngine {
     if (this.pulseIndex >= 0) this.animating.add(this.pulseIndex);
     this.pulseIndex = index;
     this.pulseStart = performance.now();
+    this.invalidate();
+  }
+
+  /** Muestra u oculta la retícula y el reflejo del agua. */
+  setOcean(grid: boolean, glint: boolean) {
+    this.showGrid = grid;
+    this.showGlint = glint;
+    this.own.ocean.uGridAlpha.value = grid ? this.palette.gridAlpha : 0;
+    this.own.ocean.uGlint.value = glint ? this.palette.glint : 0;
     this.invalidate();
   }
 

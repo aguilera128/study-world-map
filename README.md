@@ -32,6 +32,9 @@ el propio dispositivo.
   marca el punto donde el Sol está en lo más alto y sitúa al usuario. La ubicación se deduce de la
   zona horaria del dispositivo, sin pedir nada; si se quiere exacta, hay un botón que usa el permiso
   de ubicación del navegador. En ningún caso se guarda ni se envía a ningún sitio.
+- **Sol, Luna y capas.** En tiempo real también se marca dónde está la Luna en el cénit, con su fase.
+  El botón de capas (junto al zoom) oculta la retícula, el reflejo del agua, el día y la noche, el Sol,
+  la Luna o la ubicación.
 - **Progreso.** El mapa coloreado según lo bien que te sabes cada país, por reto y por zona.
 - Tema claro («papel») y oscuro, diseño adaptado a móvil, y respeto de la preferencia de
   movimiento reducido del sistema.
