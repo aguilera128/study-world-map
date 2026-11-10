@@ -70,12 +70,19 @@ export interface PointerInfo {
   layer?: PlanetLayer | null;
 }
 
-export type PlanetLayer = 'crust' | 'mantle' | 'outer' | 'inner';
-const SHELL_LAYERS: PlanetLayer[] = ['crust', 'mantle', 'outer', 'inner'];
-/** Radio exterior de cada capa (Tierra = 1): superficie, manto (corteza engrosada), núcleo externo e interno. */
-const SHELL_RADIUS = [1, 0.972, 3471 / 6371, 1221 / 6371];
+/** Una capa del interior o, sobre la línea que separa dos, su discontinuidad. */
+export type PlanetLayer = 'crust' | 'upper' | 'lower' | 'outer' | 'inner' | 'moho' | 'd660' | 'gutenberg' | 'lehmann';
+const SHELL_LAYERS: PlanetLayer[] = ['crust', 'upper', 'lower', 'outer', 'inner'];
+/** La discontinuidad que cierra cada capa por debajo. */
+const SHELL_EDGES: PlanetLayer[] = ['moho', 'd660', 'gutenberg', 'lehmann'];
+/**
+ * Radio exterior de cada capa (Tierra = 1): superficie, manto superior (con la corteza engrosada,
+ * que a escala no se vería), manto inferior (a 660 km de profundidad), núcleo externo (2900 km) e
+ * interno (5150 km).
+ */
+const SHELL_RADIUS = [1, 0.972, (6371 - 660) / 6371, 3471 / 6371, 1221 / 6371];
 /** Cuánto se cierra el corte de cada capa respecto al gajo de la superficie, en radianes: los escalones. */
-const SHELL_STEP = [0, 7 * (Math.PI / 180), 14 * (Math.PI / 180)];
+const SHELL_STEP = [0, 5.5 * (Math.PI / 180), 11 * (Math.PI / 180), 16.5 * (Math.PI / 180)];
 
 export interface ViewInfo {
   lon: number;
@@ -709,7 +716,7 @@ export class MapEngine {
       };
       const mix = (a: number, b: number, k: number) => a + (b - a) * k;
       const top = Math.PI / 2;
-      for (let k = 0; k < 3; k++) {
+      for (let k = 0; k < SHELL_STEP.length; k++) {
         const [outer, inner, step] = [SHELL_RADIUS[k], SHELL_RADIUS[k + 1], SHELL_STEP[k]];
         // Las tres caras del corte de esta capa: dos sobre sus meridianos y el suelo.
         patch((u, v) => at(west + step, mix(step, top, u), mix(inner, outer, v)), 0.82);
@@ -729,7 +736,7 @@ export class MapEngine {
       this.cutFaces = new Mesh(geometry, this.material(CUT_VERT, CUT_FRAG, 0, { uTime: this.own.ocean.uTime }));
       this.add(this.cutFaces, 3);
       // El núcleo interno (1220 km de radio), entero.
-      this.core = new Mesh(new SphereGeometry(SHELL_RADIUS[3], 48, 32), this.material(CORE_VERT, CORE_FRAG, 0, { uTime: this.own.ocean.uTime }));
+      this.core = new Mesh(new SphereGeometry(SHELL_RADIUS[4], 48, 32), this.material(CORE_VERT, CORE_FRAG, 0, { uTime: this.own.ocean.uTime }));
       this.add(this.core, 3);
     }
     if (this.cutFaces) this.cutFaces.visible = view === 'interior';
@@ -1154,15 +1161,17 @@ export class MapEngine {
     const [west, east] = [this.uniforms.uCutLon.value.x, this.uniforms.uCutLon.value.y];
     let best = Infinity;
     let layer: PlanetLayer | null = null;
+    let face: PlanetLayer | null = null;
     // Prueba un punto del rayo: «ok» recibe su radio, su latitud y lo que se adentra en el gajo por cada meridiano.
     const tryAt = (t: number, hit: PlanetLayer | null, ok: (r: number, lat: number, w: number, e: number) => boolean) => {
       if (!(t > 0) || t >= best) return;
+      face = null;
       const [px, py, pz] = [o.x + d.x * t, o.y + d.y * t, o.z + d.z * t];
       const r = Math.hypot(px, py, pz);
       const lon = Math.atan2(px, pz);
       if (!ok(r, Math.asin(Math.max(-1, Math.min(1, py / r))), lon - west, east - lon)) return;
       best = t;
-      layer = hit;
+      layer = face ?? hit;
     };
     const quadratic = (a: number, b: number, c: number) => {
       const disc = b * b - 4 * a * c;
@@ -1171,14 +1180,20 @@ export class MapEngine {
       return [(-b - root) / (2 * a), (-b + root) / (2 * a)];
     };
     const EPS = 1e-4;
-    for (let k = 0; k < 4; k++) {
+    const core = SHELL_RADIUS.length - 1;
+    for (let k = 0; k <= core; k++) {
       const [outer, inner, step] = [SHELL_RADIUS[k], SHELL_RADIUS[k + 1] ?? 0, SHELL_STEP[k] ?? Infinity];
       // La esfera de la capa: sólida donde su propio corte no la ha quitado. La superficie no es ninguna capa.
       for (const t of quadratic(1, 2 * o.dot(d), o.lengthSq() - outer * outer)) {
         tryAt(t, k === 0 ? null : SHELL_LAYERS[k], (_r, lat, w, e) => Math.min(lat, w, e) < step);
       }
-      if (k === 3) break;
-      const within = (r: number) => r >= inner - EPS && r <= outer + EPS;
+      if (k === core) break;
+      // En las caras del corte, junto a la línea que separa dos capas se señala la discontinuidad.
+      const within = (r: number) => {
+        if (r < inner - EPS || r > outer + EPS) return false;
+        face = r - inner < 0.012 ? SHELL_EDGES[k] : k > 0 && outer - r < 0.012 ? SHELL_EDGES[k - 1] : null;
+        return true;
+      };
       // Sus dos caras sobre los meridianos…
       for (const [lon, side] of [[west + step, 1], [east - step, -1]] as const) {
         const [nx, nz] = [Math.cos(lon), -Math.sin(lon)];
@@ -1484,7 +1499,7 @@ export class MapEngine {
     }
 
     if (this.autoRotate && this.mode === 'globe' && this.settled && !this.drag) {
-      if (now > this.idleUntil) rig.lon = wrapLon(rig.lon + 0.045 * dt);
+      if (now > this.idleUntil) rig.lon = wrapLon(rig.lon + 0.022 * dt);
       return true;
     }
     return busy;
@@ -1611,10 +1626,16 @@ export class MapEngine {
     this.renderer.render(this.scene, rig.camera);
 
     for (const item of this.tracked) this.place(item);
-    for (const overlay of this.overlays.values()) overlay.labels?.place(rig, ALT.marker);
-    this.guideLabels?.place(rig, ALT.marker);
-    this.graticuleLabels?.place(rig, ALT.marker);
-    this.zoneLabels?.place(rig, ALT.marker);
+    // Con el planeta abierto, nada se rotula sobre el gajo quitado.
+    const cut = this.uniforms.uCutLon.value;
+    const skip =
+      this.planetView === 'interior' && rig.morph > 0.999
+        ? (lon: number, lat: number) => lat > -0.02 && Math.atan2(Math.sin(lon), Math.cos(lon)) > cut.x - 0.02 && Math.atan2(Math.sin(lon), Math.cos(lon)) < cut.y + 0.02
+        : undefined;
+    for (const overlay of this.overlays.values()) overlay.labels?.place(rig, ALT.marker, skip);
+    this.guideLabels?.place(rig, ALT.marker, skip);
+    this.graticuleLabels?.place(rig, ALT.marker, skip);
+    this.zoneLabels?.place(rig, ALT.marker, skip);
     this.emit('view', {
       lon: rig.lon / DEG,
       lat: rig.lat / DEG,

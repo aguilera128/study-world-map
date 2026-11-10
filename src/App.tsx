@@ -89,7 +89,7 @@ export default function App() {
           <>
             <TopBar />
             <MapControls />
-            <AnimatePresence>{realTime && <RealTimeStatus key="real-time" />}</AnimatePresence>
+            <AnimatePresence>{realTime && screen !== 'play' && screen !== 'results' && <RealTimeStatus key="real-time" />}</AnimatePresence>
             <AnimatePresence mode="wait">
               {screen === 'home' && <HomePanel key="home" />}
               {screen === 'explore' && <ExplorePanel key="explore" />}

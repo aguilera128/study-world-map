@@ -13,7 +13,7 @@ import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
 import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
-import { INTERIOR } from './planetLayers';
+import { DISCONTINUITIES, INTERIOR } from './planetLayers';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
 import { lang, LOCALE, t } from '../i18n';
@@ -203,7 +203,9 @@ export default function MapCanvas() {
   useEffect(() => engine?.setAutoRotate(screen === 'home' && !atlas.frame), [engine, screen, atlas]);
   // Durante la partida la noche se atenúa: los colores de las respuestas tienen que seguir leyéndose.
   const playing = screen === 'play' || screen === 'results';
-  const daylight = realTime && layers.dayNight;
+  // Durante la partida el tiempo real se aparta: el día y la noche oscurecerían medio mapa.
+  const live = realTime && !playing;
+  const daylight = live && layers.dayNight;
   useEffect(() => engine?.setDaylight(daylight ? (playing ? 0.5 : 1) : 0), [engine, daylight, playing]);
   useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
   useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
@@ -246,7 +248,7 @@ export default function MapCanvas() {
   }, [engine, mapState]);
 
   const country = hovered >= 0 && TOOLTIP_SCREENS.has(screen) ? atlas.countries[hovered] : null;
-  const layer = layerId ? INTERIOR.find((item) => item.id === layerId) : undefined;
+  const layer = layerId ? [...INTERIOR, ...DISCONTINUITIES].find((item) => item.id === layerId) : undefined;
   const showTip = !!layer || (!!country && (screen !== 'lists' || country.kind === 'country'));
   const localTime = country?.tz ? clockIn(country.tz, now) : null;
 
@@ -282,7 +284,7 @@ export default function MapCanvas() {
       />
 
       {/* Durante la partida no se marca dónde está el jugador: sería una pista. */}
-      {engine && realTime && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
+      {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
 
       <div

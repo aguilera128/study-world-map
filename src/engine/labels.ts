@@ -46,7 +46,8 @@ export class FeatureLabels {
       });
   }
 
-  place(rig: CameraRig, alt: number) {
+  /** `skip` deja fuera los rótulos de una zona (el gajo abierto del planeta). */
+  place(rig: CameraRig, alt: number, skip?: (lon: number, lat: number) => boolean) {
     if (!this.items.length) return;
     // Con el globo entero en pantalla solo lo más destacado; cada vez que se dobla el zoom, un nivel más.
     const maxRank = Math.floor(Math.log2(Math.max(1 / rig.worldPerPixel, 1) / 220)) + 1;
@@ -55,7 +56,7 @@ export class FeatureLabels {
     let count = 0;
     for (const item of this.items) {
       const f = item.feature;
-      let show = f.rank <= maxRank && count < MAX_LABELS;
+      let show = f.rank <= maxRank && count < MAX_LABELS && !skip?.(f.lon * DEG, f.lat * DEG);
       if (show) {
         const p = rig.project(f.lon * DEG, f.lat * DEG, alt, this.point);
         // ponytail: ancho estimado por número de letras; medir cada rótulo saldría más exacto y más caro

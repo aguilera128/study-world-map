@@ -5,7 +5,7 @@ import { useSettings } from '../app/store';
 import { t } from '../i18n';
 import { Icon } from './Icon';
 import { LAND_GLOBE, LAND_LIMB } from './planetLand';
-import { ATMOSPHERE, EARTH_KM, INTERIOR } from './planetLayers';
+import { ATMOSPHERE, DISCONTINUITIES, EARTH_KM, INTERIOR } from './planetLayers';
 
 // «El planeta»: el interior de la Tierra y las capas de la atmósfera, para estudiarlas.
 //
@@ -32,6 +32,7 @@ function Interior() {
   const k = (km: number) => km / EARTH_KM;
   // La corteza mediría menos de un píxel: se dibuja con el 3 % del radio.
   const mantle = 0.97;
+  const lower = k(5711);
   const outer = k(3471);
   const inner = k(1221);
   return (
@@ -91,6 +92,10 @@ function Interior() {
         <path d={WEDGE} fill="#6f573d" />
         <g transform={`scale(${mantle})`}>
           <path d={WEDGE} fill="url(#pi-mantle)" />
+        </g>
+        {/* el manto inferior, algo más encendido; una línea fina marca los 660 km */}
+        <g transform={`scale(${lower})`}>
+          <path d={WEDGE} fill="#ff8a3c" opacity="0.28" stroke="#5a2412" strokeWidth={0.012 / lower} />
         </g>
         <g transform={`scale(${outer})`}>
           <path d={WEDGE} fill="url(#pi-outer)" />
@@ -306,13 +311,29 @@ export function PlanetButton({ labels }: { labels: string }) {
                 ))}
               </ul>
             </div>
+            {tab === 'interior' && (
+              <div className="mt-5 border-t border-rule pt-4">
+                <h3 className="label mb-2">{t('Discontinuidades')}</h3>
+                <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+                  {DISCONTINUITIES.map((item) => (
+                    <div key={item.id}>
+                      <dt className="text-sm font-bold">{item.name}</dt>
+                      <dd className="text-sm text-ink-soft">{item.detail}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-3 text-sm text-ink-soft">
+                  {t('Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.')}
+                </p>
+              </div>
+            )}
             <button type="button" onClick={() => show(tab)} className="btn btn-accent mt-5 min-h-11 px-4 text-sm">
               <Icon name="globe" size={18} />
               {t('Verlo en el globo 3D')}
             </button>
             <p className="mt-4 border-t border-rule pt-3 text-sm text-ink-soft">
               {tab === 'interior'
-                ? t('Los grosores están a escala, salvo la corteza, que se ha engrosado para que se vea. El movimiento del manto y del núcleo es una ilustración.')
+                ? t('Los grosores están a escala, salvo la corteza, que se ha engrosado para que se vea. El movimiento del manto y del núcleo es una ilustración. Las profundidades son las de USGS e IGN; varían un poco de un libro a otro.')
                 : t('Las alturas son aproximadas y el dibujo no está a escala: la troposfera sería una línea finísima.')}
             </p>
           </div>

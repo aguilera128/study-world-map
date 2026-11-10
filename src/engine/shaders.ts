@@ -660,6 +660,9 @@ void main() {
     color = mix(color, hot * 1.1, smoothstep(0.52, 0.78, plume) * (1.0 - depth) * 0.7);
     color += vec3(1.0, 0.62, 0.20) * vein * 0.55 * (1.0 - 0.6 * depth);
     color *= 0.86 + 0.28 * rock;
+    // El manto superior (hasta 660 km), algo más frío y verdoso: es peridotita. Una línea lo separa del inferior.
+    color = mix(color, color * vec3(0.78, 0.9, 0.7), smoothstep(0.8944, 0.8984, r) * 0.55);
+    color *= 0.6 + 0.4 * smoothstep(0.0, 0.004, abs(r - 0.8964));
   } else {
     // Corteza: roca fría en estratos, engrosada para que se vea.
     float strata = noise(vec3(r * 520.0, dir.x * 6.0, dir.z * 6.0));
@@ -769,11 +772,11 @@ void main() {
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
   vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
   // El cielo vacío del mapa no es negro del todo (un grano gris de estrellas muy débiles): se recorta.
-  vec3 glow = max(texture2D(uSky, uv).rgb - 0.2, 0.0) * 1.25;
+  vec3 glow = max(texture2D(uSky, uv).rgb - 0.3, 0.0) * 1.43;
   // Todo lo que se ve es el mapa de la NASA: el brillo de la galaxia, su polvo y el grano de las
   // estrellas débiles. Se atenúa para que quede de fondo y no compita con el globo.
   // Curva con contraste: lo tenue casi desaparece y solo las nubes más densas llegan a verse claras.
-  vec3 color = glow * glow * 0.5 + glow * 0.16;
+  vec3 color = glow * glow * 0.34 + glow * 0.07;
   float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(color / max(a, 0.001), a);

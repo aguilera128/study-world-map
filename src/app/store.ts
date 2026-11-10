@@ -82,7 +82,8 @@ export const useSettings = create<SettingsState>()(
     (set) => ({
       theme: 'auto',
       viewMode: 'globe',
-      realTime: false,
+      // Encendido de entrada: el globo de la portada se ve con su día y su noche de ahora mismo.
+      realTime: true,
       layers: ALL_LAYERS,
       config: DEFAULT_CONFIG,
       configs: {},
@@ -125,7 +126,7 @@ export const useSettings = create<SettingsState>()(
           ...current,
           theme: saved.theme === 'paper' || saved.theme === 'night' ? saved.theme : 'auto',
           viewMode: saved.viewMode === 'flat' ? 'flat' : 'globe',
-          realTime: saved.realTime === true,
+          realTime: saved.realTime !== false,
           // Cada capa conserva lo guardado; las nuevas toman su valor inicial.
           layers: Object.fromEntries(
             Object.keys(LAYERS).map((id) => [id, typeof saved.layers?.[id as LayerId] === 'boolean' ? saved.layers[id as LayerId] : ALL_LAYERS[id as LayerId]]),
