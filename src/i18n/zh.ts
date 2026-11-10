@@ -283,6 +283,16 @@ const zh: Record<string, string> = {
   '¿Qué clima tiene?': '它是什么气候？',
   'Clima de {country}: {climate}.': '{country}的气候：{climate}。',
   'Colorear por clima': '按气候着色',
+  'Reto del día': '每日挑战',
+  'Hecho hoy: {grade} sobre 10': '今天已完成：{grade} / 10',
+  'Las mismas 10 preguntas para todo el mundo': '所有人都是同样的 10 道题',
+  'Días seguidos jugando el reto del día': '连续完成每日挑战的天数',
+  'Racha': '连续',
+  'día': '天',
+  'días': '天',
+  'Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.': 'Study World Map 每日挑战（{mode}）：{grade} / 10。连续：{streak}。',
+  'Resultado compartido': '成绩已分享',
+  'Compartir resultado': '分享成绩',
 };
 
 export default zh;

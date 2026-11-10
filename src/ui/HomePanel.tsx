@@ -2,6 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
 import { bestFor, useApp, useProgress, useSettings } from '../app/store';
 import { answerLabel, modeDef, MODES, resolveScope } from '../game/config';
+import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
 import { Icon } from './Icon';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
@@ -11,6 +12,39 @@ import { t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
+
+/** Reto del día: el mismo para todos; enseña la racha y, si ya se ha jugado hoy, la nota. */
+function DailyCard() {
+  const startDaily = useApp((s) => s.startDaily);
+  const record = useProgress((s) => s.daily);
+  const today = dailyKey(new Date());
+  const mode = modeDef(dailyConfig(today).mode);
+  const streak = currentStreak(record, today);
+  const done = record?.date === today;
+  return (
+    <button
+      type="button"
+      onClick={startDaily}
+      className="tile mt-4 flex w-full max-w-[26rem] items-center gap-3 px-3 py-2.5 text-left"
+      style={order(3)}
+    >
+      <Icon name="flame" size={22} className="shrink-0 text-accent" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-bold leading-tight">
+          {t('Reto del día')} · {mode.title}
+        </span>
+        <span className="block text-xs text-ink-soft">
+          {done ? t('Hecho hoy: {grade} sobre 10', { grade: formatGrade(record.grade) }) : t('Las mismas 10 preguntas para todo el mundo')}
+        </span>
+      </span>
+      {streak > 0 && (
+        <span className="shrink-0 text-xs font-bold text-ink-soft" title={t('Días seguidos jugando el reto del día')}>
+          {t('Racha')}: {plural(streak, t('día'), t('días'))}
+        </span>
+      )}
+    </button>
+  );
+}
 
 /** Pantalla de inicio: se elige el reto, qué países entran y cuántas preguntas. */
 export function HomePanel() {
@@ -50,6 +84,8 @@ export function HomePanel() {
       <p className="mt-2.5 max-w-[26rem] text-ink-soft" style={order(2)}>
         {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
+
+      <DailyCard />
 
       <section className="mt-5" style={order(3)}>
         <Step n={1}>{t('Reto')}</Step>

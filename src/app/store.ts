@@ -16,6 +16,7 @@ import {
 } from '../game/config';
 import { record, sanitizeProgress, type Outcome, type Progress } from '../game/progress';
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
+import { dailyConfig, dailyKey, dailyRng, recordDaily, type DailyRecord } from '../game/daily';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
 import { lang, t } from '../i18n';
@@ -126,6 +127,9 @@ export interface Best {
 interface ProgressState {
   progress: Progress;
   bests: Record<string, Best>;
+  /** Reto del día: último día jugado, su nota y la racha. */
+  daily: DailyRecord | null;
+  recordDailyGame(key: string, grade: number): void;
   recordAnswer(country: string, mode: ModeId, outcome: Outcome): void;
   /** Guarda el resultado de una partida; devuelve true si mejora la marca anterior. */
   recordGame(config: GameConfig, grade: number, ms: number): boolean;
@@ -139,6 +143,8 @@ export const useProgress = create<ProgressState>()(
     (set, get) => ({
       progress: {},
       bests: {},
+      daily: null,
+      recordDailyGame: (key, grade) => set((s) => ({ daily: recordDaily(s.daily, key, grade) })),
       recordAnswer: (country, mode, outcome) => set((s) => ({ progress: record(s.progress, country, mode, outcome, Date.now()) })),
       recordGame: (config, grade, ms) => {
         const key = bestKey(config);
@@ -148,12 +154,12 @@ export const useProgress = create<ProgressState>()(
         // La primera partida de un reto no se anuncia como récord.
         return improved && !!best;
       },
-      reset: () => set({ progress: {}, bests: {} }),
+      reset: () => set({ progress: {}, bests: {}, daily: null }),
     }),
     {
       name: 'mapamundi:progreso',
       version: 1,
-      partialize: ({ progress, bests }) => ({ progress, bests }),
+      partialize: ({ progress, bests, daily }) => ({ progress, bests, daily }),
       // Igual que con los ajustes: lo guardado se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<ProgressState>;
@@ -163,7 +169,12 @@ export const useProgress = create<ProgressState>()(
             if (b && [b.grade, b.ms, b.at].every((v) => typeof v === 'number' && Number.isFinite(v))) bests[key] = b;
           }
         }
-        return { ...current, progress: sanitizeProgress(saved.progress), bests };
+        const d = saved.daily;
+        const daily =
+          d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.date)) && Number.isFinite(d.grade) && Number.isInteger(d.streak) && d.streak > 0
+            ? { date: d.date, grade: d.grade, streak: d.streak }
+            : null;
+        return { ...current, progress: sanitizeProgress(saved.progress), bests, daily };
       },
     },
   ),
@@ -207,6 +218,8 @@ interface AppState {
   /** Partida de repaso de fallos: no cuenta para récords. */
   reviewOnly: boolean;
   newBest: boolean;
+  /** Fecha del reto del día en curso (null en una partida normal). */
+  daily: string | null;
   labels: MapLabel[];
   /** País seleccionado en el explorador (−1 = ninguno). */
   selected: number;
@@ -224,6 +237,8 @@ interface AppState {
   load(): Promise<void>;
   go(screen: Screen): void;
   start(only?: number[]): void;
+  /** Empieza el reto del día: las mismas preguntas para todos, sin tocar la partida elegida. */
+  startDaily(): void;
   answer(answer: Answer): void;
   next(): void;
   select(index: number, fly?: boolean): void;
@@ -296,9 +311,11 @@ export const useApp = create<AppState>()((set, get) => {
   };
 
   const finish = (session: Session) => {
-    const { atlas, reviewOnly } = get();
+    const { atlas, reviewOnly, daily } = get();
     const result = score(session);
-    const newBest = !reviewOnly && useProgress.getState().recordGame(session.config, result.grade, result.ms);
+    // El reto del día lleva su propia cuenta (nota y racha) y no compite con las marcas normales.
+    if (daily) useProgress.getState().recordDailyGame(daily, result.grade);
+    const newBest = !reviewOnly && !daily && useProgress.getState().recordGame(session.config, result.grade, result.ms);
     set({ session, screen: 'results', newBest, labels: [] });
     const engine = getEngine();
     if (atlas && engine) {
@@ -314,6 +331,7 @@ export const useApp = create<AppState>()((set, get) => {
     screen: 'home',
     session: null,
     reviewOnly: false,
+    daily: null,
     newBest: false,
     labels: [],
     selected: -1,
@@ -356,7 +374,20 @@ export const useApp = create<AppState>()((set, get) => {
       const { config, lists } = useSettings.getState();
       const scope = resolveScope(atlas, config.scope, lists);
       const session = createSession(atlas, config, scope, useProgress.getState().progress, Date.now(), { only });
-      set({ session, screen: 'play', reviewOnly: !!only, newBest: false, labels: [], selected: -1 });
+      set({ session, screen: 'play', reviewOnly: !!only, newBest: false, daily: null, labels: [], selected: -1 });
+      frameQuestion(session, true);
+    },
+
+    startDaily: () => {
+      const { atlas } = get();
+      if (!atlas) return;
+      clearTimers();
+      const key = dailyKey(new Date());
+      const config = dailyConfig(key);
+      const scope = resolveScope(atlas, config.scope, []);
+      // Sin el progreso del jugador: así el sorteo solo depende de la fecha y es igual para todos.
+      const session = createSession(atlas, config, scope, {}, Date.now(), { rng: dailyRng(key) });
+      set({ session, screen: 'play', reviewOnly: false, newBest: false, daily: key, labels: [], selected: -1 });
       frameQuestion(session, true);
     },
 

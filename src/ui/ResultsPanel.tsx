@@ -1,8 +1,8 @@
 import { climateText } from '../game/climate';
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { getEngine } from '../app/engineRef';
 import { formatGrade, formatTime, plural } from '../app/format';
-import { useApp } from '../app/store';
+import { useApp, useProgress } from '../app/store';
 import type { Country } from '../atlas/types';
 import { modeDef, type GameConfig } from '../game/config';
 import type { Outcome } from '../game/progress';
@@ -42,6 +42,9 @@ export function ResultsPanel() {
   const session = useLast(useApp((s) => s.session))!;
   const newBest = useApp((s) => s.newBest);
   const reviewOnly = useApp((s) => s.reviewOnly);
+  const daily = useApp((s) => s.daily);
+  const streak = useProgress((s) => s.daily?.streak ?? 0);
+  const [shared, setShared] = useState(false);
   const start = useApp((s) => s.start);
   const go = useApp((s) => s.go);
 
@@ -53,7 +56,7 @@ export function ResultsPanel() {
   return (
     <Panel label={t('Resultado')}>
       <p className="label" style={order(0)}>
-        {reviewOnly ? t('Repaso') : t('Resultado')} · {mode.title} · {session.scopeLabel}
+        {daily ? t('Reto del día') : reviewOnly ? t('Repaso') : t('Resultado')} · {mode.title} · {session.scopeLabel}
       </p>
 
       <div className="mt-5 flex items-center gap-5" style={order(1)}>
@@ -119,6 +122,38 @@ export function ResultsPanel() {
             })}
           </ul>
         </section>
+      )}
+
+      {daily && (
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2" style={order(4)}>
+          <span className="flex items-center gap-1.5 text-sm font-bold">
+            <Icon name="flame" size={17} className="text-accent" />
+            {t('Racha')}: {plural(streak, t('día'), t('días'))}
+          </span>
+          <button
+            type="button"
+            className="btn min-h-10 px-4 text-sm"
+            onClick={async () => {
+              const text = t('Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.', {
+                mode: mode.title,
+                grade: formatGrade(result.grade),
+                streak: plural(streak, t('día'), t('días')),
+              });
+              const url = window.location.origin + window.location.pathname;
+              try {
+                // En el móvil abre el menú de compartir; en el escritorio se copia al portapapeles.
+                if (navigator.share) await navigator.share({ text, url });
+                else await navigator.clipboard.writeText(`${text} ${url}`);
+                setShared(true);
+              } catch {
+                // Compartir cancelado o portapapeles sin permiso: no pasa nada.
+              }
+            }}
+          >
+            <Icon name={shared ? 'check' : 'link'} size={16} />
+            {shared ? t('Resultado compartido') : t('Compartir resultado')}
+          </button>
+        </div>
       )}
 
       <div className="mt-7 flex flex-wrap gap-2.5" style={order(5)}>

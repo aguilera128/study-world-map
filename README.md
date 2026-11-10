@@ -20,6 +20,10 @@ el propio dispositivo.
   | Nombrar | Se señala un país en el mapa | Con opciones o escribiendo |
   | Capitales | País ↔ capital | Con opciones, buscando el país en el mapa o escribiendo |
   | Banderas | Se enseña una bandera | Pulsando el país en el mapa o con opciones |
+- **Reto de climas y mapa de climas.** Un sexto reto, «¿Qué clima tiene?», y una capa que colorea el
+  mapa por clima, con su leyenda.
+- **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
+  servidor), con racha de días seguidos y botón para compartir el resultado.
 - **Listas de estudio.** En «Países → Elegir países» se crea una selección con justo los países que
   entran en un examen (marcándolos en la lista, filtrando por nombre o continente, o tocándolos en
   el mapa). La lista se usa en cualquier reto y se puede **compartir con un enlace**. Viene una de

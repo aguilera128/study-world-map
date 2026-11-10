@@ -284,6 +284,16 @@ const gl: Record<string, string> = {
   '¿Qué clima tiene?': 'Que clima ten?',
   'Clima de {country}: {climate}.': 'Clima de {country}: {climate}.',
   'Colorear por clima': 'Colorear por clima',
+  'Reto del día': 'Reto do día',
+  'Hecho hoy: {grade} sobre 10': 'Feito hoxe: {grade} sobre 10',
+  'Las mismas 10 preguntas para todo el mundo': 'As mesmas 10 preguntas para todo o mundo',
+  'Días seguidos jugando el reto del día': 'Días seguidos xogando o reto do día',
+  'Racha': 'Xeira',
+  'día': 'día',
+  'días': 'días',
+  'Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.': 'Reto do día de Study World Map ({mode}): {grade} sobre 10. Xeira: {streak}.',
+  'Resultado compartido': 'Resultado compartido',
+  'Compartir resultado': 'Compartir o resultado',
 };
 
 export default gl;

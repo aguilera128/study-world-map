@@ -285,6 +285,16 @@ const ca: Record<string, string> = {
   '¿Qué clima tiene?': 'Quin clima té?',
   'Clima de {country}: {climate}.': 'Clima ({country}): {climate}.',
   'Colorear por clima': 'Acolorir per clima',
+  'Reto del día': 'Repte del dia',
+  'Hecho hoy: {grade} sobre 10': 'Fet hui: {grade} sobre 10',
+  'Las mismas 10 preguntas para todo el mundo': 'Les mateixes 10 preguntes per a tothom',
+  'Días seguidos jugando el reto del día': 'Dies seguits jugant al repte del dia',
+  'Racha': 'Ratxa',
+  'día': 'dia',
+  'días': 'dies',
+  'Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.': 'Repte del dia de Study World Map ({mode}): {grade} sobre 10. Ratxa: {streak}.',
+  'Resultado compartido': 'Resultat compartit',
+  'Compartir resultado': 'Compartir el resultat',
 };
 
 export default ca;

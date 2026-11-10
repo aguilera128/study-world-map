@@ -285,6 +285,16 @@ const eu: Record<string, string> = {
   '¿Qué clima tiene?': 'Zer klima du?',
   'Clima de {country}: {climate}.': 'Klima ({country}): {climate}.',
   'Colorear por clima': 'Klimaren arabera koloreztatu',
+  'Reto del día': 'Eguneko erronka',
+  'Hecho hoy: {grade} sobre 10': 'Gaur eginda: 10etik {grade}',
+  'Las mismas 10 preguntas para todo el mundo': '10 galdera berberak guztiontzat',
+  'Días seguidos jugando el reto del día': 'Eguneko erronka jarraian jokatutako egunak',
+  'Racha': 'Bolada',
+  'día': 'egun',
+  'días': 'egun',
+  'Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.': 'Study World Mapen eguneko erronka ({mode}): 10etik {grade}. Bolada: {streak}.',
+  'Resultado compartido': 'Emaitza partekatuta',
+  'Compartir resultado': 'Partekatu emaitza',
 };
 
 export default eu;

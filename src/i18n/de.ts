@@ -284,6 +284,16 @@ const de: Record<string, string> = {
   '¿Qué clima tiene?': 'Welches Klima hat es?',
   'Clima de {country}: {climate}.': 'Klima ({country}): {climate}.',
   'Colorear por clima': 'Nach Klima einfärben',
+  'Reto del día': 'Aufgabe des Tages',
+  'Hecho hoy: {grade} sobre 10': 'Heute geschafft: {grade} von 10',
+  'Las mismas 10 preguntas para todo el mundo': 'Dieselben 10 Fragen für alle',
+  'Días seguidos jugando el reto del día': 'Tage in Folge mit der Aufgabe des Tages',
+  'Racha': 'Serie',
+  'día': 'Tag',
+  'días': 'Tage',
+  'Reto del día de Study World Map ({mode}): {grade} sobre 10. Racha: {streak}.': 'Aufgabe des Tages bei Study World Map ({mode}): {grade} von 10. Serie: {streak}.',
+  'Resultado compartido': 'Ergebnis geteilt',
+  'Compartir resultado': 'Ergebnis teilen',
 };
 
 export default de;
