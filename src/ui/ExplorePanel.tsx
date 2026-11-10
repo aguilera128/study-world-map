@@ -20,11 +20,15 @@ const currencyNames = new Intl.DisplayNames(LOCALE, { type: 'currency', fallback
 const languageNames = new Intl.DisplayNames(LOCALE, { type: 'language', fallback: 'none' });
 const capital = (text: string) => text.charAt(0).toLocaleUpperCase(LOCALE) + text.slice(1);
 
-function Fact({ label, children }: { label: string; children: ReactNode }) {
+/**
+ * Un dato de la ficha: el rótulo encima y el valor debajo. Los cortos van de dos en dos y los
+ * largos (`wide`) ocupan la fila entera: así la ficha cabe sin desplazarse.
+ */
+function Fact({ label, wide, children }: { label: string; wide?: boolean; children: ReactNode }) {
   return (
-    <div className="flex items-baseline gap-3 border-t border-rule py-2.5">
-      <dt className="label w-24 shrink-0">{label}</dt>
-      <dd className="min-w-0 font-semibold">{children}</dd>
+    <div className={`min-w-0 border-t border-rule py-1.5 ${wide ? 'col-span-2' : ''}`}>
+      <dt className="label text-[0.625rem]">{label}</dt>
+      <dd className="min-w-0 text-[0.9375rem] font-semibold leading-snug">{children}</dd>
     </div>
   );
 }
@@ -52,20 +56,20 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
 
   return (
     <div style={{ animation: 'rise 0.4s var(--ease-out-soft) both' }}>
-      <button type="button" onClick={() => select(-1)} className="btn btn-ghost -ml-3 mt-3 min-h-9 px-3 text-sm">
+      <button type="button" onClick={() => select(-1)} className="btn btn-ghost -ml-3 mt-1.5 min-h-9 px-3 text-sm">
         <Icon name="back" size={16} />
         {t('Volver a la lista')}
       </button>
-      <article className="cartouche mt-2 p-5">
+      <article className="cartouche mt-1 p-4">
         <div className="flex items-start gap-4">
           {/* Las provincias no tienen bandera en el atlas: sin hueco vacío. */}
-          {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={54} className="mt-1 rounded-md" />}
+          {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={40} className="mt-0.5 rounded-md" />}
           <div className="min-w-0">
             {kind && <p className="label">{kind}</p>}
-            <h2 className="display text-[1.75rem]">{country.name}</h2>
+            <h2 className="display text-[1.5rem]">{country.name}</h2>
           </div>
         </div>
-        <dl className="mt-4">
+        <dl className="mt-3 grid grid-flow-row-dense grid-cols-2 gap-x-4">
           {country.capital && (
             <Fact label={t('Capital')}>
               {country.capital}
@@ -79,7 +83,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
             <Fact label={t('Región')}>{atlas.regions[country.regions[0]].name}</Fact>
           )}
           {time && offset !== null && (
-            <Fact label={t('Hora local')}>
+            <Fact label={t('Hora local')} wide>
               <span className="tabular">{time}</span>
               <span className="font-normal text-ink-soft">
                 {country.tzMulti && country.capital ? ` ${t('en {place}', { place: country.capital })}` : ''} · {offsetLabel(offset)} ·{' '}
@@ -87,7 +91,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
               </span>
             </Fact>
           )}
-          {country.climate.length > 0 && <Fact label={t('Clima')}>{climateText(country.climate)}</Fact>}
+          {country.climate.length > 0 && <Fact label={t('Clima')} wide>{climateText(country.climate)}</Fact>}
           {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
           {country.population && (
             <Fact label={t('Población')}>
@@ -102,9 +106,9 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
             </Fact>
           )}
           {currencies.length > 0 && <Fact label={t('Moneda')}>{currencies.join(', ')}</Fact>}
-          {languages.length > 0 && <Fact label={t('Idiomas')}>{languages.join(', ')}</Fact>}
+          {languages.length > 0 && <Fact label={t('Idiomas')} wide={languages.length > 2}>{languages.join(', ')}</Fact>}
           {neighbors.length > 0 && (
-            <Fact label={t('Vecinos')}>
+            <Fact label={t('Vecinos')} wide>
               <span className="flex flex-wrap gap-1.5">
                 {neighbors.map((n) => (
                   <button
@@ -121,14 +125,14 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
             </Fact>
           )}
         </dl>
-        {country.note && <p className="mt-3 border-t border-rule pt-3 text-sm text-ink-soft">{country.note}</p>}
+        {country.note && <p className="mt-1 border-t border-rule pt-2 text-sm text-ink-soft">{country.note}</p>}
         {country.wd && (
           // Wikidata redirige al artículo de Wikipedia en el idioma pedido, si existe.
           <a
             href={`https://www.wikidata.org/wiki/Special:GoToLinkedPage/${lang}wiki/${country.wd}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-1.5 border-t border-rule pt-3 text-sm font-semibold text-ink-soft underline decoration-rule-strong underline-offset-4 hover:text-accent"
+            className="mt-1 flex items-center gap-1.5 border-t border-rule pt-2 text-sm font-semibold text-ink-soft underline decoration-rule-strong underline-offset-4 hover:text-accent"
           >
             <Icon name="link" size={15} />
             {t('Más sobre {x} en Wikipedia', { x: country.name })}
@@ -175,16 +179,16 @@ export function ExplorePanel() {
 
   return (
     <Panel label={t('Explorar el mapa')}>
-      {/* En el móvil, con un país abierto, el título se quita: la ficha es lo que importa y la hoja es corta. */}
-      <p className={`label ${selected >= 0 ? 'hidden wide:block' : ''}`} style={order(0)}>
+      {/* Con un país abierto el título se quita: la ficha es lo que importa y así cabe entera. */}
+      <p className={`label ${selected >= 0 ? 'hidden' : ''}`} style={order(0)}>
         {t('Explorar y estudiar')}
       </p>
-      <h1 className={`display mt-2.5 text-[1.75rem] wide:text-[2.1rem] ${selected >= 0 ? 'hidden wide:block' : ''}`} style={order(1)}>
+      <h1 className={`display mt-2.5 text-[1.75rem] wide:text-[2.1rem] ${selected >= 0 ? 'hidden' : ''}`} style={order(1)}>
         {text.study}
       </h1>
 
       <form
-        className="relative mt-4"
+        className={`relative ${selected >= 0 ? '' : 'mt-4'}`}
         style={order(2)}
         onSubmit={(e) => {
           e.preventDefault();
