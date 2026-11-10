@@ -124,6 +124,9 @@ interface Flight {
   duration: number;
 }
 
+/** Tras mover el mapa a mano, el giro automático de la portada espera esto (ms) antes de volver. */
+const IDLE_AFTER_TOUCH = 120_000;
+
 interface Tracked {
   el: HTMLElement;
   lon: number;
@@ -790,7 +793,7 @@ export class MapEngine {
     }
     this.pointers.set(e.pointerId, p);
     this.inertia = null;
-    this.idleUntil = performance.now() + 4000;
+    this.idleUntil = performance.now() + IDLE_AFTER_TOUCH;
     if (this.pointers.size === 1) {
       this.drag = { id: e.pointerId, startX: p.x, startY: p.y, moved: false, coarse: e.pointerType !== 'mouse' };
       this.samples.length = 0;
@@ -810,7 +813,7 @@ export class MapEngine {
       return;
     }
     this.pointers.set(e.pointerId, p);
-    this.idleUntil = performance.now() + 4000;
+    this.idleUntil = performance.now() + IDLE_AFTER_TOUCH;
     // Durante el cambio de vista la cámara va sola.
     const locked = !this.settled;
 
@@ -901,7 +904,7 @@ export class MapEngine {
     this.flight = null;
     this.intent = null;
     this.inertia = null;
-    this.idleUntil = performance.now() + 4000;
+    this.idleUntil = performance.now() + IDLE_AFTER_TOUCH;
     this.rig.zoomBy(Math.exp(clamp(e.deltaY * unit, -240, 240) * speed), p.x, p.y);
     this.invalidate();
     this.hoverAt(p.x, p.y);
@@ -934,7 +937,7 @@ export class MapEngine {
       this.flight = null;
       this.intent = null;
       this.inertia = null;
-      this.idleUntil = performance.now() + 4000;
+      this.idleUntil = performance.now() + IDLE_AFTER_TOUCH;
       this.rig.panBy(...pan[e.key]);
     } else if (e.key === '+' || e.key === '=' || e.key === '-') {
       if (!this.settled) return;

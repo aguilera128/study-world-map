@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useApp, useSettings, type Layers } from '../app/store';
 import type { MapEngine } from '../engine/MapEngine';
 import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude, type DayPhase, type MoonPhase, type SunPosition } from '../engine/sun';
-import { useMedia, useNow } from './hooks';
+import { useMedia, useNow, useWide } from './hooks';
 import { Icon } from './Icon';
 import { LOCALE, t } from '../i18n';
 import { tx } from '../i18n/tx';
@@ -110,9 +110,14 @@ export function RealTimeStatus() {
   const now = useNow(15_000);
   // Durante la partida solo se muestra si cabe al lado del marcador.
   const roomy = useMedia('(min-width: 80rem)');
+  const wide = useWide();
+  const showMoon = useSettings((s) => s.layers.moon);
+  // En el móvil la tarjeta tapa el mapa: se queda en la hora y se despliega al tocarla.
+  const [open, setOpen] = useState(false);
+  const full = wide || open;
+  // (Los hooks, siempre antes de este return: si no, React falla al empezar una partida.)
   if (screen === 'play' && !roomy) return null;
 
-  const showMoon = useSettings((s) => s.layers.moon);
   const sun = subsolarPoint(now);
   const phase = location ? dayPhase(sunAltitude(sun, location.lon, location.lat)) : null;
   const moon = moonPhase(sun, sublunarPoint(now));
@@ -124,15 +129,23 @@ export function RealTimeStatus() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
-      className="float fixed right-3 top-[4.25rem] z-30 w-[13rem] px-3 py-2 text-sm wide:right-8 wide:top-[5.25rem] wide:w-[15.5rem] wide:px-3.5 wide:py-2.5"
+      className={`float fixed right-3 top-[4.25rem] z-30 px-3 py-2 text-sm wide:right-8 wide:top-[5.25rem] wide:w-[15.5rem] wide:px-3.5 wide:py-2.5 ${open ? 'w-[13rem]' : ''}`}
       role="status"
     >
-      <p className="flex items-baseline gap-2">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        disabled={wide}
+        aria-expanded={full}
+        title={wide ? undefined : t(open ? 'Ocultar detalles' : 'Ver detalles')}
+        className="flex w-full items-baseline gap-2 text-left"
+      >
         <Icon name={phase === 'night' ? 'moon' : 'sun'} size={16} className="translate-y-0.5 self-start text-accent" />
         <span className="tabular display text-lg leading-none wide:text-xl">{clock.format(now)}</span>
-        <span className="text-xs text-ink-soft">{day.format(now)}</span>
-      </p>
-      {/* En el móvil la tarjeta tapa parte del mapa: se queda con lo imprescindible. */}
+        {full && <span className="text-xs text-ink-soft">{day.format(now)}</span>}
+      </button>
+      {full && (
+        <>
       <p className="mt-1 text-[0.8125rem] leading-snug text-ink-soft wide:mt-1.5">
         {phase ? (
           <>
@@ -164,6 +177,8 @@ export function RealTimeStatus() {
       )}
       {locating === 'denied' && <p className="mt-1 text-xs text-ink-faint">{t('Sin permiso de ubicación: se usa la zona horaria.')}</p>}
       {locating === 'unavailable' && <p className="mt-1 text-xs text-ink-faint">{t('Este dispositivo no ha podido dar su ubicación.')}</p>}
+        </>
+      )}
     </motion.div>
   );
 }

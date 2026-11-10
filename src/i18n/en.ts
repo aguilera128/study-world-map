@@ -255,6 +255,8 @@ const en: Record<string, string> = {
   'Tu ubicación solo se usa aquí, en tu navegador: no se envía ni se guarda.':
     'Your location is only used here, in your browser: it is not sent or stored.',
   'Buscándote…': 'Finding you…',
+  'Ocultar detalles': 'Hide details',
+  'Ver detalles': 'Show details',
   'Usar mi ubicación exacta': 'Use my exact location',
   'Sin permiso de ubicación: se usa la zona horaria.': 'No location permission: using the time zone.',
   'Este dispositivo no ha podido dar su ubicación.': 'This device could not provide its location.',

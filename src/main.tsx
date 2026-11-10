@@ -16,7 +16,10 @@ createRoot(document.getElementById('root')!).render(<App />);
 
 // Funcionamiento sin conexión (public/sw.js). En desarrollo no: serviría copias viejas de Vite.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', () => void navigator.serviceWorker.register('/sw.js').catch(() => {}));
+  const register = () => void navigator.serviceWorker.register('/sw.js').catch(() => {});
+  // El módulo espera al diccionario y a la aplicación: para entonces «load» puede haber pasado ya.
+  if (document.readyState === 'complete') register();
+  else window.addEventListener('load', register);
 }
 
 // Solo en desarrollo: acceso al estado desde la consola (`__swm.useApp.getState()`).

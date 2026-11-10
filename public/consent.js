@@ -58,6 +58,8 @@
     'background:var(--surface,#faf6ec);color:var(--ink,#1b2a3a);font:0.9rem/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;' +
     'box-shadow:0 18px 40px -18px rgba(0,0,0,.45)}' +
     '.swm-consent p{margin:0 0 12px}' +
+    // En el móvil va arriba: abajo taparía el botón de empezar y los controles de la partida.
+    '@media (max-width:40rem){.swm-consent{top:64px;bottom:auto;padding:12px 14px;font-size:.8125rem}.swm-consent p{margin-bottom:10px}}' +
     '.swm-consent div{display:flex;gap:8px;flex-wrap:wrap}' +
     '.swm-consent button{flex:1 1 9rem;min-height:44px;padding:0 16px;border-radius:10px;font:700 0.9rem system-ui,sans-serif;cursor:pointer;' +
     'border:1px solid var(--ink,#1b2a3a);background:transparent;color:var(--ink,#1b2a3a)}' +
