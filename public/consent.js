@@ -81,6 +81,48 @@
       'Decline',
       'Accept',
     ],
+    fr: [
+      'Acceptez-vous que nous utilisions les cookies de Google Analytics pour compter les visites et voir quelles parties du site sont utilisées ? ' +
+        'Ils servent uniquement à l’améliorer : aucune publicité. Si vous refusez, le site fonctionne de la même façon.',
+      'En savoir plus (en espagnol)',
+      'Refuser',
+      'Accepter',
+    ],
+    de: [
+      'Dürfen wir Cookies von Google Analytics verwenden, um Besuche zu zählen und zu sehen, welche Teile der Seite genutzt werden? ' +
+        'Sie dienen nur der Verbesserung: keine Werbung. Wenn du ablehnst, funktioniert die Seite genauso.',
+      'Mehr erfahren (auf Spanisch)',
+      'Ablehnen',
+      'Akzeptieren',
+    ],
+    it: [
+      'Possiamo usare i cookie di Google Analytics per contare le visite e vedere quali parti del sito vengono usate? ' +
+        'Servono solo a migliorarlo: niente pubblicità. Se rifiuti, il sito funziona lo stesso.',
+      'Maggiori informazioni (in spagnolo)',
+      'Rifiuta',
+      'Accetta',
+    ],
+    pt: [
+      'Podemos usar cookies do Google Analytics para contar as visitas e ver quais partes do site são usadas? ' +
+        'Servem só para melhorá-lo: nada de publicidade. Se você recusar, o site funciona do mesmo jeito.',
+      'Mais informações (em espanhol)',
+      'Recusar',
+      'Aceitar',
+    ],
+    ca: [
+      'Ens deixes usar galetes de Google Analytics per a comptar les visites i veure quines parts del web s’usen? ' +
+        'Només serveixen per a millorar-lo: res de publicitat. Si no acceptes, el web funciona igual.',
+      'Més informació (en castellà)',
+      'Rebutjar',
+      'Acceptar',
+    ],
+    gl: [
+      'Déixasnos usar cookies de Google Analytics para contar as visitas e ver que partes da web se usan? ' +
+        'Só serven para mellorala: nada de publicidade. Se non aceptas, a web funciona igual.',
+      'Máis información (en castelán)',
+      'Rexeitar',
+      'Aceptar',
+    ],
   };
 
   var banner = null;

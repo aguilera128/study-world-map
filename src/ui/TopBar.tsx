@@ -58,7 +58,7 @@ function LangMenu() {
         {lang}
       </button>
       {open && (
-        <nav aria-label={t('Idioma')} className="float absolute right-0 top-full mt-1.5 flex min-w-36 flex-col bg-surface! p-1">
+        <nav aria-label={t('Idioma')} className="float absolute right-0 top-full mt-1.5 flex min-w-36 flex-col whitespace-nowrap bg-surface! p-1">
           {(Object.keys(LANGS) as Lang[]).map((id) => (
             <a
               key={id}
