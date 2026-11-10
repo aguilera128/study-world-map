@@ -4,16 +4,19 @@
 //       los 197 países por continente, con capital y bandera
 //   public/juego/<reto>-de-<zona>/ · public/en/game/<reto>-of-<zona>/
 //       países, capitales y banderas por continente, con enlace al reto ya elegido
+//   public/juego/provincias-de-espana/ · public/en/game/provinces-of-spain/ …
+//       provincias, capitales de provincia y comunidades de cada mapa de scripts/data/mapas/
 //   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs (solo en español)
 //   <idioma>/index.html   la portada de la aplicación traducida (otra entrada de Vite; ver vite.config.ts)
 //   public/sitemap.xml    todas las páginas anteriores menos las legales, con sus equivalentes en otros idiomas
 //
-// Se ejecuta después de build-atlas.mjs (lee public/data/atlas.json y names.<idioma>.json); la
-// salida no se versiona.
+// Se ejecuta después de build-atlas.mjs y build-maps.mjs (lee public/data/atlas.json, los atlas de
+// public/data/<mapa>/ y sus names.<idioma>.json); la salida no se versiona.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { legalPages } from './data/legales.mjs';
 import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
+import { MAPAS } from './data/mapas/index.mjs';
 import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
@@ -175,6 +178,11 @@ const juegoPath = (lang, r, z) => {
 };
 for (const z of ZONAS) for (const r of RETOS) sitemap.push(Object.fromEntries(LANGS.map((lang) => [lang, juegoPath(lang, r, z)])));
 
+// Páginas de los mapas de un país (más abajo): su dirección y el texto con que se enlazan.
+const mapaPath = (mapa, lang, pagina) => `${base(lang)}${PAGINAS[lang].ruta.juego}/${mapa.textos[lang][pagina.id].slug}/`;
+// El título sin la coletilla: «Provincias de España: juego en el mapa» → «Provincias de España».
+const mapaEnlace = (mapa, lang, pagina) => mapa.textos[lang][pagina.id].h1.split(/\s*[:：]/)[0];
+
 let juegos = 0;
 let nPaises = 0;
 
@@ -247,6 +255,9 @@ for (const lang of LANGS) {
     <p>${P.juegos}</p>
     <nav class="toc" aria-label="${P.juegosAria}">
 ${zonas.map((z) => `      <a href="${juegoPath(lang, RETOS[0], z)}">${esc(T.juego.enlace(T.retos.paises, z.name))}</a>`).join('\n')}
+${Object.values(MAPAS)
+  .map((mapa) => `      <a href="${mapaPath(mapa, lang, mapa.paginas[0])}">${esc(mapaEnlace(mapa, lang, mapa.paginas[0]))}</a>`)
+  .join('\n')}
     </nav>
     <p>${P.lista}</p>
     <nav class="toc" aria-label="${P.listaAria}">
@@ -375,6 +386,96 @@ ${content}
   }
 }
 
+// ───────────────────────── mapas de un país: provincias, capitales y comunidades ─────────────────────────
+// Tres páginas por mapa e idioma (textos en scripts/data/mapas/<mapa>.mjs). Cada una enlaza a la
+// aplicación con el mapa y el reto ya elegidos (?mapa=…&reto=…, ver src/app/share.ts).
+
+let paginasMapa = 0;
+for (const mapa of Object.values(MAPAS)) {
+  const sub = JSON.parse(readFileSync(`public/data/${mapa.id}/atlas.json`, 'utf8'));
+  const alternatesOf = (pagina) => Object.fromEntries(LANGS.map((lang) => [lang, mapaPath(mapa, lang, pagina)]));
+  for (const lang of LANGS) if (!mapa.textos[lang]) throw new Error(`build-pages: al mapa «${mapa.id}» le faltan los textos en «${lang}».`);
+  for (const pagina of mapa.paginas) sitemap.push(alternatesOf(pagina));
+
+  for (const lang of LANGS) {
+    const T = PAGINAS[lang];
+    const X = mapa.textos[lang];
+    const names = lang === 'es' ? null : JSON.parse(readFileSync(`public/data/${mapa.id}/names.${lang}.json`, 'utf8'));
+    const byName = (a, b) => a.name.localeCompare(b.name, lang);
+    const regionName = (key) => names?.regions[key] ?? sub.regions[key].name;
+    const provincias = sub.countries
+      .filter((c) => c.kind === 'country')
+      .map((c) => ({ name: names?.countries[c.id].n ?? c.name, capital: names?.countries[c.id].c ?? c.capital, region: c.regions[0] }))
+      .sort(byName);
+    const comunidades = Object.keys(sub.regions)
+      .map((key) => ({ name: regionName(key), list: provincias.filter((p) => p.region === key) }))
+      .sort(byName);
+    const tabla = (head, rows) => `    <div class="table-wrap"><table>
+      <thead><tr>${head.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>
+${rows.map((cells) => `        <tr>${cells.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}
+      </tbody>
+    </table></div>`;
+    // Contenido de cada página y, para los datos estructurados, la lista de lo que enseña.
+    const contenido = {
+      provincias: [
+        tabla([X.columnas.provincia, X.columnas.comunidad], provincias.map((p) => [esc(p.name), esc(regionName(p.region))])),
+        provincias.map((p) => p.name),
+      ],
+      capitales: [
+        tabla([X.columnas.provincia, X.columnas.capital], provincias.map((p) => [esc(p.name), `<strong>${esc(p.capital)}</strong>`])),
+        provincias.map((p) => `${p.capital} (${p.name})`),
+      ],
+      comunidades: [
+        tabla([X.columnas.comunidad, X.columnas.provincias], comunidades.map((c) => [esc(c.name), esc(c.list.map((p) => p.name).join(', '))])),
+        comunidades.map((c) => c.name),
+      ],
+    };
+
+    for (const pagina of mapa.paginas) {
+      const P = X[pagina.id];
+      const [tablaHtml, items] = contenido[pagina.id];
+      const path = mapaPath(mapa, lang, pagina);
+      const otras = mapa.paginas.filter((o) => o !== pagina).map((o) => `<a href="${mapaPath(mapa, lang, o)}">${esc(mapaEnlace(mapa, lang, o))}</a>`);
+      paginasMapa++;
+      write(
+        path,
+        page({
+          lang,
+          path,
+          alternates: alternatesOf(pagina),
+          title: `${P.h1} · Study World Map`,
+          ogTitle: P.h1,
+          description: P.description,
+          jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: P.h1,
+            url: `${SITE}${path}`,
+            inLanguage: lang,
+            isPartOf: { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` },
+            mainEntity: {
+              '@type': 'ItemList',
+              name: mapaEnlace(mapa, lang, pagina),
+              numberOfItems: items.length,
+              itemListElement: items.map((name, i) => ({ '@type': 'ListItem', position: i + 1, name })),
+            },
+          },
+          body: `    <h1>${esc(P.h1)}</h1>
+    <p class="lead">${esc(P.description)}</p>
+    <a class="cta" href="${base(lang)}?mapa=${mapa.id}&amp;reto=${pagina.reto}">${esc(P.cta)}</a>
+    <p>${T.juego.gratis}</p>
+    <h2>${esc(P.h2)}</h2>
+${tablaHtml}
+    <h2>${T.juego.sigue}</h2>
+    <nav class="toc">${otras.join(' ')}</nav>
+    <p><a href="${paisesPath(lang)}">${T.juego.todos}</a></p>`,
+        }),
+      );
+    }
+  }
+}
+
 // ───────────────────────── textos legales y donaciones (solo en español) ─────────────────────────
 
 for (const legal of legalPages()) write(legal.path, page({ ...legal, prose: true }));
@@ -439,7 +540,7 @@ ${urls.join('\n')}
 
 const pending = [...Object.values(TITULAR), DONAR_URL].filter((v) => v.startsWith('PENDIENTE'));
 console.log(
-  `páginas (${LANGS.join(', ')}): países y capitales (${nPaises}) + ${juegos} juegos + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`,
+  `páginas (${LANGS.join(', ')}): países y capitales (${nPaises}) + ${juegos} juegos + ${paginasMapa} de mapas de un país + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`,
 );
 // En Vercel no se publica un aviso legal a medias.
 if (pending.length && process.env.VERCEL) {

@@ -23,6 +23,7 @@ Los 197 países son los 193 miembros de la ONU, Ciudad del Vaticano, Palestina, 
 
 Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/capitales-de-europa/`, `/juego/banderas-de-europa/`…), con la lista y un enlace que abre el reto ya elegido:
 
+- [Provincias de España](https://www.studyworldmap.com/juego/provincias-de-espana/), [capitales de provincia](https://www.studyworldmap.com/juego/capitales-de-provincia-de-espana/) y [comunidades autónomas](https://www.studyworldmap.com/juego/comunidades-autonomas-de-espana/): el segundo mapa, España por provincias
 - [Países de Europa](https://www.studyworldmap.com/juego/paises-de-europa/)
 - [Países de Asia](https://www.studyworldmap.com/juego/paises-de-asia/)
 - [Países de África](https://www.studyworldmap.com/juego/paises-de-africa/)
