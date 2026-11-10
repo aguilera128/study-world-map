@@ -1,5 +1,5 @@
 {
- "_": "Accidentes del temario que Natural Earth no trae. Posición (propiedad P625) y nombres de Wikidata (CC0), consultados el 10-nov-2026; el Cotopaxi, de la base de volcanes de NOAA NCEI. Siguen sin fuente: el río Miño y la meseta de Irán.",
+ "_": "Accidentes del temario que Natural Earth no trae. Posición (propiedad P625) y nombres de Wikidata (CC0), consultados el 10-nov-2026; el Cotopaxi, de la base de volcanes de NOAA NCEI. Del río Miño solo hay un punto (su nacimiento), no el trazado.",
  "features": [
   {
    "kind": "cordillera",
@@ -451,6 +451,46 @@
    "names": {
     "es": "Cotopaxi",
     "en": "Cotopaxi"
+   }
+  },
+  {
+   "kind": "rio",
+   "wd": "Q14554",
+   "at": [
+    -8.87,
+    41.87
+   ],
+   "names": {
+    "zh": "米尼奧河",
+    "eu": "Miño",
+    "gl": "Río Miño",
+    "ca": "Miño",
+    "pt": "Rio Minho",
+    "it": "Miño",
+    "de": "Rio Miño",
+    "fr": "Minho",
+    "en": "Minho River",
+    "es": "Río Miño"
+   }
+  },
+  {
+   "kind": "meseta",
+   "wd": "Q237660",
+   "at": [
+    59.05,
+    36.28
+   ],
+   "names": {
+    "zh": "伊朗高原",
+    "eu": "Irango goi-ordokia",
+    "gl": "Altiplano iraniano",
+    "ca": "Altiplà Iranià",
+    "pt": "Planalto iraniano",
+    "it": "Altopiano iranico",
+    "de": "Iranisches Hochland",
+    "fr": "Plateau Iranien",
+    "en": "Iranian plateau",
+    "es": "Meseta iraní"
    }
   }
  ]

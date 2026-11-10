@@ -42,7 +42,8 @@ Revisión de datos (10-nov, última tanda):
 - Placas con nombre en los diez idiomas (Wikidata).
 
 Pendiente: mapas históricos, proyecciones, flujos migratorios y comerciales (aplazados, ver abajo),
-y la revisión nativa de las traducciones. Siguen sin fuente: el río Miño y la meseta de Irán.
+y la revisión nativa de las traducciones. Del temario ya no falta nada por fuente: el Miño y la
+meseta de Irán entran con su posición de Wikidata (del Miño, solo un punto).
 
 ## Fases
 
