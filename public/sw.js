@@ -16,7 +16,7 @@ const ASSET_REF = /(?:\/assets\/|\.\/)([\w.-]+\.(?:js|css|woff2))/g;
 async function discoverAssets() {
   const seen = new Set();
   let queue = ['/'];
-  for (let depth = 0; depth < 3 && queue.length; depth++) {
+  for (let depth = 0; depth < 5 && queue.length; depth++) {
     const texts = await Promise.all(queue.map((url) => fetch(url).then((r) => (r.ok ? r.text() : ''))));
     queue = [];
     for (const text of texts) {

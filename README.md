@@ -127,7 +127,10 @@ No necesita variables de entorno.
 ```
 scripts/
   build-atlas.mjs        generador del atlas
-  build-pages.mjs        páginas estáticas: países y capitales, juegos por continente, legales, donar y sitemap
+  build-pages.mjs        páginas estáticas por idioma: países y capitales, juegos por continente, portadas, legales y sitemap
+  fetch-capitals.mjs     trae de Wikidata los nombres de las capitales en cada idioma (solo al añadir un idioma)
+  data/nombres.mjs       nombres, alias y notas de países y capitales en los demás idiomas
+  data/paginas.mjs       textos de las páginas estáticas y de la portada en cada idioma
   data/sitio.mjs         datos del titular y enlace de donación (el build de Vercel falla si faltan)
   data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)
@@ -140,6 +143,21 @@ src/
 ```
 
 `src/game/` y `src/atlas/` no dependen de React ni de three.js y están cubiertos por pruebas.
+
+## Idiomas
+
+Español en la raíz e inglés en `/en/` (cada idioma tiene su dirección, sus páginas estáticas y sus
+`hreflang`). Para añadir un idioma:
+
+1. `src/i18n/index.ts`: darlo de alta en `LANGS` y `LOCALES`, y crear `src/i18n/<idioma>.ts` copiando
+   `en.ts`. Los textos del código están en español y son la clave; `pnpm test` avisa de los que falten.
+2. `scripts/data/nombres.mjs`: regiones, continentes, notas y correcciones de nombres. Los países
+   salen de CLDR (el `Intl` de Node) y las capitales de `scripts/data/capitales.wikidata.json`.
+3. `scripts/data/paginas.mjs`: textos de las páginas estáticas y de `index.html`.
+4. `index.html` (un `hreflang` más), `vite.config.ts` (`LANGS`), `public/consent.js` (aviso de cookies)
+   y `.gitignore` (`public/<idioma>/` y `/<idioma>/`).
+
+Los textos legales solo están en español.
 
 ## Decisiones sobre los datos
 

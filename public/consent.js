@@ -63,6 +63,24 @@
     'border:1px solid var(--ink,#1b2a3a);background:transparent;color:var(--ink,#1b2a3a)}' +
     '.swm-consent button:focus-visible{outline:2px solid var(--accent,#d5462a);outline-offset:2px}';
 
+  // Aviso en el idioma de la página (primer tramo de la dirección): [texto, más información, rechazar, aceptar].
+  var TEXTS = {
+    es: [
+      '¿Nos dejas usar cookies de Google Analytics para contar las visitas y ver qué partes de la web se usan? ' +
+        'Solo sirven para mejorarla: nada de publicidad. Si no aceptas, la web funciona igual.',
+      'Más información',
+      'Rechazar',
+      'Aceptar',
+    ],
+    en: [
+      'May we use Google Analytics cookies to count visits and see which parts of the site are used? ' +
+        'They only help us improve it: no advertising. If you decline, the site works just the same.',
+      'More information (in Spanish)',
+      'Decline',
+      'Accept',
+    ],
+  };
+
   var banner = null;
 
   function close() {
@@ -91,12 +109,11 @@
     banner.className = 'swm-consent';
     banner.setAttribute('role', 'dialog');
     banner.setAttribute('aria-label', 'Cookies');
+    var text = TEXTS[location.pathname.split('/')[1]] || TEXTS.es;
     banner.innerHTML =
-      '<p>¿Nos dejas usar cookies de Google Analytics para contar las visitas y ver qué partes de la web se usan? ' +
-      'Solo sirven para mejorarla: nada de publicidad. Si no aceptas, la web funciona igual. ' +
-      '<a href="/cookies/" style="color:inherit">Más información</a>.</p>' +
-      '<div><button type="button" data-v="denied">Rechazar</button>' +
-      '<button type="button" data-v="granted">Aceptar</button></div>';
+      '<p>' + text[0] + ' <a href="/cookies/" style="color:inherit">' + text[1] + '</a>.</p>' +
+      '<div><button type="button" data-v="denied">' + text[2] + '</button>' +
+      '<button type="button" data-v="granted">' + text[3] + '</button></div>';
     banner.addEventListener('click', function (e) {
       var v = e.target && e.target.getAttribute && e.target.getAttribute('data-v');
       if (v) choose(v);

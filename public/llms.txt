@@ -29,6 +29,14 @@ Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/c
 - [Países de América](https://www.studyworldmap.com/juego/paises-de-america/)
 - [Países de Oceanía](https://www.studyworldmap.com/juego/paises-de-oceania/)
 
+## English
+
+The app and its pages are also available in English, with country and capital names in English:
+
+- [Interactive map and games](https://www.studyworldmap.com/en/): the app.
+- [Countries of the world and their capitals](https://www.studyworldmap.com/en/countries-and-capitals/): full list of the 197 countries by continent, with capital, flag and area, and frequently asked questions.
+- Games by continent, three pages each (countries, capitals and flags): [Europe](https://www.studyworldmap.com/en/game/countries-of-europe/), [Asia](https://www.studyworldmap.com/en/game/countries-of-asia/), [Africa](https://www.studyworldmap.com/en/game/countries-of-africa/), [the Americas](https://www.studyworldmap.com/en/game/countries-of-the-americas/), [Oceania](https://www.studyworldmap.com/en/game/countries-of-oceania/).
+
 ## Fuentes de los datos
 
 - Cartografía: Natural Earth (dominio público).

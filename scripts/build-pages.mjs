@@ -1,102 +1,37 @@
 // Genera las páginas HTML estáticas del sitio (sin JavaScript, legibles por buscadores y asistentes
-// de IA, que no ven nada de la aplicación):
-//   public/paises-y-capitales/   los 197 países por continente, con capital y bandera (desde el atlas)
-//   public/juego/<reto>-de-<zona>/   países, capitales y banderas por continente, con enlace al reto
-//   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs
-//   public/sitemap.xml   todas las páginas anteriores menos las legales
+// de IA, que no ven nada de la aplicación), en cada idioma de scripts/data/paginas.mjs:
+//   public/paises-y-capitales/ · public/en/countries-and-capitals/
+//       los 197 países por continente, con capital y bandera
+//   public/juego/<reto>-de-<zona>/ · public/en/game/<reto>-of-<zona>/
+//       países, capitales y banderas por continente, con enlace al reto ya elegido
+//   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs (solo en español)
+//   <idioma>/index.html   la portada de la aplicación traducida (otra entrada de Vite; ver vite.config.ts)
+//   public/sitemap.xml    todas las páginas anteriores menos las legales, con sus equivalentes en otros idiomas
 //
-// Se ejecuta después de build-atlas.mjs (lee public/data/atlas.json); la salida no se versiona.
+// Se ejecuta después de build-atlas.mjs (lee public/data/atlas.json y names.<idioma>.json); la
+// salida no se versiona.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { legalPages } from './data/legales.mjs';
+import { INDEX, PAGINAS } from './data/paginas.mjs';
 import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
+const LANGS = Object.keys(PAGINAS);
+const base = (lang) => (lang === 'es' ? '/' : `/${lang}/`);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const km2 = (n) => (n ? `${Math.round(n).toLocaleString('es-ES')} km²` : '—');
 
-const countries = atlas.countries.filter((c) => c.kind === 'country');
-const ORDER = ['europa', 'europa-asia', 'asia', 'africa', 'america', 'oceania'];
-const groups = ORDER.map((key) => ({
-  key,
-  name: atlas.continents[key],
-  list: countries
-    .filter((c) => c.continents[0] === key)
-    .sort((a, b) => a.name.localeCompare(b.name, 'es')),
-})).filter((g) => g.list.length);
-
-if (groups.reduce((n, g) => n + g.list.length, 0) !== countries.length) {
-  throw new Error('build-pages: hay países sin continente principal conocido.');
+/** Los países del atlas con los nombres de un idioma (lo mismo que hace src/atlas/atlas.ts al cargar). */
+function worldIn(lang) {
+  if (lang === 'es') return { all: atlas.countries, continents: atlas.continents };
+  const names = JSON.parse(readFileSync(`public/data/names.${lang}.json`, 'utf8'));
+  const all = atlas.countries.map((c) => {
+    const own = names.countries[c.id];
+    return { ...c, name: own.n, capital: own.c, capitalNote: own.cn };
+  });
+  return { all, continents: names.continents };
 }
-
-// Preguntas frecuentes: todo lo que dicen es comprobable en la aplicación (ver README).
-const FAQ = [
-  [
-    '¿Cuántos países hay en el mundo?',
-    'Study World Map incluye 197 países: los 193 miembros de la ONU, sus dos Estados observadores (Ciudad del Vaticano y Palestina), Taiwán y Kosovo. Otros territorios, como Groenlandia o Puerto Rico, aparecen en el mapa pero no se preguntan.',
-  ],
-  [
-    '¿Qué países tienen más de una capital?',
-    'Algunos reparten funciones entre ciudades: Bolivia (Sucre es la capital constitucional y La Paz la sede del Gobierno), Sudáfrica, Países Bajos o Sri Lanka. En el juego se acepta cualquiera de ellas al escribir la respuesta.',
-  ],
-  [
-    '¿Cómo aprender los países y capitales del mundo?',
-    'Practicando con repaso espaciado: Study World Map pregunta más a menudo los países que fallas, repite los fallos tres preguntas después y, entre partidas, sigue cada país con un sistema de cajas de Leitner hasta que lo dominas.',
-  ],
-  [
-    '¿Study World Map es gratis? ¿Necesita registro?',
-    'Es gratis, sin anuncios y sin cuentas. El progreso se guarda en tu propio dispositivo y la aplicación funciona sin conexión después de la primera visita.',
-  ],
-  [
-    '¿Qué juegos de geografía tiene?',
-    'Cinco retos: localizar países en el mapa, decir en qué continente están, nombrar el país señalado, capitales y banderas. Se puede jugar con todo el mundo, por continentes o con una lista de países propia que se comparte con un enlace.',
-  ],
-];
-
-const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: 'Países del mundo y sus capitales',
-    url: `${SITE}/paises-y-capitales/`,
-    inLanguage: 'es',
-    isPartOf: { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` },
-    mainEntity: {
-      '@type': 'ItemList',
-      name: 'Países del mundo y sus capitales',
-      numberOfItems: countries.length,
-      itemListElement: groups
-        .flatMap((g) => g.list)
-        .map((c, i) => ({
-          '@type': 'ListItem',
-          position: i + 1,
-          item: { '@type': 'Country', name: c.name, ...(c.capital && { containsPlace: { '@type': 'City', name: c.capital } }) },
-        })),
-    },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
-  },
-];
-
-const row = (c) => `        <tr>
-          <td><img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" /> ${esc(c.name)}</td>
-          <td>${esc(c.capital ?? '—')}${c.capitalNote ? ` <small>(${esc(c.capitalNote)})</small>` : ''}</td>
-          <td class="num">${km2(c.areaKm2)}</td>
-        </tr>`;
-
-const section = (g) => `    <section id="${g.key}">
-      <h2>${esc(g.name)} <span class="count">${g.list.length} países</span></h2>
-      <div class="table-wrap"><table>
-        <thead><tr><th scope="col">País</th><th scope="col">Capital</th><th scope="col" class="num">Superficie</th></tr></thead>
-        <tbody>
-${g.list.map(row).join('\n')}
-        </tbody>
-      </table></div>
-    </section>`;
 
 // ───────────────────────── plantilla común ─────────────────────────
 
@@ -135,47 +70,62 @@ const CSS = `
     .flags img { display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 1px var(--rule); margin-bottom:.4rem; }
     @media (max-width:36rem) { .num { display:none; } }`;
 
-const FOOTER = `    <footer>
-      Cartografía: Natural Earth · Banderas: flag-icons (MIT) · Datos de países: mledoze/countries (ODbL).
-      <nav aria-label="Información">
-        <a href="/">Mapa interactivo</a>
-        <a href="/paises-y-capitales/">Países y capitales</a>
-        <a href="/donar/">Donar</a>
-        <a href="/aviso-legal/">Aviso legal</a>
-        <a href="/privacidad/">Privacidad</a>
-        <a href="/cookies/">Cookies</a>
-        <a href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">Configurar cookies</a>
-      </nav>
-    </footer>`;
+/** `<link rel="alternate">` de una página: la misma en cada idioma (`alternates` = { es: '/…', en: '/en/…' }). */
+const hreflang = (alternates) =>
+  Object.keys(alternates).length > 1
+    ? [...Object.entries(alternates), ['x-default', alternates.es]]
+        .map(([lang, path]) => `\n  <link rel="alternate" hreflang="${lang}" href="${SITE}${path}" />`)
+        .join('')
+    : '';
 
-/** Página completa: cabecera, marca, contenido y pie comunes. */
-function page({ path, title, description, ogTitle = title, ogType = 'website', jsonLd, prose = false, body }) {
+/**
+ * Página completa: cabecera, marca, contenido y pie comunes.
+ * `alternates` son las direcciones de esta misma página en cada idioma en que existe.
+ */
+function page({ lang = 'es', path, alternates = { [lang]: path }, title, description, ogTitle = title, ogType = 'website', jsonLd, prose = false, body }) {
+  const T = PAGINAS[lang];
+  const others = Object.entries(alternates).filter(([l]) => l !== lang);
   return `<!doctype html>
-<html lang="es">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="canonical" href="${SITE}${path}" />
+  <link rel="canonical" href="${SITE}${path}" />${hreflang(alternates)}
   <meta property="og:type" content="${ogType}" />
   <meta property="og:title" content="${esc(ogTitle)}" />
   <meta property="og:description" content="${esc(description)}" />
   <meta property="og:url" content="${SITE}${path}" />
   <meta property="og:image" content="${SITE}/og.jpg" />
-  <meta property="og:locale" content="es_ES" />
+  <meta property="og:locale" content="${T.locale}" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="theme-color" content="#f1eadb" />
-  <script src="/consent.js" defer></script>${jsonLd ? `\n  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\u003c')}</script>` : ''}
+  <script src="/consent.js" defer></script>${jsonLd ? `\n  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
   <style>${CSS}
   </style>
 </head>
 <body>
   <main${prose ? ' class="prose"' : ''}>
-    <a class="brand" href="/"><img src="/favicon.svg" alt="" width="28" height="28" /> Study World Map</a>
+    <a class="brand" href="${base(lang)}"><img src="/favicon.svg" alt="" width="28" height="28" /> Study World Map</a>
 ${body}
-${FOOTER}
+    <footer>
+      ${T.pie.creditos}
+      <nav aria-label="${T.pie.info}">
+        <a href="${base(lang)}">${T.pie.mapa}</a>
+        <a href="${base(lang)}${T.ruta.paises}/">${T.pie.paises}</a>
+        <a href="/donar/">${T.pie.donar}</a>
+        <a href="/aviso-legal/">${T.pie.avisoLegal}</a>
+        <a href="/privacidad/">${T.pie.privacidad}</a>
+        <a href="/cookies/">${T.pie.cookies}</a>
+        <a href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">${T.pie.configurar}</a>
+      </nav>${
+        others.length
+          ? `\n      <nav aria-label="${T.pie.idiomas}">\n${others.map(([l, p]) => `        <a href="${p}" hreflang="${l}" lang="${l}">${PAGINAS[l].nombre}</a>`).join('\n')}\n      </nav>`
+          : ''
+      }
+    </footer>
   </main>
 </body>
 </html>
@@ -188,68 +138,180 @@ function write(path, html) {
   writeFileSync(`${dir}index.html`, html);
 }
 
-// ───────────────────────── juegos por continente (/juego/…) ─────────────────────────
+/** Todas las páginas con equivalente en otros idiomas, para el sitemap: [{ es: '/…', en: '/en/…' }, …]. */
+const sitemap = [Object.fromEntries(LANGS.map((lang) => [lang, base(lang)]))];
+
+// ───────────────────────── países y capitales ─────────────────────────
+
+const ORDER = ['europa', 'europa-asia', 'asia', 'africa', 'america', 'oceania'];
+const paisesPath = (lang) => `${base(lang)}${PAGINAS[lang].ruta.paises}/`;
+const paisesAlternates = Object.fromEntries(LANGS.map((lang) => [lang, paisesPath(lang)]));
+sitemap.push(paisesAlternates);
+
+// ───────────────────────── juegos por continente ─────────────────────────
 // Cada página enlaza a la aplicación con el reto y la zona ya elegidos (?reto=…&zona=…, ver
 // src/app/share.ts). Los países de cada zona salen igual que en el juego: por región del atlas.
 
 const ZONAS = [
-  { id: 'europa', name: 'Europa', keys: ['europa'] },
-  { id: 'asia', name: 'Asia', keys: ['asia'] },
-  { id: 'africa', name: 'África', keys: ['africa'] },
-  { id: 'america', name: 'América', keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'] },
-  { id: 'oceania', name: 'Oceanía', keys: ['oceania'] },
-].map((z) => ({
-  ...z,
-  list: countries.filter((c) => c.regions.some((r) => z.keys.includes(r))).sort((a, b) => a.name.localeCompare(b.name, 'es')),
-}));
-
+  { id: 'europa', keys: ['europa'] },
+  { id: 'asia', keys: ['asia'] },
+  { id: 'africa', keys: ['africa'] },
+  { id: 'america', keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'] },
+  { id: 'oceania', keys: ['oceania'] },
+];
+// `reto` es el valor del parámetro ?reto= de la aplicación (siempre en español).
 const RETOS = [
-  { id: 'paises', reto: 'localizar', label: 'Países' },
-  { id: 'capitales', reto: 'capitales', label: 'Capitales' },
-  { id: 'banderas', reto: 'banderas', label: 'Banderas' },
+  { id: 'paises', reto: 'localizar' },
+  { id: 'capitales', reto: 'capitales' },
+  { id: 'banderas', reto: 'banderas' },
 ];
 
-const juegoPath = (r, z) => `/juego/${r.id}-de-${z.id}/`;
-const nameOf = (i) => atlas.countries[i]?.name;
-const flag = (c) => `<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" />`;
+const juegoPath = (lang, r, z) => {
+  const ruta = PAGINAS[lang].ruta;
+  return `${base(lang)}${ruta.juego}/${ruta.retos[r.id]}-${ruta.de}-${ruta.zonas[z.id]}/`;
+};
+for (const z of ZONAS) for (const r of RETOS) sitemap.push(Object.fromEntries(LANGS.map((lang) => [lang, juegoPath(lang, r, z)])));
 
-function juegoBody(r, z) {
-  const n = z.list.length;
-  const zn = esc(z.name);
-  const byArea = z.list.filter((c) => c.areaKm2).sort((a, b) => b.areaKm2 - a.areaKm2);
-  const islas = z.list.filter((c) => !c.neighbors?.length).length;
-  const otherRetos = RETOS.filter((o) => o !== r).map((o) => `<a href="${juegoPath(o, z)}">${o.label} de ${zn}</a>`);
-  const otherZonas = ZONAS.filter((o) => o !== z).map((o) => `<a href="${juegoPath(r, o)}">${r.label} de ${esc(o.name)}</a>`);
+let juegos = 0;
+let nPaises = 0;
 
-  const intro = {
-    paises: `Te damos el nombre de un país de ${zn} y tienes que encontrarlo en el mapa. Si fallas, te dice qué país has pulsado y te lo vuelve a preguntar más tarde, hasta que te sepas los ${n}.`,
-    capitales: `Une cada uno de los ${n} países de ${zn} con su capital: con opciones, buscando el país en el mapa o escribiendo la respuesta. Las capitales que fallas vuelven a salir hasta que te las sabes.`,
-    banderas: `Reconoce las ${n} banderas de ${zn}: te enseñamos una bandera y pulsas su país en el mapa o eliges entre opciones. Las que fallas se repiten más a menudo.`,
-  }[r.id];
+for (const lang of LANGS) {
+  const T = PAGINAS[lang];
+  const { all, continents } = worldIn(lang);
+  const countries = all.filter((c) => c.kind === 'country');
+  nPaises = countries.length;
+  const byName = (a, b) => a.name.localeCompare(b.name, lang);
+  const km2 = (n) => (n ? `${Math.round(n).toLocaleString(T.intl)} km²` : '—');
+  const flag = (c) => `<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" />`;
+  const website = { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` };
 
-  const content = {
-    paises: `    <h2>Los ${n} países de ${zn}</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">País</th><th scope="col">Limita con</th><th scope="col" class="num">Superficie</th></tr></thead>
+  // ── países y capitales ──
+  const groups = ORDER.map((key) => ({
+    key,
+    name: continents[key],
+    list: countries.filter((c) => c.continents[0] === key).sort(byName),
+  })).filter((g) => g.list.length);
+  if (groups.reduce((n, g) => n + g.list.length, 0) !== countries.length) {
+    throw new Error('build-pages: hay países sin continente principal conocido.');
+  }
+  const P = T.paises;
+  const zonas = ZONAS.map((z) => ({
+    ...z,
+    name: T.zonas[z.id],
+    list: countries.filter((c) => c.regions.some((r) => z.keys.includes(r))).sort(byName),
+  }));
+
+  write(
+    paisesPath(lang),
+    page({
+      lang,
+      path: paisesPath(lang),
+      alternates: paisesAlternates,
+      title: P.title(countries.length),
+      ogTitle: P.ogTitle,
+      description: P.description(countries.length),
+      ogType: 'article',
+      jsonLd: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: P.ogTitle,
+          url: `${SITE}${paisesPath(lang)}`,
+          inLanguage: lang,
+          isPartOf: website,
+          mainEntity: {
+            '@type': 'ItemList',
+            name: P.ogTitle,
+            numberOfItems: countries.length,
+            itemListElement: groups
+              .flatMap((g) => g.list)
+              .map((c, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                item: { '@type': 'Country', name: c.name, ...(c.capital && { containsPlace: { '@type': 'City', name: c.capital } }) },
+              })),
+          },
+        },
+        {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: P.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+        },
+      ],
+      body: `    <h1>${P.h1}</h1>
+    <p class="lead">${P.lead(countries.length)}</p>
+    <a class="cta" href="${base(lang)}">${P.cta}</a>
+    <p>${P.juegos}</p>
+    <nav class="toc" aria-label="${P.juegosAria}">
+${zonas.map((z) => `      <a href="${juegoPath(lang, RETOS[0], z)}">${esc(T.juego.enlace(T.retos.paises, z.name))}</a>`).join('\n')}
+    </nav>
+    <p>${P.lista}</p>
+    <nav class="toc" aria-label="${P.listaAria}">
+${groups.map((g) => `      <a href="#${g.key}">${esc(g.name)}</a>`).join('\n')}
+    </nav>
+${groups
+  .map(
+    (g) => `    <section id="${g.key}">
+      <h2>${esc(g.name)} <span class="count">${P.cuenta(g.list.length)}</span></h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">${P.pais}</th><th scope="col">${P.capital}</th><th scope="col" class="num">${P.superficie}</th></tr></thead>
+        <tbody>
+${g.list
+  .map(
+    (c) => `        <tr>
+          <td>${flag(c)} ${esc(c.name)}</td>
+          <td>${esc(c.capital ?? '—')}${c.capitalNote ? ` <small>(${esc(c.capitalNote)})</small>` : ''}</td>
+          <td class="num">${km2(c.areaKm2)}</td>
+        </tr>`,
+  )
+  .join('\n')}
+        </tbody>
+      </table></div>
+    </section>`,
+  )
+  .join('\n')}
+    <section id="faq">
+      <h2>${P.faqTitulo}</h2>
+      <dl>
+${P.faq.map(([q, a]) => `        <dt>${esc(q)}</dt>\n        <dd>${esc(a)}</dd>`).join('\n')}
+      </dl>
+    </section>`,
+    }),
+  );
+
+  // ── juegos por continente ──
+  const J = T.juego;
+  const nameOf = (i) => all[i]?.name;
+  for (const z of zonas) {
+    const n = z.list.length;
+    const zn = esc(z.name);
+    const byArea = z.list.filter((c) => c.areaKm2).sort((a, b) => b.areaKm2 - a.areaKm2);
+    const islas = z.list.filter((c) => !c.neighbors?.length).length;
+    for (const r of RETOS) {
+      const label = T.retos[r.id];
+      const path = juegoPath(lang, r, z);
+      const [title, description] = J.titulos[r.id](n, z.name);
+      const content = {
+        paises: () => `    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">${P.pais}</th><th scope="col">${J.limita}</th><th scope="col" class="num">${P.superficie}</th></tr></thead>
       <tbody>
 ${z.list
   .map((c) => {
-    const vecinos = (c.neighbors ?? []).map(nameOf).filter(Boolean).sort((a, b) => a.localeCompare(b, 'es'));
-    return `        <tr><td>${flag(c)} ${esc(c.name)}</td><td>${esc(vecinos.join(', ') || 'Sin fronteras terrestres')}</td><td class="num">${km2(c.areaKm2)}</td></tr>`;
+    const vecinos = (c.neighbors ?? []).map(nameOf).filter(Boolean).sort((a, b) => a.localeCompare(b, lang));
+    return `        <tr><td>${flag(c)} ${esc(c.name)}</td><td>${esc(vecinos.join(', ') || J.sinFronteras)}</td><td class="num">${km2(c.areaKm2)}</td></tr>`;
   })
   .join('\n')}
       </tbody>
     </table></div>
-    <ul class="facts">
-      <li>El país más grande de ${zn} es <strong>${esc(byArea[0].name)}</strong> (${km2(byArea[0].areaKm2)})${
+    <ul>
+      <li>${J.masGrande(zn, esc(byArea[0].name), km2(byArea[0].areaKm2))}${
         // Sin la superficie de todos (al Vaticano le falta en la fuente) no se puede decir cuál es el más pequeño.
-        byArea.length === n ? ` y el más pequeño, <strong>${esc(byArea.at(-1).name)}</strong> (${km2(byArea.at(-1).areaKm2)})` : ''
+        byArea.length === n ? J.masPequeno(esc(byArea.at(-1).name), km2(byArea.at(-1).areaKm2)) : ''
       }.</li>
-      <li>${islas} de los ${n} países no tienen fronteras terrestres con ningún otro.</li>
+      <li>${J.islas(islas, n)}</li>
     </ul>`,
-    capitales: `    <h2>Capitales de los ${n} países de ${zn}</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">País</th><th scope="col">Capital</th></tr></thead>
+        capitales: () => `    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">${P.pais}</th><th scope="col">${P.capital}</th></tr></thead>
       <tbody>
 ${z.list
   .map(
@@ -259,121 +321,103 @@ ${z.list
   .join('\n')}
       </tbody>
     </table></div>`,
-    banderas: `    <h2>Las ${n} banderas de ${zn}</h2>
-    <ul class="flags">
-${z.list.map((c) => `      <li><img src="/flags/${c.a2}.svg" alt="Bandera de ${esc(c.name)}" width="160" height="120" loading="lazy" />${esc(c.name)}</li>`).join('\n')}
+        banderas: () => `    <ul class="flags">
+${z.list.map((c) => `      <li><img src="/flags/${c.a2}.svg" alt="${esc(J.banderaDe(c.name))}" width="160" height="120" loading="lazy" />${esc(c.name)}</li>`).join('\n')}
     </ul>`,
-  }[r.id];
+      }[r.id]();
 
-  return `    <h1>${r.label} de ${zn}: juego en el mapa</h1>
-    <p class="lead">${intro}</p>
-    <a class="cta" href="/?reto=${r.reto}&amp;zona=${z.id}">Jugar: ${r.label.toLowerCase()} de ${zn} →</a>
-    <p>Gratis, sin registro y sin anuncios. Tu progreso se guarda en tu dispositivo.</p>
-${content}
-    <h2>Sigue practicando</h2>
-    <nav class="toc" aria-label="Otros retos de ${zn}">${otherRetos.join(' ')}</nav>
-    <nav class="toc" aria-label="${r.label} de otros continentes">${otherZonas.join(' ')}</nav>
-    <p><a href="/paises-y-capitales/">Todos los países del mundo y sus capitales</a></p>`;
-}
-
-const TITULOS = {
-  paises: (z) => [
-    `Países de ${z.name}: juego para aprenderlos en el mapa`,
-    `Aprende los ${z.list.length} países de ${z.name} jugando: encuéntralos en el mapa, con sus fronteras y su superficie. Gratis y sin registro.`,
-  ],
-  capitales: (z) => [
-    `Capitales de ${z.name}: lista y juego para aprenderlas`,
-    `Las capitales de los ${z.list.length} países de ${z.name} en una lista y en un juego con mapa que repite las que fallas. Gratis y sin registro.`,
-  ],
-  banderas: (z) => [
-    `Banderas de ${z.name}: las ${z.list.length} banderas y juego`,
-    `Las ${z.list.length} banderas de ${z.name} con el nombre de su país, y un juego para reconocerlas en el mapa. Gratis y sin registro.`,
-  ],
-};
-
-const juegos = [];
-for (const z of ZONAS) {
-  for (const r of RETOS) {
-    const path = juegoPath(r, z);
-    const [title, description] = TITULOS[r.id](z);
-    juegos.push(path);
-    write(
-      path,
-      page({
+      const otherRetos = RETOS.filter((o) => o !== r).map((o) => `<a href="${juegoPath(lang, o, z)}">${esc(J.enlace(T.retos[o.id], z.name))}</a>`);
+      const otherZonas = zonas.filter((o) => o !== z).map((o) => `<a href="${juegoPath(lang, r, o)}">${esc(J.enlace(label, o.name))}</a>`);
+      juegos++;
+      write(
         path,
-        title: `${title} · Study World Map`,
-        ogTitle: title,
-        description,
-        jsonLd: {
-          '@context': 'https://schema.org',
-          '@type': 'WebPage',
-          name: title,
-          url: `${SITE}${path}`,
-          inLanguage: 'es',
-          isPartOf: { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` },
-          mainEntity: {
-            '@type': 'ItemList',
-            name: `${r.label} de ${z.name}`,
-            numberOfItems: z.list.length,
-            itemListElement: z.list.map((c, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: r.id === 'capitales' && c.capital ? `${c.capital} (${c.name})` : c.name,
-            })),
+        page({
+          lang,
+          path,
+          alternates: Object.fromEntries(LANGS.map((l) => [l, juegoPath(l, r, z)])),
+          title: `${title} · Study World Map`,
+          ogTitle: title,
+          description,
+          jsonLd: {
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: title,
+            url: `${SITE}${path}`,
+            inLanguage: lang,
+            isPartOf: website,
+            mainEntity: {
+              '@type': 'ItemList',
+              name: J.enlace(label, z.name),
+              numberOfItems: n,
+              itemListElement: z.list.map((c, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                name: r.id === 'capitales' && c.capital ? `${c.capital} (${c.name})` : c.name,
+              })),
+            },
           },
-        },
-        body: juegoBody(r, z),
-      }),
-    );
+          body: `    <h1>${esc(J.h1(label, z.name))}</h1>
+    <p class="lead">${esc(J.intro[r.id](n, z.name))}</p>
+    <a class="cta" href="${base(lang)}?reto=${r.reto}&amp;zona=${z.id}">${esc(J.jugar(label, z.name))}</a>
+    <p>${J.gratis}</p>
+    <h2>${esc(J.h2[r.id](n, z.name))}</h2>
+${content}
+    <h2>${J.sigue}</h2>
+    <nav class="toc" aria-label="${esc(J.otrosRetos(z.name))}">${otherRetos.join(' ')}</nav>
+    <nav class="toc" aria-label="${esc(J.otrasZonas(label))}">${otherZonas.join(' ')}</nav>
+    <p><a href="${paisesPath(lang)}">${J.todos}</a></p>`,
+        }),
+      );
+    }
   }
 }
 
-// ───────────────────────── páginas ─────────────────────────
-
-write(
-  '/paises-y-capitales/',
-  page({
-    path: '/paises-y-capitales/',
-    title: `Países del mundo y sus capitales: lista de los ${countries.length} países · Study World Map`,
-    ogTitle: 'Países del mundo y sus capitales',
-    description: `Lista completa de los ${countries.length} países del mundo y sus capitales, ordenados por continente, con bandera y superficie. Practícalos gratis en un mapa interactivo.`,
-    ogType: 'article',
-    jsonLd,
-    body: `    <h1>Países del mundo y sus capitales</h1>
-    <p class="lead">Los ${countries.length} países del mundo ordenados por continente, con su capital, su bandera y su superficie. Cuando quieras aprendértelos, practica con el mapa interactivo: te pregunta más lo que fallas hasta que te lo sabes.</p>
-    <a class="cta" href="/">Practicar en el mapa interactivo →</a>
-    <p>Juegos por continente:</p>
-    <nav class="toc" aria-label="Juegos por continente">
-${ZONAS.map((z) => `      <a href="/juego/paises-de-${z.id}/">Países de ${esc(z.name)}</a>`).join('\n')}
-    </nav>
-    <p>Lista por continente:</p>
-    <nav class="toc" aria-label="Continentes">
-${groups.map((g) => `      <a href="#${g.key}">${esc(g.name)}</a>`).join('\n')}
-    </nav>
-${groups.map(section).join('\n')}
-    <section id="preguntas">
-      <h2>Preguntas frecuentes</h2>
-      <dl>
-${FAQ.map(([q, a]) => `        <dt>${esc(q)}</dt>\n        <dd>${esc(a)}</dd>`).join('\n')}
-      </dl>
-    </section>`,
-  }),
-);
+// ───────────────────────── textos legales y donaciones (solo en español) ─────────────────────────
 
 for (const legal of legalPages()) write(legal.path, page({ ...legal, prose: true }));
 
-const urls = ['/', '/paises-y-capitales/', ...juegos, '/donar/'];
+// ───────────────────────── portada de la aplicación en cada idioma ─────────────────────────
+// index.html (en español) es la entrada de Vite; cada idioma tiene la suya, <idioma>/index.html,
+// con los mismos scripts y el texto traducido. Así cada idioma se sirve en su dirección con su
+// título, su descripción y su contenido para buscadores.
+
+const index = readFileSync('index.html', 'utf8').replace(/\r/g, '');
+for (const lang of LANGS) {
+  if (!index.includes(`hreflang="${lang}"`)) throw new Error(`build-pages: index.html no enlaza al idioma «${lang}» (hreflang).`);
+  if (lang === 'es') continue;
+  let html = index;
+  for (const [from, to] of INDEX[lang]) {
+    if (!html.includes(from)) throw new Error(`build-pages: index.html ya no contiene «${from.slice(0, 60)}…» (scripts/data/paginas.mjs).`);
+    html = html.replaceAll(from, to);
+  }
+  mkdirSync(lang, { recursive: true });
+  writeFileSync(`${lang}/index.html`, html);
+}
+
+// ───────────────────────── sitemap ─────────────────────────
+
+const urls = sitemap.flatMap((alternates) =>
+  Object.entries(alternates).map(
+    ([, path]) =>
+      `  <url><loc>${SITE}${path}</loc>${[...Object.entries(alternates), ['x-default', alternates.es]]
+        .map(([lang, other]) => `<xhtml:link rel="alternate" hreflang="${lang}" href="${SITE}${other}" />`)
+        .join('')}</url>`,
+  ),
+);
 writeFileSync(
   'public/sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls.join('\n')}
+  <url><loc>${SITE}/donar/</loc></url>
 </urlset>
 `,
 );
 
 const pending = [...Object.values(TITULAR), DONAR_URL].filter((v) => v.startsWith('PENDIENTE'));
-console.log(`páginas: paises-y-capitales (${countries.length} países) + ${juegos.length} juegos + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`);
+console.log(
+  `páginas (${LANGS.join(', ')}): países y capitales (${nPaises}) + ${juegos} juegos + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`,
+);
 // En Vercel no se publica un aviso legal a medias.
 if (pending.length && process.env.VERCEL) {
   throw new Error(`build-pages: faltan datos en scripts/data/sitio.mjs:\n  ${pending.join('\n  ')}`);
