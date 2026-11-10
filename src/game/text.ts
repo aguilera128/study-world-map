@@ -13,7 +13,7 @@ export function normalize(text: string): string {
     .replace(/[^a-z0-9 ]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    .replace(/^(el|la|los|las|the) /, '');
+    .replace(/^(el|la|los|las|the|le|les|der|die|das|il|lo|gli|els|os|as) /, '');
 }
 
 /** Distancia de edición (Levenshtein) con corte: devuelve `max + 1` en cuanto la supera. */

@@ -18,5 +18,7 @@
 
 import en from './en.mjs';
 import es from './es.mjs';
+import de from './de.mjs';
+import fr from './fr.mjs';
 
-export const IDIOMAS = { es, en };
+export const IDIOMAS = { es, en, fr, de };
