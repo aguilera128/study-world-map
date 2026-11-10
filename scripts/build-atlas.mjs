@@ -32,6 +32,9 @@ import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './dat
 const POBLACION = JSON.parse(readFileSync(new URL('./data/poblacion.worldbank.json', import.meta.url), 'utf8'));
 /** Los dos países que no están en esa serie (Taiwán y el Vaticano), de Wikidata. */
 const POBLACION_EXTRA = JSON.parse(readFileSync(new URL('./data/poblacion.extra.json', import.meta.url), 'utf8'));
+// Identificador de Wikidata de cada país (scripts/fetch-country-ids.mjs): con él se enlaza a Wikipedia.
+// Kosovo no tiene código ISO oficial, así que va a mano.
+const WIKIDATA = { ...JSON.parse(readFileSync(new URL('./data/paises.wikidata-ids.json', import.meta.url), 'utf8')), XKX: 'Q1246' };
 const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const AUDIT = process.argv.includes('--audit');
@@ -410,6 +413,10 @@ const entidades = codigos.map((codigo) => {
     // tamaño angular (radianes) del polígono principal: decide cuándo hace falta un marcador
     size: red(Math.sqrt(mayor.area), 5),
     areaKm2: Math.round(wcByIso3.get(codigo)?.area ?? 0) || undefined,
+    // Moneda (ISO 4217) e idiomas (ISO 639-3) de mledoze/countries: la ficha los nombra con Intl.
+    currencies: pais ? Object.keys(wcByIso3.get(codigo)?.currencies ?? {}) : undefined,
+    languages: pais ? Object.keys(wcByIso3.get(codigo)?.languages ?? {}) : undefined,
+    wd: WIKIDATA[codigo],
     // Banco Mundial (scripts/data/poblacion.worldbank.json); sin dato para algunos territorios.
     population: POBLACION.values[codigo] ?? POBLACION_EXTRA.values[codigo],
     // Año del dato: el de la serie del Banco Mundial o, en los dos que vienen de Wikidata, el suyo.

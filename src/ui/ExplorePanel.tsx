@@ -12,9 +12,13 @@ import { useNow } from './hooks';
 import { Icon } from './Icon';
 import { Flag, Panel } from './primitives';
 import { ScopeChips } from './ScopeChips';
-import { LOCALE, t } from '../i18n';
+import { lang, LOCALE, t } from '../i18n';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
+
+const currencyNames = new Intl.DisplayNames(LOCALE, { type: 'currency', fallback: 'none' });
+const languageNames = new Intl.DisplayNames(LOCALE, { type: 'language', fallback: 'none' });
+const capital = (text: string) => text.charAt(0).toLocaleUpperCase(LOCALE) + text.slice(1);
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -30,6 +34,10 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
   const sovereign = country.sovereign ? atlas.byIdOrThrow(country.sovereign) : null;
   const neighbors = country.neighbors.map((i) => atlas.countries[i]).sort((a, b) => a.name.localeCompare(b.name, LOCALE));
   const level = levelOf(country);
+  // Los nombres de monedas e idiomas los da el propio navegador en el idioma de la interfaz;
+  // lo que no sabe nombrar (devuelve undefined) no se enseña.
+  const currencies = (country.currencies ?? []).map((code) => `${capital(currencyNames.of(code) ?? code)} (${code})`);
+  const languages = (country.languages ?? []).map((code) => languageNames.of(code)).filter((name): name is string => !!name).slice(0, 5).map(capital);
   const now = useNow(20_000);
   const time = country.tz ? clockIn(country.tz, now) : null;
   const offset = country.tz ? offsetMinutes(country.tz, now) : null;
@@ -93,6 +101,8 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
               <span className="font-normal text-ink-soft"> · {levelLabel(level).toLowerCase()}</span>
             </Fact>
           )}
+          {currencies.length > 0 && <Fact label={t('Moneda')}>{currencies.join(', ')}</Fact>}
+          {languages.length > 0 && <Fact label={t('Idiomas')}>{languages.join(', ')}</Fact>}
           {neighbors.length > 0 && (
             <Fact label={t('Vecinos')}>
               <span className="flex flex-wrap gap-1.5">
@@ -112,6 +122,18 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
           )}
         </dl>
         {country.note && <p className="mt-3 border-t border-rule pt-3 text-sm text-ink-soft">{country.note}</p>}
+        {country.wd && (
+          // Wikidata redirige al artículo de Wikipedia en el idioma pedido, si existe.
+          <a
+            href={`https://www.wikidata.org/wiki/Special:GoToLinkedPage/${lang}wiki/${country.wd}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 border-t border-rule pt-3 text-sm font-semibold text-ink-soft underline decoration-rule-strong underline-offset-4 hover:text-accent"
+          >
+            <Icon name="link" size={15} />
+            {t('Más sobre {x} en Wikipedia', { x: country.name })}
+          </a>
+        )}
       </article>
     </div>
   );

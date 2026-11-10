@@ -52,6 +52,11 @@ export interface RawCountry {
   anchor: [lon: number, lat: number];
   size: number;
   areaKm2?: number;
+  /** Códigos ISO 4217 de sus monedas e ISO 639-3 de sus idiomas (solo países). */
+  currencies?: string[];
+  languages?: string[];
+  /** Identificador de Wikidata, para enlazar a Wikipedia. */
+  wd?: string;
   /** Habitantes (Banco Mundial). */
   population?: number;
   /** Año al que corresponde ese dato. */
@@ -116,6 +121,11 @@ export interface Country {
   /** Tamaño angular (radianes) del polígono principal. */
   size: number;
   areaKm2?: number;
+  /** Códigos ISO 4217 de sus monedas e ISO 639-3 de sus idiomas (solo países). */
+  currencies?: string[];
+  languages?: string[];
+  /** Identificador de Wikidata, para enlazar a Wikipedia. */
+  wd?: string;
   /** Habitantes (Banco Mundial), si hay dato. */
   population?: number;
   /** Año al que corresponde ese dato. */
