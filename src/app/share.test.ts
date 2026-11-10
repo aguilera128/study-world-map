@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { SAMPLE_LIST } from '../game/config';
 import { parseSharedList, shareUrl } from './share';
 
-const BASE = 'https://mapamundi.example/';
+const BASE = 'https://studyworldmap.example/';
 
 describe('listas compartidas', () => {
   it('una lista sobrevive al viaje por la dirección de la página', () => {

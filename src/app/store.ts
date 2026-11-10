@@ -66,6 +66,8 @@ export const useSettings = create<SettingsState>()(
         }),
     }),
     {
+      // Las claves de almacenamiento conservan el nombre anterior del proyecto (Mapamundi) para no
+      // perder lo que ya esté guardado en el navegador.
       name: 'mapamundi:ajustes',
       version: 1,
       partialize: ({ theme, viewMode, realTime, config, lists }) => ({ theme, viewMode, realTime, config, lists }),

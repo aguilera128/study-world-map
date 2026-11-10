@@ -3,6 +3,10 @@ import { useApp, useSettings, type Screen } from '../app/store';
 import { useTheme } from './hooks';
 import { Icon, Logo, type IconName } from './Icon';
 
+// Los rótulos de los botones aparecen algo más tarde que el resto del diseño ancho: con la marca
+// delante no caben en una línea hasta los 64rem.
+const LABELS = 'hidden min-[64rem]:inline';
+
 function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName; children: string }) {
   const current = useApp((s) => s.screen);
   const go = useApp((s) => s.go);
@@ -16,7 +20,7 @@ function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName;
       className={`btn btn-ghost min-h-10 px-2.5 text-sm ${active ? 'bg-ink! text-paper!' : ''}`}
     >
       <Icon name={icon} size={18} />
-      <span className="hidden wide:inline">{children}</span>
+      <span className={LABELS}>{children}</span>
     </button>
   );
 }
@@ -33,7 +37,7 @@ export function TopBar() {
   const theme = useTheme();
   const playing = screen === 'play';
   // Durante la partida los botones se quedan en solo icono para dejar sitio al marcador.
-  const labels = playing ? 'sr-only' : 'hidden wide:inline';
+  const labels = playing ? 'sr-only' : LABELS;
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-center justify-between gap-2 px-3 py-3 wide:px-8 wide:py-5">
@@ -43,10 +47,10 @@ export function TopBar() {
         disabled={playing}
         onClick={() => go('home')}
         className="pointer-events-auto flex items-center gap-2.5 rounded-lg pr-2 text-ink"
-        aria-label="Mapamundi: volver al inicio"
+        aria-label="Study World Map: volver al inicio"
       >
         <Logo />
-        <span className={`display text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Mapamundi</span>
+        <span className={`display text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
       </button>
 
       <div className="pointer-events-auto flex items-center gap-1 wide:gap-2">

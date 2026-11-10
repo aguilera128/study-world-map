@@ -1,12 +1,12 @@
 {
-  "name": "mapa-mundi-estudio",
+  "name": "study-world-map",
   "private": true,
   "version": "0.1.0",
   "description": "Mapamundi interactivo (globo 3D y mapa plano 2D) para aprender los países del mundo jugando.",
   "type": "module",
   "packageManager": "pnpm@8.11.0",
   "engines": {
-    "node": ">=22.12"
+    "node": "24.x"
   },
   "scripts": {
     "atlas": "node scripts/build-atlas.mjs",

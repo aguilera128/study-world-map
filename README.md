@@ -1,4 +1,4 @@
-# Mapamundi
+# Study World Map
 
 Mapamundi interactivo para **estudiar los países del mundo jugando**: un globo 3D que se desenrolla
 hasta convertirse en un mapa plano 2D, cinco retos con corrección inmediata y un sistema de repaso
@@ -50,7 +50,7 @@ el propio dispositivo.
 
 ## Puesta en marcha
 
-Requiere Node 22 o superior y [pnpm](https://pnpm.io).
+Requiere Node 24 y [pnpm](https://pnpm.io).
 
 ```bash
 pnpm install
