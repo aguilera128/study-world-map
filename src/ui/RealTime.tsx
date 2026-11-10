@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { useApp, useSettings, type Layers } from '../app/store';
 import type { MapEngine } from '../engine/MapEngine';
 import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude, type DayPhase, type MoonPhase, type SunPosition } from '../engine/sun';
@@ -21,16 +21,57 @@ function Tracked({ engine, lon, lat, alt = 0, children }: { engine: MapEngine; l
   );
 }
 
-/** Disco de la Luna con su fase: la parte iluminada a la derecha si crece (como se ve desde el hemisferio norte). */
+/**
+ * Disco de la Luna con su fase real: la cara visible (mares y cráteres donde están de verdad, el
+ * norte arriba) y la sombra hasta el terminador. La parte iluminada queda a la derecha si crece,
+ * como se ve desde el hemisferio norte; la oscura se adivina, por la luz que refleja la Tierra.
+ */
 function MoonDisc({ phase, size = 22 }: { phase: MoonPhase; size?: number }) {
+  const id = useId();
   const r = 9;
-  // El borde de la sombra es media elipse: plana en los cuartos, y se abomba hacia un lado u otro.
+  // El terminador es media elipse: recta en los cuartos, y se abomba hacia un lado u otro.
   const rx = (r * Math.abs(1 - 2 * phase.lit)).toFixed(2);
-  const lit = `M0 ${-r}A${r} ${r} 0 0 1 0 ${r}A${rx} ${r} 0 0 ${phase.lit > 0.5 ? 1 : 0} 0 ${-r}z`;
+  const dark = `M0 ${-r}A${r} ${r} 0 0 0 0 ${r}A${rx} ${r} 0 0 ${phase.lit > 0.5 ? 1 : 0} 0 ${-r}z`;
   return (
-    <svg className="moon-marker" width={size} height={size} viewBox="-11 -11 22 22" aria-hidden="true">
-      <circle r={r} className="moon-dark" />
-      <path d={lit} className="moon-lit" transform={phase.waxing ? undefined : 'scale(-1 1)'} />
+    <svg className="moon-marker" width={size} height={size} viewBox="-10 -10 20 20" aria-hidden="true">
+      <defs>
+        <radialGradient id={`${id}s`} cx="42%" cy="38%" r="68%">
+          <stop offset="0" stopColor="#fbf9f0" />
+          <stop offset="0.7" stopColor="#dedbcf" />
+          <stop offset="1" stopColor="#b9b6ab" />
+        </radialGradient>
+        <clipPath id={`${id}c`}>
+          <circle r={r} />
+        </clipPath>
+        <filter id={`${id}b`} x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="0.45" />
+        </filter>
+      </defs>
+      <g clipPath={`url(#${id}c)`}>
+        <circle r={r} fill={`url(#${id}s)`} />
+        {/* los mares: Procellarum, Imbrium, Serenitatis, Tranquillitatis, Crisium, Fecunditatis, Nectaris, Nubium y Humorum */}
+        <g fill="#7f838a" opacity="0.62" filter={`url(#${id}b)`}>
+          <ellipse cx="-4.7" cy="-0.4" rx="2.5" ry="4.5" />
+          <circle cx="-2.2" cy="-4" r="2.7" />
+          <circle cx="2.2" cy="-3.4" r="1.9" />
+          <ellipse cx="3.6" cy="-0.6" rx="2.3" ry="1.8" />
+          <ellipse cx="6.3" cy="-2" rx="1" ry="1.4" />
+          <ellipse cx="5.3" cy="1.7" rx="1.2" ry="1.8" />
+          <circle cx="3.4" cy="2.8" r="1" />
+          <ellipse cx="-1.6" cy="3.6" rx="2.2" ry="1.6" />
+          <circle cx="-4.4" cy="4" r="1.1" />
+        </g>
+        {/* cráteres jóvenes y brillantes: Tycho con sus rayos, Copérnico y Kepler */}
+        <g stroke="#fffdf4" strokeWidth="0.25" opacity="0.5" strokeLinecap="round">
+          <path d="M-1 6.6 L-3.6 2.2M-1 6.6 L1.8 2M-1 6.6 L-5.4 6M-1 6.6 L3.4 7.2M-1 6.6 L-0.6 1.4" />
+        </g>
+        <g fill="#fffdf4">
+          <circle cx="-1" cy="6.6" r="0.6" />
+          <circle cx="-2.7" cy="-0.9" r="0.5" opacity="0.9" />
+          <circle cx="-5.2" cy="-1.3" r="0.35" opacity="0.8" />
+        </g>
+        <path d={dark} fill="#070d18" opacity="0.88" filter={`url(#${id}b)`} transform={phase.waxing ? undefined : 'scale(-1 1)'} />
+      </g>
       <circle r={r} className="moon-edge" />
     </svg>
   );
@@ -64,7 +105,7 @@ export function RealTimeMarkers({
       {layers.moon && (
         <Tracked engine={engine} lon={moon.lon} lat={moon.lat} alt={MOON_ALT}>
           <div className="sky-marker" role="img" aria-label={t('Aquí la Luna está en lo más alto. {phase}, {lit} iluminada', { phase: t(phase.name), lit: percent(phase.lit) })}>
-            <MoonDisc phase={phase} size={18} />
+            <MoonDisc phase={phase} size={28} />
             <span className="sky-tip">
               {t(phase.name)} ({percent(phase.lit)})
             </span>
@@ -159,7 +200,7 @@ export function RealTimeStatus() {
       </p>
       {showMoon && (
         <p className="mt-1 flex items-center gap-1.5 text-[0.8125rem] text-ink-soft">
-          <MoonDisc phase={moon} size={15} />
+          <MoonDisc phase={moon} size={20} />
           {t(moon.name)} · {percent(moon.lit)}
         </p>
       )}

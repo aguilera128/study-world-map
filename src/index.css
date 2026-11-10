@@ -553,18 +553,10 @@
   filter: drop-shadow(0 0 5px rgb(220 228 240 / 0.6)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.35));
 }
 
-.moon-dark {
-  fill: #3b4658;
-}
-
-.moon-lit {
-  fill: #f1efe6;
-}
-
 .moon-edge {
   fill: none;
   stroke: rgb(20 30 45 / 0.55);
-  stroke-width: 1;
+  stroke-width: 0.6;
 }
 
 .sky-tip {
