@@ -195,9 +195,11 @@ export function RealTimeStatus() {
   const roomy = useMedia('(min-width: 80rem)');
   const wide = useWide();
   const showMoon = useSettings((s) => s.layers.moon);
-  // En el móvil la tarjeta tapa el mapa: se queda en la hora y se despliega al tocarla.
-  const [open, setOpen] = useState(false);
-  const full = wide || open;
+  // La tarjeta se pliega al tocar la hora y se queda solo con ella. En el móvil, donde tapa el
+  // mapa, empieza plegada; en pantalla ancha, desplegada (null = como venga de serie).
+  const [choice, setOpen] = useState<boolean | null>(null);
+  const open = choice ?? wide;
+  const full = open;
   // (Los hooks, siempre antes de este return: si no, React falla al empezar una partida.)
   if (screen === 'play' && !roomy) return null;
 
@@ -212,20 +214,20 @@ export function RealTimeStatus() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
-      className={`float fixed right-3 top-[4.25rem] z-30 px-3 py-2 text-sm wide:right-8 wide:top-[5.25rem] wide:w-[15.5rem] wide:px-3.5 wide:py-2.5 ${open ? 'w-[13rem]' : ''}`}
+      className={`float fixed right-3 top-[4.25rem] z-30 px-3 py-2 text-sm wide:right-8 wide:top-[5.25rem] wide:px-3.5 wide:py-2.5 ${open ? 'w-[13rem] wide:w-[15.5rem]' : ''}`}
       role="status"
     >
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        disabled={wide}
         aria-expanded={full}
-        title={wide ? undefined : t(open ? 'Ocultar detalles' : 'Ver detalles')}
+        title={t(open ? 'Ocultar detalles' : 'Ver detalles')}
         className="flex w-full items-baseline gap-2 text-left"
       >
         <Icon name={phase === 'night' ? 'moon' : 'sun'} size={16} className="translate-y-0.5 self-start text-accent" />
         <span className="tabular display text-lg leading-none wide:text-xl">{clock.format(now)}</span>
         {full && <span className="text-xs text-ink-soft">{day.format(now)}</span>}
+        <Icon name="arrow" size={14} className={`ml-auto self-center text-ink-faint transition-transform ${open ? '-rotate-90' : 'rotate-90'}`} />
       </button>
       {full && (
         <>

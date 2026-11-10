@@ -121,10 +121,10 @@ export function HomePanel() {
               role="radio"
               aria-checked={m.id === config.mode}
               onClick={() => setConfig({ mode: m.id })}
-              className="tile flex min-w-0 items-center gap-1.5 px-2 py-2 text-left"
+              className="tile flex min-w-0 items-center gap-1.5 px-1.5 py-2 text-left"
             >
               <Icon name={MODE_ICONS[m.id]} size={16} className="shrink-0" />
-              <span className="truncate text-[0.8125rem] font-bold leading-tight">{m.title}</span>
+              <span className="truncate text-[0.8125rem] font-bold leading-tight tracking-[-0.01em]">{m.title}</span>
             </button>
           ))}
           <button

@@ -4,8 +4,11 @@ Mapamundi interactivo para **estudiar los países del mundo jugando**: un globo 
 hasta convertirse en un mapa plano 2D, cinco retos con corrección inmediata y un sistema de repaso
 que insiste en lo que todavía no te sabes.
 
-Todo funciona en el navegador: no hay cuentas, servidor ni base de datos. El progreso se guarda en
-el propio dispositivo.
+Casi todo funciona en el navegador y no hay cuentas: el progreso se guarda en el propio dispositivo.
+Solo si se crea un código para seguir en otro dispositivo, se guarda también en una base de datos
+(una única función de Vercel, `api/sync.ts`).
+
+Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.md](DESIGN.md) (diseño).
 
 ## Qué incluye
 
@@ -98,7 +101,8 @@ pnpm dlx vercel          # despliegue de vista previa
 pnpm dlx vercel --prod   # producción
 ```
 
-No necesita variables de entorno.
+La sincronización por código necesita `DATABASE_URL` (Neon), definida en Vercel como variable
+*Sensitive* y, en local, en `.env.local`. Sin ella, el resto de la web funciona igual.
 
 ## Tecnología
 

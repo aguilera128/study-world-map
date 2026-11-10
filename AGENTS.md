@@ -1,0 +1,122 @@
+# Study World Map — guía para agentes y colaboradores
+
+Atlas interactivo para estudiar geografía jugando (países, capitales, banderas, climas, población,
+geografía física, el planeta por dentro y por fuera). Producción: https://www.studyworldmap.com.
+El README cuenta qué hace y cómo está hecho el mapa; el diseño visual está en [DESIGN.md](DESIGN.md).
+Este fichero recoge lo que hay que saber para tocar el proyecto sin romper nada.
+
+## Lo esencial
+
+- **Stack:** Vite 8, React 19, TypeScript estricto, Zustand, Tailwind CSS 4, three.js con sombreadores
+  GLSL propios, Motion. Node 24. Pruebas con Vitest.
+- **Gestor de paquetes: pnpm.** Nunca npm ni npx.
+- **Despliegue:** Vercel, automático con cada push a `main`. CI en GitHub Actions (`.github/workflows/ci.yml`).
+  Antes de `git push` se pregunta siempre.
+- **Commits:** Conventional Commits, en español, sin firmas de agentes ni `Co-Authored-By`.
+- **Antes de dar algo por terminado:** `pnpm typecheck`, `pnpm test` y `VERCEL=1 pnpm build`
+  (el build de Vercel falla si faltan los datos del titular en `scripts/data/sitio.mjs`).
+- **No añadir dependencias sin preguntar.** Casi todo se resuelve con lo que hay.
+
+## Comandos
+
+```bash
+pnpm dev        # genera atlas y páginas y arranca en http://localhost:5173
+pnpm build      # atlas + páginas + tsc + vite build
+pnpm test       # vitest
+pnpm typecheck
+pnpm atlas      # solo regenera public/data (atlas del mundo, de España y de geografía física)
+```
+
+## Estructura
+
+```
+api/sync.ts            única función de Vercel: sincronización del progreso por código (Neon)
+scripts/               generadores de datos y de páginas estáticas (se ejecutan a mano o en el build)
+scripts/data/          fuentes editables: países, idiomas, legales, temario físico, correcciones
+public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
+src/atlas/             carga del atlas y triangulación (sin React ni three.js, con pruebas)
+src/game/              lógica pura: retos, partida, progreso, población, clima (con pruebas)
+src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
+src/app/               estado (Zustand), sincronización, exportar imagen, hora
+src/ui/                componentes de React
+src/i18n/              un diccionario por idioma; el texto en español es la clave
+docs/                  planes y propuestas con fecha
+```
+
+## Reglas que no se ven en el código
+
+### Traducciones
+- La clave de cada texto es la frase en español: `t('Texto en español')`. Hay nueve diccionarios
+  (`src/i18n/<idioma>.ts`) y una prueba falla si a alguno le falta o le sobra una clave, o si no
+  conserva las variables `{n}`.
+- Los textos que llegan a `t()` en una variable hay que añadirlos a la lista de `src/i18n/i18n.test.ts`.
+- Los nombres de países, accidentes, corrientes y placas no están en los diccionarios sino en los
+  datos (`public/data/**/names.<idioma>.json`, `corrientes.json`, `tectonica.json`).
+- Las traducciones las ha escrito un modelo: están pendientes de revisión por hablantes nativos.
+
+### Sombreadores (`src/engine/shaders.ts`)
+- Son plantillas de texto: **nada de comillas invertidas dentro de un comentario GLSL** (rompen la
+  plantilla). Para citar un nombre se usan «comillas latinas».
+- Las constantes que se interpolan (`${NOISE3}`, `${SHADE}`…) tienen que estar declaradas **antes**
+  en el fichero.
+- La proyección de la cámara está descentrada para apartar el globo de los paneles: cualquier
+  cálculo de pantalla ↔ dirección tiene que contar `projectionMatrix[2][0]` y `[2][1]`.
+- Los radios de las capas del interior están en dos sitios que deben coincidir: `SHELL_RADIUS` en
+  `MapEngine.ts` y los números de `CUT_FRAG`.
+
+### Motor
+- Dibuja a demanda (`invalidate()`); con algo animado a la vista (agua, corrientes, estrellas,
+  interior del planeta) redibuja a unos 10 fotogramas por segundo.
+- Para probar algo del motor en el navegador de desarrollo:
+  `(await import('/src/app/engineRef.ts')).getEngine()`. No importar así `store.ts`: crea otra copia.
+- En desarrollo, tras editar un módulo puede salir en consola
+  «Cannot read properties of null (reading 'countries')»: es de la recarga en caliente, no un fallo.
+
+### Datos: de dónde sale cada cosa
+Todo dato que ve un estudiante tiene que ser real y tener fuente. Cada generador lleva en su
+cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
+
+| Dato | Generador | Fuente |
+|---|---|---|
+| Países, fronteras, banderas | `scripts/build-atlas.mjs` | Natural Earth, flag-icons, mledoze/countries |
+| Provincias de España | `scripts/build-maps.mjs` | Natural Earth, Wikidata |
+| Geografía física | `scripts/build-physical.py` + `build-fisico.mjs` | Natural Earth, Wikidata |
+| Correcciones de geografía física | `scripts/data/fisico-correcciones.json` | a mano, cada una con su motivo |
+| Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |
+| Población | `scripts/data/poblacion.worldbank.json` | Banco Mundial SP.POP.TOTL |
+| Relieve y profundidad del mar | `build-relief.py`, `build-depth.py` | Natural Earth |
+| Corrientes | `build-currents.py` | OSCAR (NOAA) |
+| Placas y volcanes | `build-tectonics.py` | Bird 2003 (vía H. Ahlenius), NOAA NCEI |
+| Estrellas | `build-stars.mjs` | Yale Bright Star Catalogue |
+| Vía Láctea | `exr-to-raw.mjs` + `build-milkyway.py` | NASA Deep Star Maps 2020 (Gaia DR2) |
+| Continentes de la ilustración | `build-planet-land.mjs` | Natural Earth |
+| Interior de la Tierra, atmósfera, Sol y Luna | `src/ui/planetLayers.ts`, `RealTime.tsx` | USGS, IGN, PREM, artículos citados, NASA |
+
+Los ficheros grandes de origen (Natural Earth, EXR de la NASA, rejilla de Köppen) **no** van al
+repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
+
+### Vercel
+- Bajo `api/` solo puede haber rutas reales: todo `.ts`/`.js` que haya ahí se despliega como función
+  y Vercel la arranca sin que nadie la llame. Los scripts van en `scripts/`, con guarda de módulo
+  principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
+- Hoy hay **una** función (`api/sync.ts`). Si en *Resources* aparecen más, algo se despliega de más.
+
+### Sincronización y datos personales
+- No hay cuentas. El progreso vive en el navegador y, solo si el usuario crea un código, también en
+  Neon (PostgreSQL, Fráncfort), tabla `progress_sync(code, data, created_at, updated_at)`.
+- La cadena de conexión está en `.env.local` (ignorado por git) y en Vercel como variable *Sensitive*.
+  **No se imprime ni se copia nunca**: solo se revisan nombres y forma.
+- El código de sincronización viaja en la cabecera `X-Sync-Code`, no en la dirección.
+- `node scripts/db-init.mjs --probar` pasa la función por un ciclo completo contra la base real y
+  borra la fila de prueba.
+- **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
+  fecha de revisión de `scripts/data/sitio.mjs`.
+- Google Analytics solo se carga con consentimiento (`public/consent.js`).
+
+## Pendiente conocido
+
+- Revisión nativa de las traducciones y revisión profesional de los textos legales (bases legales,
+  menores de 14 años, transferencias de Neon y Vercel).
+- Pruebas en móvil real.
+- Aparcado a propósito: cuentas con correo, mapas históricos, otras proyecciones, flujos de
+  migración y comercio. Ver `docs/`.
