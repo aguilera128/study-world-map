@@ -2,7 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
 import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import type { MapId } from '../atlas/types';
-import { answerLabel, modeDef, modesOf, resolveScope } from '../game/config';
+import { answerLabel, modeDef, modesOf, resolveScope, type ModeId } from '../game/config';
 import { MAPS } from '../game/maps';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
@@ -14,6 +14,13 @@ import { t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
+
+/** Qué pregunta cada reto: sirve para agruparlos en la portada. */
+const MODE_GROUPS: { title: string; ids: ModeId[] }[] = [
+  { title: t('Dónde está'), ids: ['locate', 'continent', 'region', 'coords'] },
+  { title: t('Cómo se llama'), ids: ['name', 'capital', 'flag'] },
+  { title: t('Cómo es'), ids: ['climate', 'population', 'inhabitants'] },
+];
 
 /** Reto del día: el mismo para todos; enseña la racha y, si ya se ha jugado hoy, la nota. */
 function DailyCard() {
@@ -73,6 +80,17 @@ export function HomePanel() {
     [progress, scope, atlas, config.mode],
   );
   const total = scope.countries.length;
+  // Los retos del mapa del mundo, que son muchos, se agrupan por lo que preguntan.
+  const groups = useMemo(() => {
+    const modes = modesOf(atlas.map);
+    if (modes.length < 6) return [{ title: null as string | null, modes }];
+    return MODE_GROUPS.map((group) => ({ title: group.title, modes: modes.filter((m) => group.ids.includes(m.id)) })).filter((group) => group.modes.length);
+  }, [atlas.map]);
+  // Dominio de cada reto en la zona elegida, de 0 a 1.
+  const mastered = useMemo(() => {
+    const ids = scope.countries.map((i) => atlas.countries[i].id);
+    return Object.fromEntries(modesOf(atlas.map).map((m) => [m.id, summarize(progress, ids, m.id).ratio])) as Record<ModeId, number>;
+  }, [progress, scope, atlas]);
   const played = Object.keys(progress).length > 0;
   const questions = config.length === 'all' ? total : Math.min(config.length, total);
   const best = bestFor(bests, config);
@@ -113,30 +131,36 @@ export function HomePanel() {
 
       <section className="mt-5" style={order(3)}>
         <Step n={1}>{t('Reto')}</Step>
-        <div role="radiogroup" aria-label={t('Reto')} className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
-          {modesOf(atlas.map).map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              role="radio"
-              aria-checked={m.id === config.mode}
-              onClick={() => setConfig({ mode: m.id })}
-              className="tile flex min-w-0 items-center gap-1.5 px-1.5 py-2 text-left"
-            >
-              <Icon name={MODE_ICONS[m.id]} size={16} className="shrink-0" />
-              <span className="truncate text-[0.8125rem] font-bold leading-tight tracking-[-0.01em]">{m.title}</span>
-            </button>
+        <div role="radiogroup" aria-label={t('Reto')} className="grid gap-2">
+          {groups.map((group) => (
+            <div key={group.title ?? 'all'}>
+              {group.title && <p className="mb-1 text-xs font-semibold text-ink-faint">{group.title}</p>}
+              <div className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
+                {group.modes.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={m.id === config.mode}
+                    onClick={() => setConfig({ mode: m.id })}
+                    className="tile relative flex min-w-0 items-center gap-1.5 overflow-hidden px-1.5 py-2 text-left"
+                  >
+                    <Icon name={MODE_ICONS[m.id]} size={16} className="shrink-0" />
+                    <span className="truncate text-[0.8125rem] font-bold leading-tight tracking-[-0.01em]">{m.title}</span>
+                    {/* cuánto se domina este reto en la zona elegida: orienta qué practicar */}
+                    {mastered[m.id] > 0 && <span aria-hidden="true" className="absolute bottom-0 left-0 h-[3px] bg-ok" style={{ width: `${mastered[m.id] * 100}%` }} />}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
-          <button
-            type="button"
-            onClick={() => go('explore')}
-            className="tile flex min-w-0 items-center gap-1.5 border-dashed px-2 py-2 text-left text-ink-soft"
-          >
-            <Icon name="compass" size={16} className="shrink-0" />
-            <span className="truncate text-[0.8125rem] font-bold leading-tight">{t('Explorar')}</span>
-          </button>
         </div>
-        <p className="mt-2 text-sm text-ink-soft">{mode.summary}</p>
+        <p className="mt-2 text-sm text-ink-soft">
+          {mode.summary}{' '}
+          <button type="button" onClick={() => go('explore')} className="font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:text-accent">
+            {def.text.study}
+          </button>
+        </p>
         {mode.answers.length > 1 && (
           <Segmented
             label={t('Cómo responder')}
@@ -171,8 +195,15 @@ export function HomePanel() {
         </ScopeChips>
       </section>
 
-      <section className="mt-4" style={order(5)}>
-        <Step n={3}>{t('Preguntas')}</Step>
+      {/* En el móvil el botón de empezar se queda pegado al borde de la hoja, siempre a mano. */}
+      <div
+        className="sticky bottom-0 z-10 -mx-5 mt-5 flex flex-wrap items-center gap-x-2 gap-y-2 border-t border-rule bg-surface px-5 py-3 wide:static wide:mx-0 wide:mt-6 wide:border-0 wide:bg-transparent wide:p-0"
+        style={order(6)}
+      >
+        <button type="button" onClick={() => start()} disabled={!total} className="btn btn-accent min-h-12 shrink-0 px-3.5 text-base wide:min-h-13 wide:px-7 wide:text-lg">
+          {t('Empezar')}
+          <Icon name="arrow" size={20} />
+        </button>
         <Segmented
           label={t('Número de preguntas')}
           value={config.length}
@@ -183,26 +214,12 @@ export function HomePanel() {
             { value: 'all', label: t('Todos ({n})', { n: total }) },
           ]}
         />
-      </section>
-
-      {/* En el móvil el botón de empezar se queda pegado al borde de la hoja, siempre a mano. */}
-      <div
-        className="sticky bottom-0 z-10 -mx-5 mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-rule bg-surface px-5 py-3 wide:static wide:mx-0 wide:mt-6 wide:border-0 wide:bg-transparent wide:p-0"
-        style={order(6)}
-      >
-        <button type="button" onClick={() => start()} disabled={!total} className="btn btn-accent min-h-12 px-7 text-lg wide:min-h-13">
-          {t('Empezar')}
-          <Icon name="arrow" size={20} />
-        </button>
-        <p className="text-sm text-ink-soft">
-          {plural(questions, t('pregunta'), t('preguntas'))}
-          {best && (
-            <>
-              {' '}
-              · {t('tu mejor nota')}: <strong className="text-ink">{formatGrade(best.grade)}</strong>
-            </>
-          )}
-        </p>
+        {/* el número de preguntas ya se ve en el selector: aquí solo la mejor nota, si la hay */}
+        {best && (
+          <p className="w-full text-sm text-ink-soft first-letter:uppercase">
+            {t('tu mejor nota')}: <strong className="text-ink">{formatGrade(best.grade)}</strong> · {plural(questions, t('pregunta'), t('preguntas'))}
+          </p>
+        )}
       </div>
 
       <button
