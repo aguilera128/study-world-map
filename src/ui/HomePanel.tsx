@@ -136,7 +136,7 @@ export function HomePanel() {
         <div role="radiogroup" aria-label={t('Reto')} className="grid gap-2">
           {groups.map((group) => (
             <div key={group.title ?? 'all'}>
-              {group.title && <p className="mb-1 text-xs font-semibold text-ink-faint">{group.title}</p>}
+              {group.title && <p className="mb-1 text-xs font-semibold text-ink-soft">{group.title}</p>}
               <div className="grid grid-cols-3 gap-1.5">
                 {group.modes.map((m) => (
                   <button
