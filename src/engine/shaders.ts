@@ -778,13 +778,13 @@ void main() {
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
   vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
   // El cielo vacío del mapa no es negro del todo (un grano gris de estrellas muy débiles): se recorta.
-  vec3 glow = max(texture2D(uSky, uv).rgb - 0.3, 0.0) * 1.43;
-  // Todo lo que se ve es el mapa de la NASA: el brillo de la galaxia, su polvo y el grano de las
-  // estrellas débiles. Se atenúa para que quede de fondo y no compita con el globo.
-  // Curva con contraste: lo tenue casi desaparece y solo las nubes más densas llegan a verse claras.
-  vec3 color = glow * glow * 0.13 + glow * 0.025;
-  // A simple vista la galaxia es casi gris: se le quita buena parte del color para que no reclame la mirada.
-  color = mix(vec3(dot(color, vec3(0.3, 0.5, 0.2))) * vec3(0.92, 0.97, 1.08), color, 0.45);
+  vec3 glow = max(texture2D(uSky, uv).rgb - 0.16, 0.0) * 1.19;
+  // Todo lo que se ve es el mapa de la NASA. Se deja como un velo continuo y tenue: los brillos se
+  // comprimen (el centro de la galaxia no deslumbra) en vez de recortar lo débil, que la dejaba a
+  // manchas; y se le baja un poco el color, que a simple vista casi no se aprecia.
+  float lum = max(glow.r, max(glow.g, glow.b));
+  vec3 color = glow * 0.27 / (1.0 + 1.3 * lum);
+  color = mix(vec3(dot(color, vec3(0.3, 0.5, 0.2))), color, 0.7);
   float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(color / max(a, 0.001), a);
