@@ -78,7 +78,7 @@ export default {
       paises: (n, zona) =>
         `Et donem el nom d’un país d’${zona} i has de trobar-lo en el mapa. Si falles, et diu quin país has tocat i te’l torna a preguntar més tard, fins que et saps els ${n}.`,
       capitales: (n, zona) =>
-        `Uneix cadascun dels ${n} països d’${zona} amb la capital: amb opcions, buscant el país en el mapa o escrivint la resposta. Les capitals que falles tornen a eixir fins que te les saps.`,
+        `Uneix cadascun dels ${n} països d’${zona} amb la seua capital: amb opcions, buscant el país en el mapa o escrivint la resposta. Les capitals que falles tornen a eixir fins que te les saps.`,
       banderas: (n, zona) =>
         `Reconeix les ${n} banderes d’${zona}: t’ensenyem una bandera i toques el país en el mapa o tries entre opcions. Les que falles es repeteixen més sovint.`,
     },
@@ -177,7 +177,7 @@ export default {
         capAlias: ['Kotte', 'Colombo', 'Sri Jayawardenapura'],
         nota: 'La capital oficial és Sri Jayawardenapura Kotte; Colombo és la ciutat més gran i la capital econòmica.',
       },
-      TKM: { capital: 'Aixkhabad', capAlias: ['Aşgabat', 'Asgabat'] },
+      TKM: { capital: 'Aixkhabad', capAlias: ['Aixgabat', 'Aşgabat', 'Asgabat'] },
       TLS: { alias: ['Timor Oriental'] },
       TUR: { nota: 'Es reparteix entre Àsia i Europa. La ciutat més gran, Istanbul, no és la capital.' },
       TWN: {
@@ -235,26 +235,26 @@ export default {
     },
   },
   index: [
-    'Joc de països, capitals i banderes del món · Study World Map',
-    'Mapamundi interactiu en 3D i 2D per a aprendre els 197 països del món, les capitals i les banderes. De franc i sense registre: juga, falla, repassa i aprén geografia al teu ritme.',
+    'Study World Map: mapa interactiu per a estudiar geografia',
+    'Globus 3D i mapa interactiu per a estudiar països, capitals, banderes, províncies d’Espanya, rius, muntanyes i climes. De franc, sense registre i sense anuncis.',
     'Study World Map · Aprén els països del món jugant',
     'Globus 3D i mapa pla interactius per a estudiar països, capitals i banderes.',
     'Globus terraqüi amb els països acolorits al costat del panell de reptes de Study World Map',
-    'Mapamundi interactiu (globus 3D i mapa pla) per a aprendre els 197 països del món, els continents, les capitals i les banderes amb cinc reptes i repàs espaiat.',
-    'Qualsevol amb un navegador modern',
+    'Mapa interactiu (globus 3D i mapa pla) per a estudiar geografia: els 197 països del món amb les seues capitals i banderes, les províncies d’Espanya, rius, muntanyes, mars, climes i població, amb reptes i repàs espaiat.',
+    'Qualsevol persona amb un navegador modern',
     'Pràctica i repàs',
     'Joc educatiu',
     '["Geografia", "Països del món", "Capitals del món", "Banderes del món"]',
-    'Study World Map: aprén els països del món jugant',
-    `Mapamundi interactiu per a aprendre els 197 països del món, els continents, les capitals i les
-          banderes. Un globus 3D que es desenrotlla en un mapa pla, cinc reptes amb correcció immediata i un
-          sistema de repàs que insisteix en el que encara no et saps. De franc, sense anuncis i sense
-          registre.`,
+    'Study World Map: aprén geografia jugant sobre el mapa',
+    `Mapa interactiu per a estudiar geografia: els 197 països del món amb les seues capitals i banderes, les
+          províncies d’Espanya, els rius, muntanyes i mars del temari, els climes i la població. Un globus 3D
+          que es desenrotlla en un mapa pla, reptes amb correcció immediata i un repàs que insisteix en el que
+          encara no et saps. De franc, sense anuncis, sense registre i en valencià / català.`,
     'Reptes de geografia',
     '<strong>Localitzar:</strong> et donem el nom d’un país i el busques en el mapa.',
     '<strong>Continents:</strong> dius en quin continent està cada país.',
     '<strong>Anomenar:</strong> assenyalem un país en el mapa i dius quin és.',
-    '<strong>Capitals:</strong> uneixes cada país amb la capital.',
+    '<strong>Capitals:</strong> uneixes cada país amb la seua capital.',
     '<strong>Banderes:</strong> reconeixes de quin país és cada bandera.',
     'Com ajuda a aprendre',
     'Cada errada diu quin país has tocat i, després d’uns quants intents, s’ensenya la solució.',

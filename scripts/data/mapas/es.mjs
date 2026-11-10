@@ -241,7 +241,7 @@ export default {
       provincias: {
         slug: 'provinzen-spaniens',
         h1: 'Provinzen Spaniens: Spiel auf der Karte',
-        description: 'Lerne spielend die 50 Provinzen Spaniens sowie Ceuta und Melilla: Finde sie auf der Karte, mit ihrer autonomen Gemeinschaft. Kostenlos und ohne Anmeldung.',
+        description: 'Lerne spielerisch die 50 Provinzen Spaniens sowie Ceuta und Melilla: Finde sie auf der Karte, mit ihrer autonomen Gemeinschaft. Kostenlos und ohne Anmeldung.',
         cta: 'Spielen: Provinzen Spaniens →',
         h2: 'Die 50 Provinzen Spaniens und die zwei autonomen Städte',
       },
@@ -303,7 +303,7 @@ export default {
       comunidades: {
         slug: 'comunidades-autonomas-da-espanha',
         h1: 'Comunidades autônomas da Espanha e suas províncias',
-        description: 'As 17 comunidades autônomas da Espanha e as duas cidades autônomas, com as províncias de cada uma, e um jogo para aprender a que comunidade pertence cada província.',
+        description: 'As 17 comunidades autônomas da Espanha e as duas cidades autônomas, com suas províncias, e um jogo para aprender a qual pertence cada província.',
         cta: 'Jogar: a que comunidade pertence? →',
         h2: 'As 17 comunidades autônomas e suas províncias',
       },
@@ -312,8 +312,8 @@ export default {
       columnas: { provincia: 'Província', capital: 'Capital', comunidad: 'Comunitat autònoma', provincias: 'Províncies' },
       provincias: {
         slug: 'provincies-d-espanya',
-        h1: 'Províncies d’Espanya: joc al mapa',
-        description: 'Aprén les 50 províncies d’Espanya, amb Ceuta i Melilla, jugant: busca-les al mapa, amb la seua comunitat autònoma. Gratis i sense registre.',
+        h1: 'Províncies d’Espanya: joc en el mapa',
+        description: 'Aprén les 50 províncies d’Espanya, amb Ceuta i Melilla, jugant: busca-les en el mapa, amb la seua comunitat autònoma. Gratis i sense registre.',
         cta: 'Jugar: províncies d’Espanya →',
         h2: 'Les 50 províncies d’Espanya i les dues ciutats autònomes',
       },

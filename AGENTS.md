@@ -50,6 +50,11 @@ docs/                  planes y propuestas con fecha
   (`src/i18n/<idioma>.ts`) y una prueba falla si a alguno le falta o le sobra una clave, o si no
   conserva las variables `{n}`.
 - Los textos que llegan a `t()` en una variable hay que añadirlos a la lista de `src/i18n/i18n.test.ts`.
+- Las páginas estáticas tienen sus textos aparte, un fichero por idioma con las mismas claves:
+  `scripts/data/idiomas/<idioma>.mjs` (portada, países, juegos) y `scripts/data/temas/<idioma>.mjs`
+  (geografía física, climas, población y «El planeta»). Los nombres de climas y capas de esas
+  páginas salen del diccionario de la aplicación: `scripts/build-pages.mjs` falla si falta alguno.
+- El catalán usa formas valencianas (aprén, meua, eixir) y el portugués es el de Brasil.
 - Los nombres de países, accidentes, corrientes y placas no están en los diccionarios sino en los
   datos (`public/data/**/names.<idioma>.json`, `corrientes.json`, `tectonica.json`).
 - Las traducciones las ha escrito un modelo: están pendientes de revisión por hablantes nativos.

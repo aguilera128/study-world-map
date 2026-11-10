@@ -31,10 +31,10 @@ export default {
     title: (n) => `Länder der Welt und ihre Hauptstädte: Liste aller ${n} Länder · Study World Map`,
     ogTitle: 'Länder der Welt und ihre Hauptstädte',
     description: (n) =>
-      `Vollständige Liste der ${n} Länder der Welt und ihrer Hauptstädte, nach Kontinent geordnet, mit Flagge und Fläche. Kostenlos auf einer interaktiven Karte üben.`,
+      `Vollständige Liste der ${n} Länder der Welt und ihrer Hauptstädte, nach Kontinenten geordnet, mit Flagge und Fläche. Kostenlos auf einer interaktiven Karte üben.`,
     h1: 'Länder der Welt und ihre Hauptstädte',
     lead: (n) =>
-      `Die ${n} Länder der Welt nach Kontinent geordnet, mit Hauptstadt, Flagge und Fläche. Wenn du sie lernen möchtest, übe auf der interaktiven Karte: Sie fragt häufiger nach dem, was du falsch hattest, bis du es kannst.`,
+      `Die ${n} Länder der Welt, nach Kontinenten geordnet, mit Hauptstadt, Flagge und Fläche. Wenn du sie lernen möchtest, übe auf der interaktiven Karte: Sie fragt häufiger nach dem, was du falsch hattest, bis du es kannst.`,
     cta: 'Auf der interaktiven Karte üben →',
     juegos: 'Spiele nach Kontinent:',
     juegosAria: 'Spiele nach Kontinent',
@@ -52,7 +52,7 @@ export default {
       ],
       [
         'Welche Länder haben mehr als eine Hauptstadt?',
-        'Einige verteilen die Aufgaben auf mehrere Städte: Bolivien (Sucre ist die verfassungsmäßige Hauptstadt und La Paz der Regierungssitz), Südafrika, die Niederlande oder Sri Lanka. Im Spiel wird beim Schreiben jede davon akzeptiert.',
+        'Einige verteilen die Aufgaben auf mehrere Städte: Bolivien (Sucre ist die verfassungsmäßige Hauptstadt und La Paz der Regierungssitz), Südafrika, die Niederlande oder Sri Lanka. Im Spiel wird beim Eintippen jede davon akzeptiert.',
       ],
       [
         'Wie lernt man die Länder und Hauptstädte der Welt?',
@@ -79,7 +79,7 @@ export default {
       capitales: (n, zona) =>
         `Ordne jedem der ${n} Länder ${zona} seine Hauptstadt zu: mit Auswahl, indem du das Land auf der Karte suchst, oder durch Eintippen. Hauptstädte, die du falsch hattest, kommen wieder, bis du sie kannst.`,
       banderas: (n, zona) =>
-        `Erkenne die ${n} Flaggen ${zona}: Wir zeigen dir eine Flagge und du tippst das Land auf der Karte an oder wählst aus den Antworten. Was du falsch hattest, kommt häufiger.`,
+        `Erkenne die ${n} Flaggen ${zona}: Wir zeigen dir eine Flagge und du tippst das Land auf der Karte an oder wählst aus den Antworten. Was du falsch hattest, kommt häufiger dran.`,
     },
     h2: {
       paises: (n, zona) => `Die ${n} Länder ${zona}`,
@@ -229,21 +229,22 @@ export default {
     },
   },
   index: [
-    'Spiel zu Ländern, Hauptstädten und Flaggen der Welt · Study World Map',
-    'Interaktive Weltkarte in 3D und 2D, um die 197 Länder der Welt, ihre Hauptstädte und ihre Flaggen zu lernen. Kostenlos und ohne Anmeldung: spielen, Fehler machen, wiederholen und Geografie im eigenen Tempo lernen.',
+    'Study World Map: interaktive Karte zum Geografie-Lernen',
+    '3D-Globus und interaktive Karte: Länder, Hauptstädte, Flaggen, Spaniens Provinzen, Flüsse, Gebirge und Klimazonen lernen. Kostenlos, ohne Anmeldung und Werbung.',
     'Study World Map · Lerne die Länder der Welt spielerisch',
     'Interaktiver 3D-Globus und flache Karte zum Lernen von Ländern, Hauptstädten und Flaggen.',
     'Ein Globus mit farbigen Ländern neben dem Aufgabenfeld von Study World Map',
-    'Interaktive Weltkarte (3D-Globus und flache Karte), um die 197 Länder der Welt, ihre Kontinente, Hauptstädte und Flaggen mit fünf Aufgaben und verteilter Wiederholung zu lernen.',
+    'Interaktive Karte (3D-Globus und flache Karte) zum Geografie-Lernen: die 197 Länder der Welt mit ihren Hauptstädten und Flaggen, die Provinzen Spaniens, Flüsse, Gebirge, Meere, Klimazonen und Bevölkerung, mit Aufgaben und verteilter Wiederholung.',
     'Jedes System mit einem modernen Browser',
     'Üben und Wiederholen',
     'Lernspiel',
     '["Geografie", "Länder der Welt", "Hauptstädte der Welt", "Flaggen der Welt"]',
-    'Study World Map: Lerne die Länder der Welt spielerisch',
-    `Interaktive Weltkarte, um die 197 Länder der Welt, ihre Kontinente, ihre Hauptstädte und ihre
-          Flaggen zu lernen. Ein 3D-Globus, der sich zu einer flachen Karte ausrollt, fünf Aufgaben mit sofortiger
-          Rückmeldung und ein Wiederholungssystem, das bei dem bleibt, was du noch nicht kannst. Kostenlos,
-          ohne Werbung und ohne Anmeldung.`,
+    'Study World Map: Lerne Geografie spielerisch auf der Karte',
+    `Interaktive Karte zum Geografie-Lernen: die 197 Länder der Welt mit ihren Hauptstädten und Flaggen, die
+          Provinzen Spaniens, die Flüsse, Gebirge und Meere aus dem Unterricht, die Klimazonen und die Bevölkerung.
+          Ein 3D-Globus, der sich zu einer flachen Karte ausrollt, Aufgaben mit sofortiger Rückmeldung und eine
+          Wiederholung, die immer wieder abfragt, was du noch nicht kannst. Kostenlos, ohne Werbung, ohne
+          Anmeldung und auf Deutsch.`,
     'Geografie-Aufgaben',
     '<strong>Finden:</strong> Wir nennen dir ein Land und du suchst es auf der Karte.',
     '<strong>Kontinente:</strong> Du sagst, auf welchem Kontinent jedes Land liegt.',
@@ -252,11 +253,11 @@ export default {
     '<strong>Flaggen:</strong> Du erkennst, zu welchem Land jede Flagge gehört.',
     'So hilft es beim Lernen',
     'Bei jedem Fehler erfährst du, welches Land du angetippt hast, und nach mehreren Versuchen wird die Lösung gezeigt.',
-    'Was du falsch hattest, wird drei Fragen später noch einmal gefragt, und zwischen den Runden folgt jedes Land einer verteilten Wiederholung (Leitner-Kästen).',
+    'Was du falsch hattest, wird drei Fragen später noch einmal gefragt, und zwischen den Runden folgt jedes Land einer verteilten Wiederholung (Karteikasten nach Leitner).',
     'Man spielt mit der ganzen Welt, nach Kontinenten oder mit einer eigenen Länderliste, die sich per Link teilen lässt: ideal zur Vorbereitung auf einen Test.',
-    'Es läuft auf dem Handy, lässt sich installieren und funktioniert nach dem ersten Besuch auch offline.',
+    'Läuft auf dem Handy, lässt sich installieren und funktioniert nach dem ersten Besuch auch offline.',
     `Suchst du die vollständige Liste? Sieh dir die
-          <a href="{paises}">Länder der Welt und ihre Hauptstädte</a> an, nach Kontinent geordnet.`,
+          <a href="{paises}">Länder der Welt und ihre Hauptstädte</a> an, nach Kontinenten geordnet.`,
     'Die interaktive Karte und die Spiele benötigen JavaScript.',
   ],
 };

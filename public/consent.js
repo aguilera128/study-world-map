@@ -163,12 +163,12 @@
   var MINORS = {
     es: 'Si tienes menos de 14 años, pregunta antes a un adulto.',
     en: 'If you are under 14, ask an adult first.',
-    fr: 'Si tu as moins de 14 ans, demande d’abord à un adulte.',
+    fr: 'Si vous avez moins de 14 ans, demandez d’abord à un adulte.',
     de: 'Wenn du unter 14 bist, frag zuerst einen Erwachsenen.',
     it: 'Se hai meno di 14 anni, chiedi prima a un adulto.',
-    pt: 'Se tens menos de 14 anos, pergunta primeiro a um adulto.',
+    pt: 'Se você tem menos de 14 anos, pergunte antes a um adulto.',
     ca: 'Si tens menys de 14 anys, pregunta abans a un adult.',
-    gl: 'Se tes menos de 14 anos, pregunta antes a un adulto.',
+    gl: 'Se tes menos de 14 anos, pregúntalle antes a un adulto.',
     eu: '14 urte baino gutxiago badituzu, galdetu lehenengo heldu bati.',
     zh: '如果你未满 14 岁，请先询问成年人。',
   };

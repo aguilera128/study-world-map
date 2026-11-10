@@ -52,7 +52,7 @@ export default {
       ],
       [
         'Quali paesi hanno più di una capitale?',
-        'Alcuni dividono le funzioni tra più città: la Bolivia (Sucre è la capitale costituzionale e La Paz la sede del governo), il Sudafrica, i Paesi Bassi o lo Sri Lanka. Nel gioco viene accettata ognuna di esse quando si scrive la risposta.',
+        'Alcuni dividono le funzioni tra più città: la Bolivia (Sucre è la capitale costituzionale e La Paz la sede del governo), il Sudafrica, i Paesi Bassi o lo Sri Lanka. Nel gioco viene accettata una qualsiasi di esse quando si scrive la risposta.',
       ],
       [
         'Come imparare i paesi e le capitali del mondo?',
@@ -63,7 +63,7 @@ export default {
         'È gratis, senza pubblicità e senza account. I progressi vengono salvati sul tuo dispositivo e l’applicazione funziona offline dopo la prima visita.',
       ],
       [
-        'Quali giochi di geografia ha?',
+        'Quali giochi di geografia offre?',
         'Cinque sfide: localizzare i paesi sulla mappa, dire in quale continente si trovano, dare il nome al paese indicato, capitali e bandiere. Si può giocare con tutto il mondo, per continenti o con un proprio elenco di paesi da condividere con un link.',
       ],
     ],
@@ -75,7 +75,7 @@ export default {
     gratis: 'Gratis, senza registrazione e senza pubblicità. I progressi vengono salvati sul tuo dispositivo.',
     intro: {
       paises: (n, zona) =>
-        `Ti diamo il nome di un paese ${zona} e devi trovarlo sulla mappa. Se sbagli, ti dice quale paese hai toccato e te lo richiede più tardi, finché non li sai tutti e ${n}.`,
+        `Ti diamo il nome di un paese ${zona} e devi trovarlo sulla mappa. Se sbagli, ti dice quale paese hai toccato e te lo chiede di nuovo più tardi, finché non li sai tutti e ${n}.`,
       capitales: (n, zona) =>
         `Abbina ognuno dei ${n} paesi ${zona} alla sua capitale: con le opzioni, cercando il paese sulla mappa o scrivendo la risposta. Le capitali che sbagli tornano finché non le sai.`,
       banderas: (n, zona) =>
@@ -187,7 +187,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'fino al 2026, Malabo',
-        nota: 'Nel gennaio 2026 ha designato ufficialmente come capitale Ciudad de la Paz, sul continente, al posto di Malabo (sull’isola di Bioko); il trasferimento avviene gradualmente. Molti libri indicano ancora Malabo.',
+        nota: 'Nel gennaio 2026 ha designato ufficialmente come capitale Ciudad de la Paz, sulla terraferma, al posto di Malabo (sull’isola di Bioko); il trasferimento avviene gradualmente. Molti libri indicano ancora Malabo.',
       },
       SSD: { alias: ['Sudan del Sud'], nota: 'È il paese più giovane del mondo: è diventato indipendente dal Sudan nel 2011.' },
       SWZ: { alias: ['Swaziland'], capAlias: ['Lobamba'], nota: 'Fino al 2018 si chiamava Swaziland. Mbabane è la capitale amministrativa e Lobamba quella legislativa.' },
@@ -221,21 +221,21 @@ export default {
     },
   },
   index: [
-    'Gioco di paesi, capitali e bandiere del mondo · Study World Map',
-    'Planisfero interattivo in 3D e 2D per imparare i 197 paesi del mondo, le loro capitali e le loro bandiere. Gratis e senza registrazione: gioca, sbaglia, ripassa e impara la geografia al tuo ritmo.',
+    'Study World Map: mappa interattiva per studiare la geografia',
+    'Globo 3D e mappa interattiva per studiare paesi, capitali, bandiere, province della Spagna, fiumi, montagne e climi. Gratis, senza registrazione né pubblicità.',
     'Study World Map · Impara i paesi del mondo giocando',
     'Globo 3D e mappa piana interattivi per studiare paesi, capitali e bandiere.',
     'Un mappamondo con i paesi colorati accanto al pannello delle sfide di Study World Map',
-    'Planisfero interattivo (globo 3D e mappa piana) per imparare i 197 paesi del mondo, i loro continenti, capitali e bandiere con cinque sfide e ripetizione dilazionata.',
+    'Mappa interattiva (globo 3D e mappa piana) per studiare la geografia: i 197 paesi del mondo con le loro capitali e bandiere, le province della Spagna, fiumi, montagne, mari, climi e popolazione, con sfide e ripetizione dilazionata.',
     'Qualsiasi sistema con un browser moderno',
     'Esercizio e ripasso',
     'Gioco educativo',
     '["Geografia", "Paesi del mondo", "Capitali del mondo", "Bandiere del mondo"]',
-    'Study World Map: impara i paesi del mondo giocando',
-    `Planisfero interattivo per imparare i 197 paesi del mondo, i loro continenti, le loro capitali e le loro
-          bandiere. Un globo 3D che si srotola in una mappa piana, cinque sfide con correzione immediata e un
-          sistema di ripasso che insiste su ciò che ancora non sai. Gratis, senza pubblicità e senza
-          registrazione.`,
+    'Study World Map: impara la geografia giocando sulla mappa',
+    `Mappa interattiva per studiare la geografia: i 197 paesi del mondo con le loro capitali e bandiere, le
+          province della Spagna, i fiumi, le montagne e i mari del programma, i climi e la popolazione. Un globo 3D
+          che si srotola in una mappa piana, sfide con correzione immediata e un ripasso che insiste su ciò che
+          ancora non sai. Gratis, senza pubblicità, senza registrazione e in italiano.`,
     'Sfide di geografia',
     '<strong>Localizzare:</strong> ti diamo il nome di un paese e lo cerchi sulla mappa.',
     '<strong>Continenti:</strong> dici in quale continente si trova ogni paese.',
@@ -244,7 +244,7 @@ export default {
     '<strong>Bandiere:</strong> riconosci di quale paese è ogni bandiera.',
     'Come aiuta a imparare',
     'Ogni errore ti dice quale paese hai toccato e, dopo alcuni tentativi, viene mostrata la soluzione.',
-    'Ciò che sbagli viene richiesto tre domande dopo, e tra una partita e l’altra ogni paese segue una ripetizione dilazionata (scatole di Leitner).',
+    'Ciò che sbagli viene chiesto di nuovo tre domande dopo, e tra una partita e l’altra ogni paese segue una ripetizione dilazionata (scatole di Leitner).',
     'Si gioca con tutto il mondo, per continenti o con un proprio elenco di paesi da condividere con un link: ideale per preparare una verifica.',
     'Funziona sul cellulare, si può installare e, dopo la prima visita, anche senza connessione.',
     `Cerchi l’elenco completo? Consulta i

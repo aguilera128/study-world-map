@@ -63,7 +63,7 @@ export default {
       ],
       [
         'Que xogos de xeografía ten?',
-        'Cinco retos: localizar países no mapa, dicir en que continente están, nomear o país sinalado, capitais e bandeiras. Pódese xogar con todo o mundo, por continentes ou cunha lista propia de países que se comparte cunha ligazón.',
+        'Cinco retos: localizar países no mapa, dicir en que continente están, nomear o país sinalado, capitais e bandeiras. Pódese xogar co mundo enteiro, por continentes ou cunha lista propia de países que se comparte cunha ligazón.',
       ],
     ],
   },
@@ -224,21 +224,21 @@ export default {
     },
   },
   index: [
-    'Xogo de países, capitais e bandeiras do mundo · Study World Map',
-    'Mapamundi interactivo en 3D e 2D para aprender os 197 países do mundo, as súas capitais e as súas bandeiras. De balde e sen rexistro: xoga, falla, repasa e aprende xeografía ao teu ritmo.',
+    'Study World Map: mapa interactivo para estudar xeografía',
+    'Globo 3D e mapa interactivo para estudar países, capitais, bandeiras, provincias de España, ríos, montañas e climas. De balde, sen rexistro e sen anuncios.',
     'Study World Map · Aprende os países do mundo xogando',
     'Globo 3D e mapa plano interactivos para estudar países, capitais e bandeiras.',
     'Globo terráqueo cos países coloreados xunto ao panel de retos de Study World Map',
-    'Mapamundi interactivo (globo 3D e mapa plano) para aprender os 197 países do mundo, os seus continentes, capitais e bandeiras con cinco retos e repaso espazado.',
+    'Mapa interactivo (globo 3D e mapa plano) para estudar xeografía: os 197 países do mundo coas súas capitais e bandeiras, as provincias de España, ríos, montañas, mares, climas e poboación, con retos e repaso espazado.',
     'Calquera cun navegador moderno',
     'Práctica e repaso',
     'Xogo educativo',
     '["Xeografía", "Países do mundo", "Capitais do mundo", "Bandeiras do mundo"]',
-    'Study World Map: aprende os países do mundo xogando',
-    `Mapamundi interactivo para aprender os 197 países do mundo, os seus continentes, as súas capitais e as súas
-          bandeiras. Un globo 3D que se desenrola nun mapa plano, cinco retos con corrección inmediata e un
-          sistema de repaso que insiste no que aínda non sabes. De balde, sen anuncios e sen
-          rexistro.`,
+    'Study World Map: aprende xeografía xogando sobre o mapa',
+    `Mapa interactivo para estudar xeografía: os 197 países do mundo coas súas capitais e bandeiras, as
+          provincias de España, os ríos, montañas e mares do temario, os climas e a poboación. Un globo 3D
+          que se desenrola nun mapa plano, retos con corrección inmediata e un repaso que insiste no que
+          aínda non sabes. De balde, sen anuncios, sen rexistro e en galego.`,
     'Retos de xeografía',
     '<strong>Localizar:</strong> dámosche o nome dun país e búscalo no mapa.',
     '<strong>Continentes:</strong> dis en que continente está cada país.',

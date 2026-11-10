@@ -490,143 +490,18 @@ ${tablaHtml}
   }
 }
 
-// ───────────────────────── temas que la aplicación ya enseña (solo en español) ─────────────────────────
-// Geografía física, climas, población y «El planeta»: una página por tema con sus datos (los mismos
-// que usa la aplicación) y el enlace que abre el reto ya elegido. De momento solo en español: los
-// otros idiomas esperan a una revisión nativa antes de crecer. Tampoco se hace una página por país
-// ni por combinación: eso sería contenido de relleno.
+// ───────────────────────── temas que la aplicación ya enseña ─────────────────────────
+// Geografía física, climas, población y «El planeta»: una página por tema y por idioma, con sus
+// datos (los mismos que usa la aplicación) y el enlace que abre el reto ya elegido. Los textos de
+// la página están en scripts/data/temas/<idioma>.mjs; los nombres de climas y de capas salen del
+// diccionario de la aplicación (src/i18n/<idioma>.ts) y los de ríos, montañas y países, de los datos.
+// No se hace una página por país ni por combinación: eso sería contenido de relleno.
 
-const temas = [];
+/** Los temas de cada idioma, en el mismo orden: { es: [{ id, path, enlace, … }], en: […] }. */
+const TEMAS = {};
 {
-  const T = PAGINAS.es;
-  const site = { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` };
-  const num = (n) => Math.round(n).toLocaleString('es-ES');
-  const tabla = (head, rows) => `    <div class="table-wrap"><table>
-      <thead><tr>${head.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>
-      <tbody>
-${rows.map((cells) => `        <tr>${cells.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}
-      </tbody>
-    </table></div>`;
-  const lista = (items) => `    <ul class="cols">\n${items.map((item) => `      <li>${esc(item)}</li>`).join('\n')}\n    </ul>`;
-
-  // ── geografía física: lo que entra en el reto, por clases ──
   const fisico = JSON.parse(readFileSync('public/data/fisico.json', 'utf8')).features.filter((f) => f.quiz);
-  const deClase = (...kinds) =>
-    fisico
-      .filter((f) => kinds.includes(f.kind))
-      .map((f) => ({ name: f.names.es, elev: f.elev }))
-      .sort((a, b) => a.name.localeCompare(b.name, 'es'));
-  const FISICO = [
-    {
-      slug: 'rios-y-lagos-del-mundo',
-      zona: 'fisico-rios',
-      h1: 'Ríos y lagos del mundo: juego en el mapa',
-      enlace: 'Ríos y lagos',
-      description: 'Los ríos y lagos que se estudian en Primaria y ESO, con un juego gratis para localizarlos en un mapa interactivo con relieve. Sin registro ni anuncios.',
-      secciones: [
-        ['Ríos', deClase('rio')],
-        ['Lagos', deClase('lago')],
-      ],
-    },
-    {
-      slug: 'cordilleras-y-montanas-del-mundo',
-      zona: 'fisico-montanas',
-      h1: 'Cordilleras y montañas del mundo: juego en el mapa',
-      enlace: 'Cordilleras y montañas',
-      description: 'Las cordilleras y los picos que se estudian en Primaria y ESO, con su altitud, y un juego gratis para situarlos en un mapa interactivo con relieve.',
-      secciones: [
-        ['Cordilleras', deClase('cordillera')],
-        ['Picos', deClase('pico')],
-      ],
-    },
-    {
-      slug: 'oceanos-mares-y-estrechos',
-      zona: 'fisico-mares',
-      h1: 'Océanos, mares y estrechos: juego en el mapa',
-      enlace: 'Océanos, mares y estrechos',
-      description: 'Los cinco océanos y los mares, golfos y estrechos del temario de geografía, con un juego gratis para localizarlos en un mapa interactivo.',
-      secciones: [
-        ['Océanos', deClase('oceano')],
-        ['Mares', deClase('mar')],
-        ['Golfos y bahías', deClase('golfo')],
-        ['Estrechos y canales', deClase('estrecho')],
-      ],
-    },
-    {
-      slug: 'desiertos-penínsulas-e-islas'.normalize('NFD').replace(/[̀-ͯ]/g, ''),
-      zona: 'fisico-tierras',
-      h1: 'Desiertos, llanuras, penínsulas e islas: juego en el mapa',
-      enlace: 'Desiertos, penínsulas e islas',
-      description: 'Desiertos, mesetas, llanuras, penínsulas e islas del temario de geografía física, con un juego gratis para situarlos en un mapa interactivo.',
-      secciones: [
-        ['Desiertos', deClase('desierto')],
-        ['Mesetas y llanuras', deClase('meseta', 'llanura')],
-        ['Penínsulas y cabos', deClase('peninsula')],
-        ['Islas y archipiélagos', deClase('isla')],
-      ],
-    },
-  ];
-  for (const f of FISICO) {
-    const total = f.secciones.reduce((n, [, items]) => n + items.length, 0);
-    temas.push({
-      path: `/juego/${f.slug}/`,
-      enlace: f.enlace,
-      h1: f.h1,
-      description: f.description,
-      cta: [`/?mapa=fisico&amp;reto=localizar&amp;zona=${f.zona}`, `Jugar: localizar ${f.enlace.toLowerCase()} →`],
-      items: f.secciones.flatMap(([, items]) => items.map((i) => i.name)),
-      body: `    <p>Son ${total} lugares, los que suelen entrar en el temario de geografía física. En el juego se pregunta más lo que fallas, hasta que te lo sabes.</p>
-${f.secciones
-  .map(([titulo, items]) =>
-    items.some((i) => i.elev)
-      ? `    <h2>${esc(titulo)} <span class="count">${items.length}</span></h2>\n${tabla(['Nombre', 'Altitud'], items.map((i) => [esc(i.name), i.elev ? `${num(i.elev)} m` : '—']))}`
-      : `    <h2>${esc(titulo)} <span class="count">${items.length}</span></h2>\n${lista(items.map((i) => i.name))}`,
-  )
-  .join('\n')}
-    <p><small>Posiciones y altitudes de Natural Earth (dominio público), con correcciones contrastadas.</small></p>`,
-    });
-  }
-
-  // ── climas y población: con los datos de cada país del atlas ──
-  const paises = atlas.countries.filter((c) => c.kind === 'country').sort((a, b) => a.name.localeCompare(b.name, 'es'));
-  const conClima = paises.filter((c) => c.climate?.length);
-  temas.push({
-    path: '/juego/climas-del-mundo/',
-    enlace: 'Climas del mundo',
-    h1: 'Climas del mundo por países: lista y juego',
-    description: `Qué clima tiene cada país: ecuatorial, tropical, desértico, mediterráneo, oceánico, continental o polar. Lista de ${conClima.length} países y juego gratis en el mapa.`,
-    cta: ['/?reto=climas', 'Jugar: ¿qué clima tiene? →'],
-    items: Object.values(CLIMAS),
-    body: `    <p>Los diez climas que se estudian en la ESO, agrupados por zonas: cálida (ecuatorial, tropical, desértico y semiárido), templada (mediterráneo, oceánico, subtropical húmedo y continental) y fría (polar y de alta montaña).</p>
-    <h2>Clima de cada país <span class="count">${conClima.length} países</span></h2>
-    <p>De cada país se dan sus climas principales, de más a menos extendido en su territorio.</p>
-${tabla(['País', 'Climas'], conClima.map((c) => [`<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" /> ${esc(c.name)}`, esc(c.climate.map((k) => CLIMAS[k]).join(', '))]))}
-    <p><small>Calculado sobre el mapa mundial de Köppen-Geiger (Kottek et al., 2006), agrupando sus tipos en los climas escolares.</small></p>`,
-  });
-  const poblados = paises.filter((c) => c.population).sort((a, b) => b.population - a.population);
-  const year = poblados[0].populationYear;
-  temas.push({
-    path: '/juego/paises-mas-poblados/',
-    enlace: 'Países más poblados',
-    h1: 'Países más poblados del mundo: lista y juego',
-    description: `Los países del mundo ordenados por población (${year}), con su densidad en habitantes por km², y un juego gratis para comparar cuál tiene más habitantes.`,
-    cta: ['/?reto=habitantes', 'Jugar: ¿cuál tiene más habitantes? →'],
-    items: poblados.slice(0, 30).map((c) => c.name),
-    body: `    <h2>Población y densidad de cada país <span class="count">${poblados.length} países</span></h2>
-    <p>La densidad de población es el número de habitantes por kilómetro cuadrado: dice si un país está muy poblado o poco para su tamaño.</p>
-${tabla(
-  ['', 'País', `Habitantes (${year})`, 'Densidad'],
-  poblados.map((c, i) => [
-    String(i + 1),
-    `<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" /> ${esc(c.name)}`,
-    num(c.population),
-    c.areaKm2 ? `${num(c.population / c.areaKm2)} hab./km²` : '—',
-  ]),
-)}
-    <p><small>Población: Banco Mundial (indicador SP.POP.TOTL), CC BY 4.0. Superficie: mledoze/countries.</small></p>`,
-  });
-
-  // ── el planeta: las mismas capas que enseña la aplicación (src/ui/planetLayers.ts) ──
+  const SPANISH_FIRST = new Set(['ca', 'gl', 'eu']); // como src/ui/MapCanvas.tsx cuando falta un nombre
   const fuente = readFileSync('src/ui/planetLayers.ts', 'utf8');
   const capas = (nombre) => {
     const bloque = fuente.slice(fuente.indexOf(`export const ${nombre} = [`));
@@ -634,75 +509,191 @@ ${tabla(
     if (!filas.length) throw new Error(`build-pages: no se han podido leer las capas «${nombre}» de src/ui/planetLayers.ts`);
     return filas.map((m) => ({ name: m[1], detail: m[2], temp: /temp: '([^']+)'/.exec(m[0])?.[1] }));
   };
-  const interior = capas('INTERIOR').reverse();
-  temas.push({
-    path: '/capas-de-la-tierra/',
-    enlace: 'Capas de la Tierra',
-    h1: 'Capas de la Tierra: corteza, manto y núcleo',
-    description: 'Las capas del interior de la Tierra y sus discontinuidades, con profundidad, composición y temperatura, y un globo 3D que se abre para verlas por dentro.',
-    cta: ['/', 'Abrir el mapa y pulsar «El planeta» →'],
-    items: interior.map((c) => c.name),
-    body: `    <h2>Las capas, de fuera adentro</h2>
-${tabla(['Capa', 'Cómo es y hasta dónde llega', 'Temperatura'], interior.map((c) => [`<strong>${esc(c.name)}</strong>`, esc(c.detail), esc(c.temp ?? '—')]))}
-    <h2>Discontinuidades</h2>
-    <p>Son las superficies que separan una capa de la siguiente.</p>
-${tabla(['Discontinuidad', 'Qué separa'], capas('DISCONTINUITIES').map((c) => [`<strong>${esc(c.name)}</strong>`, esc(c.detail)]))}
-    <h2>Dentro del manto</h2>
-${tabla(['Zona', 'Qué es'], capas('MANTLE_ZONES').map((c) => [`<strong>${esc(c.name)}</strong>`, esc(c.detail)]))}
-    <p>Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.</p>
-    <p><small>Profundidades: USGS, IGN y el modelo PREM. Las temperaturas son estimaciones a partir de experimentos y modelos (Katsura 2022; Anzellini et al. 2013): de un estudio a otro cambian varios cientos de grados.</small></p>`,
-  });
-  const atmosfera = capas('ATMOSPHERE').reverse();
-  temas.push({
-    path: '/capas-de-la-atmosfera/',
-    enlace: 'Capas de la atmósfera',
-    h1: 'Capas de la atmósfera: de la troposfera a la exosfera',
-    description: 'Las cinco capas de la atmósfera, con su altura y lo que ocurre en cada una (el tiempo, la capa de ozono, los meteoros, las auroras), y un globo 3D para verlas.',
-    cta: ['/', 'Abrir el mapa y pulsar «El planeta» →'],
-    items: atmosfera.map((c) => c.name),
-    body: `    <h2>Las capas, del suelo hacia arriba</h2>
-${tabla(['Capa', 'Altura y qué ocurre en ella'], atmosfera.map((c) => [`<strong>${esc(c.name)}</strong>`, esc(c.detail)]))}
-    <p>Las alturas son aproximadas: los límites cambian con la latitud y la estación. Fuente: NASA.</p>`,
-  });
+  const LITOSFERA =
+    'Según cómo se comportan, las capas de fuera se nombran de otra forma: la litosfera es la parte rígida (la corteza y lo más alto del manto, unos 100 km), rota en placas; debajo está la astenosfera, sólida pero plástica, sobre la que esas placas se mueven.';
+  // Clases de accidente de cada página, por secciones, y la zona del reto que abre (?zona=…).
+  const FISICO = [
+    { id: 'rios', zona: 'fisico-rios', secciones: { rio: ['rio'], lago: ['lago'] } },
+    { id: 'montanas', zona: 'fisico-montanas', secciones: { cordillera: ['cordillera'], pico: ['pico'] } },
+    { id: 'mares', zona: 'fisico-mares', secciones: { oceano: ['oceano'], mar: ['mar'], golfo: ['golfo'], estrecho: ['estrecho'] } },
+    { id: 'tierras', zona: 'fisico-tierras', secciones: { desierto: ['desierto'], llanura: ['meseta', 'llanura'], peninsula: ['peninsula'], isla: ['isla'] } },
+  ];
 
-  for (const tema of temas) {
-    const otros = temas.filter((o) => o !== tema).map((o) => `<a href="${o.path}">${esc(o.enlace)}</a>`);
-    write(
-      tema.path,
-      page({
-        path: tema.path,
-        title: seoTitle(tema.h1),
-        ogTitle: tema.h1,
-        description: tema.description,
-        ogType: 'article',
-        jsonLd: [
-          {
-            '@context': 'https://schema.org',
-            '@type': ['WebPage', 'LearningResource'],
-            name: tema.h1,
-            url: `${SITE}${tema.path}`,
-            inLanguage: 'es',
-            isPartOf: site,
-            learningResourceType: 'Juego educativo',
-            educationalLevel: 'Educación Primaria y Secundaria',
-            isAccessibleForFree: true,
-            mainEntity: { '@type': 'ItemList', name: tema.enlace, numberOfItems: tema.items.length, itemListElement: tema.items.map((name, i) => ({ '@type': 'ListItem', position: i + 1, name })) },
-          },
-          migas([['Juegos', '/juego/'], [tema.enlace, tema.path]]),
-        ],
-        body: `    <h1>${esc(tema.h1)}</h1>
+  for (const lang of LANGS) {
+    const T = PAGINAS[lang];
+    const X = (await import(`./data/temas/${lang}.mjs`)).default;
+    const dic = lang === 'es' ? null : (await import(`../src/i18n/${lang}.ts`)).default;
+    const tr = (texto) => {
+      if (!dic) return texto;
+      if (!dic[texto]) throw new Error(`build-pages: a src/i18n/${lang}.ts le falta «${texto.slice(0, 60)}».`);
+      return dic[texto];
+    };
+    const home = base(lang);
+    const juego = `${home}${T.ruta.juego}/`;
+    const num = (n) => Math.round(n).toLocaleString(T.intl);
+    const bandera = (c) => `<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" /> ${esc(c.name)}`;
+    const tabla = (head, rows) => `    <div class="table-wrap"><table>
+      <thead><tr>${head.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>
+${rows.map((cells) => `        <tr>${cells.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}
+      </tbody>
+    </table></div>`;
+    const lista = (items) => `    <ul class="cols">\n${items.map((item) => `      <li>${esc(item)}</li>`).join('\n')}\n    </ul>`;
+    const temas = [];
+
+    // ── geografía física: lo que entra en el reto, por clases ──
+    const deClase = (kinds) =>
+      fisico
+        .filter((f) => kinds.includes(f.kind))
+        .map((f) => ({ name: f.names[lang] ?? (SPANISH_FIRST.has(lang) ? (f.names.es ?? f.names.en) : (f.names.en ?? f.names.es)), elev: f.elev }))
+        .sort((a, b) => a.name.localeCompare(b.name, T.intl));
+    for (const f of FISICO) {
+      const textos = X.fisico[f.id];
+      const secciones = Object.entries(f.secciones).map(([clave, kinds]) => [textos.secciones[clave], deClase(kinds)]);
+      const total = secciones.reduce((n, [, items]) => n + items.length, 0);
+      temas.push({
+        id: f.id,
+        path: `${juego}${X.slug[f.id]}/`,
+        enlace: textos.enlace,
+        h1: textos.h1,
+        description: textos.description,
+        cta: [`${home}?mapa=fisico&amp;reto=localizar&amp;zona=${f.zona}`, X.fisico.cta(lang === 'de' ? textos.enlace : textos.enlace.toLowerCase())],
+        items: secciones.flatMap(([, items]) => items.map((i) => i.name)),
+        body: `    <p>${esc(X.fisico.intro(total))}</p>
+${secciones
+  .map(([titulo, items]) =>
+    items.some((i) => i.elev)
+      ? `    <h2>${esc(titulo)} <span class="count">${items.length}</span></h2>\n${tabla([X.comun.nombre, X.comun.altitud], items.map((i) => [esc(i.name), i.elev ? `${num(i.elev)} m` : '—']))}`
+      : `    <h2>${esc(titulo)} <span class="count">${items.length}</span></h2>\n${lista(items.map((i) => i.name))}`,
+  )
+  .join('\n')}
+    <p><small>${esc(X.fisico.fuente)}</small></p>`,
+      });
+    }
+
+    // ── climas y población: con los datos de cada país del atlas ──
+    const paises = worldIn(lang)
+      .all.filter((c) => c.kind === 'country')
+      .sort((a, b) => a.name.localeCompare(b.name, T.intl));
+    const conClima = paises.filter((c) => c.climate?.length);
+    temas.push({
+      id: 'climas',
+      path: `${juego}${X.slug.climas}/`,
+      enlace: X.climas.enlace,
+      h1: X.climas.h1,
+      description: X.climas.description(conClima.length),
+      cta: [`${home}?reto=climas`, X.climas.cta],
+      items: Object.values(CLIMAS).map(tr),
+      body: `    <p>${esc(X.climas.intro)}</p>
+    <h2>${esc(X.climas.h2)} <span class="count">${esc(X.climas.cuenta(conClima.length))}</span></h2>
+    <p>${esc(X.climas.nota)}</p>
+${tabla([X.comun.pais, X.climas.columna], conClima.map((c) => [bandera(c), esc(c.climate.map((k) => tr(CLIMAS[k])).join(', '))]))}
+    <p><small>${esc(X.climas.fuente)}</small></p>`,
+    });
+    const poblados = paises.filter((c) => c.population).sort((a, b) => b.population - a.population);
+    const year = poblados[0].populationYear;
+    temas.push({
+      id: 'poblacion',
+      path: `${juego}${X.slug.poblacion}/`,
+      enlace: X.poblacion.enlace,
+      h1: X.poblacion.h1,
+      description: X.poblacion.description(year),
+      cta: [`${home}?reto=habitantes`, X.poblacion.cta],
+      items: poblados.slice(0, 30).map((c) => c.name),
+      body: `    <h2>${esc(X.poblacion.h2)} <span class="count">${esc(X.poblacion.cuenta(poblados.length))}</span></h2>
+    <p>${esc(X.poblacion.nota)}</p>
+${tabla(
+  ['', X.comun.pais, X.poblacion.habitantes(year), X.poblacion.densidad],
+  poblados.map((c, i) => [String(i + 1), bandera(c), num(c.population), c.areaKm2 ? `${num(c.population / c.areaKm2)} ${esc(X.poblacion.unidad)}` : '—']),
+)}
+    <p><small>${esc(X.poblacion.fuente)}</small></p>`,
+    });
+
+    // ── el planeta: las mismas capas que enseña la aplicación (src/ui/planetLayers.ts) ──
+    const fila = (c) => [`<strong>${esc(tr(c.name))}</strong>`, esc(tr(c.detail))];
+    const interior = capas('INTERIOR').reverse();
+    temas.push({
+      id: 'tierra',
+      path: `${home}${X.slug.tierra}/`,
+      enlace: X.tierra.enlace,
+      h1: X.tierra.h1,
+      description: X.tierra.description,
+      cta: [home, X.tierra.cta],
+      items: interior.map((c) => tr(c.name)),
+      body: `    <h2>${esc(X.tierra.h2)}</h2>
+${tabla([X.tierra.capa, X.tierra.como, tr('Temperatura')], interior.map((c) => [...fila(c), esc(c.temp ?? '—')]))}
+    <h2>${esc(tr('Discontinuidades'))}</h2>
+    <p>${esc(X.tierra.discontinuidades)}</p>
+${tabla([X.tierra.discontinuidad, X.tierra.separa], capas('DISCONTINUITIES').map(fila))}
+    <h2>${esc(tr('Dentro del manto'))}</h2>
+${tabla([X.tierra.zona, X.tierra.que], capas('MANTLE_ZONES').map(fila))}
+    <p>${esc(tr(LITOSFERA))}</p>
+    <p><small>${esc(X.tierra.fuente)}</small></p>`,
+    });
+    const atmosfera = capas('ATMOSPHERE').reverse();
+    temas.push({
+      id: 'atmosfera',
+      path: `${home}${X.slug.atmosfera}/`,
+      enlace: X.atmosfera.enlace,
+      h1: X.atmosfera.h1,
+      description: X.atmosfera.description,
+      cta: [home, X.atmosfera.cta],
+      items: atmosfera.map((c) => tr(c.name)),
+      body: `    <h2>${esc(X.atmosfera.h2)}</h2>
+${tabla([X.atmosfera.capa, X.atmosfera.altura], atmosfera.map(fila))}
+    <p>${esc(X.atmosfera.nota)}</p>`,
+    });
+
+    TEMAS[lang] = Object.assign(temas, { textos: X.comun });
+  }
+
+  const site = { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` };
+  TEMAS.es.forEach((_, i) => sitemap.push(Object.fromEntries(LANGS.map((l) => [l, TEMAS[l][i].path]))));
+  for (const lang of LANGS) {
+    const T = PAGINAS[lang];
+    const temas = TEMAS[lang];
+    const juego = `${base(lang)}${T.ruta.juego}/`;
+    temas.forEach((tema, i) => {
+      const otros = temas.filter((o) => o !== tema).map((o) => `<a href="${o.path}">${esc(o.enlace)}</a>`);
+      write(
+        tema.path,
+        page({
+          lang,
+          path: tema.path,
+          alternates: Object.fromEntries(LANGS.map((l) => [l, TEMAS[l][i].path])),
+          title: seoTitle(tema.h1),
+          ogTitle: tema.h1,
+          description: tema.description,
+          ogType: 'article',
+          jsonLd: [
+            {
+              '@context': 'https://schema.org',
+              '@type': ['WebPage', 'LearningResource'],
+              name: tema.h1,
+              url: `${SITE}${tema.path}`,
+              inLanguage: lang,
+              isPartOf: site,
+              learningResourceType: temas.textos.recurso,
+              educationalLevel: temas.textos.nivel,
+              isAccessibleForFree: true,
+              mainEntity: { '@type': 'ItemList', name: tema.enlace, numberOfItems: tema.items.length, itemListElement: tema.items.map((name, n) => ({ '@type': 'ListItem', position: n + 1, name })) },
+            },
+            migas([[temas.textos.juegos, juego], [tema.enlace, tema.path]], lang),
+          ],
+          body: `    <h1>${esc(tema.h1)}</h1>
     <p class="lead">${esc(tema.description)}</p>
     <a class="cta" href="${tema.cta[0]}">${esc(tema.cta[1])}</a>
     <p>${T.juego.gratis}</p>
 ${tema.body}
     <h2>${T.juego.sigue}</h2>
     <nav class="toc">${otros.join(' ')}</nav>
-    <p><a href="/juego/">Todos los juegos y temas</a> · <a href="${paisesPath('es')}">${T.juego.todos}</a></p>`,
-      }),
-    );
-    sitemap.push({ es: tema.path });
+    <p><a href="${juego}">${esc(temas.textos.todos)}</a> · <a href="${paisesPath(lang)}">${T.juego.todos}</a></p>`,
+        }),
+      );
+    });
   }
 }
+const temas = TEMAS.es; // la página de «no encontrado» solo existe en español
 
 // ───────────────────────── índice de juegos de cada idioma ─────────────────────────
 // /juego/, /en/game/…: todas las páginas de juego del idioma en una sola, a un clic de la portada.
@@ -730,7 +721,7 @@ for (const lang of LANGS) {
     <a class="cta" href="${base(lang)}">${T.paises.cta}</a>
 ${porZona.map((z) => `    <h2>${esc(z.name)}</h2>\n${nav(z.enlaces)}`).join('\n')}
 ${Object.values(MAPAS).length ? `    <h2>${esc(mapaEnlace(Object.values(MAPAS)[0], lang, Object.values(MAPAS)[0].paginas[0]))}</h2>\n${nav(mapas)}` : ''}${
-        lang === 'es' ? `\n    <h2>Geografía física, climas y población</h2>\n${nav(temas.filter((t) => t.path.startsWith('/juego/')).map((t) => [t.path, t.enlace]))}\n    <h2>El planeta</h2>\n${nav(temas.filter((t) => !t.path.startsWith('/juego/')).map((t) => [t.path, t.enlace]))}` : ''
+        `\n    <h2>${esc(TEMAS[lang].textos.indiceFisico)}</h2>\n${nav(TEMAS[lang].filter((t) => t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}\n    <h2>${esc(TEMAS[lang].textos.indicePlaneta)}</h2>\n${nav(TEMAS[lang].filter((t) => !t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}`
       }
     <p><a href="${paisesPath(lang)}">${T.juego.todos}</a></p>`,
     }),
@@ -787,8 +778,22 @@ for (const lang of LANGS) {
     ...PAGINAS.es.index.map((text, i) => [text, T.index[i].replace('{paises}', paisesPath(lang))]),
   ];
   if (T.index.length !== PAGINAS.es.index.length) throw new Error(`build-pages: a «${lang}» le faltan o le sobran textos de index.html.`);
-  // Los enlaces a las páginas que solo existen en español no van en las demás portadas.
-  let html = index.replace(/\s*<!-- solo-es -->[\s\S]*?<!-- \/solo-es -->/, '');
+  // La lista de enlaces a juegos y temas de index.html está escrita a mano en español; en los demás
+  // idiomas se genera con los mismos enlaces.
+  const a = (href, text) => `<a href="${href}">${esc(text)}</a>`;
+  const tema = (id) => TEMAS[lang].find((t) => t.id === id);
+  const grupos = [
+    [a(`${base(lang)}${T.ruta.juego}/`, T.paises.juegosAria)],
+    Object.values(MAPAS).flatMap((mapa) => mapa.paginas.map((pagina) => a(mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)))),
+    ['rios', 'montanas', 'mares', 'tierras'].map((id) => a(tema(id).path, tema(id).enlace)),
+    ['climas', 'poblacion'].map((id) => a(tema(id).path, tema(id).enlace)),
+    ['tierra', 'atmosfera'].map((id) => a(tema(id).path, tema(id).enlace)),
+  ];
+  const enlaces = `<h2>${esc(TEMAS[lang].textos.portada)}</h2>
+        <ul>
+${grupos.map((g) => `          <li>${g.join(' · ')}</li>`).join('\n')}
+        </ul>`;
+  let html = index.replace(/<!-- solo-es -->[\s\S]*?<!-- \/solo-es -->/, () => enlaces);
   for (const [from, to] of pairs) {
     if (!html.includes(from)) throw new Error(`build-pages: index.html ya no contiene «${from.slice(0, 60)}…» (scripts/data/idiomas/es.mjs).`);
     html = html.replaceAll(from, to);

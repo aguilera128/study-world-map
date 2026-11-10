@@ -35,7 +35,7 @@ export default {
       `Lista completa dos ${n} países do mundo e suas capitais, por continente, com bandeira e área. Pratique de graça em um mapa interativo.`,
     h1: 'Países do mundo e suas capitais',
     lead: (n) =>
-      `Os ${n} países do mundo organizados por continente, com capital, bandeira e área. Quando quiser aprendê-los, pratique no mapa interativo: ele pergunta mais o que você erra, até você saber.`,
+      `Os ${n} países do mundo organizados por continente, com capital, bandeira e área. Quando quiser aprendê-los, pratique no mapa interativo: ele pergunta mais o que você erra, até você aprender.`,
     cta: 'Praticar no mapa interativo →',
     juegos: 'Jogos por continente:',
     juegosAria: 'Jogos por continente',
@@ -78,7 +78,7 @@ export default {
       paises: (n, zona) =>
         `Damos o nome de um país da ${zona} e você precisa encontrá-lo no mapa. Se errar, o jogo diz qual país você tocou e pergunta de novo mais tarde, até você saber os ${n}.`,
       capitales: (n, zona) =>
-        `Ligue cada um dos ${n} países da ${zona} à sua capital: com opções, procurando o país no mapa ou escrevendo a resposta. As capitais que você erra voltam até você saber.`,
+        `Ligue cada um dos ${n} países da ${zona} à sua capital: com opções, procurando o país no mapa ou escrevendo a resposta. As capitais que você erra voltam até você aprender.`,
       banderas: (n, zona) =>
         `Reconheça as ${n} bandeiras da ${zona}: mostramos uma bandeira e você toca o país no mapa ou escolhe entre as opções. As que você erra se repetem com mais frequência.`,
     },
@@ -208,7 +208,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'até 2026, Malabo',
-        nota: 'Em janeiro de 2026 designou oficialmente como capital Ciudad de la Paz, no continente, em lugar de Malabo (na ilha de Bioko); a mudança faz-se aos poucos. Muitos livros ainda indicam Malabo.',
+        nota: 'Em janeiro de 2026 designou oficialmente como capital Ciudad de la Paz, no continente, no lugar de Malabo (na ilha de Bioko); a mudança está sendo feita aos poucos. Muitos livros ainda indicam Malabo.',
       },
       MWI: { capital: 'Lilongwe', capAlias: ['Lilongué'] },
       RWA: { capital: 'Kigali', capAlias: ['Quigali'] },
@@ -218,7 +218,7 @@ export default {
         alias: ['Suazilândia', 'Eswatini'],
         capital: 'Mbabane',
         capAlias: ['Mebabane', 'Lobamba'],
-        nota: 'Até 2018 chamava-se Suazilândia. Mbabane é a capital administrativa e Lobamba, a legislativa.',
+        nota: 'Até 2018 se chamava Suazilândia. Mbabane é a capital administrativa e Lobamba, a legislativa.',
       },
       TCD: { capital: 'N’Djamena', capAlias: ['Jamena', 'Ndjamena'] },
       TUN: { capital: 'Túnis', capAlias: ['Tunes'] },
@@ -249,25 +249,25 @@ export default {
       FLK: { nota: 'Território britânico reivindicado pela Argentina.' },
       ATA: { nota: 'Um continente sem países: é regido pelo Tratado da Antártida.' },
       ESH: { nota: 'Território à espera de descolonização, segundo a ONU.' },
-      XSG: { nombre: 'Glaciar de Siachen', nota: 'Área da Caxemira disputada entre a Índia e o Paquistão.' },
+      XSG: { nombre: 'Geleira de Siachen', nota: 'Área da Caxemira disputada entre a Índia e o Paquistão.' },
     },
   },
   index: [
-    'Jogo de países, capitais e bandeiras do mundo · Study World Map',
-    'Mapa-múndi interativo em 3D e 2D para aprender os 197 países do mundo, suas capitais e suas bandeiras. Grátis e sem cadastro: jogue, erre, revise e aprenda geografia no seu ritmo.',
+    'Study World Map: mapa interativo para estudar geografia',
+    'Globo 3D e mapa interativo para estudar países, capitais, bandeiras, províncias da Espanha, rios, montanhas e climas. Grátis, sem cadastro e sem anúncios.',
     'Study World Map · Aprenda os países do mundo jogando',
     'Globo 3D e mapa plano interativos para estudar países, capitais e bandeiras.',
     'Um globo terrestre com os países coloridos ao lado do painel de desafios do Study World Map',
-    'Mapa-múndi interativo (globo 3D e mapa plano) para aprender os 197 países do mundo, seus continentes, capitais e bandeiras com cinco desafios e repetição espaçada.',
-    'Qualquer um com um navegador moderno',
+    'Mapa interativo (globo 3D e mapa plano) para estudar geografia: os 197 países do mundo com suas capitais e bandeiras, as províncias da Espanha, rios, montanhas, mares, climas e população, com desafios e repetição espaçada.',
+    'Qualquer pessoa com um navegador moderno',
     'Prática e revisão',
     'Jogo educativo',
     '["Geografia", "Países do mundo", "Capitais do mundo", "Bandeiras do mundo"]',
-    'Study World Map: aprenda os países do mundo jogando',
-    `Mapa-múndi interativo para aprender os 197 países do mundo, seus continentes, suas capitais e suas
-          bandeiras. Um globo 3D que se desenrola em um mapa plano, cinco desafios com correção imediata e um
-          sistema de revisão que insiste no que você ainda não sabe. Grátis, sem anúncios e sem
-          cadastro.`,
+    'Study World Map: aprenda geografia jogando no mapa',
+    `Mapa interativo para estudar geografia: os 197 países do mundo com suas capitais e bandeiras, as
+          províncias da Espanha, os rios, montanhas e mares do conteúdo escolar, os climas e a população. Um globo 3D
+          que se desenrola em um mapa plano, desafios com correção imediata e uma revisão que insiste no que
+          você ainda não sabe. Grátis, sem anúncios, sem cadastro e em português.`,
     'Desafios de geografia',
     '<strong>Localizar:</strong> damos o nome de um país e você o procura no mapa.',
     '<strong>Continentes:</strong> você diz em que continente fica cada país.',

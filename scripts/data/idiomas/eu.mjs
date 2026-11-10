@@ -1,6 +1,6 @@
 // Euskara. Ver ./index.mjs para qué es cada apartado.
 // `zonas` va con el sufijo -ko («Europako herrialdeak»), y por eso las direcciones llevan su propio
-// `slug`. Traducción sin revisar por un hablante nativo: conviene que alguien la repase.
+// `slug`. Traducción revisada, pero no por un hablante nativo: conviene que alguien la repase.
 
 const SLUG_RETOS = { paises: 'herrialdeak', capitales: 'hiriburuak', banderas: 'banderak' };
 const SLUG_ZONAS = { europa: 'europako', asia: 'asiako', africa: 'afrikako', america: 'amerikako', oceania: 'ozeaniako' };
@@ -58,7 +58,7 @@ export default {
       ],
       [
         'Nola ikasi munduko herrialdeak eta hiriburuak?',
-        'Errepaso tartekatuarekin praktikatuz: Study World Mapek gehiagotan galdetzen ditu huts egiten dituzun herrialdeak, hutsegitea hiru galdera geroago errepikatzen du eta, partiden artean, herrialde bakoitza Leitner kutxen sistemarekin jarraitzen du, menderatu arte.',
+        'Errepaso tartekatuarekin praktikatuz: Study World Mapek gehiagotan galdetzen ditu huts egiten dituzun herrialdeak, hutsegitea hiru galdera geroago errepikatzen du eta, partiden artean, herrialde bakoitzaren jarraipena egiten du Leitner kutxen sistemarekin, menderatzen duzun arte.',
       ],
       [
         'Study World Map doakoa da? Erregistratu behar da?',
@@ -66,7 +66,7 @@ export default {
       ],
       [
         'Zer geografia-joko ditu?',
-        'Bost erronka: herrialdeak mapan kokatzea, zein kontinentetan dauden esatea, adierazitako herrialdea izendatzea, hiriburuak eta banderak. Mundu osoarekin, kontinenteka edo zeure herrialde-zerrenda batekin joka daiteke; zerrenda esteka baten bidez parteka daiteke.',
+        'Bost erronka: herrialdeak mapan kokatzea, zein kontinentetan dauden esatea, markatutako herrialdea izendatzea, hiriburuak eta banderak. Mundu osoarekin, kontinenteka edo zeure herrialde-zerrenda batekin joka daiteke; zerrenda esteka baten bidez parteka daiteke.',
       ],
     ],
   },
@@ -77,7 +77,7 @@ export default {
     gratis: 'Doan, erregistrorik eta iragarkirik gabe. Zure aurrerapena zure gailuan gordetzen da.',
     intro: {
       paises: (n, zona) =>
-        `${zona} herrialde baten izena ematen dizugu, eta mapan aurkitu behar duzu. Huts egiten baduzu, zein herrialde ukitu duzun esaten dizu eta geroago berriro galdetzen dizu, ${n} herrialdeak ikasi arte.`,
+        `${zona} herrialde baten izena ematen dizugu, eta mapan aurkitu behar duzu. Huts egiten baduzu, zein herrialde ukitu duzun esaten dizugu eta geroago berriro galdetzen dizugu, ${n} herrialdeak ikasi arte.`,
       capitales: (n, zona) =>
         `Lotu ${zona} ${n} herrialdeetako bakoitza bere hiriburuarekin: aukerekin, herrialdea mapan bilatuz edo erantzuna idatziz. Huts egiten dituzun hiriburuak berriro ateratzen dira, ikasi arte.`,
       banderas: (n, zona) =>
@@ -92,7 +92,7 @@ export default {
     sinFronteras: 'Lehorreko mugarik gabe',
     masGrande: (zona, pais, area) => `${zona} herrialderik handiena <strong>${pais}</strong> da (${area})`,
     masPequeno: (pais, area) => `, eta txikiena, <strong>${pais}</strong> (${area})`,
-    islas: (k, n) => `${n} herrialdeetatik ${k}k ez dute lehorreko mugarik beste inorekin.`,
+    islas: (k, n) => `Beste inorekin lehorreko mugarik ez duten herrialdeak: ${k} (${n} herrialdeetatik).`,
     banderaDe: (pais) => `Bandera: ${pais}`,
     sigue: 'Jarraitu praktikatzen',
     otrosRetos: (zona) => `${zona} beste erronka batzuk`,
@@ -151,7 +151,7 @@ export default {
       },
       CYP: { nota: 'Geografikoki Asian dago, baina Europar Batasuneko kidea da.' },
       // ── Asia ──
-      ARE: { alias: ['AEB', 'Emirerriak'] },
+      ARE: { alias: ['Emirerri Arabiar Batuak', 'Emirerriak'] },
       CHN: { capAlias: ['Beijing'] },
       IDN: { nota: 'Hiriburu berri bat eraikitzen ari da, Nusantara, Borneo uhartean; oraingoz, Jakarta da hiriburua.' },
       IND: { capital: 'New Delhi', capAlias: ['Delhi Berria'] },
@@ -188,7 +188,7 @@ export default {
         nota: '2026ko urtarrilean Ciudad de la Paz, kontinentean, izendatu zuen ofizialki hiriburu, Malaboren ordez (Bioko uhartean); lekualdaketa pixkanaka egiten ari da. Liburu askok Malabo diote oraindik.',
       },
       SOM: { capital: 'Mogadixu', capAlias: ['Muqdisho', 'Mogadiscio'] },
-      SSD: { nota: 'Munduko herrialderik gazteena da: 2011n independizatu zen Sudanetik.' },
+      SSD: { nota: 'Munduko herrialderik gazteena da: 2011n lortu zuen Sudanekiko independentzia.' },
       SWZ: { nombre: 'Eswatini', alias: ['Swazilandia'], capAlias: ['Lobamba'], nota: '2018ra arte Swazilandia zuen izena. Mbabane da hiriburu administratiboa, eta Lobamba, legegilea.' },
       TCD: { capAlias: ['Ndjamena'] },
       TZA: { capAlias: ['Dar es Salaam'], nota: 'Dodoma da hiriburu ofiziala; Dar es Salaam da hiririk handiena.' },
@@ -216,33 +216,33 @@ export default {
       FLK: { nombre: 'Malvinak', nota: 'Britainiar lurraldea, Argentinak aldarrikatua.' },
       ATA: { nota: 'Herrialderik gabeko kontinentea: Antartikako Itunak arautzen du.' },
       ESH: { nota: 'NBEren arabera, deskolonizatzeko dagoen lurraldea.' },
-      XSG: { nombre: 'Siachen glaziarra', nota: 'Kaxmirreko eremua, Indiak eta Pakistanek eztabaidatua.' },
+      XSG: { nombre: 'Siachen glaziarra', nota: 'Kaxmirreko eremua, Indiak eta Pakistanek biek aldarrikatua.' },
     },
   },
   index: [
-    'Munduko herrialdeen, hiriburuen eta banderen jokoa · Study World Map',
-    'Munduko mapa interaktiboa, 3Dn eta 2Dn, munduko 197 herrialdeak, haien hiriburuak eta banderak ikasteko. Doan eta erregistrorik gabe: jolastu, huts egin, errepasatu eta ikasi geografia zure erritmoan.',
+    'Study World Map: geografia ikasteko mapa interaktiboa',
+    '3D globoa eta mapa interaktiboa: herrialdeak, hiriburuak, banderak, Espainiako probintziak, ibaiak, mendiak eta klimak. Doan, erregistro eta iragarkirik gabe.',
     'Study World Map · Ikasi munduko herrialdeak jolastuz',
     '3D globo eta mapa lau interaktiboak, herrialdeak, hiriburuak eta banderak ikasteko.',
     'Herrialdeak koloreztatuta dituen lur-globoa, Study World Mapen erronken panelaren ondoan',
-    'Munduko mapa interaktiboa (3D globoa eta mapa laua), munduko 197 herrialdeak, kontinenteak, hiriburuak eta banderak bost erronkarekin eta errepaso tartekatuarekin ikasteko.',
-    'Nabigatzaile moderno bat duen edozein',
+    'Geografia ikasteko mapa interaktiboa (3D globoa eta mapa laua): munduko 197 herrialdeak, haien hiriburu eta banderekin, Espainiako probintziak, ibaiak, mendiak, itsasoak, klimak eta biztanleria, erronkekin eta errepaso tartekatuarekin.',
+    'Nabigatzaile moderno bat duen edonor',
     'Praktika eta errepasoa',
     'Hezkuntza-jokoa',
     '["Geografia", "Munduko herrialdeak", "Munduko hiriburuak", "Munduko banderak"]',
-    'Study World Map: ikasi munduko herrialdeak jolastuz',
-    `Munduko mapa interaktiboa, munduko 197 herrialdeak, kontinenteak, hiriburuak eta banderak
-          ikasteko. Mapa lau bihurtzen den 3D globo bat, berehala zuzentzen diren bost erronka eta
-          oraindik ez dakizunean tematzen den errepaso-sistema bat. Doan, iragarkirik eta
-          erregistrorik gabe.`,
+    'Study World Map: ikasi geografia mapan jolastuz',
+    `Geografia ikasteko mapa interaktiboa: munduko 197 herrialdeak, haien hiriburu eta banderekin,
+          Espainiako probintziak, ikasgaietako ibaiak, mendiak eta itsasoak, klimak eta biztanleria. Mapa lau
+          bihurtzen den 3D globo bat, berehala zuzentzen diren erronkak eta oraindik ez dakizuna behin eta berriz
+          galdetzen dizun errepasoa. Doan, iragarkirik eta erregistrorik gabe, eta euskaraz.`,
     'Geografia-erronkak',
     '<strong>Kokatu:</strong> herrialde baten izena ematen dizugu, eta mapan bilatzen duzu.',
     '<strong>Kontinenteak:</strong> herrialde bakoitza zein kontinentetan dagoen esaten duzu.',
-    '<strong>Izendatu:</strong> herrialde bat adierazten dugu mapan, eta zein den esaten duzu.',
+    '<strong>Izendatu:</strong> herrialde bat markatzen dugu mapan, eta zein den esaten duzu.',
     '<strong>Hiriburuak:</strong> herrialde bakoitza bere hiriburuarekin lotzen duzu.',
-    '<strong>Banderak:</strong> bandera bakoitza zein herrialdetakoa den ezagutzen duzu.',
+    '<strong>Banderak:</strong> bandera bakoitza zein herrialdetakoa den antzematen duzu.',
     'Nola laguntzen duen ikasten',
-    'Hutsegite bakoitzak zein herrialde ukitu duzun esaten du, eta zenbait saiakeraren ondoren erantzuna erakusten da.',
+    'Huts egiten duzun bakoitzean, zein herrialde ukitu duzun esaten dizu, eta zenbait saiakeraren ondoren erantzuna erakusten da.',
     'Huts egiten duzuna hiru galdera geroago galdetzen da berriro, eta partiden artean herrialde bakoitzak errepaso tartekatua du (Leitner kutxak).',
     'Mundu osoarekin, kontinenteka edo zeure herrialde-zerrenda batekin joka daiteke, esteka baten bidez partekatuta: azterketa bat prestatzeko aproposa.',
     'Mugikorrean dabil, instala daiteke eta, lehen bisitaren ondoren, konexiorik gabe ere bai.',

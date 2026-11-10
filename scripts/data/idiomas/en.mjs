@@ -47,15 +47,15 @@ export default {
     faq: [
       [
         'How many countries are there in the world?',
-        'Study World Map includes 197 countries: the 193 UN member states, its two observer states (Vatican City and Palestine), Taiwan and Kosovo. Other territories, such as Greenland or Puerto Rico, appear on the map but are not part of the quizzes.',
+        'Study World Map includes 197 countries: the 193 UN member states, the two UN observer states (Vatican City and Palestine), Taiwan and Kosovo. Other territories, such as Greenland or Puerto Rico, appear on the map but are not part of the quizzes.',
       ],
       [
         'Which countries have more than one capital?',
-        'Some split their functions between cities: Bolivia (Sucre is the constitutional capital and La Paz the seat of government), South Africa, the Netherlands or Sri Lanka. In the game any of them is accepted when you type the answer.',
+        'Some split their functions between cities: Bolivia (Sucre is the constitutional capital and La Paz the seat of government), South Africa, the Netherlands and Sri Lanka. The game accepts any of them when you type the answer.',
       ],
       [
         'How can I learn the countries and capitals of the world?',
-        'By practising with spaced repetition: Study World Map asks more often about the countries you miss, repeats a miss three questions later and, between games, tracks each country with a Leitner box system until you have mastered it.',
+        'By practising with spaced repetition: Study World Map asks more often about the countries you miss, brings a missed country back three questions later and, between games, tracks each country with a Leitner box system until you have mastered it.',
       ],
       [
         'Is Study World Map free? Do I need to sign up?',
@@ -74,7 +74,7 @@ export default {
     gratis: 'Free, no sign-up and no ads. Your progress is stored on your device.',
     intro: {
       paises: (n, zona) =>
-        `We give you the name of a country in ${zona} and you have to find it on the map. If you miss, it tells you which country you tapped and asks you again later, until you know all ${n}.`,
+        `We give you the name of a country in ${zona} and you have to find it on the map. If you get it wrong, the game tells you which country you tapped and asks you again later, until you know all ${n}.`,
       capitales: (n, zona) =>
         `Match each of the ${n} countries of ${zona} with its capital: multiple choice, finding the country on the map or typing the answer. The capitals you miss come back until you know them.`,
       banderas: (n, zona) =>
@@ -229,30 +229,31 @@ export default {
   },
   },
   index: [
-    "Countries, capitals and flags of the world game · Study World Map",
-    "Interactive 3D and 2D world map to learn the 197 countries of the world, their capitals and their flags. Free and with no sign-up: play, miss, review and learn geography at your own pace.",
+    "Study World Map: interactive map for studying geography",
+    "3D globe and interactive map to study countries, capitals, flags, the provinces of Spain, rivers, mountains and climates. Free, no sign-up and no ads.",
     "Study World Map · Learn the countries of the world by playing",
     "Interactive 3D globe and flat map to study countries, capitals and flags.",
     "A globe with the countries in colour next to the Study World Map challenge panel",
-    "Interactive world map (3D globe and flat map) to learn the 197 countries of the world, their continents, capitals and flags with five challenges and spaced repetition.",
-    "Any with a modern browser",
+    "Interactive map (3D globe and flat map) for studying geography: the 197 countries of the world with their capitals and flags, the provinces of Spain, rivers, mountains, seas, climates and population, with challenges and spaced repetition.",
+    "Any, with a modern browser",
     "Practice and review",
     "Educational game",
     "[\"Geography\", \"Countries of the world\", \"World capitals\", \"Flags of the world\"]",
-    "Study World Map: learn the countries of the world by playing",
-    `Interactive world map to learn the 197 countries of the world, their continents, their capitals and their
-          flags. A 3D globe that unrolls into a flat map, five challenges with instant feedback and a review
-          system that keeps asking what you do not know yet. Free, with no ads and no sign-up.`,
+    "Study World Map: learn geography by playing on the map",
+    `Interactive map for studying geography: the 197 countries of the world with their capitals and flags, the
+          provinces of Spain, the rivers, mountains and seas on the syllabus, climates and population. A 3D globe
+          that unrolls into a flat map, challenges with instant feedback and a review system that keeps coming
+          back to what you do not know yet. Free, with no ads, no sign-up and in English.`,
     "Geography challenges",
     "<strong>Locate:</strong> we give you the name of a country and you find it on the map.",
-    "<strong>Continents:</strong> you say which continent each country is in.",
-    "<strong>Name:</strong> we point to a country on the map and you say which one it is.",
-    "<strong>Capitals:</strong> you match each country with its capital.",
-    "<strong>Flags:</strong> you recognise which country each flag belongs to.",
+    "<strong>Continents:</strong> say which continent each country is in.",
+    "<strong>Name:</strong> we highlight a country on the map and you say which one it is.",
+    "<strong>Capitals:</strong> match each country with its capital.",
+    "<strong>Flags:</strong> recognise which country each flag belongs to.",
     "How it helps you learn",
-    "Every miss tells you which country you tapped and, after a few attempts, the answer is shown.",
+    "When you miss, you are told which country you tapped and, after a few attempts, shown the answer.",
     "What you miss is asked again three questions later, and between games each country follows spaced repetition (Leitner boxes).",
-    "You can play with the whole world, by continent or with your own list of countries, shared with a link: ideal for preparing a test.",
+    "You can play with the whole world, by continent or with your own list of countries, which you can share with a link: ideal for revising for a test.",
     "It works on mobile, can be installed and, after the first visit, also works offline.",
     `Looking for the full list? See the
           <a href="{paises}">countries of the world and their capitals</a>, by continent.`,
