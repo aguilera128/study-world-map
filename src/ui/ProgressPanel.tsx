@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import { createCode, deleteRemote, formatCode, joinCode, leaveSync, syncLink, useSync } from '../app/sync';
 import { PALETTES, Style } from '../engine/palette';
@@ -28,6 +28,45 @@ function LevelBar({ levels, total, colors }: { levels: number[]; total: number; 
   );
 }
 
+interface QrMaker {
+  addData(data: string): void;
+  make(): void;
+  getModuleCount(): number;
+  isDark(row: number, col: number): boolean;
+}
+
+/** Código QR de un texto, dibujado como SVG. La librería solo se descarga cuando hace falta. */
+function QrCode({ text, label }: { text: string; label: string }) {
+  const [path, setPath] = useState<{ d: string; size: number } | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void import('qrcode-generator').then((mod) => {
+      if (cancelled) return;
+      // el paquete exporta la función con `export =`: según el empaquetador llega tal cual o en `default`
+      const make = ((mod as { default?: unknown }).default ?? mod) as (type: 0, level: 'M') => QrMaker;
+      const qr = make(0, 'M');
+      qr.addData(text);
+      qr.make();
+      const n = qr.getModuleCount();
+      let d = '';
+      for (let row = 0; row < n; row++) {
+        for (let col = 0; col < n; col++) if (qr.isDark(row, col)) d += `M${col} ${row}h1v1h-1z`;
+      }
+      setPath({ d, size: n });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [text]);
+  if (!path) return <div className="h-36 w-36 rounded-lg bg-sunken" aria-hidden="true" />;
+  // Siempre negro sobre blanco y con margen: es lo que leen bien las cámaras, también en tema oscuro.
+  return (
+    <svg viewBox={`-3 -3 ${path.size + 6} ${path.size + 6}`} role="img" aria-label={label} className="h-36 w-36 shrink-0 rounded-lg bg-white" shapeRendering="crispEdges">
+      <path d={path.d} fill="#000" />
+    </svg>
+  );
+}
+
 /** Llevar el progreso a otro dispositivo con un código, sin cuentas. */
 function SyncCard() {
   const { code, status, at } = useSync();
@@ -46,7 +85,13 @@ function SyncCard() {
       <h2 className="label">{t('Seguir en otro dispositivo')}</h2>
       {code ? (
         <>
-          <p className="display tabular mt-2 text-2xl tracking-wide">{formatCode(code)}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-4">
+            <QrCode text={syncLink(code)} label={t('Código QR para abrir este progreso en otro dispositivo')} />
+            <div className="min-w-0">
+              <p className="display tabular text-2xl tracking-wide">{formatCode(code)}</p>
+              <p className="mt-1 text-sm text-ink-soft">{t('Escanéalo con la cámara del móvil o escribe el código.')}</p>
+            </div>
+          </div>
           <p className="mt-1 text-sm text-ink-soft">
             {status === 'offline'
               ? t('Sin conexión: se sincronizará cuando vuelva.')
@@ -65,6 +110,15 @@ function SyncCard() {
               <Icon name="link" size={16} />
               {copied ? t('Enlace copiado') : t('Copiar enlace')}
             </button>
+            {/* Abre el correo del propio usuario con el código ya escrito: no pasa por nuestro servidor. */}
+            <a
+              className="btn min-h-10 px-3 text-sm no-underline"
+              href={`mailto:?subject=${encodeURIComponent(t('Mi código de Study World Map'))}&body=${encodeURIComponent(
+                `${t('Mi código para seguir en otro dispositivo: {code}', { code: formatCode(code) })}\n\n${syncLink(code)}`,
+              )}`}
+            >
+              {t('Enviarme el código')}
+            </a>
             <button type="button" className="btn btn-ghost min-h-10 px-3 text-sm" onClick={leaveSync}>
               {t('Dejar de sincronizar')}
             </button>
