@@ -1505,6 +1505,17 @@ export class MapEngine {
     return fading || this.animating.size > 0;
   }
 
+  /** Qué se está viendo del planeta sobre el globo, si algo. */
+  get planet() {
+    return this.planetView;
+  }
+
+  /** El lienzo recién dibujado, para copiarlo a una imagen: hay que usarlo en esta misma tarea. */
+  snapshot(): HTMLCanvasElement {
+    this.render();
+    return this.canvas;
+  }
+
   private render() {
     const rig = this.rig;
     rig.apply();

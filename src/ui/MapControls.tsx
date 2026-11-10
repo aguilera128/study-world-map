@@ -7,6 +7,7 @@ import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
 import { useTheme, useWide } from './hooks';
+import { ExportMenu } from './ExportMenu';
 import { Icon, type IconName } from './Icon';
 import { t } from '../i18n';
 
@@ -189,6 +190,7 @@ export function MapControls() {
       </span>
       <Control icon="target" label={t('Vista general')} onClick={reset} />
       <LayersMenu />
+      <ExportMenu />
     </div>
   );
 }

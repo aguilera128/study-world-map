@@ -1,6 +1,6 @@
 import { t } from '../i18n';
 
-// Las capas del interior de la Tierra: las usan el diálogo «El planeta» y el aviso del mapa.
+// Las capas del interior de la Tierra y de la atmósfera: las usan el diálogo «El planeta» y el aviso del mapa.
 export const EARTH_KM = 6371;
 
 /** Radio exterior de cada capa, en km desde el centro, de dentro afuera. */
@@ -9,4 +9,13 @@ export const INTERIOR = [
   { id: 'outer', radius: 3471, color: '#f4a23a', name: t('Núcleo externo'), detail: t('Hierro y níquel líquidos · de 2900 a 5100 km') },
   { id: 'mantle', radius: 6336, color: '#d2562a', name: t('Manto'), detail: t('Roca que fluye muy despacio · hasta 2900 km de profundidad') },
   { id: 'crust', radius: EARTH_KM, color: '#8a6a48', name: t('Corteza'), detail: t('Roca sólida · de 5 a 70 km de grosor') },
+];
+
+/** De arriba abajo. */
+export const ATMOSPHERE = [
+  { id: 'exo', color: '#0f1a33', name: t('Exosfera'), detail: t('Más de 700 km · se va diluyendo en el espacio') },
+  { id: 'thermo', color: '#1d3566', name: t('Termosfera'), detail: t('De 80 a 700 km · auroras y Estación Espacial') },
+  { id: 'meso', color: '#2f5c9c', name: t('Mesosfera'), detail: t('De 50 a 80 km · aquí se desintegran los meteoros') },
+  { id: 'strato', color: '#5b93cf', name: t('Estratosfera'), detail: t('De 12 a 50 km · contiene la capa de ozono') },
+  { id: 'tropo', color: '#a9d2f0', name: t('Troposfera'), detail: t('Hasta unos 12 km · aquí están las nubes y el tiempo') },
 ];

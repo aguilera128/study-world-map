@@ -5,7 +5,7 @@ import { useSettings } from '../app/store';
 import { t } from '../i18n';
 import { Icon } from './Icon';
 import { LAND_GLOBE, LAND_LIMB } from './planetLand';
-import { EARTH_KM, INTERIOR } from './planetLayers';
+import { ATMOSPHERE, EARTH_KM, INTERIOR } from './planetLayers';
 
 // «El planeta»: el interior de la Tierra y las capas de la atmósfera, para estudiarlas.
 //
@@ -16,15 +16,6 @@ import { EARTH_KM, INTERIOR } from './planetLayers';
 // Cake»): troposfera hasta unos 12 km, estratosfera hasta 50, mesosfera hasta 80, termosfera hasta
 // 700 y exosfera por encima. El interior va a escala (menos la corteza, que no se vería); la atmósfera
 // no, y se dice. El movimiento del manto y del núcleo es una ilustración, no un dato.
-
-/** De arriba abajo. */
-const ATMOSPHERE = [
-  { id: 'exo', color: '#0f1a33', name: t('Exosfera'), detail: t('Más de 700 km · se va diluyendo en el espacio') },
-  { id: 'thermo', color: '#1d3566', name: t('Termosfera'), detail: t('De 80 a 700 km · auroras y Estación Espacial') },
-  { id: 'meso', color: '#2f5c9c', name: t('Mesosfera'), detail: t('De 50 a 80 km · aquí se desintegran los meteoros') },
-  { id: 'strato', color: '#5b93cf', name: t('Estratosfera'), detail: t('De 12 a 50 km · contiene la capa de ozono') },
-  { id: 'tropo', color: '#a9d2f0', name: t('Troposfera'), detail: t('Hasta unos 12 km · aquí están las nubes y el tiempo') },
-];
 
 /**
  * El gajo abierto tal como se ve en el globo: un triángulo esférico con un vértice en el polo y dos
