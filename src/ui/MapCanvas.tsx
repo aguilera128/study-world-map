@@ -159,6 +159,7 @@ export default function MapCanvas() {
         : null,
     );
   }, [engine, layers.guides]);
+  useEffect(() => engine?.setZones(layers.timezones), [engine, layers.timezones]);
   // Jugando a coordenadas: retícula con grados también sobre tierra, y sin la lectura de la posición
   // del cursor, que daría la respuesta.
   const playedMode = useApp((s) => s.session?.config.mode);
@@ -193,8 +194,8 @@ export default function MapCanvas() {
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);
 
   const mapState = useMemo(
-    () => computeMapState({ atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, byClimate: layers.climate }),
-    [atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, layers.climate],
+    () => computeMapState({ atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, byClimate: layers.climate, byZone: layers.timezones }),
+    [atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, layers.climate, layers.timezones],
   );
   // La primera vez que un motor recibe los estilos se aplican de golpe, sin transición.
   const styled = useRef<MapEngine | null>(null);

@@ -5,6 +5,14 @@ import { inputOf, resolveScope, showsTarget, type ModeId, type StudyList } from 
 import { mastery, type Outcome, type Progress } from '../game/progress';
 import { currentQuestion, type Session } from '../game/session';
 import type { Screen } from './store';
+import { offsetMinutes } from './time';
+
+const offsets = new Map<string, number | null>();
+/** Minutos respecto a UTC de una zona horaria, ahora. Se calcula una vez por zona. */
+function zoneOffset(zone: string): number | null {
+  if (!offsets.has(zone)) offsets.set(zone, offsetMinutes(zone, new Date()));
+  return offsets.get(zone)!;
+}
 
 /** Cómo debe pintarse el mapa: un estilo por país, cuáles responden al cursor y cuál late. */
 export interface MapState {
@@ -27,6 +35,8 @@ export interface MapInput {
   progress: Progress;
   /** Capa de climas: el mapa político se colorea por clima. */
   byClimate?: boolean;
+  /** Capa de husos horarios: cada país, del color de su hora actual. */
+  byZone?: boolean;
 }
 
 const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help, failed: Style.fail };
@@ -36,7 +46,7 @@ const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help
  * mapa político para explorar, mapa mudo durante el juego, colores de dominio en el progreso…
  */
 export function computeMapState(input: MapInput): MapState {
-  const { atlas, screen, session, selected, progressMode, draft, progress, byClimate } = input;
+  const { atlas, screen, session, selected, progressMode, draft, progress, byClimate, byZone } = input;
   const n = atlas.countries.length;
   const styles = new Uint8Array(n).fill(Style.muted);
   const active = new Uint8Array(n);
@@ -50,6 +60,12 @@ export function computeMapState(input: MapInput): MapState {
   const political = (i: number) => {
     const country = atlas.countries[i];
     if (byClimate && country.climate.length) return Style.climate + CLIMATE_KEYS.indexOf(country.climate[0]);
+    // Husos: seis colores que se repiten de hora en hora, así dos husos seguidos nunca coinciden.
+    // Es la hora oficial de hoy en la capital (con el horario de verano, si lo hay).
+    if (byZone && country.tz) {
+      const minutes = zoneOffset(country.tz);
+      if (minutes !== null) return Style.political + ((((Math.round(minutes / 60) % 6) + 6) % 6));
+    }
     return country.id === 'ATA' ? Style.ice : Style.political + country.color;
   };
 

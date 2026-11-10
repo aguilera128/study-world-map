@@ -680,3 +680,18 @@
   font-weight: 700;
   color: var(--ink-soft);
 }
+
+/* Los rótulos entran con el mapa (que aparece con una transición), no antes que él. */
+.feature-labels {
+  animation: feature-labels-in 1s ease both;
+}
+
+@keyframes feature-labels-in {
+  0%,
+  45% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

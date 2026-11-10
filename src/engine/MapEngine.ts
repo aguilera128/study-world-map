@@ -204,6 +204,7 @@ export class MapEngine {
   private guides: Mesh | null = null;
   private graticule: Mesh | null = null;
   private graticuleLabels: FeatureLabels | null = null;
+  private zoneLabels: FeatureLabels | null = null;
   private guideLabels: FeatureLabels | null = null;
   private riverMaterial: ShaderMaterial | null = null;
   private rivers: Mesh | null = null;
@@ -230,7 +231,7 @@ export class MapEngine {
     uNightDim: { value: 0.5 },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
@@ -634,6 +635,21 @@ export class MapEngine {
     mesh.renderOrder = 5;
     this.scene.add(mesh);
     return mesh;
+  }
+
+  /** Husos horarios teóricos: franjas de 15° sobre el mar, cada una con su diferencia respecto a UTC. */
+  setZones(on: boolean) {
+    this.own.ocean.uZones.value = on ? 1 : 0;
+    if (on && !this.zoneLabels && this.canvas.parentElement) this.zoneLabels = new FeatureLabels(this.canvas.parentElement);
+    const labels: MapFeature[] = [];
+    if (on) {
+      for (let hour = -11; hour <= 12; hour++) {
+        const text = hour === 0 ? 'UTC' : `UTC${hour > 0 ? '+' : '−'}${Math.abs(hour)}`;
+        for (const lat of [-38, 24]) labels.push({ kind: 'grado', rank: 0, lon: hour * 15, lat, text });
+      }
+    }
+    this.zoneLabels?.set(labels);
+    this.invalidate();
   }
 
   /**
@@ -1374,6 +1390,7 @@ export class MapEngine {
     this.labels?.place(rig, ALT.marker);
     this.guideLabels?.place(rig, ALT.marker);
     this.graticuleLabels?.place(rig, ALT.marker);
+    this.zoneLabels?.place(rig, ALT.marker);
     this.emit('view', {
       lon: rig.lon / DEG,
       lat: rig.lat / DEG,
@@ -1405,6 +1422,7 @@ export class MapEngine {
     this.labels?.dispose();
     this.guideLabels?.dispose();
     this.graticuleLabels?.dispose();
+    this.zoneLabels?.dispose();
     this.rivers?.geometry.dispose();
     this.disposed = true;
     cancelAnimationFrame(this.raf);

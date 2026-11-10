@@ -124,6 +124,7 @@ uniform float uGlint;     // fuerza del reflejo del agua (0 = mate)
 uniform float uTime;      // segundos, para el vaivén lento del agua
 uniform sampler2D uFlow;  // corrientes medias reales (scripts/build-currents.py)
 uniform float uFlowAmt;   // 1 = el agua se mueve con la corriente
+uniform float uZones;     // 1 = franjas de los husos horarios teóricos (15° cada uno)
 uniform float uFlowShow;  // 1 = capa «Corrientes oceánicas» a la vista
 uniform sampler2D uSeabed; // profundidad real del mar (scripts/build-depth.py)
 uniform float uDepth;     // cuánto se distinguen el mar profundo y las aguas someras (0 = color plano)
@@ -271,6 +272,11 @@ void main() {
     vec3 pull = flow.xyz * sqrt(flow.w);
     float streak = carried(geo * scale, pull * 3.0) + 0.5 * carried(geo * scale * 2.1, pull * 6.0);
     water += uFlowShow * smoothstep(0.02, 0.4, flow.w) * (0.3 + 1.2 * smoothstep(-0.15, 0.45, streak)) * vec3(0.48, 0.66, 0.70);
+  }
+  // Husos teóricos: una franja de 15° por hora, centrada en su meridiano (el de Greenwich, la del 0).
+  if (uZones > 0.0) {
+    float band = floor((vLonLat.x * 57.29578 + 7.5) / 15.0);
+    water *= 1.0 + uZones * (mod(band, 2.0) < 0.5 ? 0.09 : -0.09);
   }
   vec3 c = mix(water, uGrid, line * uGridAlpha);
   gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo) + glint(vNormal, vToEye, vGeo, flow), 1.0);

@@ -36,6 +36,7 @@ export type ThemeChoice = 'auto' | 'paper' | 'night';
 export const LAYERS = {
   grid: t('Meridianos y paralelos'),
   guides: t('Líneas imaginarias'),
+  timezones: t('Husos horarios'),
   relief: t('Relieve'),
   depth: t('Profundidad del mar'),
   currents: t('Corrientes oceánicas'),
@@ -52,7 +53,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones'];
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {

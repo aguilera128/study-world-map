@@ -14,14 +14,15 @@ fuente y licencia comprobadas. «Por comprobar» significa que no he abierto tod
 | Retícula, hora local, día y noche | capas y tarjeta de tiempo real |
 | Relieve submarino (plataforma, llanuras abisales, fosas, dorsales) | color del mar, batimetría de Natural Earth |
 
-## Estado a 10-nov-2026 (tarde)
+## Estado a 10-nov-2026 (noche)
 
 Hecho: relieve, capa «Montañas, ríos y mares», líneas imaginarias, corrientes oceánicas (movimiento
-del agua y capa) y el mapa «Geografía física» con los retos Localizar y Nombrar sobre 287 accidentes
-(la selección está en `scripts/data/fisico-temario.json`).
+del agua y capa), mapa «Geografía física» con los retos Localizar y Nombrar sobre 287 accidentes
+(la selección está en `scripts/data/fisico-temario.json`), reto de coordenadas con retícula de
+grados y capa de husos horarios.
 
-Pendiente: reto de coordenadas, husos horarios, corrientes con nombre, placas y volcanes, atmósfera,
-interior de la Tierra y mapas temáticos por país.
+Pendiente: corrientes con nombre (cálidas y frías), placas y volcanes, atmósfera, interior de la
+Tierra y mapas temáticos por país. Todos necesitan decidir fuente o diseño antes de empezar.
 
 Del temario no están en Natural Earth y habría que buscarles otra fuente: Apeninos, cordillera
 Cantábrica, sistemas Central e Ibérico, Júcar, Segura, Miño, estrechos de Bering, Ormuz y Dover,
@@ -46,7 +47,9 @@ desiertos, mares y océanos. Los nombres en los diez idiomas, de Wikidata (como 
 
 - Capa con ecuador, trópicos, círculos polares y meridiano de Greenwich, con su nombre.
 - Reto de coordenadas: «¿qué hay en 40° N, 3° O?» y al revés.
-- Husos horarios como capa: `ne_10m_time_zones` (2,0 MB).
+- Husos horarios como capa. No se usa `ne_10m_time_zones`: está desfasado (aún da −4:30 a Venezuela,
+  que cambió en 2016). La capa pinta cada país con su hora oficial de hoy, calculada en el navegador
+  a partir de su zona horaria, y dibuja sobre el mar las franjas teóricas de 15°.
 
 ### 3. Tierra dinámica
 

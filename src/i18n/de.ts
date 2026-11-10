@@ -270,6 +270,7 @@ const de: Record<string, string> = {
   'Coordenadas': 'Koordinaten',
   'Te damos una latitud y una longitud y dices qué país hay ahí.': 'Wir nennen dir Breite und Länge und du sagst, welches Land dort liegt.',
   '¿Qué país hay en estas coordenadas?': 'Welches Land liegt bei diesen Koordinaten?',
+  'Husos horarios': 'Zeitzonen',
   'Reflejo del agua': 'Wasserspiegelung',
   Estrellas: 'Sterne',
   'Día y noche': 'Tag und Nacht',

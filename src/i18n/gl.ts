@@ -270,6 +270,7 @@ const gl: Record<string, string> = {
   'Coordenadas': 'Coordenadas',
   'Te damos una latitud y una longitud y dices qué país hay ahí.': 'Dámosche unha latitude e unha lonxitude e dis que país hai aí.',
   '¿Qué país hay en estas coordenadas?': 'Que país hai nestas coordenadas?',
+  'Husos horarios': 'Fusos horarios',
   'Reflejo del agua': 'Reflexo da auga',
   Estrellas: 'Estrelas',
   'Día y noche': 'Día e noite',

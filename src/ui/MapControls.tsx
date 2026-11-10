@@ -22,7 +22,7 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
   );
 }
 
-const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'climate', 'grid', 'guides', 'glint', 'stars'];
+const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'climate', 'grid', 'guides', 'timezones', 'glint', 'stars'];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
 /** Botón de capas: qué se dibuja sobre el mapa. */
@@ -51,9 +51,15 @@ function LayersMenu() {
     <fieldset>
       <legend className="label mb-1">{title}</legend>
       {ids.map((id) => (
-        <label key={id} className="flex min-h-8 cursor-pointer items-center gap-2 text-sm">
-          <input type="checkbox" checked={layers[id]} onChange={(e) => setLayer(id, e.target.checked)} className="accent-(--accent)" />
+        // Interruptor: toda la fila se pulsa y mide 44 px de alto, para el dedo. Sigue siendo una
+        // casilla nativa (con teclado y lector de pantalla), solo que dibujada como interruptor.
+        <label key={id} className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-sm">
           {LAYERS[id]}
+          <input type="checkbox" role="switch" checked={layers[id]} onChange={(e) => setLayer(id, e.target.checked)} className="peer sr-only" />
+          <span
+            aria-hidden="true"
+            className="relative h-6 w-10 shrink-0 rounded-full border border-rule-strong bg-paper transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-[1.125rem] after:w-[1.125rem] after:rounded-full after:bg-ink-faint after:transition-transform peer-checked:border-transparent peer-checked:bg-(--accent) peer-checked:after:translate-x-4 peer-checked:after:bg-(--on-accent) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--accent)"
+          />
         </label>
       ))}
     </fieldset>
@@ -72,7 +78,7 @@ function LayersMenu() {
         <Icon name="layers" size={19} />
       </button>
       {open && (
-        <div className="float absolute bottom-0 right-12 flex w-52 flex-col gap-3 bg-surface! px-3.5 py-3" role="group" aria-label={t('Capas del mapa')}>
+        <div className="float absolute bottom-0 right-12 flex max-h-[28dvh] w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3 wide:max-h-[calc(100dvh-7rem)]" role="group" aria-label={t('Capas del mapa')}>
           {group(t('Mapa'), MAP_LAYERS)}
           {layers.climate && (
             // Leyenda del mapa de climas, con los mismos colores con los que se pinta.
