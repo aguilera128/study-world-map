@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#f1eadb"/>
-  <circle cx="16" cy="16" r="14.2" fill="none" stroke="#1b2a3a" stroke-width="1.6"/>
-  <g opacity="0.6"><g transform="rotate(45 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" fill="#1b2a3a"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" fill="#1b2a3a" opacity="0.5"/></g><g transform="rotate(135 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" fill="#1b2a3a"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" fill="#1b2a3a" opacity="0.5"/></g><g transform="rotate(225 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" fill="#1b2a3a"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" fill="#1b2a3a" opacity="0.5"/></g><g transform="rotate(315 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" fill="#1b2a3a"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" fill="#1b2a3a" opacity="0.5"/></g></g>
-  <g transform="rotate(90 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" fill="#1b2a3a"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" fill="#1b2a3a" opacity="0.35"/></g>
-  <g transform="rotate(180 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" fill="#1b2a3a"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" fill="#1b2a3a" opacity="0.35"/></g>
-  <g transform="rotate(270 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" fill="#1b2a3a"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" fill="#1b2a3a" opacity="0.35"/></g>
+  <style>.i{fill:#1b2a3a}.r{fill:none;stroke:#1b2a3a}.c{fill:#f1eadb;stroke:#1b2a3a}@media (prefers-color-scheme:dark){.i{fill:#efe7d6}.r,.c{stroke:#efe7d6}.c{fill:#0d1520}}</style>
+  <circle cx="16" cy="16" r="14.2" class="r" stroke-width="1.6"/>
+  <g opacity="0.6"><g transform="rotate(45 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" class="i"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" class="i" opacity="0.5"/></g><g transform="rotate(135 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" class="i"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" class="i" opacity="0.5"/></g><g transform="rotate(225 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" class="i"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" class="i" opacity="0.5"/></g><g transform="rotate(315 16 16)"><path d="M16 6.800000000000001L14.1 14.1L16 16z" class="i"/><path d="M16 6.800000000000001L17.9 14.1L16 16z" class="i" opacity="0.5"/></g></g>
+  <g transform="rotate(90 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" class="i"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" class="i" opacity="0.35"/></g>
+  <g transform="rotate(180 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" class="i"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" class="i" opacity="0.35"/></g>
+  <g transform="rotate(270 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" class="i"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" class="i" opacity="0.35"/></g>
   <g transform="rotate(0 16 16)"><path d="M16 2.8000000000000007L13.1 13.1L16 16z" fill="#d5462a"/><path d="M16 2.8000000000000007L18.9 13.1L16 16z" fill="#d5462a" opacity="0.6"/></g>
-  <circle cx="16" cy="16" r="1.8" fill="#f1eadb" stroke="#1b2a3a"/>
+  <circle cx="16" cy="16" r="1.8" class="c"/>
 </svg>

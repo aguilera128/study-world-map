@@ -183,7 +183,7 @@ function RosePoint({ rot, r, w, fill, light }: { rot: number; r: number; w: numb
 
 /**
  * Rosa de los vientos de la marca: cuatro puntas cardinales y cuatro diagonales, con el norte en
- * bermellón. public/favicon.svg es el mismo dibujo con colores fijos: si cambia uno, cambia el otro.
+ * bermellón. public/favicon.svg es el mismo dibujo, sin fondo y con colores para tema claro y oscuro: si cambia uno, cambia el otro.
  */
 export function Logo({ size = 30 }: { size?: number }) {
   return (
