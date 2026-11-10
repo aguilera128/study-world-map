@@ -1,8 +1,9 @@
+import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
 import { useApp, useSettings, type Screen } from '../app/store';
 import { useTheme } from './hooks';
 import { Icon, Logo, type IconName } from './Icon';
-import { t } from '../i18n';
+import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
 
 // Los rótulos de los botones aparecen algo más tarde que el resto del diseño ancho: con la marca
 // delante no caben en una línea hasta los 64rem.
@@ -23,6 +24,56 @@ function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName;
       <Icon name={icon} size={18} />
       <span className={LABELS}>{children}</span>
     </button>
+  );
+}
+
+/** Selector de idioma: cada idioma es una dirección distinta, así que la lista son enlaces. */
+function LangMenu() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Se cierra con Escape o al pulsar fuera.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onDown = (e: PointerEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        title={t('Idioma')}
+        aria-label={`${t('Idioma')}: ${LANGS[lang]}`}
+        aria-expanded={open}
+        className="btn btn-ghost min-h-10 px-2 text-sm font-bold uppercase tracking-wide"
+      >
+        {lang}
+      </button>
+      {open && (
+        <nav aria-label={t('Idioma')} className="float absolute right-0 top-full mt-1.5 flex min-w-36 flex-col bg-surface! p-1">
+          {(Object.keys(LANGS) as Lang[]).map((id) => (
+            <a
+              key={id}
+              href={homeOf(id)}
+              hrefLang={id}
+              lang={id}
+              aria-current={id === lang ? 'true' : undefined}
+              className={`rounded-lg px-3 py-1.5 text-sm font-semibold no-underline hover:bg-[rgb(var(--shadow)/0.08)] ${id === lang ? 'text-accent' : 'text-ink'}`}
+            >
+              {LANGS[id]}
+            </a>
+          ))}
+        </nav>
+      )}
+    </div>
   );
 }
 
@@ -105,6 +156,7 @@ export function TopBar() {
           ))}
         </div>
 
+        {!playing && <LangMenu />}
         <button
           type="button"
           onClick={() => setTheme(theme === 'night' ? 'paper' : 'night')}

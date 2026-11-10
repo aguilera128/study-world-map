@@ -7,7 +7,7 @@ import { Icon } from './Icon';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
 import { Panel, Segmented, Step } from './primitives';
 import { ScopeChips } from './ScopeChips';
-import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
+import { t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
@@ -197,20 +197,6 @@ export function HomePanel() {
         >
           {t('Configurar cookies')}
         </button>
-        {' · '}
-        {/* Cada idioma es una dirección distinta: cambiar de idioma es ir a ella. */}
-        <select
-          aria-label={t('Idioma')}
-          value={lang}
-          onChange={(e) => window.location.assign(homeOf(e.target.value as Lang))}
-          className="cursor-pointer rounded border border-rule-strong bg-surface px-1 py-0.5 text-ink-soft"
-        >
-          {Object.entries(LANGS).map(([id, name]) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
-        </select>
       </p>
     </Panel>
   );
