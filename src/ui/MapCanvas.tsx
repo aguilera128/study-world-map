@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { setEngine } from '../app/engineRef';
-import { formatCoords } from '../app/format';
+import { formatCompact, formatCoords } from '../app/format';
 import { climateText } from '../game/climate';
 import { computeMapState } from '../app/mapState';
 import { useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
@@ -166,7 +166,12 @@ export default function MapCanvas() {
       engine.on('pointer', (info) => {
         setHovered(info ? info.index : -1);
         const tip = tipRef.current;
-        if (tip && info) tip.style.transform = `translate3d(${info.x + 16}px, ${info.y + 18}px, 0)`;
+        if (tip && info) {
+          // A la derecha del cursor; si no cabe en la pantalla, a su izquierda.
+          const width = tip.offsetWidth;
+          const x = info.x + 16 + width > window.innerWidth - 8 ? Math.max(8, info.x - 16 - width) : info.x + 16;
+          tip.style.transform = `translate3d(${x}px, ${info.y + 18}px, 0)`;
+        }
         if (coordsRef.current) coordsRef.current.textContent = info ? formatCoords(info.lon, info.lat) : '';
       }),
     ];
@@ -286,6 +291,11 @@ export default function MapCanvas() {
               </span>
             )}
             {country.climate.length > 0 && <span className="font-normal text-ink-soft">· {climateText(country.climate, 2)}</span>}
+            {country.population && (
+              <span className="tabular font-normal text-ink-soft">
+                · {t('{n} hab. ({year})', { n: formatCompact(country.population), year: country.populationYear ?? '' })}
+              </span>
+            )}
             {layers.population && density(country) !== null && (
               <span className="tabular font-normal text-ink-soft">· {t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}</span>
             )}

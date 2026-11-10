@@ -347,6 +347,7 @@ const ca: Record<string, string> = {
   'Mi código de Study World Map': 'El meu codi de Study World Map',
   'Mi código para seguir en otro dispositivo: {code}': 'El meu codi per continuar en un altre dispositiu: {code}',
   'Enviarme el código': 'Envia’m el codi',
+  '{n} hab. ({year})': '{n} hab. ({year})',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',

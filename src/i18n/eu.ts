@@ -347,6 +347,7 @@ const eu: Record<string, string> = {
   'Mi código de Study World Map': 'Nire Study World Map kodea',
   'Mi código para seguir en otro dispositivo: {code}': 'Beste gailu batean jarraitzeko nire kodea: {code}',
   'Enviarme el código': 'Bidali kodea niri',
+  '{n} hab. ({year})': '{n} bizt. ({year})',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',

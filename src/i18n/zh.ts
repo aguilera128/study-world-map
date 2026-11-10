@@ -346,6 +346,7 @@ const zh: Record<string, string> = {
   'Mi código de Study World Map': '我的 Study World Map 代码',
   'Mi código para seguir en otro dispositivo: {code}': '我在其他设备上继续使用的代码：{code}',
   'Enviarme el código': '把代码发给自己',
+  '{n} hab. ({year})': '{n} 人（{year}）',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

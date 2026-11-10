@@ -81,7 +81,12 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
           )}
           {country.climate.length > 0 && <Fact label={t('Clima')}>{climateText(country.climate)}</Fact>}
           {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
-          {country.population && <Fact label={t('Población')}>{country.population.toLocaleString(LOCALE)}</Fact>}
+          {country.population && (
+            <Fact label={t('Población')}>
+              {country.population.toLocaleString(LOCALE)}
+              {country.populationYear && <span className="font-normal text-ink-soft"> ({country.populationYear})</span>}
+            </Fact>
+          )}
           {level && (
             <Fact label={t('Densidad')}>
               {t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}

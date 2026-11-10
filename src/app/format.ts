@@ -28,5 +28,10 @@ export function formatCoords(lon: number, lat: number): string {
   return `${part(lat, 'N', 'S')} ${part(lon, 'E', t('O'))}`;
 }
 
+const compact = new Intl.NumberFormat(LOCALE, { notation: 'compact', maximumFractionDigits: 1 });
+
+/** 49 355 143 → «49,4 M» */
+export const formatCompact = (value: number): string => compact.format(value);
+
 /** «1 país» / «3 países» */
 export const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;

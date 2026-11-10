@@ -412,6 +412,8 @@ const entidades = codigos.map((codigo) => {
     areaKm2: Math.round(wcByIso3.get(codigo)?.area ?? 0) || undefined,
     // Banco Mundial (scripts/data/poblacion.worldbank.json); sin dato para algunos territorios.
     population: POBLACION.values[codigo] ?? POBLACION_EXTRA.values[codigo],
+    // Año del dato: el de la serie del Banco Mundial o, en los dos que vienen de Wikidata, el suyo.
+    populationYear: POBLACION.values[codigo] ? POBLACION.year : POBLACION_EXTRA.values[codigo] ? Number(POBLACION_EXTRA.dates[codigo].slice(0, 4)) : undefined,
     // zona horaria de la capital y si en el país hay más de una hora
     tz: hora.zona ?? undefined,
     tzMulti: hora.variasHoras || undefined,

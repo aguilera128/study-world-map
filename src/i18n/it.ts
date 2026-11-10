@@ -346,6 +346,7 @@ const it: Record<string, string> = {
   'Mi código de Study World Map': 'Il mio codice di Study World Map',
   'Mi código para seguir en otro dispositivo: {code}': 'Il mio codice per continuare su un altro dispositivo: {code}',
   'Enviarme el código': 'Inviami il codice',
+  '{n} hab. ({year})': '{n} ab. ({year})',
   'Reflejo del agua': 'Riflesso dell’acqua',
   Estrellas: 'Stelle',
   'Día y noche': 'Giorno e notte',

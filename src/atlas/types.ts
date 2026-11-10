@@ -54,6 +54,8 @@ export interface RawCountry {
   areaKm2?: number;
   /** Habitantes (Banco Mundial). */
   population?: number;
+  /** Año al que corresponde ese dato. */
+  populationYear?: number;
   tz?: string;
   tzMulti?: boolean;
   /** Polígonos → anillos (exterior y huecos) → enteros cuantizados en deltas [x0, y0, dx, dy, …]. */
@@ -116,6 +118,8 @@ export interface Country {
   areaKm2?: number;
   /** Habitantes (Banco Mundial), si hay dato. */
   population?: number;
+  /** Año al que corresponde ese dato. */
+  populationYear?: number;
   /** Zona horaria (IANA) de la capital. */
   tz?: string;
   /** El país tiene más de una hora oficial: la de `tz` es solo la de la capital. */

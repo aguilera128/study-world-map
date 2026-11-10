@@ -346,6 +346,7 @@ const gl: Record<string, string> = {
   'Mi código de Study World Map': 'O meu código de Study World Map',
   'Mi código para seguir en otro dispositivo: {code}': 'O meu código para seguir noutro dispositivo: {code}',
   'Enviarme el código': 'Enviarme o código',
+  '{n} hab. ({year})': '{n} hab. ({year})',
   'Reflejo del agua': 'Reflexo da auga',
   Estrellas: 'Estrelas',
   'Día y noche': 'Día e noite',
