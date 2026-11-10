@@ -48,6 +48,8 @@ import {
   MARKER_VERT,
   OCEAN_FRAG,
   OCEAN_VERT,
+  SKY_FRAG,
+  SKY_VERT,
   STAR_FRAG,
   STAR_VERT,
   SHEET_FRAG,
@@ -354,6 +356,15 @@ export class MapEngine {
 
     // ── capas, de abajo arriba ──
     const sky = { transparent: true, depthWrite: false };
+    // La Vía Láctea, detrás de las estrellas: un cuadrado a pantalla completa (71 KB de textura).
+    const galaxy = new TextureLoader().load('/data/milkyway.webp', () => this.invalidate());
+    galaxy.wrapS = RepeatWrapping;
+    galaxy.generateMipmaps = false;
+    galaxy.minFilter = LinearFilter;
+    this.disposables.push(galaxy);
+    const screen = new BufferGeometry();
+    screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
+    this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: { value: galaxy } }, sky)), -2);
     this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, this.own.stars, sky)), -1);
     const ocean = oceanGeometry();
     this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);

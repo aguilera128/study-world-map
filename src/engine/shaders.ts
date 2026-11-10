@@ -723,6 +723,39 @@ void main() {
 // motor es la Tierra (ejes geográficos), la dirección de una estrella es la del punto que la tiene
 // en el cénit: longitud = ascensión recta − hora sidérea, latitud = declinación.
 
+// La Vía Láctea: el cielo real (NASA Deep Star Maps 2020, Gaia DR2) en un cuadrado que llena la
+// pantalla, al fondo. Cada píxel mira en una dirección; de ella salen su ascensión recta y su
+// declinación, y con ellas el punto de la imagen. Gira con la hora sidérea, como las estrellas.
+export const SKY_VERT = glsl`
+varying vec3 vDir;
+
+void main() {
+  // de la pantalla a la dirección de la mirada, deshaciendo la proyección y el giro de la cámara
+  vec3 view = vec3(position.x / projectionMatrix[0][0], position.y / projectionMatrix[1][1], -1.0);
+  vDir = view * mat3(viewMatrix);
+  gl_Position = vec4(position.xy, 1.0, 1.0);
+}
+`;
+
+export const SKY_FRAG = glsl`
+uniform sampler2D uSky;
+uniform float uSidereal;
+uniform float uMorph;
+uniform float uStars;
+varying vec3 vDir;
+
+void main() {
+  vec3 dir = normalize(vDir);
+  float ra = atan(dir.x, dir.z) + uSidereal;
+  // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
+  vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(dir.y, -1.0, 1.0)) / 3.14159265);
+  vec3 glow = texture2D(uSky, uv).rgb;
+  float a = clamp(max(glow.r, max(glow.g, glow.b)) * 1.6, 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
+  if (a <= 0.003) discard;
+  gl_FragColor = vec4(glow * 1.25 / max(a, 0.2), a * 0.9);
+}
+`;
+
 export const STAR_VERT = glsl`
 uniform float uSidereal; // hora sidérea de Greenwich, en radianes
 uniform float uDpr;
