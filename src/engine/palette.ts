@@ -18,9 +18,11 @@ export const Style = {
   political: 6,
   /** Niveles de dominio en la vista de progreso: mastery + (0…4). */
   mastery: 12,
+  /** La Antártida en el mapa político: hielo, no un color del reparto. */
+  ice: 17,
 } as const;
 
-export const STYLE_COUNT = 17;
+export const STYLE_COUNT = 18;
 
 export interface StyleDef {
   color: string;
@@ -118,6 +120,7 @@ export const PAPER: Palette = {
     s('#f3d27e'),
     s('#c3dc94'),
     s('#62b77c'),
+    s('#eef3f4'), // hielo
   ],
 };
 
@@ -155,18 +158,21 @@ export const NIGHT: Palette = {
     s('#e26d5c', 0.18, 0.6), // fail
     s('#f3ead7', 0.62, 1), // target
     // mapa político
-    s('#9c6b5e'),
-    s('#a8924f'),
-    s('#6f8f5c'),
-    s('#7f6f9c'),
-    s('#b0845a'),
-    s('#8f8068'),
+    // Más claros que el océano y entre sí distintos, pero lejos del verde, ámbar y rojo de las
+    // respuestas (ok, help, fail), para que un país acertado no se confunda con uno «verde».
+    s('#b98a7c'),
+    s('#c9b163'),
+    s('#8fae7a'),
+    s('#a08fc2'),
+    s('#cf9a6a'),
+    s('#aa9c84'),
     // dominio
     s('#3b5169'),
     s('#a05a4c'),
     s('#b0914a'),
     s('#7c9a58'),
     s('#4fa36c'),
+    s('#dbe6ee'), // hielo
   ],
 };
 

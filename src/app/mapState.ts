@@ -39,7 +39,7 @@ export function computeMapState(input: MapInput): MapState {
   const active = new Uint8Array(n);
   const markers = new Uint8Array(n);
   let pulse = -1;
-  const political = (i: number) => Style.political + atlas.countries[i].color;
+  const political = (i: number) => (atlas.countries[i].id === 'ATA' ? Style.ice : Style.political + atlas.countries[i].color);
 
   switch (screen) {
     case 'home':
