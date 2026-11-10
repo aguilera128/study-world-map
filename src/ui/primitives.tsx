@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
-import { useRef, type ReactNode } from 'react';
+import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { t } from '../i18n';
 import { usePad, useWide } from './hooks';
 
 export function Flag({ a2, height = 24, className = '' }: { a2: string | null; height?: number; className?: string }) {
@@ -66,6 +67,21 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
   const ref = useRef<HTMLElement>(null);
   const wide = useWide();
   usePad(ref, wide ? 'left' : 'bottom', wide ? 0.68 : 1);
+  // En el móvil la hoja se pliega con su tirador (deslizándolo hacia abajo o tocándolo) y deja a la
+  // vista solo su última fila —el botón de empezar— para ver el mapa entero.
+  const [folded, setFolded] = useState(false);
+  const dragFrom = useRef<number | null>(null);
+  const fold = (value: boolean) => {
+    if (value && ref.current) ref.current.scrollTop = 0;
+    setFolded(value);
+  };
+  const onHandleUp = (e: ReactPointerEvent) => {
+    const moved = dragFrom.current === null ? 0 : e.clientY - dragFrom.current;
+    dragFrom.current = null;
+    // Un toque sin arrastre alterna; un arrastre manda según su sentido.
+    fold(Math.abs(moved) < 12 ? !folded : moved > 0);
+  };
+  const closed = !wide && folded;
   return (
     <motion.aside
       ref={ref}
@@ -74,9 +90,24 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
       animate={{ opacity: 1, x: 0, y: 0 }}
       exit={{ opacity: 0, x: wide ? -28 : 0, y: wide ? 0 : 40 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="panel fixed inset-x-0 bottom-0 z-30 max-h-[60dvh] overflow-y-auto overscroll-contain wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem] wide:overflow-hidden"
+      className={`panel fixed inset-x-0 bottom-0 z-30 overscroll-contain transition-[max-height] duration-300 wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem] wide:overflow-hidden ${closed ? 'max-h-[6.05rem] overflow-hidden' : 'max-h-[60dvh] overflow-y-auto'}`}
     >
-      <div className="panel-body stagger wide:max-w-[30rem] px-5 pb-7 pt-5 wide:pb-8 wide:pl-10 wide:pr-[4.5rem] wide:pt-[clamp(4.75rem,10vh,6rem)]">{children}</div>
+      {!wide && (
+        <button
+          type="button"
+          className="sheet-handle"
+          aria-expanded={!folded}
+          aria-label={folded ? t('Desplegar el panel') : t('Plegar el panel')}
+          title={folded ? t('Desplegar el panel') : t('Plegar el panel')}
+          onPointerDown={(e) => {
+            dragFrom.current = e.clientY;
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }}
+          onPointerUp={onHandleUp}
+          onPointerCancel={() => (dragFrom.current = null)}
+        />
+      )}
+      <div className="panel-body stagger wide:max-w-[30rem] px-5 pb-7 pt-1 wide:pt-5 wide:pb-8 wide:pl-10 wide:pr-[4.5rem] wide:pt-[clamp(4.75rem,10vh,6rem)]">{children}</div>
     </motion.aside>
   );
 }

@@ -404,6 +404,8 @@ const zh: Record<string, string> = {
   'Moneda': '货币',
   'Idiomas': '语言',
   'Más sobre {x} en Wikipedia': '在维基百科了解更多关于{x}的信息',
+  'Plegar el panel': '收起面板',
+  'Desplegar el panel': '展开面板',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

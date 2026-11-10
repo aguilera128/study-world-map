@@ -404,6 +404,8 @@ const gl: Record<string, string> = {
   'Moneda': 'Moeda',
   'Idiomas': 'Linguas',
   'Más sobre {x} en Wikipedia': 'Máis sobre {x} na Wikipedia',
+  'Plegar el panel': 'Pregar o panel',
+  'Desplegar el panel': 'Despregar o panel',
   'Reflejo del agua': 'Reflexo da auga',
   Estrellas: 'Estrelas',
   'Día y noche': 'Día e noite',

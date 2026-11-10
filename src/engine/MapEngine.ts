@@ -316,6 +316,10 @@ export class MapEngine {
   private readonly resizeObserver: ResizeObserver;
   private readonly abort = new AbortController();
   private disposed = false;
+  /** Dibujo por software: sin animación ambiental. */
+  private weak = false;
+  /** Los sombreadores ya están compilados: hasta entonces no se dibuja. */
+  private compiled = false;
 
   constructor(canvas: HTMLCanvasElement, atlas: Atlas, mesh: MeshData, options: EngineOptions) {
     this.canvas = canvas;
@@ -328,6 +332,11 @@ export class MapEngine {
 
     this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
     this.renderer.setClearColor(0x000000, 0);
+    // Sin tarjeta gráfica (dibujo por software: equipos muy modestos, navegadores automáticos como
+    // el de PageSpeed) cada fotograma cuesta mucho: ahí no hay animación ambiental ni giro solo.
+    const gl = this.renderer.getContext();
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    this.weak = /swiftshader|llvmpipe|software|basic render/i.test(String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : ''));
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
     const n = this.count;
@@ -431,7 +440,14 @@ export class MapEngine {
     // Arranca en la vista general; resize() la ajusta al tamaño real del lienzo.
     this.intent = () => this.homePose();
     this.resize();
-    this.invalidate();
+    // Los sombreadores se compilan en segundo plano (si el navegador puede) en vez de congelar la
+    // página en el primer fotograma: son grandes, y en equipos lentos tardaban varios segundos.
+    const ready = () => {
+      this.compiled = true;
+      this.invalidate();
+    };
+    this.rig.apply();
+    this.renderer.compileAsync(this.scene, this.rig.camera).then(ready, ready);
   }
 
   // ───────────────────────── construcción ─────────────────────────
@@ -1062,7 +1078,7 @@ export class MapEngine {
 
   /** Giro lento del globo mientras nadie lo toca. */
   setAutoRotate(on: boolean) {
-    this.autoRotate = on && !this.reducedMotion;
+    this.autoRotate = on && !this.reducedMotion && !this.weak;
     this.invalidate();
   }
 
@@ -1441,6 +1457,7 @@ export class MapEngine {
 
   private tick = (now: number) => {
     this.raf = 0;
+    if (!this.compiled) return; // se vuelve a pedir fotograma al terminar de compilar
     const dt = this.lastFrame ? clamp((now - this.lastFrame) / 1000, 0, 0.05) : 1 / 60;
     const busyCamera = this.stepCamera(dt, now);
     const busyState = this.stepState(dt, now);
@@ -1455,7 +1472,7 @@ export class MapEngine {
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.seaTimer) {
+    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.

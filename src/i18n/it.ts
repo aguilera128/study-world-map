@@ -404,6 +404,8 @@ const it: Record<string, string> = {
   'Moneda': 'Valuta',
   'Idiomas': 'Lingue',
   'Más sobre {x} en Wikipedia': 'Altro su {x} su Wikipedia',
+  'Plegar el panel': 'Comprimi il pannello',
+  'Desplegar el panel': 'Espandi il pannello',
   'Reflejo del agua': 'Riflesso dell’acqua',
   Estrellas: 'Stelle',
   'Día y noche': 'Giorno e notte',

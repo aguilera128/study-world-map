@@ -20,9 +20,9 @@ function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName;
       onClick={() => go(active ? 'home' : screen)}
       aria-pressed={active}
       title={children}
-      className={`btn btn-ghost min-h-10 px-2.5 text-sm ${active ? 'bg-ink! text-paper!' : ''}`}
+      className={`btn btn-ghost min-h-10! w-10 px-0! text-sm min-[64rem]:w-auto min-[64rem]:px-[1.1rem]! ${active ? 'bg-ink! text-paper!' : ''}`}
     >
-      <Icon name={icon} size={18} />
+      <Icon name={icon} size={19} />
       <span className={LABELS}>{children}</span>
     </button>
   );
@@ -95,7 +95,7 @@ function MoreMenu({ children }: { children: ReactNode }) {
   }, [open]);
   return (
     <div ref={ref} className="relative">
-      <button type="button" onClick={() => setOpen(!open)} title={t('Más opciones')} aria-label={t('Más opciones')} aria-expanded={open} className="btn btn-ghost btn-icon min-h-10 w-10">
+      <button type="button" onClick={() => setOpen(!open)} title={t('Más opciones')} aria-label={t('Más opciones')} aria-expanded={open} className="btn btn-ghost min-h-10! w-10 px-0!">
         <Icon name="list" size={19} />
       </button>
       <div className={`float absolute right-0 top-full mt-1.5 w-60 flex-col gap-1 bg-surface! p-2 ${open ? 'flex' : 'hidden'}`} onClick={() => setOpen(false)}>
@@ -130,7 +130,7 @@ export function TopBar() {
           onClick={toggleTheme}
           title={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
           aria-label={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
-          className="btn btn-ghost btn-icon min-h-10 w-10"
+          className="btn btn-ghost min-h-10! w-10 px-0!"
         >
           <Icon name={theme === 'night' ? 'sun' : 'moon'} size={19} />
         </button>
@@ -179,9 +179,9 @@ export function TopBar() {
           aria-pressed={realTime}
           title={t('Tiempo real: dónde es de día y dónde de noche ahora mismo')}
           aria-label={t('Tiempo real')}
-          className={`btn btn-ghost min-h-10 px-2.5 text-sm ${realTime ? 'bg-ink! text-paper!' : ''}`}
+          className={`btn btn-ghost min-h-10! w-10 px-0! text-sm min-[64rem]:w-auto min-[64rem]:px-[1.1rem]! ${realTime ? 'bg-ink! text-paper!' : ''}`}
         >
-          <Icon name="daynight" size={18} />
+          <Icon name="daynight" size={19} />
           <span className={labels}>{t('Tiempo real')}</span>
         </button>
 
@@ -202,11 +202,11 @@ export function TopBar() {
                 setViewMode(mode);
                 getEngine()?.invalidate();
               }}
-              className={`flex min-h-9 items-center gap-1.5 rounded-[9px] px-2.5 text-sm font-bold transition-colors ${
+              className={`flex h-9 w-9 items-center justify-center gap-1.5 rounded-[9px] text-sm font-bold transition-colors min-[64rem]:w-auto min-[64rem]:px-2.5 ${
                 viewMode === mode ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'
               }`}
             >
-              <Icon name={icon} size={18} />
+              <Icon name={icon} size={19} />
               <span className={labels}>{label}</span>
             </button>
           ))}

@@ -405,6 +405,8 @@ const eu: Record<string, string> = {
   'Moneda': 'Moneta',
   'Idiomas': 'Hizkuntzak',
   'Más sobre {x} en Wikipedia': '{x}(r)i buruz gehiago Wikipedian',
+  'Plegar el panel': 'Tolestu panela',
+  'Desplegar el panel': 'Zabaldu panela',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',

@@ -405,6 +405,8 @@ const ca: Record<string, string> = {
   'Moneda': 'Moneda',
   'Idiomas': 'Llengües',
   'Más sobre {x} en Wikipedia': 'Més sobre {x} a la Viquipèdia',
+  'Plegar el panel': 'Plega el panell',
+  'Desplegar el panel': 'Desplega el panell',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',
