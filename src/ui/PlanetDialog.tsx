@@ -91,11 +91,11 @@ function Interior() {
       <g transform={`translate(150 150) scale(${R})`}>
         <path d={WEDGE} fill="#6f573d" />
         <g transform={`scale(${mantle})`}>
-          <path d={WEDGE} fill="url(#pi-mantle)" />
+          <path d={WEDGE} fill="#94703a" />
         </g>
-        {/* el manto inferior, algo más encendido; una línea fina marca los 660 km */}
+        {/* el manto inferior, al rojo, sobre el superior, pardo; una línea fina marca los 660 km */}
         <g transform={`scale(${lower})`}>
-          <path d={WEDGE} fill="#ff8a3c" opacity="0.28" stroke="#5a2412" strokeWidth={0.012 / lower} />
+          <path d={WEDGE} fill="url(#pi-mantle)" stroke="#3d1a0c" strokeWidth={0.012 / lower} />
         </g>
         <g transform={`scale(${outer})`}>
           <path d={WEDGE} fill="url(#pi-outer)" />
@@ -351,7 +351,7 @@ export function PlanetButton({ labels }: { labels: string }) {
                 {layer.name}
               </span>
             ))}
-            <span className="w-full text-xs text-ink-soft wide:w-auto wide:flex-1">
+            <span className="w-full text-xs text-ink-soft">
               {onGlobe === 'interior' ? t('Gira el globo para verlo desde otro lado.') : t('La altura de las capas está muy exagerada.')}
             </span>
             <button type="button" onClick={() => show(null)} className="btn min-h-10 px-3 text-sm">

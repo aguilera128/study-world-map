@@ -646,23 +646,28 @@ void main() {
     color = mix(vec3(0.86, 0.34, 0.05), vec3(1.0, 0.70, 0.18), flow);
     color = mix(color, vec3(1.0, 0.93, 0.62), filament * 0.75);
     color *= 1.08 - 0.22 * depth;
-  } else if (r < 0.972) {
-    // Manto: roca que fluye muy despacio. Más caliente y clara junto al núcleo, más fría y oscura
-    // bajo la corteza; penachos que suben y vetas incandescentes entre la roca.
-    float depth = (r - 0.5447) / (0.972 - 0.5447);
+  } else if (r < 0.8964) {
+    // Manto inferior: roca al rojo, más clara junto al núcleo; penachos que suben y vetas
+    // incandescentes entre la roca.
+    float depth = (r - 0.5447) / (0.8964 - 0.5447);
     vec3 rise = dir * (t * 0.012);
     float rock = fbm(vPos * 15.0 - rise * 15.0);
     float plume = fbm(vec3(dir * 5.0) + vec3(0.0, 0.0, r * 3.0 - t * 0.035));
     float vein = pow(1.0 - abs(fbm(vPos * 26.0 - rise * 26.0 + vec3(4.0)) - 0.5) * 2.0, 7.0);
-    vec3 hot = vec3(0.98, 0.46, 0.12);
-    vec3 cool = vec3(0.42, 0.11, 0.06);
+    vec3 hot = vec3(0.93, 0.30, 0.08);
+    vec3 cool = vec3(0.50, 0.08, 0.05);
     color = mix(hot, cool, clamp(depth * 0.85 + (rock - 0.5) * 0.5, 0.0, 1.0));
     color = mix(color, hot * 1.1, smoothstep(0.52, 0.78, plume) * (1.0 - depth) * 0.7);
-    color += vec3(1.0, 0.62, 0.20) * vein * 0.55 * (1.0 - 0.6 * depth);
+    color += vec3(1.0, 0.50, 0.14) * vein * 0.5 * (1.0 - 0.6 * depth);
     color *= 0.86 + 0.28 * rock;
-    // El manto superior (hasta 660 km), algo más frío y verdoso: es peridotita. Una línea lo separa del inferior.
-    color = mix(color, color * vec3(0.78, 0.9, 0.7), smoothstep(0.8944, 0.8984, r) * 0.55);
-    color *= 0.6 + 0.4 * smoothstep(0.0, 0.004, abs(r - 0.8964));
+  } else if (r < 0.972) {
+    // Manto superior: peridotita, más fría. Roca parda verdosa de grano fino, sin vetas encendidas,
+    // para que no se confunda con el manto inferior.
+    float depth = (r - 0.8964) / (0.972 - 0.8964);
+    float rock = fbm(vPos * 34.0 - dir * (t * 0.01));
+    float speck = noise(vPos * 120.0);
+    color = mix(vec3(0.62, 0.46, 0.20), vec3(0.34, 0.27, 0.13), clamp(depth * 0.7 + (rock - 0.5) * 0.7, 0.0, 1.0));
+    color *= 0.88 + 0.2 * speck;
   } else {
     // Corteza: roca fría en estratos, engrosada para que se vea.
     float strata = noise(vec3(r * 520.0, dir.x * 6.0, dir.z * 6.0));
@@ -674,6 +679,7 @@ void main() {
   float glow = exp(-abs(r - 0.1915) * 70.0) + 0.7 * exp(-abs(r - 0.5447) * 55.0);
   color += vec3(1.0, 0.72, 0.30) * glow * 0.45;
   color *= 0.45 + 0.55 * smoothstep(0.0, 0.005, abs(r - 0.972));
+  color *= 0.5 + 0.5 * smoothstep(0.0, 0.005, abs(r - 0.8964));
   // algo más oscuro hacia el borde, para que la cara no parezca plana
   color *= 1.0 - 0.18 * smoothstep(0.6, 1.0, r);
   gl_FragColor = vec4(color * vShade, 1.0);
@@ -707,7 +713,7 @@ void main() {
   float facing = clamp(dot(normalize(vNormal), normalize(vToEye)), 0.0, 1.0);
   float grain = fbm(vPos * 46.0);
   float crystal = abs(noise(vPos * 24.0) - 0.5) * 2.0;
-  vec3 color = mix(vec3(1.0, 0.72, 0.28), vec3(1.0, 0.97, 0.84), 0.25 + 0.75 * facing);
+  vec3 color = mix(vec3(1.0, 0.80, 0.34), vec3(1.0, 0.96, 0.66), 0.25 + 0.75 * facing);
   color *= 0.88 + 0.18 * grain - 0.10 * crystal;
   color += vec3(0.10, 0.08, 0.03) * sin(uTime * 0.9);
   gl_FragColor = vec4(color, 1.0);

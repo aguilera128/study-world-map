@@ -12,8 +12,8 @@ export const EARTH_KM = 6371;
 export const INTERIOR = [
   { id: 'inner', radius: 1221, color: '#ffe08a', name: t('Núcleo interno'), detail: t('Hierro y níquel sólidos · de 5150 a 6371 km') },
   { id: 'outer', radius: 3471, color: '#f4a23a', name: t('Núcleo externo'), detail: t('Hierro y níquel líquidos; su movimiento crea el campo magnético · de 2900 a 5150 km') },
-  { id: 'lower', radius: 5711, color: '#d2562a', name: t('Manto inferior'), detail: t('Roca sólida, más densa y caliente · de 660 a 2900 km') },
-  { id: 'upper', radius: 6336, color: '#b5643a', name: t('Manto superior'), detail: t('Roca sólida que fluye muy despacio (peridotita) · hasta 660 km') },
+  { id: 'lower', radius: 5711, color: '#cf3f1c', name: t('Manto inferior'), detail: t('Roca sólida, más densa y caliente · de 660 a 2900 km') },
+  { id: 'upper', radius: 6336, color: '#9a7636', name: t('Manto superior'), detail: t('Roca sólida que fluye muy despacio (peridotita) · hasta 660 km') },
   { id: 'crust', radius: EARTH_KM, color: '#8a6a48', name: t('Corteza'), detail: t('Roca sólida · oceánica (basalto) de 5 a 10 km, continental (granito) de 30 a 70 km') },
 ];
 
