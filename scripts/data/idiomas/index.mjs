@@ -18,9 +18,10 @@
 
 import en from './en.mjs';
 import es from './es.mjs';
+import ca from './ca.mjs';
 import pt from './pt.mjs';
 import it from './it.mjs';
 import de from './de.mjs';
 import fr from './fr.mjs';
 
-export const IDIOMAS = { es, en, fr, de, it, pt };
+export const IDIOMAS = { es, en, fr, de, it, pt, ca };
