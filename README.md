@@ -26,6 +26,9 @@ el propio dispositivo.
   ejemplo, «50 países principales», que se puede editar o borrar.
 - **Explorar y estudiar.** La tabla de los países elegidos con su continente y su capital, un
   buscador y la ficha de cada país (bandera, capital, hora local, superficie, vecinos).
+- **Clima de cada país.** Al pasar el cursor y en la ficha: los climas que se estudian en la ESO
+  (ecuatorial, tropical, desértico, mediterráneo, oceánico, continental, polar…), calculados sobre el
+  territorio de cada país.
 - **Hora de cada país.** Al pasar el cursor por un país se ve qué hora es allí ahora mismo (en los
   que tienen varios husos, la de la capital); en la ficha, además, la diferencia con la tuya.
 - **Tiempo real.** Un botón pinta sobre el mapa dónde es de día y dónde de noche en este instante,
@@ -183,6 +186,9 @@ Para corregir un nombre o una capital, o cambiar qué países se preguntan, edit
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
 - Banderas: [flag-icons](https://github.com/lipis/flag-icons) (MIT).
+- Climas: mapa mundial de Köppen-Geiger (Kottek, Grieser, Beck, Rudolf y Rubel, 2006), agrupado en los
+  climas de la ESO; porcentajes por país en `scripts/data/climas.koppen.json` (`scripts/build-climate.mjs`)
+  y correcciones en `scripts/data/climas.mjs`.
 - Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público); recorte en `src/engine/stars.ts`,
   generado con `scripts/build-stars.mjs`.
 - Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).

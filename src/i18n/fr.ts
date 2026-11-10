@@ -267,6 +267,18 @@ const fr: Record<string, string> = {
   'Cuarto menguante': 'Dernier quartier',
   'Luna creciente': 'Lune croissante',
   'Luna menguante': 'Lune décroissante',
+  // ── climas ──
+  'Clima': 'Climat',
+  'Ecuatorial': 'Équatorial',
+  'Tropical': 'Tropical',
+  'Desértico': 'Désertique',
+  'Semiárido': 'Semi-aride',
+  'Mediterráneo': 'Méditerranéen',
+  'Oceánico': 'Océanique',
+  'Subtropical húmedo': 'Subtropical humide',
+  'Continental': 'Continental',
+  'Polar': 'Polaire',
+  'De alta montaña': 'De haute montagne',
 };
 
 export default fr;

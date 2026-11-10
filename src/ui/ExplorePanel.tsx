@@ -1,3 +1,4 @@
+import { climateText } from '../app/climate';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { formatArea, plural } from '../app/format';
 import { useApp, useSettings } from '../app/store';
@@ -73,6 +74,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
               </span>
             </Fact>
           )}
+          {country.climate.length > 0 && <Fact label={t('Clima')}>{climateText(country.climate)}</Fact>}
           {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
           {neighbors.length > 0 && (
             <Fact label={t('Vecinos')}>

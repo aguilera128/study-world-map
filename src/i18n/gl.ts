@@ -267,6 +267,18 @@ const gl: Record<string, string> = {
   'Cuarto menguante': 'Cuarto minguante',
   'Luna creciente': 'Lúa crecente',
   'Luna menguante': 'Lúa minguante',
+  // ── climas ──
+  'Clima': 'Clima',
+  'Ecuatorial': 'Ecuatorial',
+  'Tropical': 'Tropical',
+  'Desértico': 'Desértico',
+  'Semiárido': 'Semiárido',
+  'Mediterráneo': 'Mediterráneo',
+  'Oceánico': 'Oceánico',
+  'Subtropical húmedo': 'Subtropical húmido',
+  'Continental': 'Continental',
+  'Polar': 'Polar',
+  'De alta montaña': 'De alta montaña',
 };
 
 export default gl;

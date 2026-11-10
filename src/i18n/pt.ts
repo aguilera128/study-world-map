@@ -267,6 +267,18 @@ const pt: Record<string, string> = {
   'Cuarto menguante': 'Quarto minguante',
   'Luna creciente': 'Lua crescente',
   'Luna menguante': 'Lua minguante',
+  // ── climas ──
+  'Clima': 'Clima',
+  'Ecuatorial': 'Equatorial',
+  'Tropical': 'Tropical',
+  'Desértico': 'Desértico',
+  'Semiárido': 'Semiárido',
+  'Mediterráneo': 'Mediterrâneo',
+  'Oceánico': 'Oceânico',
+  'Subtropical húmedo': 'Subtropical úmido',
+  'Continental': 'Continental',
+  'Polar': 'Polar',
+  'De alta montaña': 'De alta montanha',
 };
 
 export default pt;

@@ -268,6 +268,18 @@ const eu: Record<string, string> = {
   'Cuarto menguante': 'Ilbehera',
   'Luna creciente': 'Ilargi gorakorra',
   'Luna menguante': 'Ilargi beherakorra',
+  // ── climas ──
+  'Clima': 'Klima',
+  'Ecuatorial': 'Ekuatoriala',
+  'Tropical': 'Tropikala',
+  'Desértico': 'Basamortukoa',
+  'Semiárido': 'Erdi-lehorra',
+  'Mediterráneo': 'Mediterraneoa',
+  'Oceánico': 'Ozeanikoa',
+  'Subtropical húmedo': 'Subtropikal hezea',
+  'Continental': 'Kontinentala',
+  'Polar': 'Polarra',
+  'De alta montaña': 'Goi-mendikoa',
 };
 
 export default eu;

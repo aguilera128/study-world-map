@@ -169,3 +169,23 @@ describe('malla', () => {
     expect(artificial).toBeLessThan(2500);
   });
 });
+
+describe('climas', () => {
+  const climateOf = (id: string) => atlas.countries[atlas.indexOf(id)].climate;
+
+  it('todos los países del cuestionario tienen al menos un clima', () => {
+    for (const index of atlas.quizzable) expect(atlas.countries[index].climate.length, atlas.countries[index].name).toBeGreaterThan(0);
+  });
+
+  it('los casos de libro de texto salen como se estudian', () => {
+    expect(climateOf('ESP').slice(0, 2)).toEqual(['mediterraneo', 'oceanico']);
+    expect(climateOf('DZA')[0]).toBe('desertico');
+    expect(climateOf('GBR')).toEqual(['oceanico']);
+    expect(climateOf('POL')).toEqual(['continental']);
+    expect(climateOf('RUS')).toEqual(['continental', 'polar']);
+    expect(climateOf('IDN')[0]).toBe('ecuatorial');
+    expect(climateOf('CUB')).toEqual(['tropical']);
+    expect(climateOf('CHL')).toContain('mediterraneo');
+    expect(climateOf('AND')).toEqual(['montana']);
+  });
+});

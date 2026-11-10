@@ -12,6 +12,18 @@ export type RegionKey =
   | 'oceania';
 
 /** Respuestas posibles a «¿en qué continente está?». `europa-asia`: repartido entre los dos. */
+export type ClimateKey =
+  | 'ecuatorial'
+  | 'tropical'
+  | 'desertico'
+  | 'semiarido'
+  | 'mediterraneo'
+  | 'oceanico'
+  | 'subtropical'
+  | 'continental'
+  | 'polar'
+  | 'montana';
+
 export type ContinentKey = 'europa' | 'asia' | 'africa' | 'america' | 'oceania' | 'europa-asia';
 
 /** `country`: entra en los cuestionarios · `territory`/`disputed`: solo se muestra. */
@@ -40,6 +52,8 @@ export interface RawCountry {
   /** Polígonos → anillos (exterior y huecos) → enteros cuantizados en deltas [x0, y0, dx, dy, …]. */
   polys: number[][][];
   capital?: string;
+  /** Climas del país, de más a menos extendido (claves de CLIMATES). */
+  climate?: ClimateKey[];
   regions?: RegionKey[];
   continents?: ContinentKey[];
   aliases?: string[];
@@ -79,6 +93,8 @@ export interface Country {
   a2: string | null;
   name: string;
   kind: CountryKind;
+  /** Climas, de más a menos extendido (vacío si no hay dato). */
+  climate: ClimateKey[];
   bbox: Bounds;
   /** Encuadre recomendado para la cámara (ignora islas y territorios lejanos). */
   frame: Bounds;

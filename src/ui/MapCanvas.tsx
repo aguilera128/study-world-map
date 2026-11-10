@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { setEngine } from '../app/engineRef';
 import { formatCoords } from '../app/format';
+import { climateText } from '../app/climate';
 import { computeMapState } from '../app/mapState';
 import { useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
 import { clockIn } from '../app/time';
@@ -203,6 +204,7 @@ export default function MapCanvas() {
                 {country.tzMulti && country.capital && <> {t('en {place}', { place: country.capital })}</>}
               </span>
             )}
+            {country.climate.length > 0 && <span className="font-normal text-ink-soft">· {climateText(country.climate, 2)}</span>}
             {screen === 'progress' && country.kind === 'country' && (
               <span className="font-normal text-ink-soft">· {MASTERY_LABELS[mastery(progress[country.id]?.[progressMode])]}</span>
             )}

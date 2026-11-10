@@ -67,6 +67,7 @@ function decodeCountry(raw: RawCountry, index: number, q: number): Country {
     tz: raw.tz,
     tzMulti: raw.tzMulti ?? false,
     capital: raw.capital,
+    climate: raw.climate ?? [],
     regions: raw.regions ?? [],
     continents: raw.continents ?? [],
     aliases: raw.aliases ?? [],

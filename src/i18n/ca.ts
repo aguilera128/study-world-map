@@ -268,6 +268,18 @@ const ca: Record<string, string> = {
   'Cuarto menguante': 'Quart minvant',
   'Luna creciente': 'Lluna creixent',
   'Luna menguante': 'Lluna minvant',
+  // ── climas ──
+  'Clima': 'Clima',
+  'Ecuatorial': 'Equatorial',
+  'Tropical': 'Tropical',
+  'Desértico': 'Desèrtic',
+  'Semiárido': 'Semiàrid',
+  'Mediterráneo': 'Mediterrani',
+  'Oceánico': 'Oceànic',
+  'Subtropical húmedo': 'Subtropical humit',
+  'Continental': 'Continental',
+  'Polar': 'Polar',
+  'De alta montaña': 'D’alta muntanya',
 };
 
 export default ca;

@@ -49,6 +49,7 @@ ${titularBlock()}
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
       <li>Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público).</li>
+      <li>Climas: mapa mundial de Köppen-Geiger de Kottek, Grieser, Beck, Rudolf y Rubel (2006), <em>Meteorologische Zeitschrift</em> 15, 259-263, agrupado en los climas que se estudian en secundaria.</li>
       <li>Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).</li>
     </ul>
 

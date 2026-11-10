@@ -266,6 +266,18 @@ const zh: Record<string, string> = {
   'Cuarto menguante': '下弦月',
   'Luna creciente': '盈月',
   'Luna menguante': '亏月',
+  // ── climas ──
+  'Clima': '气候',
+  'Ecuatorial': '赤道气候',
+  'Tropical': '热带气候',
+  'Desértico': '沙漠气候',
+  'Semiárido': '半干旱气候',
+  'Mediterráneo': '地中海气候',
+  'Oceánico': '海洋性气候',
+  'Subtropical húmedo': '亚热带湿润气候',
+  'Continental': '大陆性气候',
+  'Polar': '极地气候',
+  'De alta montaña': '高山气候',
 };
 
 export default zh;

@@ -24,6 +24,7 @@ import { geoEquirectangular } from 'd3-geo';
 import { geoProject } from 'd3-geo-projection';
 import polylabel from 'polylabel';
 import * as topojson from 'topojson-client';
+import { CLIMAS, climasDe } from './data/climas.mjs';
 import { IDIOMAS } from './data/idiomas/index.mjs';
 import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './data/paises.mjs';
 
@@ -457,6 +458,14 @@ entidades.forEach((e, i) => {
 });
 
 // ───────────────────────── 7. Escribir resultados ─────────────────────────
+
+// Climas de cada país (scripts/build-climate.mjs y las correcciones de ./data/climas.mjs).
+const koppen = JSON.parse(readFileSync(join(ROOT, 'scripts', 'data', 'climas.koppen.json'), 'utf8'));
+for (const e of entidades) {
+  e.climate = climasDe(e.id, koppen[e.id]);
+  if (e.kind === 'country' && !e.climate?.length) throw new Error(`El país ${e.id} no tiene clima (vuelve a ejecutar scripts/build-climate.mjs).`);
+  for (const clima of e.climate ?? []) if (!CLIMAS[clima]) throw new Error(`Clima desconocido en ${e.id}: ${clima}`);
+}
 
 // Zona horaria → [lon, lat, país]: la ciudad de referencia de cada zona. Sirve para situar al
 // usuario de forma aproximada a partir de la zona horaria de su navegador, sin pedirle permiso.
