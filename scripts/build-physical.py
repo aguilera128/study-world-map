@@ -62,6 +62,7 @@ RIOS_RANK = 4
 RIOS_FUERA = re.compile(r'Protoka|Branch|Bratul|Delta|Canal|Borcea')
 # Lo que entra en el reto de geografía física (selección editorial, ver el propio fichero).
 TEMARIO = os.path.join(HERE, 'data', 'fisico-temario.json')
+EXTRA = os.path.join(HERE, 'data', 'fisico-extra.json')
 
 
 def dbf(path):
@@ -227,6 +228,10 @@ def build(folder):
             for f in found:
                 f['quiz'] = 1
     print('Del temario no están en los datos:', '; '.join(missing))
+
+    # Lo que Natural Earth no trae y sí está en Wikidata (scripts/data/fisico-extra.json).
+    for extra in json.load(open(EXTRA, encoding='utf8'))['features']:
+        features.append({'kind': extra['kind'], 'rank': 2, 'at': extra['at'], 'names': dict(extra['names']), 'wd': None, 'quiz': 1, '_top': -1, '_raw': set()})
 
     # Se queda lo que se rotula por importancia y todo lo del temario. Un mismo nombre no se repite
     # dentro de una clase (Natural Earth parte en dos el Atlántico y el Pacífico).

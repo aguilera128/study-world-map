@@ -40,6 +40,7 @@ export const LAYERS = {
   relief: t('Relieve'),
   depth: t('Profundidad del mar'),
   currents: t('Corrientes oceánicas'),
+  tectonics: t('Placas y volcanes'),
   features: t('Montañas, ríos y mares'),
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
@@ -53,7 +54,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics'];
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {

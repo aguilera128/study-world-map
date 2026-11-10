@@ -72,6 +72,8 @@ export interface Palette {
   lineEmph: string;
   /** Color de los ríos. */
   river: string;
+  /** Color de los límites de las placas tectónicas. */
+  plate: string;
   /** Color de las líneas imaginarias (ecuador, trópicos…). */
   guide: string;
   /** Oscurecimiento de las paredes de un país levantado. */
@@ -112,6 +114,7 @@ export const PAPER: Palette = {
   lineEmph: '#1b2a3a',
   river: '#4f86ab',
   guide: '#b4492f',
+  plate: '#8a3ba8',
   wallTint: 0.7,
   hover: '#ffd95a',
   hoverMix: 0.62,
@@ -178,6 +181,7 @@ export const NIGHT: Palette = {
   lineEmph: '#f3ead7',
   river: '#5f9cc4',
   guide: '#f0a070',
+  plate: '#d48cf0',
   wallTint: 0.6,
   hover: '#ffd866',
   hoverMix: 0.5,

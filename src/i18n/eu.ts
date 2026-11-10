@@ -272,6 +272,7 @@ const eu: Record<string, string> = {
   'Te damos una latitud y una longitud y dices qué país hay ahí.': 'Latitude bat eta longitude bat ematen dizkizugu eta han zein herrialde dagoen esaten duzu.',
   '¿Qué país hay en estas coordenadas?': 'Zein herrialde dago koordenatu hauetan?',
   'Husos horarios': 'Ordu-eremuak',
+  'Placas y volcanes': 'Plakak eta sumendiak',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',

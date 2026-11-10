@@ -695,3 +695,30 @@
     opacity: 1;
   }
 }
+
+/* Corrientes oceánicas: en rojo las cálidas y en azul las frías. */
+.feature-label.corriente-calida,
+.feature-label.corriente-fria {
+  font-style: italic;
+  font-weight: 700;
+}
+
+.feature-label.corriente-calida {
+  color: color-mix(in srgb, var(--ink) 35%, #e0452a);
+}
+
+.feature-label.corriente-fria {
+  color: color-mix(in srgb, var(--ink) 35%, #2f7fd0);
+}
+
+/* Placas tectónicas y volcanes. */
+.feature-label.placa {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 45%, #a04ad0);
+}
+
+.feature-label.volcan {
+  color: color-mix(in srgb, var(--ink) 40%, #e0452a);
+}

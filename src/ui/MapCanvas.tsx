@@ -38,6 +38,45 @@ function decodeLine(deltas: number[]): number[] {
   return out;
 }
 
+interface RawFeature {
+  kind: string;
+  rank: number;
+  at: [number, number];
+  elev?: number;
+  names: Record<string, string>;
+  lines?: number[][];
+}
+
+/** Idiomas que, si falta un nombre, prefieren el español al inglés. */
+const SPANISH_FIRST = new Set(['es', 'ca', 'gl', 'eu']);
+
+/** Carga una capa de datos (formato de fisico.json) y se la pasa al motor; la quita al apagarla. */
+function useOverlay(engine: MapEngine | null, key: string, url: string, on: boolean, labels: boolean, line: 'river' | 'plate') {
+  useEffect(() => {
+    if (!engine || !on) return;
+    let cancelled = false;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data: { features: RawFeature[] }) => {
+        if (cancelled) return;
+        engine.setOverlay(
+          key,
+          data.features.map((f) => {
+            const name = f.names[lang] ?? (SPANISH_FIRST.has(lang) ? (f.names.es ?? f.names.en) : (f.names.en ?? f.names.es)) ?? '';
+            const text = !labels || !name ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name;
+            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text };
+          }),
+          line,
+        );
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      engine.setOverlay(key, []);
+    };
+  }, [engine, key, url, on, labels, line]);
+}
+
 /** Rótulo clavado sobre un país: el motor lo mueve con el mapa. */
 function Pin({ engine, atlas, label }: { engine: MapEngine; atlas: Atlas; label: MapLabel }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -165,30 +204,13 @@ export default function MapCanvas() {
   const playedMode = useApp((s) => s.session?.config.mode);
   const readingCoords = screen === 'play' && playedMode === 'coords';
   useEffect(() => engine?.setGraticule(readingCoords, t('O')), [engine, readingCoords]);
-  // Accidentes geográficos: el fichero solo se descarga si se enciende la capa o si el mapa es el
-  // de geografía física, que necesita los ríos dibujados. Jugando no hay rótulos: darían la respuesta.
+  // Capas de datos: cada fichero solo se descarga si su capa está encendida. La de accidentes
+  // también en el mapa de geografía física, que necesita los ríos dibujados; jugando no lleva
+  // rótulos, porque darían la respuesta.
   const physical = (atlas as Atlas | null)?.map === 'fisico';
-  const featureLabels = layers.features && screen !== 'play';
-  useEffect(() => {
-    if (!engine || !(layers.features || physical)) return;
-    let cancelled = false;
-    fetch('/data/fisico.json')
-      .then((res) => res.json())
-      .then((data: { features: { kind: string; rank: number; at: [number, number]; elev?: number; names: Record<string, string>; lines?: number[][] }[] }) => {
-        if (cancelled) return;
-        engine.setFeatures(
-          data.features.map((f) => {
-            const name = f.names[lang] ?? f.names.es;
-            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text: !featureLabels ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
-          }),
-        );
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-      engine.setFeatures([]);
-    };
-  }, [engine, layers.features, physical, featureLabels]);
+  useOverlay(engine, 'features', '/data/fisico.json', layers.features || physical, layers.features && screen !== 'play', 'river');
+  useOverlay(engine, 'tectonics', '/data/tectonica.json', layers.tectonics, true, 'plate');
+  useOverlay(engine, 'currents', '/data/corrientes.json', layers.currents, true, 'river');
   useEffect(() => engine?.setLayers(layers.grid, layers.glint, layers.stars), [engine, layers.grid, layers.glint, layers.stars]);
   useEffect(() => engine?.setSidereal(siderealAngle(now)), [engine, now]);
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);

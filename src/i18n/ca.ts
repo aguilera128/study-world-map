@@ -272,6 +272,7 @@ const ca: Record<string, string> = {
   'Te damos una latitud y una longitud y dices qué país hay ahí.': 'Et donem una latitud i una longitud i dius quin país hi ha.',
   '¿Qué país hay en estas coordenadas?': 'Quin país hi ha en aquestes coordenades?',
   'Husos horarios': 'Fusos horaris',
+  'Placas y volcanes': 'Plaques i volcans',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',

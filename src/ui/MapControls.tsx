@@ -22,7 +22,7 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
   );
 }
 
-const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'climate', 'grid', 'guides', 'timezones', 'glint', 'stars'];
+const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'tectonics', 'climate', 'grid', 'guides', 'timezones', 'glint', 'stars'];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
 /** Botón de capas: qué se dibuja sobre el mapa. */

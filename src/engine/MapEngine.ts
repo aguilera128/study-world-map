@@ -200,14 +200,12 @@ export class MapEngine {
   private reliefReady = false;
   private reliefHd = false;
   private seaTimer = 0;
-  private labels: FeatureLabels | null = null;
+  private readonly overlays = new Map<string, { labels: FeatureLabels | null; mesh: Mesh | null; material: ShaderMaterial | null }>();
   private guides: Mesh | null = null;
   private graticule: Mesh | null = null;
   private graticuleLabels: FeatureLabels | null = null;
   private zoneLabels: FeatureLabels | null = null;
   private guideLabels: FeatureLabels | null = null;
-  private riverMaterial: ShaderMaterial | null = null;
-  private rivers: Mesh | null = null;
   private showStars = true;
 
   // ── uniformes compartidos por todos los materiales ──
@@ -237,6 +235,7 @@ export class MapEngine {
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    plate: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     river: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
     marker: { uPxPerRad: { value: 1 }, uThreshold: { value: MARKER_THRESHOLD }, uMarkerPx: { value: 16 } },
@@ -464,6 +463,8 @@ export class MapEngine {
     u.uLineEmph.value.copy(vec3(p.lineEmph));
     this.own.river.uLine.value.copy(vec3(p.river));
     this.own.river.uLineEmph.value.copy(vec3(p.river));
+    this.own.plate.uLine.value.copy(vec3(p.plate));
+    this.own.plate.uLineEmph.value.copy(vec3(p.plate));
     this.own.guide.uLine.value.copy(vec3(p.guide));
     this.own.graticule.uLine.value.copy(vec3(p.grid));
     this.own.graticule.uLineEmph.value.copy(vec3(p.grid));
@@ -593,25 +594,33 @@ export class MapEngine {
     this.invalidate();
   }
 
-  /** Rotula los accidentes geográficos y dibuja los ríos; con una lista vacía los quita. */
-  setFeatures(features: MapFeature[]) {
-    if (!this.labels && features.length && this.canvas.parentElement) this.labels = new FeatureLabels(this.canvas.parentElement);
-    this.labels?.set(features);
-    if (this.rivers) {
-      this.scene.remove(this.rivers);
-      this.rivers.geometry.dispose();
-      this.rivers = null;
+  /**
+   * Capa de datos sobre el mapa: rotula sus elementos y dibuja sus líneas (ríos, límites de placas…)
+   * con el color `line` de la paleta. Con una lista vacía, la quita. `key` distingue unas de otras.
+   */
+  setOverlay(key: string, features: MapFeature[], line: 'river' | 'plate' = 'river') {
+    let overlay = this.overlays.get(key);
+    if (!overlay) {
+      overlay = { labels: null, mesh: null, material: null };
+      this.overlays.set(key, overlay);
+    }
+    if (!overlay.labels && features.length && this.canvas.parentElement) overlay.labels = new FeatureLabels(this.canvas.parentElement);
+    overlay.labels?.set(features);
+    if (overlay.mesh) {
+      this.scene.remove(overlay.mesh);
+      overlay.mesh.geometry.dispose();
+      overlay.mesh = null;
     }
     const start: number[] = [];
     const end: number[] = [];
     for (const f of features) {
-      for (const line of f.lines ?? []) {
-        for (let i = 0; i + 3 < line.length; i += 2) this.segment(start, end, line[i], line[i + 1], line[i + 2], line[i + 3]);
+      for (const part of f.lines ?? []) {
+        for (let i = 0; i + 3 < part.length; i += 2) this.segment(start, end, part[i], part[i + 1], part[i + 2], part[i + 3]);
       }
     }
     if (start.length) {
-      this.riverMaterial ??= this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own.river, { transparent: true, depthWrite: false });
-      this.rivers = this.segments(start, end, this.riverMaterial);
+      overlay.material ??= this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own[line], { transparent: true, depthWrite: false });
+      overlay.mesh = this.segments(start, end, overlay.material);
     }
     this.invalidate();
   }
@@ -1364,6 +1373,7 @@ export class MapEngine {
     this.own.stars.uDpr.value = dpr;
     this.own.line.uWidth.value = LINE_WIDTH * dpr;
     this.own.river.uWidth.value = 1.4 * dpr;
+    this.own.plate.uWidth.value = 2 * dpr;
     this.own.guide.uWidth.value = 1.6 * dpr;
     this.own.graticule.uWidth.value = dpr;
     this.own.line.uEmphWidth.value = LINE_WIDTH_EMPH * dpr;
@@ -1387,7 +1397,7 @@ export class MapEngine {
     this.renderer.render(this.scene, rig.camera);
 
     for (const item of this.tracked) this.place(item);
-    this.labels?.place(rig, ALT.marker);
+    for (const overlay of this.overlays.values()) overlay.labels?.place(rig, ALT.marker);
     this.guideLabels?.place(rig, ALT.marker);
     this.graticuleLabels?.place(rig, ALT.marker);
     this.zoneLabels?.place(rig, ALT.marker);
@@ -1419,11 +1429,13 @@ export class MapEngine {
 
   dispose() {
     clearTimeout(this.seaTimer);
-    this.labels?.dispose();
+    for (const overlay of this.overlays.values()) {
+      overlay.labels?.dispose();
+      overlay.mesh?.geometry.dispose();
+    }
     this.guideLabels?.dispose();
     this.graticuleLabels?.dispose();
     this.zoneLabels?.dispose();
-    this.rivers?.geometry.dispose();
     this.disposed = true;
     cancelAnimationFrame(this.raf);
     this.abort.abort();

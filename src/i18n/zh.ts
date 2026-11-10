@@ -271,6 +271,7 @@ const zh: Record<string, string> = {
   'Te damos una latitud y una longitud y dices qué país hay ahí.': '我们给出纬度和经度，你说出那里是哪个国家。',
   '¿Qué país hay en estas coordenadas?': '这个坐标上是哪个国家？',
   'Husos horarios': '时区',
+  'Placas y volcanes': '板块和火山',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

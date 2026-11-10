@@ -1,0 +1,365 @@
+{
+ "_": "Accidentes del temario que Natural Earth no trae. Posición (propiedad P625) y nombres de Wikidata (CC0), consultados el 10-nov-2026. De los ríos solo hay un punto, no el trazado.",
+ "features": [
+  {
+   "kind": "cordillera",
+   "wd": "Q1285",
+   "at": [
+    13.57,
+    42.47
+   ],
+   "names": {
+    "zh": "亚平宁山脉",
+    "eu": "Apeninoak",
+    "gl": "Apeninos",
+    "ca": "Apenins",
+    "pt": "Apeninos",
+    "it": "Appennini",
+    "de": "Apennin",
+    "fr": "Apennins",
+    "en": "Apennines",
+    "es": "Apeninos"
+   }
+  },
+  {
+   "kind": "cordillera",
+   "wd": "Q208076",
+   "at": [
+    -4.85,
+    43.2
+   ],
+   "names": {
+    "zh": "坎塔布里亚山脉",
+    "eu": "Kantauriar mendikatea",
+    "gl": "Cordal Cantábrico",
+    "ca": "Serralada Cantàbrica",
+    "pt": "Cordilheira Cantábrica",
+    "it": "Cordigliera Cantabrica",
+    "de": "Kantabrisches Gebirge",
+    "fr": "Cordillère Cantabrique",
+    "en": "Cantabrian Mountains",
+    "es": "Cordillera Cantábrica"
+   }
+  },
+  {
+   "kind": "cordillera",
+   "wd": "Q53715",
+   "at": [
+    -5.3,
+    40.25
+   ],
+   "names": {
+    "zh": "中央山脈",
+    "eu": "Erdialdeko Sistema",
+    "gl": "Sistema Central",
+    "ca": "Sistema Central",
+    "pt": "Sistema Central",
+    "it": "Sistema Centrale",
+    "de": "Iberisches Scheidegebirge",
+    "fr": "Système Central",
+    "en": "Sistema Central",
+    "es": "Sistema Central"
+   }
+  },
+  {
+   "kind": "cordillera",
+   "wd": "Q201496",
+   "at": [
+    -1.78,
+    41.75
+   ],
+   "names": {
+    "zh": "伊比利亞山脈",
+    "eu": "Iberiar sistema",
+    "gl": "Sistema Ibérico",
+    "ca": "Sistema Ibèric",
+    "pt": "Sistema Ibérico",
+    "it": "Sistema Iberico",
+    "de": "Iberisches Gebirge",
+    "fr": "Système ibérique",
+    "en": "Iberian System",
+    "es": "Sistema Ibérico"
+   }
+  },
+  {
+   "kind": "rio",
+   "wd": "Q14311",
+   "at": [
+    -0.29,
+    39.17
+   ],
+   "names": {
+    "zh": "胡卡爾河",
+    "eu": "Júcar",
+    "gl": "Río Xúcar",
+    "ca": "Xúquer",
+    "pt": "Rio Júcar",
+    "it": "Júcar",
+    "de": "Júcar",
+    "fr": "Júcar",
+    "en": "Júcar",
+    "es": "Júcar"
+   }
+  },
+  {
+   "kind": "rio",
+   "wd": "Q18612",
+   "at": [
+    -0.64,
+    38.11
+   ],
+   "names": {
+    "zh": "塞古拉河",
+    "eu": "Segura ibaia",
+    "gl": "Río Segura",
+    "ca": "Segura",
+    "pt": "Rio Segura",
+    "it": "Segura",
+    "de": "Río Segura",
+    "fr": "Segura",
+    "en": "Segura",
+    "es": "Segura"
+   }
+  },
+  {
+   "kind": "estrecho",
+   "wd": "Q11769",
+   "at": [
+    -168.98,
+    65.75
+   ],
+   "names": {
+    "zh": "白令海峡",
+    "eu": "Beringeko itsasartea",
+    "gl": "Estreito de Bering",
+    "ca": "Estret de Bering",
+    "pt": "Estreito de Bering",
+    "it": "Stretto di Bering",
+    "de": "Beringstraße",
+    "fr": "Détroit de Béring",
+    "en": "Bering Strait",
+    "es": "Estrecho de Bering"
+   }
+  },
+  {
+   "kind": "estrecho",
+   "wd": "Q79883",
+   "at": [
+    56.5,
+    26.6
+   ],
+   "names": {
+    "zh": "霍爾木茲海峽",
+    "eu": "Ormuzko itsasartea",
+    "gl": "Estreito de Ormuz",
+    "ca": "Estret d'Ormuz",
+    "pt": "Estreito de Ormuz",
+    "it": "Stretto di Hormuz",
+    "de": "Straße von Hormus",
+    "fr": "Détroit d'Ormuz",
+    "en": "Strait of Hormuz",
+    "es": "Estrecho de Ormuz"
+   }
+  },
+  {
+   "kind": "estrecho",
+   "wd": "Q159898",
+   "at": [
+    1.45,
+    51.0
+   ],
+   "names": {
+    "zh": "多佛尔海峡",
+    "eu": "Calaisko itsasartea",
+    "gl": "Paso de Calais",
+    "ca": "Pas de Calais",
+    "pt": "Estreito de Dover",
+    "it": "Stretto di Dover",
+    "de": "Straße von Dover",
+    "fr": "Pas de Calais",
+    "en": "Strait of Dover",
+    "es": "Paso de Calais"
+   }
+  },
+  {
+   "kind": "estrecho",
+   "wd": "Q899",
+   "at": [
+    32.34,
+    30.7
+   ],
+   "names": {
+    "zh": "蘇伊士運河",
+    "eu": "Suezko kanala",
+    "gl": "Canal de Suez",
+    "ca": "Canal de Suez",
+    "pt": "Canal de Suez",
+    "it": "Canale di Suez",
+    "de": "Suezkanal",
+    "fr": "Canal de Suez",
+    "en": "Suez Canal",
+    "es": "Canal de Suez"
+   }
+  },
+  {
+   "kind": "estrecho",
+   "wd": "Q7350",
+   "at": [
+    -79.75,
+    9.12
+   ],
+   "names": {
+    "zh": "巴拿馬運河",
+    "eu": "Panamako kanala",
+    "gl": "Canle de Panamá",
+    "ca": "Canal de Panamà",
+    "pt": "Canal do Panamá",
+    "it": "Canale di Panama",
+    "de": "Panamakanal",
+    "fr": "Canal de Panama",
+    "en": "Panama Canal",
+    "es": "Canal de Panamá"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q12837",
+   "at": [
+    -4.24,
+    40.24
+   ],
+   "names": {
+    "zh": "伊比利亚半岛",
+    "eu": "Iberiar penintsula",
+    "gl": "Península Ibérica",
+    "ca": "Península Ibèrica",
+    "pt": "Península Ibérica",
+    "it": "Penisola iberica",
+    "de": "Iberische Halbinsel",
+    "fr": "Péninsule Ibérique",
+    "en": "Iberian Peninsula",
+    "es": "Península ibérica"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q145694",
+   "at": [
+    14.0,
+    42.0
+   ],
+   "names": {
+    "zh": "意大利半島",
+    "eu": "Italiar penintsula",
+    "gl": "Península Itálica",
+    "ca": "Península Itàlica",
+    "pt": "Península apenina",
+    "it": "Penisola italiana",
+    "de": "Apenninhalbinsel",
+    "fr": "Péninsule italienne",
+    "en": "Italian Peninsula",
+    "es": "Península itálica"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q23522",
+   "at": [
+    22.0,
+    42.0
+   ],
+   "names": {
+    "zh": "巴尔干半岛",
+    "eu": "Balkanak",
+    "gl": "Balcáns",
+    "ca": "Balcans",
+    "pt": "Bálcãs",
+    "it": "Penisola balcanica",
+    "de": "Balkanhalbinsel",
+    "fr": "Balkans",
+    "en": "Balkans",
+    "es": "Península balcánica"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q51614",
+   "at": [
+    35.0,
+    39.0
+   ],
+   "names": {
+    "zh": "安納托利亞",
+    "eu": "Anatolia",
+    "gl": "Anatolia",
+    "ca": "Anatòlia",
+    "pt": "Anatólia",
+    "it": "Anatolia",
+    "de": "Anatolien",
+    "fr": "Anatolie",
+    "en": "Anatolia",
+    "es": "Anatolia"
+   }
+  },
+  {
+   "kind": "isla",
+   "wd": "Q38095",
+   "at": [
+    -90.55,
+    -0.67
+   ],
+   "names": {
+    "zh": "加拉帕戈斯群岛",
+    "eu": "Galapagoak",
+    "gl": "Illas Galápagos",
+    "ca": "Illes Galápagos",
+    "pt": "Galápagos",
+    "it": "Galápagos",
+    "de": "Galapagosinseln",
+    "fr": "Îles Galápagos",
+    "en": "Galapagos Islands",
+    "es": "Islas Galápagos"
+   }
+  },
+  {
+   "kind": "lago",
+   "wd": "Q182137",
+   "at": [
+    -71.56,
+    9.82
+   ],
+   "names": {
+    "zh": "馬拉開波湖",
+    "eu": "Maracaiboko aintzira",
+    "gl": "Lago de Maracaibo",
+    "ca": "Llac Maracaibo",
+    "pt": "Lago de Maracaibo",
+    "it": "Lago di Maracaibo",
+    "de": "Maracaibo-See",
+    "fr": "Lac Maracaibo",
+    "en": "Lake Maracaibo",
+    "es": "Lago de Maracaibo"
+   }
+  },
+  {
+   "kind": "meseta",
+   "wd": "Q821626",
+   "at": [
+    -3.5,
+    40.5
+   ],
+   "names": {
+    "zh": "梅塞塔高原",
+    "eu": "Iberiar goi-lautada",
+    "ca": "Meseta",
+    "pt": "Meseta Central",
+    "it": "Meseta",
+    "de": "Iberische Meseta",
+    "fr": "Meseta",
+    "en": "Meseta",
+    "es": "Meseta Central",
+    "gl": "Meseta Central"
+   }
+  }
+ ]
+}

@@ -271,6 +271,7 @@ const en: Record<string, string> = {
   'Te damos una latitud y una longitud y dices qué país hay ahí.': 'We give you a latitude and a longitude and you say which country is there.',
   '¿Qué país hay en estas coordenadas?': 'Which country is at these coordinates?',
   'Husos horarios': 'Time zones',
+  'Placas y volcanes': 'Plates and volcanoes',
   'Reflejo del agua': 'Water reflection',
   Estrellas: 'Stars',
   'Día y noche': 'Day and night',
