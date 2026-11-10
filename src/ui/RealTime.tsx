@@ -33,7 +33,7 @@ function MoonDisc({ phase, size = 22 }: { phase: MoonPhase; size?: number }) {
   const rx = (r * Math.abs(1 - 2 * phase.lit)).toFixed(2);
   const dark = `M0 ${-r}A${r} ${r} 0 0 0 0 ${r}A${rx} ${r} 0 0 ${phase.lit > 0.5 ? 1 : 0} 0 ${-r}z`;
   return (
-    <svg className="moon-marker" width={size} height={size} viewBox="-10 -10 20 20" aria-hidden="true">
+    <svg className="moon-marker" data-sky width={size} height={size} viewBox="-10 -10 20 20" aria-hidden="true">
       <defs>
         <radialGradient id={`${id}s`} cx="42%" cy="38%" r="68%">
           <stop offset="0" stopColor="#fbf9f0" />
@@ -84,6 +84,28 @@ const SUN_ALT = 149_600_000 / 6371 - 1;
 const MOON_ALT = 384_400 / 6371 - 1;
 
 const percent = (lit: number) => `${Math.round(lit * 100)} %`;
+const num = (value: number) => value.toLocaleString(LOCALE);
+const km = (value: number) => `${num(value)} km`;
+const millionsKm = (value: number) => t('{n} millones de km', { n: num(value) });
+const days = (value: number) => t('{n} días', { n: num(value) });
+
+/**
+ * Ficha de un astro, al pasar el cursor por él. Cifras de las hojas de datos de la NASA (Sun y Moon
+ * Fact Sheet, science.nasa.gov): valores medios y redondeados.
+ */
+function SkyCard({ title, rows }: { title: string; rows: [string, string][] }) {
+  return (
+    <span className="sky-tip sky-card">
+      <strong className="block">{title}</strong>
+      {rows.map(([label, value]) => (
+        <span key={label} className="sky-row">
+          <span>{label}</span>
+          <span className="tabular">{value}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
 
 /** Lo que el modo de tiempo real pinta sobre el mapa: el Sol y la Luna en su cénit y dónde está el usuario. */
 export function RealTimeMarkers({
@@ -107,17 +129,36 @@ export function RealTimeMarkers({
         <Tracked engine={engine} lon={moon.lon} lat={moon.lat} alt={MOON_ALT}>
           <div className="sky-marker" role="img" aria-label={t('Aquí la Luna está en lo más alto. {phase}, {lit} iluminada', { phase: t(phase.name), lit: percent(phase.lit) })}>
             <MoonDisc phase={phase} size={28} />
-            <span className="sky-tip">
-              {t(phase.name)} ({percent(phase.lit)})
-            </span>
+            <SkyCard
+              title={`${t(phase.name)} · ${percent(phase.lit)}`}
+              rows={[
+                [t('Distancia media'), km(384_400)],
+                [t('Diámetro'), `${km(3474)} · ${t('un cuarto del de la Tierra')}`],
+                [t('Vuelta a la Tierra'), days(27.3)],
+                [t('Ciclo de fases'), days(29.5)],
+                [t('Temperatura'), `−173 … 127 °C`],
+                [t('Gravedad'), t('un sexto de la terrestre')],
+              ]}
+            />
           </div>
         </Tracked>
       )}
       {layers.sun && (
         <Tracked engine={engine} lon={sun.lon} lat={sun.lat} alt={SUN_ALT}>
           <div className="sky-marker" role="img" aria-label={t('Aquí es mediodía: el Sol está en lo más alto')}>
-            <span className="sun-marker" />
-            <span className="sky-tip">{t('Sol · debajo de él es mediodía')}</span>
+            <span className="sun-marker" data-sky />
+            <SkyCard
+              title={t('Sol · debajo de él es mediodía')}
+              rows={[
+                [t('Qué es'), t('una estrella')],
+                [t('Distancia media'), millionsKm(149.6)],
+                [t('Su luz tarda'), t('unos 8 minutos')],
+                [t('Diámetro'), `${millionsKm(1.39)} · ${t('109 veces el de la Tierra')}`],
+                [t('En la superficie'), `≈ ${num(5500)} °C`],
+                [t('En el núcleo'), t('unos {n} millones de °C', { n: 15 })],
+                [t('Edad'), t('unos {n} millones de años', { n: num(4600) })],
+              ]}
+            />
           </div>
         </Tracked>
       )}

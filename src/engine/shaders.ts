@@ -517,26 +517,46 @@ uniform vec3 uSunView;     // dirección del Sol vista desde la cámara (x derec
 uniform float uSunLit;     // 1 = la atmósfera se ilumina según el Sol (tiempo real)
 varying vec2 vPos;
 
-// Las cinco capas de la atmósfera como anillos alrededor del globo. La altura está muy exagerada
-// (a escala, las cuatro primeras no llegarían a un píxel) y los grosores solo guardan el orden.
-vec4 shells(float r) {
+// Las cinco capas de la atmósfera alrededor del globo. La altura está muy exagerada (a escala, las
+// cuatro primeras no llegarían a un píxel) y los grosores solo guardan el orden. Cada capa es aire
+// cada vez más tenue: más densa y clara por abajo, casi transparente por arriba, así que las
+// estrellas se ven a través de las de fuera. «rim» es la dirección del punto en pantalla.
+vec4 shells(float r, vec2 rim) {
   if (r < 1.0) return vec4(0.0);
   vec3 color;
-  float edge;
-  if (r < 1.07) { color = vec3(0.66, 0.82, 0.94); edge = 1.07; }       // troposfera
-  else if (r < 1.16) { color = vec3(0.36, 0.58, 0.81); edge = 1.16; }  // estratosfera
-  else if (r < 1.27) { color = vec3(0.18, 0.36, 0.61); edge = 1.27; }  // mesosfera
-  else if (r < 1.45) { color = vec3(0.11, 0.21, 0.40); edge = 1.45; }  // termosfera
-  else { color = vec3(0.06, 0.10, 0.20); edge = 1.72; }                // exosfera
-  // una línea clara separa cada capa de la siguiente; la última se desvanece
-  float line = 1.0 - smoothstep(0.0, 2.5 * fwidth(r), edge - r);
-  float alpha = r < 1.45 ? 0.82 : 0.82 * (1.0 - smoothstep(1.45, 1.72, r));
-  return vec4(mix(color, vec3(0.9, 0.95, 1.0), line * 0.6 * step(r, 1.45)), alpha);
+  float lo;
+  float hi;
+  vec2 dense; // opacidad abajo y arriba de la capa
+  if (r < 1.07) { color = vec3(0.70, 0.86, 0.98); lo = 1.0; hi = 1.07; dense = vec2(0.94, 0.82); }        // troposfera
+  else if (r < 1.16) { color = vec3(0.38, 0.62, 0.88); lo = 1.07; hi = 1.16; dense = vec2(0.80, 0.64); }  // estratosfera
+  else if (r < 1.27) { color = vec3(0.20, 0.40, 0.70); lo = 1.16; hi = 1.27; dense = vec2(0.62, 0.46); }  // mesosfera
+  else if (r < 1.45) { color = vec3(0.14, 0.26, 0.52); lo = 1.27; hi = 1.45; dense = vec2(0.44, 0.24); }  // termosfera
+  else { color = vec3(0.10, 0.17, 0.36); lo = 1.45; hi = 1.72; dense = vec2(0.18, 0.0); }                 // exosfera
+  float f = (r - lo) / (hi - lo);
+  float alpha = mix(dense.x, dense.y, f);
+  color *= mix(1.12, 0.82, f);
+  // El lado que mira al Sol brilla más; el de noche queda en penumbra (solo con tiempo real).
+  float lit = max(smoothstep(-0.35, 0.3, dot(rim, uSunView.xy)), smoothstep(0.75, 0.98, -uSunView.z));
+  float sunny = mix(1.0, 0.7 + 0.4 * lit, uSunLit);
+  color *= sunny;
+  // Capa de ozono: una franja algo más clara en mitad de la estratosfera.
+  color += vec3(0.10, 0.14, 0.16) * exp(-pow((r - 1.115) / 0.012, 2.0)) * sunny;
+  // Auroras: cortinas verdes en la parte baja de la termosfera, cerca de los polos.
+  float polar = smoothstep(0.78, 0.95, abs(rim.y));
+  float curtain = 0.6 + 0.4 * sin(atan(rim.y, rim.x) * 90.0);
+  float aurora = polar * exp(-pow((r - 1.30) / 0.022, 2.0)) * curtain;
+  color = mix(color, vec3(0.35, 1.0, 0.62), aurora * 0.75);
+  alpha = max(alpha, aurora * 0.6);
+  // Una línea fina y clara marca dónde acaba cada capa (la exosfera se desvanece sin borde).
+  float line = (1.0 - smoothstep(0.0, 2.0 * fwidth(r), hi - r)) * step(r, 1.45);
+  color = mix(color, vec3(0.90, 0.95, 1.0) * sunny, line * 0.75);
+  alpha = max(alpha, line * 0.8);
+  return vec4(color, alpha);
 }
 
 void main() {
   if (uShells > 0.5) {
-    vec4 shell = shells(length(vPos) / uSilhouette);
+    vec4 shell = shells(length(vPos) / uSilhouette, normalize(vPos + vec2(1e-5)));
     if (shell.a <= 0.003) discard;
     gl_FragColor = shell;
     return;

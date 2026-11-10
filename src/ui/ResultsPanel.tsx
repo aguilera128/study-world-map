@@ -3,6 +3,7 @@ import { climateText } from '../game/climate';
 import { useState, type CSSProperties } from 'react';
 import { formatGrade, formatTime, plural } from '../app/format';
 import { showCountry, useApp, useProgress } from '../app/store';
+import { useSync } from '../app/sync';
 import type { Atlas } from '../atlas/atlas';
 import type { Country } from '../atlas/types';
 import { modeDef, type GameConfig } from '../game/config';
@@ -51,6 +52,7 @@ export function ResultsPanel() {
   const reviewOnly = useApp((s) => s.reviewOnly);
   const daily = useApp((s) => s.daily);
   const streak = useProgress((s) => s.daily?.streak ?? 0);
+  const synced = useSync((s) => s.code !== null);
   const [shared, setShared] = useState(false);
   const start = useApp((s) => s.start);
   const go = useApp((s) => s.go);
@@ -177,6 +179,15 @@ export function ResultsPanel() {
           {t('Cambiar de reto')}
         </button>
       </div>
+      {!synced && (
+        // Sin código, el progreso vive solo en este navegador: se avisa, sin crear nada por el usuario.
+        <p className="mt-5 text-sm text-ink-soft" style={order(6)}>
+          {t('Tu progreso se guarda solo en este dispositivo.')}{' '}
+          <button type="button" onClick={() => go('progress')} className="font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:text-accent">
+            {t('Crea un código para seguir en el móvil o en otro ordenador')}
+          </button>
+        </p>
+      )}
     </Panel>
   );
 }

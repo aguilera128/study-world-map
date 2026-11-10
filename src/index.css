@@ -163,6 +163,13 @@
   font-weight: 700;
   letter-spacing: -0.012em;
   line-height: 1.04;
+  /* líneas de largo parecido: ninguna palabra se queda sola en la última */
+  text-wrap: balance;
+}
+
+/* En los párrafos, lo mismo pero más barato: solo se evita la palabra huérfana del final. */
+p {
+  text-wrap: pretty;
 }
 
 /* Rótulo en versalitas, como las leyendas de un mapa. */
@@ -597,6 +604,37 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
+}
+
+/* La ficha del Sol y de la Luna: varias líneas, cada dato con su etiqueta. */
+.sky-card {
+  display: grid;
+  gap: 2px;
+  min-width: 15rem;
+  padding: 8px 10px;
+  white-space: normal;
+  text-align: left;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.sky-card strong {
+  margin-bottom: 3px;
+  font-size: 0.8125rem;
+}
+
+.sky-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sky-row > :first-child {
+  opacity: 0.7;
+}
+
+.sky-row > :last-child {
+  text-align: right;
 }
 
 .sky-marker:hover .sky-tip {

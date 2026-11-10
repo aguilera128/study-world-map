@@ -1093,9 +1093,13 @@ export class MapEngine {
   private placeFar(item: Tracked): ScreenPoint {
     const p = this.rig.projectFar(item.lon, item.lat, 1 + item.alt, this.screen);
     const disc = this.rig.earthDisc();
-    const [x, y, r] = [disc.x - p.x, disc.y - p.y, disc.r];
-    // Todo menos el círculo de la Tierra, en coordenadas del propio marcador.
-    item.el.style.clipPath = p.ahead
+    // Se recorta el dibujo del astro (marcado con data-sky), no su ficha, que debe leerse entera
+    // aunque caiga sobre el globo. El dibujo va centrado en el punto, así que su esquina queda a medio tamaño.
+    const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
+    const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
+    const [x, y, r] = [disc.x - p.x + box.width / 2, disc.y - p.y + box.height / 2, disc.r];
+    // Todo menos el círculo de la Tierra, en coordenadas del propio dibujo.
+    body.style.clipPath = p.ahead
       ? `path(evenodd, "M-3000 -3000H3000V3000H-3000Z M${(x - r).toFixed(1)} ${y.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(2 * r).toFixed(1)} 0a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(-2 * r).toFixed(1)} 0Z")`
       : '';
     p.visible = !!p.ahead;
@@ -1120,7 +1124,7 @@ export class MapEngine {
       if (lon > x && lon < y) p.visible = false;
     }
     // En el mapa plano los astros vuelven a su punto del mapa, sin recorte.
-    if (item.alt > 10 && rig.morph <= 0.999 && item.el.style.clipPath) item.el.style.clipPath = '';
+    if (item.alt > 10 && rig.morph <= 0.999) item.el.querySelector<HTMLElement | SVGElement>('[data-sky]')?.style.removeProperty('clip-path');
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
     item.el.toggleAttribute('data-hidden', !p.visible);
   }
