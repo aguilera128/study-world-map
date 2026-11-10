@@ -273,31 +273,69 @@ p {
   }
 }
 
-/* Tirador de la hoja del móvil: una barrita centrada con una zona de toque generosa. Se queda
-   arriba aunque el contenido se desplace. */
+/* Tirador de la hoja del móvil: una barrita centrada con una zona de toque de 44 px. Se queda
+   arriba aunque el contenido se desplace. Con la hoja plegada es una fila que dice qué hace. */
 .sheet-handle {
   position: sticky;
   top: 0;
   z-index: 11;
-  display: block;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   width: 100%;
-  height: 1.5rem;
-  background: var(--surface);
+  height: 2.75rem;
+  margin-bottom: -0.75rem;
+  padding-bottom: 0.3rem;
+  background: linear-gradient(var(--surface) 62%, transparent);
   border-radius: 20px 20px 0 0;
-  touch-action: none;
-  cursor: grab;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sheet-handle[data-folded] {
+  margin-bottom: 0;
+  padding-bottom: 0.45rem;
+  background: var(--surface);
 }
 
 .sheet-handle::before {
   content: '';
   position: absolute;
   left: 50%;
-  top: 0.55rem;
-  width: 2.5rem;
-  height: 0.25rem;
+  top: 0.5rem;
+  width: 2.75rem;
+  height: 0.3rem;
   border-radius: 999px;
   background: var(--rule-strong);
   transform: translateX(-50%);
+}
+
+/* Hoja plegada: del contenido solo queda la fila del pie (el botón de empezar). */
+.panel[data-folded] .panel-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.panel[data-folded] .panel-body > :not([data-sheet-foot]) {
+  display: none;
+}
+
+.panel[data-folded] [data-sheet-foot] {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0.25rem;
+}
+
+.sheet-handle-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.sheet-handle-label::after {
+  content: ' ↑';
 }
 
 /* Píldora flotante sobre el mapa (controles, lecturas). */

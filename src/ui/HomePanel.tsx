@@ -200,6 +200,7 @@ export function HomePanel() {
 
       {/* En el móvil el botón de empezar se queda pegado al borde de la hoja, siempre a mano. */}
       <div
+        data-sheet-foot
         className="sticky bottom-0 z-10 -mx-5 mt-5 flex flex-wrap items-center gap-x-2 gap-y-2 border-t border-rule bg-surface px-5 py-3 wide:static wide:mx-0 wide:mt-6 wide:border-0 wide:bg-transparent wide:p-0"
         style={order(6)}
       >

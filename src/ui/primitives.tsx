@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { t } from '../i18n';
 import { usePad, useWide } from './hooks';
 
@@ -67,19 +67,15 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
   const ref = useRef<HTMLElement>(null);
   const wide = useWide();
   usePad(ref, wide ? 'left' : 'bottom', wide ? 0.68 : 1);
-  // En el móvil la hoja se pliega con su tirador (deslizándolo hacia abajo o tocándolo) y deja a la
-  // vista solo su última fila —el botón de empezar— para ver el mapa entero.
+  // En el móvil la hoja se pliega y deja a la vista solo su última fila —el botón de empezar— para
+  // ver el mapa entero. Se pliega deslizándola hacia abajo (desde arriba del todo) o tocando el
+  // tirador; plegada, el tirador es una fila entera que dice qué hace y se abre también deslizando
+  // hacia arriba en cualquier punto.
   const [folded, setFolded] = useState(false);
-  const dragFrom = useRef<number | null>(null);
+  const touch = useRef<{ y: number; atTop: boolean } | null>(null);
   const fold = (value: boolean) => {
     if (value && ref.current) ref.current.scrollTop = 0;
     setFolded(value);
-  };
-  const onHandleUp = (e: ReactPointerEvent) => {
-    const moved = dragFrom.current === null ? 0 : e.clientY - dragFrom.current;
-    dragFrom.current = null;
-    // Un toque sin arrastre alterna; un arrastre manda según su sentido.
-    fold(Math.abs(moved) < 12 ? !folded : moved > 0);
   };
   const closed = !wide && folded;
   return (
@@ -90,22 +86,32 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
       animate={{ opacity: 1, x: 0, y: 0 }}
       exit={{ opacity: 0, x: wide ? -28 : 0, y: wide ? 0 : 40 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`panel fixed inset-x-0 bottom-0 z-30 overscroll-contain transition-[max-height] duration-300 wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem] wide:overflow-hidden ${closed ? 'max-h-[6.05rem] overflow-hidden' : 'max-h-[60dvh] overflow-y-auto'}`}
+      className={`panel fixed inset-x-0 bottom-0 z-30 overscroll-contain transition-[max-height] duration-300 wide:inset-y-0 wide:right-auto wide:max-h-none wide:w-[40rem] wide:overflow-hidden ${closed ? 'overflow-hidden' : 'max-h-[60dvh] overflow-y-auto'}`}
+      // Plegada, el CSS oculta todo el contenido menos la fila del pie (data-sheet-foot).
+      data-folded={closed || undefined}
+      onTouchStart={wide ? undefined : (e) => (touch.current = { y: e.touches[0].clientY, atTop: (ref.current?.scrollTop ?? 0) <= 0 })}
+      onTouchEnd={
+        wide
+          ? undefined
+          : (e) => {
+              const from = touch.current;
+              touch.current = null;
+              if (!from) return;
+              const moved = e.changedTouches[0].clientY - from.y;
+              if (folded && moved < -24) fold(false);
+              else if (!folded && from.atTop && moved > 56) fold(true);
+            }
+      }
     >
       {!wide && (
-        <button
-          type="button"
-          className="sheet-handle"
-          aria-expanded={!folded}
-          aria-label={folded ? t('Desplegar el panel') : t('Plegar el panel')}
-          title={folded ? t('Desplegar el panel') : t('Plegar el panel')}
-          onPointerDown={(e) => {
-            dragFrom.current = e.clientY;
-            e.currentTarget.setPointerCapture(e.pointerId);
-          }}
-          onPointerUp={onHandleUp}
-          onPointerCancel={() => (dragFrom.current = null)}
-        />
+        <button type="button" className="sheet-handle" data-folded={folded || undefined} aria-expanded={!folded} onClick={() => fold(!folded)} title={folded ? t('Desplegar el panel') : t('Plegar el panel')}>
+          <span className="sr-only">{folded ? t('Desplegar el panel') : t('Plegar el panel')}</span>
+          {folded && (
+            <span aria-hidden="true" className="sheet-handle-label">
+              {t('Más opciones')}
+            </span>
+          )}
+        </button>
       )}
       <div className="panel-body stagger wide:max-w-[30rem] px-5 pb-7 pt-1 wide:pt-5 wide:pb-8 wide:pl-10 wide:pr-[4.5rem] wide:pt-[clamp(4.75rem,10vh,6rem)]">{children}</div>
     </motion.aside>
