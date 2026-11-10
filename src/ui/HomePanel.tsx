@@ -85,7 +85,8 @@ export function HomePanel() {
         <span className="block whitespace-nowrap">{def.text.headline[0]}</span>
         <em className="block whitespace-nowrap font-semibold text-accent">{def.text.headline[1]}</em>
       </h1>
-      <p className="mt-2.5 max-w-[26rem] text-ink-soft" style={order(2)}>
+      {/* en el móvil la hoja es corta: la frase de presentación solo se enseña en pantallas anchas */}
+      <p className="mt-2.5 hidden max-w-[26rem] text-ink-soft wide:block" style={order(2)}>
         {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
 

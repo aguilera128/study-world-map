@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { t } from '../i18n';
 import { Icon } from './Icon';
 
@@ -44,7 +45,7 @@ function Interior() {
   const outer = px(3471);
   const inner = px(1221);
   return (
-    <svg viewBox="0 0 300 300" role="img" aria-label={t('Interior')} className="mx-auto w-full max-w-[19rem]">
+    <svg viewBox="0 0 300 300" role="img" aria-label={t('Interior')} className="mx-auto w-full max-w-[13rem] wide:max-w-[19rem]">
       <defs>
         <clipPath id="planet-cut">
           <path d={sector(R)} />
@@ -103,7 +104,7 @@ function Interior() {
 function Atmosphere() {
   const band = 46;
   return (
-    <svg viewBox="0 0 300 300" role="img" aria-label={t('Atmósfera')} className="mx-auto w-full max-w-[19rem]">
+    <svg viewBox="0 0 300 300" role="img" aria-label={t('Atmósfera')} className="mx-auto w-full max-w-[13rem] wide:max-w-[19rem]">
       {ATMOSPHERE.map((layer, i) => (
         <rect key={layer.id} x="0" y={10 + i * band} width="300" height={band} fill={layer.color} />
       ))}
@@ -149,15 +150,20 @@ export function PlanetButton({ labels }: { labels: string }) {
   const layers = tab === 'interior' ? [...INTERIOR].reverse() : ATMOSPHERE;
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} title={t('El planeta por dentro y por fuera')} aria-label={t('El planeta')} className="btn btn-ghost min-h-10 px-2.5 text-sm">
+      <button type="button" onClick={() => setOpen(true)} title={t('El planeta por dentro y por fuera')} aria-label={t('El planeta')} className="btn btn-ghost min-h-10 justify-start px-2.5 text-sm">
         <Icon name="target" size={18} />
         <span className={labels}>{t('El planeta')}</span>
       </button>
+      {createPortal(
       <dialog
         ref={ref}
         onClose={() => setOpen(false)}
-        onClick={(e) => e.target === ref.current && setOpen(false)}
-        className="planet-dialog m-auto w-[min(44rem,calc(100vw-1.5rem))] rounded-2xl border border-rule-strong bg-surface p-0 text-ink"
+        // un clic dentro no debe llegar al menú que contiene el botón (lo cerraría)
+        onClick={(e) => {
+          e.stopPropagation();
+          if (e.target === ref.current) setOpen(false);
+        }}
+        className="planet-dialog m-auto max-h-[calc(100dvh-1.5rem)] w-[min(44rem,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-rule-strong bg-surface p-0 text-ink"
       >
         {open && (
           <div className="p-5 wide:p-7">
@@ -207,7 +213,9 @@ export function PlanetButton({ labels }: { labels: string }) {
             </p>
           </div>
         )}
-      </dialog>
+      </dialog>,
+        document.body,
+      )}
     </>
   );
 }

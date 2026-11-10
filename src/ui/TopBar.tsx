@@ -1,8 +1,8 @@
 import { PlanetButton } from './PlanetDialog';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { getEngine } from '../app/engineRef';
 import { useApp, useSettings, type Screen } from '../app/store';
-import { useTheme } from './hooks';
+import { useTheme, useWide } from './hooks';
 import { Icon, Logo, type IconName } from './Icon';
 import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
 
@@ -78,6 +78,33 @@ function LangMenu() {
   );
 }
 
+/** Menú «más» de la barra en el móvil. Su contenido sigue montado al cerrarse (solo se oculta). */
+function MoreMenu({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onDown = (e: PointerEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen(!open)} title={t('Más opciones')} aria-label={t('Más opciones')} aria-expanded={open} className="btn btn-ghost btn-icon min-h-10 w-10">
+        <Icon name="list" size={19} />
+      </button>
+      <div className={`float absolute right-0 top-full mt-1.5 w-60 flex-col gap-1 bg-surface! p-2 ${open ? 'flex' : 'hidden'}`} onClick={() => setOpen(false)}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /** Cabecera: marca, navegación y los conmutadores globales (tiempo real, vista 3D/2D y tema). */
 export function TopBar() {
   const screen = useApp((s) => s.screen);
@@ -91,6 +118,20 @@ export function TopBar() {
   const playing = screen === 'play';
   // Durante la partida los botones se quedan en solo icono para dejar sitio al marcador.
   const labels = playing ? 'sr-only' : LABELS;
+
+  const wide = useWide();
+  const toggleTheme = () => setTheme(theme === 'night' ? 'paper' : 'night');
+  const themeButton = (
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
+          aria-label={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
+          className="btn btn-ghost btn-icon min-h-10 w-10"
+        >
+          <Icon name={theme === 'night' ? 'sun' : 'moon'} size={19} />
+        </button>
+  );
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-center justify-between gap-2 px-3 py-3 wide:px-8 wide:py-5">
@@ -115,7 +156,7 @@ export function TopBar() {
             <NavButton screen="progress" icon="chart">
               {t('Progreso')}
             </NavButton>
-            <PlanetButton labels={labels} />
+            {wide && <PlanetButton labels={labels} />}
           </nav>
         )}
 
@@ -158,16 +199,38 @@ export function TopBar() {
           ))}
         </div>
 
-        {!playing && <LangMenu />}
-        <button
-          type="button"
-          onClick={() => setTheme(theme === 'night' ? 'paper' : 'night')}
-          title={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
-          aria-label={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
-          className="btn btn-ghost btn-icon min-h-10 w-10"
-        >
-          <Icon name={theme === 'night' ? 'sun' : 'moon'} size={19} />
-        </button>
+        {wide ? (
+          <>
+            {!playing && <LangMenu />}
+            {themeButton}
+          </>
+        ) : (
+          // En el móvil no cabe todo: el planeta, el idioma y el tema van en un menú.
+          <MoreMenu>
+            {!playing && <PlanetButton labels="" />}
+            <button type="button" onClick={toggleTheme} className="btn btn-ghost min-h-11 justify-start px-2.5 text-sm">
+              <Icon name={theme === 'night' ? 'sun' : 'moon'} size={18} />
+              {theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
+            </button>
+            {!playing && (
+              <nav aria-label={t('Idioma')} className="grid grid-cols-5 gap-1 border-t border-rule pt-2">
+                {(Object.keys(LANGS) as Lang[]).map((id) => (
+                  <a
+                    key={id}
+                    href={homeOf(id)}
+                    hrefLang={id}
+                    lang={id}
+                    title={LANGS[id]}
+                    aria-current={id === lang ? 'true' : undefined}
+                    className={`grid min-h-11 place-items-center rounded-lg text-sm font-bold uppercase no-underline ${id === lang ? 'bg-ink text-paper' : 'text-ink'}`}
+                  >
+                    {id}
+                  </a>
+                ))}
+              </nav>
+            )}
+          </MoreMenu>
+        )}
       </div>
     </header>
   );
