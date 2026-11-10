@@ -120,10 +120,51 @@ ${SHADE}
 uniform vec3 uOcean;
 uniform vec3 uGrid;
 uniform float uGridAlpha;
+uniform float uGlint;     // fuerza del reflejo del agua (0 = mate)
 varying vec2 vLonLat;
 varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
+
+// Ruido de valor en 3D: se evalúa sobre el punto geográfico, así que el oleaje está fijo al mapa
+// (no se mueve ni obliga a redibujar) y es continuo en el antimeridiano y en los polos.
+float hash(vec3 p) {
+  p = fract(p * 0.3183099 + 0.1);
+  p *= 17.0;
+  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float noise(vec3 x) {
+  vec3 i = floor(x);
+  vec3 f = fract(x);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(hash(i), hash(i + vec3(1, 0, 0)), f.x), mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
+    mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y),
+    f.z
+  );
+}
+
+// Inclinación de la superficie por el oleaje; se apaga cuando las olas son más finas que un píxel.
+vec3 ripple(vec3 p) {
+  float visible = 1.0 - smoothstep(0.35, 1.0, length(fwidth(p)));
+  return (vec3(noise(p), noise(p + vec3(31.7, 0.0, 0.0)), noise(p + vec3(0.0, 47.3, 0.0))) - 0.5) * visible;
+}
+
+// Brillo del agua: reflejo de la luz (del Sol real en el modo de tiempo real) roto por el oleaje,
+// y un aclarado hacia el borde del globo (Fresnel).
+vec3 glint(vec3 normal, vec3 toEye, vec3 geo) {
+  vec3 q = geo * 170.0;
+  vec3 n = normalize(normalize(normal) + 0.16 * (ripple(q) + 0.5 * ripple(q * 2.7)));
+  vec3 v = normalize(toEye);
+  float real = uNight * uMorph;
+  vec3 l = normalize(mix(uLight, mat3(viewMatrix) * uSun, real));
+  float spec = pow(max(dot(n, normalize(l + v)), 0.0), 30.0) * mix(0.35, 1.0, uMorph);
+  float fresnel = pow(1.0 - max(dot(n, v), 0.0), 3.0) * uMorph * 0.3;
+  // De noche no hay reflejo del Sol.
+  float lit = mix(1.0, smoothstep(-0.05, 0.2, dot(geo, uSun)), uNight);
+  return vec3(1.0, 0.97, 0.9) * (spec + fresnel) * uGlint * lit;
+}
 
 void main() {
   // Retícula cada 15°, de 1 px de grosor sea cual sea el zoom.
@@ -135,7 +176,7 @@ void main() {
   float parallel = 1.0 - clamp(d.y, 0.0, 1.0);
   float line = max(meridian, parallel);
   vec3 c = mix(uOcean, uGrid, line * uGridAlpha);
-  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo), 1.0);
+  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo) + glint(vNormal, vToEye, normalize(vGeo)), 1.0);
 }
 `;
 

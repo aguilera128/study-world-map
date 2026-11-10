@@ -196,7 +196,7 @@ export class MapEngine {
     uNightDim: { value: 0.5 },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
     marker: { uPxPerRad: { value: 1 }, uThreshold: { value: MARKER_THRESHOLD }, uMarkerPx: { value: 16 } },
@@ -402,6 +402,7 @@ export class MapEngine {
     this.own.ocean.uOcean.value.copy(vec3(p.ocean));
     this.own.ocean.uGrid.value.copy(vec3(p.grid));
     this.own.ocean.uGridAlpha.value = p.gridAlpha;
+    this.own.ocean.uGlint.value = p.glint;
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
     this.own.halo.uFalloff.value = p.haloFalloff;

@@ -34,6 +34,8 @@ export interface Palette {
   ocean: string;
   grid: string;
   gridAlpha: number;
+  /** Fuerza del reflejo del agua (0 = mate). */
+  glint: number;
   /** Color y fuerza del borde claro del globo. */
   rim: string;
   rimAmount: number;
@@ -72,6 +74,7 @@ export const PAPER: Palette = {
   ocean: '#a8cbd6',
   grid: '#5f8fa3',
   gridAlpha: 0.22,
+  glint: 0.3,
   rim: '#dcecf0',
   rimAmount: 0.3,
   rimPower: 2.8,
@@ -119,6 +122,7 @@ export const NIGHT: Palette = {
   ocean: '#14263a',
   grid: '#6f9cc0',
   gridAlpha: 0.14,
+  glint: 0.32,
   rim: '#6ea6d8',
   rimAmount: 0.42,
   rimPower: 2.4,
