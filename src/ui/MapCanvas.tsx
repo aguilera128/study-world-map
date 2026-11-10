@@ -145,9 +145,12 @@ export default function MapCanvas() {
         : null,
     );
   }, [engine, layers.guides]);
-  // Accidentes geográficos: el fichero solo se descarga si se enciende la capa.
+  // Accidentes geográficos: el fichero solo se descarga si se enciende la capa o si el mapa es el
+  // de geografía física, que necesita los ríos dibujados. Jugando no hay rótulos: darían la respuesta.
+  const physical = atlas.map === 'fisico';
+  const featureLabels = layers.features && screen !== 'play';
   useEffect(() => {
-    if (!engine || !layers.features) return;
+    if (!engine || !(layers.features || physical)) return;
     let cancelled = false;
     fetch('/data/fisico.json')
       .then((res) => res.json())
@@ -156,7 +159,7 @@ export default function MapCanvas() {
         engine.setFeatures(
           data.features.map((f) => {
             const name = f.names[lang] ?? f.names.es;
-            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines, text: f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
+            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines, text: !featureLabels ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
           }),
         );
       })
@@ -165,7 +168,7 @@ export default function MapCanvas() {
       cancelled = true;
       engine.setFeatures([]);
     };
-  }, [engine, layers.features]);
+  }, [engine, layers.features, physical, featureLabels]);
   useEffect(() => engine?.setLayers(layers.grid, layers.glint, layers.stars), [engine, layers.grid, layers.glint, layers.stars]);
   useEffect(() => engine?.setSidereal(siderealAngle(now)), [engine, now]);
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);

@@ -11,16 +11,18 @@ Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repo
      https://naciscdn.org/naturalearth/10m/physical/ne_10m_<nombre>.zip
   2. python scripts/build-physical.py <carpeta> [--wikidata]
 
-Lo único que se decide aquí es qué entra: los elementos más importantes de cada clase según el
-`scalerank` de Natural Earth (ver CLASES) y unos pocos ríos europeos que se estudian y quedan por
-debajo de ese corte (RIOS_EXTRA).
+Lo único que se decide aquí es qué entra: para rotular, los elementos más importantes de cada clase
+según el `scalerank` de Natural Earth (ver CLASES); para el reto de geografía física (`quiz`), los
+de scripts/data/fisico-temario.json.
 """
 import json
 import os
 import re
 import struct
 import sys
+import time
 import unicodedata
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -30,16 +32,21 @@ WIKIDATA = os.path.join(HERE, 'data', 'fisico.wikidata.json')
 LANGS = ['es', 'en', 'fr', 'de', 'it', 'pt', 'zh']
 LANGS_WIKIDATA = ['ca', 'gl', 'eu']
 
-# clase de Natural Earth → (clase nuestra, scalerank máximo que entra)
+# clase de Natural Earth → (clase nuestra, scalerank máximo que se rotula; −1 = solo si está en el temario)
 CLASES = {
     'Range/mtn': ('cordillera', 3),
     'Desert': ('desierto', 3),
     'Plateau': ('meseta', 2),
     'Plain': ('llanura', 2),
+    'Lowland': ('llanura', -1),
+    'Basin': ('llanura', -1),
+    'Geoarea': ('llanura', -1),
     'Pen/cape': ('peninsula', 3),
     'Peninsula': ('peninsula', 3),
+    'cape': ('peninsula', -1),
     'Island': ('isla', 2),
     'Island group': ('isla', 1),
+    'island': ('isla', -1),
     'ocean': ('oceano', 0),
     'sea': ('mar', 2),
     'gulf': ('golfo', 2),
@@ -51,9 +58,10 @@ CLASES = {
     'Alkaline Lake': ('lago', 1),
 }
 RIOS_RANK = 4
-RIOS_EXTRA = {'Ebro', 'Tajo', 'Tejo', 'Loire', 'Elbe', 'Vistula', 'Colorado'}
 # Brazos de delta y tramos con nombre local que Natural Earth separa del río principal.
 RIOS_FUERA = re.compile(r'Protoka|Branch|Bratul|Delta|Canal|Borcea')
+# Lo que entra en el reto de geografía física (selección editorial, ver el propio fichero).
+TEMARIO = os.path.join(HERE, 'data', 'fisico-temario.json')
 
 
 def dbf(path):
@@ -147,48 +155,84 @@ def names(row):
 def build(folder):
     features = []
 
-    def add(kind, rank, at, row, **extra):
+    def add(kind, rank, top, at, row, **extra):
         nm = names(row)
         if not nm.get('es'):
             return
-        features.append({'kind': kind, 'rank': rank, 'at': [round(at[0], 2), round(at[1], 2)], 'names': nm, 'wd': row.get('wikidataid') or None, **extra})
+        raw = {(row.get('name_en') or '').lower(), (row.get('name') or '').lower()} - {''}
+        features.append({'kind': kind, 'rank': rank, 'at': [round(at[0], 2), round(at[1], 2)], 'names': nm, 'wd': row.get('wikidataid') or None, '_top': top, '_raw': raw, **extra})
 
     for name in ('ne_10m_geography_regions_polys', 'ne_10m_geography_marine_polys', 'ne_10m_lakes'):
         for row, parts in layer(folder, name):
             kind, top = CLASES.get(row['featurecla'], (None, -1))
-            rank = int(row['scalerank'])
-            if kind is None or rank > top or not parts:
+            if kind is None or not parts:
                 continue
             at, _ = max((centroid(p) for p in parts), key=lambda c: c[1])
-            add(kind, rank, at, row)
+            add(kind, int(row['scalerank']), top, at, row)
 
-    for row, parts in layer(folder, 'ne_10m_geography_regions_elevation_points'):
-        kind, top = CLASES.get(row['featurecla'], (None, -1))
-        if kind and int(row['scalerank']) <= top and row['name']:
-            add(kind, int(row['scalerank']), parts[0][0], row, elev=round(float(row['elevation'])))
+    for name in ('ne_10m_geography_regions_elevation_points', 'ne_10m_geography_regions_points'):
+        for row, parts in layer(folder, name):
+            kind, top = CLASES.get(row['featurecla'], (None, -1))
+            if kind and row['name']:
+                extra = {'elev': round(float(row['elevation']))} if row.get('elevation') else {}
+                add(kind, int(row['scalerank']), top, parts[0][0], row, **extra)
 
-    # Ríos: Natural Earth los trae por tramos; se juntan los de un mismo río (mismo identificador de
-    # Wikidata o, si no lo trae, mismo nombre).
+    # Ríos: Natural Earth los trae por tramos (también los que cruzan un lago); se juntan los de un
+    # mismo río (mismo identificador de Wikidata o, si no lo trae, mismo nombre).
     rivers = {}
     for row, parts in layer(folder, 'ne_10m_rivers_lake_centerlines'):
-        rank = int(row['scalerank'])
-        if not row['name'] or RIOS_FUERA.search(row['name']) or not row['featurecla'].startswith('River') or (rank > RIOS_RANK and row['name'] not in RIOS_EXTRA):
+        if not row['name'] or RIOS_FUERA.search(row['name']):
             continue
-        river = rivers.setdefault(row.get('wikidataid') or row['name'], {'row': row, 'rank': rank, 'parts': []})
-        river['rank'] = min(river['rank'], rank)
+        river = rivers.setdefault(row.get('wikidataid') or row['name'], {'row': row, 'rank': 99, 'parts': [], 'river': False})
+        river['rank'] = min(river['rank'], int(row['scalerank']))
+        river['river'] |= row['featurecla'].startswith('River')
         river['parts'] += parts
     for river in rivers.values():
+        if not river['river']:
+            continue
         longest = max(river['parts'], key=len)
         lines = [[round(v, 3) for p in simplify(part, 0.006) for v in p] for part in river['parts']]
-        add('rio', river['rank'], longest[len(longest) // 2], river['row'], lines=lines)
+        add('rio', river['rank'], RIOS_RANK, longest[len(longest) // 2], river['row'], lines=lines)
+
+    # Temario: por cada nombre, el elemento de su clase que se llama exactamente así; si no hay, el
+    # más importante de los que lo llevan en el nombre (primero los que empiezan por él).
+    missing = []
+    for kind, wanted in json.load(open(TEMARIO, encoding='utf8')).items():
+        if kind == '_':
+            continue
+        own = [f for f in features if f['kind'] == kind]
+        for name in wanted:
+            key = name.lower()
+            found = [f for f in own if key in f['_raw']]
+            if kind == 'oceano':
+                found = [f for f in own if any(key in raw for raw in f['_raw'])]
+            elif not found:
+                loose = [f for f in own if any(key in raw for raw in f['_raw'])]
+                loose.sort(key=lambda f: (not any(raw.startswith(key) for raw in f['_raw']), f['rank']))
+                found = loose[:1]
+            if not found:
+                missing.append(f'{kind}: {name}')
+            for f in found:
+                f['quiz'] = 1
+    print('Del temario no están en los datos:', '; '.join(missing))
+
+    # Se queda lo que se rotula por importancia y todo lo del temario. Un mismo nombre no se repite
+    # dentro de una clase (Natural Earth parte en dos el Atlántico y el Pacífico).
+    kept, seen = [], set()
+    for f in sorted(features, key=lambda f: (not f.get('quiz'), f['rank'])):
+        top, raw = f.pop('_top'), f.pop('_raw')
+        key = (f['kind'], f['names']['es'])
+        if (f.get('quiz') or f['rank'] <= top) and key not in seen:
+            seen.add(key)
+            kept.append(f)
 
     # identificador estable y único
     seen = {}
-    for f in features:
+    for f in kept:
         base = f['kind'] + '-' + slug(f['names'].get('en') or f['names']['es'])
         seen[base] = seen.get(base, 0) + 1
         f['id'] = base if seen[base] == 1 else f'{base}-{seen[base]}'
-    return features
+    return kept
 
 
 def fetch_wikidata(ids):
@@ -203,7 +247,16 @@ def fetch_wikidata(ids):
             data=urllib.parse.urlencode({'query': query, 'format': 'json'}).encode(),
             headers={'User-Agent': 'atlas-build-script/1.0'},
         )
-        for b in json.load(urllib.request.urlopen(req, timeout=120))['results']['bindings']:
+        for attempt in range(6):
+            try:
+                reply = json.load(urllib.request.urlopen(req, timeout=120))
+                break
+            except urllib.error.HTTPError as error:  # 429: Wikidata pide ir más despacio
+                if error.code != 429 or attempt == 5:
+                    raise
+                time.sleep(30 * (attempt + 1))
+        time.sleep(2)
+        for b in reply['results']['bindings']:
             out.setdefault(b['item']['value'].rsplit('/', 1)[1], {})[b['label']['xml:lang']] = b['label']['value']
     return out
 
@@ -224,7 +277,7 @@ def main():
     kinds = {}
     for f in features:
         kinds[f['kind']] = kinds.get(f['kind'], 0) + 1
-    print(len(features), 'elementos', kinds, os.path.getsize(OUT), 'bytes')
+    print(len(features), 'elementos', kinds, os.path.getsize(OUT), 'bytes ·', sum(1 for f in features if f.get('quiz')), 'en el reto')
 
 
 if __name__ == '__main__':

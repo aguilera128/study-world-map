@@ -1,8 +1,11 @@
 // Tipos del atlas. `Raw*` describe public/data/atlas.json tal como lo escribe
 // scripts/build-atlas.mjs; el resto es la forma ya decodificada que usa la aplicación.
 
-/** Qué atlas es: el del mundo o el de las subdivisiones de un país (scripts/build-maps.mjs). */
-export type MapId = 'world' | 'es';
+/**
+ * Qué atlas es: el del mundo, el de las subdivisiones de un país (scripts/build-maps.mjs) o el de
+ * geografía física (scripts/build-fisico.mjs).
+ */
+export type MapId = 'world' | 'es' | 'fisico';
 
 /**
  * Clave de una región del atlas. En el del mundo: europa · asia · africa · am-norte · am-central ·

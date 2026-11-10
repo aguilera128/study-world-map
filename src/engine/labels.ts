@@ -33,7 +33,8 @@ export class FeatureLabels {
 
   set(features: MapFeature[]) {
     this.root.replaceChildren();
-    this.items = [...features]
+    this.items = features
+      .filter((feature) => feature.text)
       .sort((a, b) => a.rank - b.rank)
       .map((feature) => {
         const el = document.createElement('span');

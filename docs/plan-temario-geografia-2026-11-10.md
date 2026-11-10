@@ -14,6 +14,20 @@ fuente y licencia comprobadas. «Por comprobar» significa que no he abierto tod
 | Retícula, hora local, día y noche | capas y tarjeta de tiempo real |
 | Relieve submarino (plataforma, llanuras abisales, fosas, dorsales) | color del mar, batimetría de Natural Earth |
 
+## Estado a 10-nov-2026 (tarde)
+
+Hecho: relieve, capa «Montañas, ríos y mares», líneas imaginarias, corrientes oceánicas (movimiento
+del agua y capa) y el mapa «Geografía física» con los retos Localizar y Nombrar sobre 287 accidentes
+(la selección está en `scripts/data/fisico-temario.json`).
+
+Pendiente: reto de coordenadas, husos horarios, corrientes con nombre, placas y volcanes, atmósfera,
+interior de la Tierra y mapas temáticos por país.
+
+Del temario no están en Natural Earth y habría que buscarles otra fuente: Apeninos, cordillera
+Cantábrica, sistemas Central e Ibérico, Júcar, Segura, Miño, estrechos de Bering, Ormuz y Dover,
+penínsulas Ibérica, Itálica, Balcánica y de Anatolia, Jutlandia, Galápagos, lago de Maracaibo y
+meseta de Irán.
+
 ## Fases
 
 ### 1. Mapa físico (Natural Earth, dominio público)

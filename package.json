@@ -9,9 +9,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "atlas": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs",
-    "dev": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-pages.mjs && vite",
-    "build": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-pages.mjs && tsc --noEmit && vite build",
+    "atlas": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-fisico.mjs",
+    "dev": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-fisico.mjs && node scripts/build-pages.mjs && vite",
+    "build": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-fisico.mjs && node scripts/build-pages.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

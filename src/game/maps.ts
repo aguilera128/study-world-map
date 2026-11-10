@@ -149,6 +149,47 @@ export const MAPS: Record<MapId, MapDef> = {
       },
     },
   },
+
+  // Geografía física: cordilleras, ríos, mares… Cada accidente es un punto en el mapa (su atlas no
+  // lleva polígonos, ver scripts/build-fisico.mjs) y sus «regiones» son las clases de accidente.
+  fisico: {
+    id: 'fisico',
+    title: t('Geografía física'),
+    modes: ['locate', 'name'],
+    filters: [
+      { id: 'fisico', label: t('Todo'), keys: [] },
+      { id: 'fisico-montanas', keys: ['montanas'] },
+      { id: 'fisico-rios', keys: ['rios'] },
+      { id: 'fisico-mares', keys: ['mares'] },
+      { id: 'fisico-tierras', keys: ['tierras'] },
+    ],
+    scope: 'fisico-montanas',
+    extras: false,
+    text: {
+      count: t('Geografía física · {n} accidentes'),
+      headline: [t('Aprende el relieve,'), t('montañas, ríos y mares.')],
+      units: t('Qué entra'),
+      scopeAria: t('Accidentes geográficos que entran'),
+      unit: [t('lugar'), t('lugares')],
+      mastered: t('Dominas {n} de {total} lugares'),
+      study: t('Estúdialos antes de jugar'),
+      practice: t('Practicar estos →'),
+      search: t('Buscar montaña, río, mar…'),
+      searchAria: t('Buscar un accidente geográfico'),
+      notFound: t('No hay nada con ese nombre.'),
+      askName: t('¿Qué es lo señalado?'),
+      askCapitalOwner: '',
+      askRegion: '',
+      tap: t('Tócalo en el mapa'),
+      type: t('Escribe su nombre…'),
+      findOwner: '',
+      solution: t('Es {country} ({region}).'),
+      modes: {
+        locate: { summary: t('Te damos un nombre (una cordillera, un río, un mar…) y lo buscas en el mapa.') },
+        name: { summary: t('Señalamos un punto del mapa y dices qué es.') },
+      },
+    },
+  },
 };
 
 export const isMapId = (id: unknown): id is MapId => typeof id === 'string' && Object.hasOwn(MAPS, id);
