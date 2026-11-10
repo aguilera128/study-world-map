@@ -5,7 +5,7 @@ import type { MapEngine } from '../engine/MapEngine';
 import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude, type DayPhase, type MoonPhase, type SunPosition } from '../engine/sun';
 import { useMedia, useNow, useWide } from './hooks';
 import { Icon } from './Icon';
-import { LOCALE, t } from '../i18n';
+import { LOCALE, lang, t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 /** Elemento que el motor mantiene centrado sobre un punto del mapa. */
@@ -86,7 +86,9 @@ const MOON_ALT = 384_400 / 6371 - 1;
 const percent = (lit: number) => `${Math.round(lit * 100)} %`;
 const num = (value: number) => value.toLocaleString(LOCALE);
 const km = (value: number) => `${num(value)} km`;
-const millionsKm = (value: number) => t('{n} millones de km', { n: num(value) });
+// En chino no se cuenta en millones sino en 万 (diez mil) y 亿 (cien millones): el número lleva la unidad.
+const millions = (value: number) => (lang !== 'zh' ? num(value) : value >= 100 ? `${num(value / 100)} 亿` : `${num(Math.round(value * 100))} 万`);
+const millionsKm = (value: number) => t('{n} millones de km', { n: millions(value) });
 const days = (value: number) => t('{n} días', { n: num(value) });
 
 /**
@@ -155,8 +157,8 @@ export function RealTimeMarkers({
                 [t('Su luz tarda'), t('unos 8 minutos')],
                 [t('Diámetro'), `${millionsKm(1.39)} · ${t('109 veces el de la Tierra')}`],
                 [t('En la superficie'), `≈ ${num(5500)} °C`],
-                [t('En el núcleo'), t('unos {n} millones de °C', { n: 15 })],
-                [t('Edad'), t('unos {n} millones de años', { n: num(4600) })],
+                [t('En el núcleo'), t('unos {n} millones de °C', { n: millions(15) })],
+                [t('Edad'), t('unos {n} millones de años', { n: millions(4600) })],
               ]}
             />
           </div>

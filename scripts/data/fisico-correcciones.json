@@ -695,18 +695,24 @@
    ]
   },
   "cordillera-sierra-nevada": {
-   "why": "El temario la cita entre las cordilleras de España (la del Mulhacén); Natural Earth solo trae la de California.",
+   "why": "El temario la cita entre las cordilleras de España (la del Mulhacén); Natural Earth solo trae la de California. Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
    "at": [
     -3.2,
     37.08
-   ]
+   ],
+   "names": {
+    "zh": "内华达山脉"
+   }
   },
   "llanura-north-european-plain": {
-   "why": "El centro del polígono caía al norte de Moscú; la llanura va de Bélgica a Polonia.",
+   "why": "El centro del polígono caía al norte de Moscú; la llanura va de Bélgica a Polonia. Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
    "at": [
     14.5,
     53.2
-   ]
+   ],
+   "names": {
+    "zh": "北欧平原"
+   }
   },
   "estrecho-drake-passage": {
    "why": "El rótulo caía junto a la Antártida; el pasaje está entre el cabo de Hornos y las Shetland del Sur.",
@@ -716,8 +722,11 @@
    ]
   },
   "pico-aoraki-mount-cook": {
-   "why": "Altitud medida en 2014 (antes 3754 m).",
-   "elev": 3724
+   "why": "Altitud medida en 2014 (antes 3754 m). Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "elev": 3724,
+   "names": {
+    "zh": "库克山"
+   }
   },
   "pico-denali": {
    "why": "Altitud oficial desde 2015 (antes 6194 m).",
@@ -735,6 +744,438 @@
    ],
    "names": {
     "es": "Desierto de Arabia"
+   }
+  },
+  "desierto-caatinga": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) no es el nombre («植物图鉴», «guía de plantas»); se deja el de Natural Earth.",
+   "names": {
+    "zh": "卡廷加"
+   }
+  },
+  "isla-sardinia": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «撒丁», sin «岛» (isla); se deja la forma completa.",
+   "names": {
+    "zh": "撒丁岛"
+   }
+  },
+  "peninsula-crimean-peninsula": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «克里米亚», sin «半岛» (península); se deja la forma completa.",
+   "names": {
+    "zh": "克里米亚半岛"
+   }
+  },
+  "rio-waal": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «瓦尔», sin «河» (río); se deja la forma completa.",
+   "names": {
+    "zh": "瓦尔河"
+   }
+  },
+  "cordillera-wuyi-mountains": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «武夷山» (el monte); el elemento es la cordillera.",
+   "names": {
+    "zh": "武夷山脉"
+   }
+  },
+  "pico-matterhorn": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «马特峰»; la forma habitual en China continental es «马特洪峰».",
+   "names": {
+    "zh": "马特洪峰"
+   }
+  },
+  "cordillera-ethiopian-highlands": {
+   "why": "La etiqueta en chino simplificado de Wikidata (nov-2026) es «埃塞俄比亚高地»; en los libros de geografía chinos es «埃塞俄比亚高原».",
+   "names": {
+    "zh": "埃塞俄比亚高原"
+   }
+  },
+  "pico-cotopaxi": {
+   "names": {
+    "zh": "科托帕希峰"
+   },
+   "why": "Natural Earth no da el nombre en chino; «科托帕希峰» es la etiqueta zh-cn de Wikidata (Q181476), nov-2026."
+  },
+  "isla-polynesia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "波利尼西亚"
+   }
+  },
+  "lago-nyanza": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "维多利亚湖"
+   }
+  },
+  "lago-winnipeg": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "温尼伯湖"
+   }
+  },
+  "golfo-baffin-bay": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "巴芬湾"
+   }
+  },
+  "golfo-bay-of-bengal": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "孟加拉湾"
+   }
+  },
+  "isla-british-isles": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "不列颠群岛"
+   }
+  },
+  "isla-hawaii": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "夏威夷岛"
+   }
+  },
+  "meseta-antarctic-plateau": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "南极高原"
+   }
+  },
+  "peninsula-indian-subcontinent": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "印度次大陆"
+   }
+  },
+  "rio-kagera": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "卡盖拉河"
+   }
+  },
+  "rio-missouri": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "密苏里河"
+   }
+  },
+  "cordillera-coast-mountains": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "海岸山脉"
+   }
+  },
+  "cordillera-hindu-kush": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "兴都库什山脉"
+   }
+  },
+  "cordillera-iberian-system": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "伊比利亚山脉"
+   }
+  },
+  "cordillera-pensacola-mountains": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "彭萨科拉山脉"
+   }
+  },
+  "cordillera-queen-maud-mountains": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "毛德王后山脉"
+   }
+  },
+  "cordillera-sistema-central": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "中央山脉"
+   }
+  },
+  "estrecho-panama-canal": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "巴拿马运河"
+   }
+  },
+  "estrecho-strait-of-hormuz": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "霍尔木兹海峡"
+   }
+  },
+  "estrecho-suez-canal": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "苏伊士运河"
+   }
+  },
+  "golfo-gulf-of-valencia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "巴伦西亚湾"
+   }
+  },
+  "isla-great-britain": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "大不列颠岛"
+   }
+  },
+  "lago-lake-maracaibo": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "马拉开波湖"
+   }
+  },
+  "llanura-atlantic-coastal-plain": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "海滨平原"
+   }
+  },
+  "llanura-llanos": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "洛斯亚诺斯"
+   }
+  },
+  "llanura-patagonia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "巴塔哥尼亚"
+   }
+  },
+  "llanura-pontic-caspian-steppe": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "东欧大草原"
+   }
+  },
+  "mar-irish-sea": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "爱尔兰海"
+   }
+  },
+  "meseta-american-highland": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "美国高地"
+   }
+  },
+  "meseta-hollick-kenyon-plateau": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "霍利克-凯尼恩高原"
+   }
+  },
+  "peninsula-anatolia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "安纳托利亚"
+   }
+  },
+  "peninsula-italian-peninsula": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "意大利半岛"
+   }
+  },
+  "peninsula-taymyr-peninsula": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "泰梅尔半岛"
+   }
+  },
+  "rio-minho-river": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "米尼奥河"
+   }
+  },
+  "cordillera-cordillera-blanca": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "布兰卡山脉"
+   }
+  },
+  "cordillera-cordillera-occidental": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "秘鲁西部山脉"
+   }
+  },
+  "cordillera-cordillera-oriental": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "哥伦比亚东部山脉"
+   }
+  },
+  "cordillera-cordillera-real": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "玻利维亚瑞阿尔山脉"
+   }
+  },
+  "cordillera-eastern-ghats": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "东高止山脉"
+   }
+  },
+  "cordillera-pacific-coast-ranges": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "太平洋海岸山脉"
+   }
+  },
+  "cordillera-sierra-madre-oriental": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "东马德雷山脉"
+   }
+  },
+  "desierto-nubian-desert": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "努比亚沙漠"
+   }
+  },
+  "golfo-gulf-of-bothnia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "波的尼亚湾"
+   }
+  },
+  "golfo-gulf-of-oman": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "阿曼湾"
+   }
+  },
+  "isla-baffin-island": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "巴芬岛"
+   }
+  },
+  "meseta-colorado-plateau": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "科罗拉多高原"
+   }
+  },
+  "peninsula-alaska-peninsula": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "阿拉斯加半岛"
+   }
+  },
+  "pico-mount-fridtjof-nansen": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "弗里乔夫南森山"
+   }
+  },
+  "rio-columbia": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "哥伦比亚河"
+   }
+  },
+  "rio-grande-2": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "格兰德河"
+   }
+  },
+  "cordillera-sierra-morena": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "莫雷纳山脉"
+   }
+  },
+  "estrecho-strait-of-gibraltar": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "直布罗陀海峡"
+   }
+  },
+  "golfo-gulf-of-finland": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "芬兰湾"
+   }
+  },
+  "isla-cyprus": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "塞浦路斯岛"
+   }
+  },
+  "pico-mount-champaqui": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "钱帕基山"
+   }
+  },
+  "pico-puncak-jaya": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "查亚峰"
+   }
+  },
+  "rio-little-yenisei": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "小叶尼塞伊河"
+   }
+  },
+  "rio-nelson": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "纳尔逊河"
+   }
+  },
+  "rio-neuquen": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "内乌肯河"
+   }
+  },
+  "rio-sukhona": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "苏霍纳河"
+   }
+  },
+  "estrecho-dardanelles": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "达达尼尔海峡"
+   }
+  },
+  "rio-jucar-xuquer": {
+   "why": "Natural Earth trae el nombre chino en caracteres tradicionales y Wikidata no tiene etiqueta en simplificado; pasado a simplificado con el conversor de variantes de Wikipedia (zh-cn), nov-2026.",
+   "names": {
+    "zh": "胡卡尔河"
+   }
+  },
+  "rio-ebro": {
+   "why": "Natural Earth trae «厄波羅河» (tradicional, forma de Taiwán); «埃布罗河» es el título del artículo de Wikipedia en chino, en simplificado.",
+   "names": {
+    "zh": "埃布罗河"
+   }
+  },
+  "rio-guadiana": {
+   "why": "Natural Earth trae «瓜地亞納河» (tradicional, transcripción de Taiwán); en China continental «di» se transcribe «迪»: «瓜迪亚纳河».",
+   "names": {
+    "zh": "瓜迪亚纳河"
    }
   }
  }

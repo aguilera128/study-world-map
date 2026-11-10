@@ -4,7 +4,9 @@ Fuente: Natural Earth 1:10m (dominio público): geography_regions_polys, geograp
 geography_regions_elevation_points, rivers_lake_centerlines y lakes. De ahí salen la posición, la
 altitud, el trazado de los ríos y los nombres en español, inglés, francés, alemán, italiano,
 portugués y chino. Los nombres en catalán, gallego y euskera vienen de Wikidata por el identificador
-que trae cada elemento (scripts/data/fisico.wikidata.json; se rellena con --wikidata).
+que trae cada elemento (scripts/data/fisico.wikidata.json; se rellena con --wikidata). También el
+chino cuando Wikidata lo tiene en simplificado (zh-cn o zh-hans): Natural Earth mezcla caracteres
+tradicionales y vocabulario de Taiwán.
 
 Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repositorio):
   1. descargar y descomprimir en una carpeta los seis zip de
@@ -35,6 +37,7 @@ OUT = os.path.join(HERE, '..', 'public', 'data', 'fisico.json')
 WIKIDATA = os.path.join(HERE, 'data', 'fisico.wikidata.json')
 LANGS = ['es', 'en', 'fr', 'de', 'it', 'pt', 'zh']
 LANGS_WIKIDATA = ['ca', 'gl', 'eu']
+ZH_WIKIDATA = ['zh-cn', 'zh-hans']  # chino simplificado, por orden de preferencia; se guarda como «zh»
 
 # clase de Natural Earth → (clase nuestra, scalerank máximo que se rotula; −1 = solo si está en el temario)
 CLASES = {
@@ -296,11 +299,11 @@ def corregir(features):
 
 
 def fetch_wikidata(ids):
-    """Etiquetas en catalán, gallego y euskera de cada identificador."""
+    """Etiquetas en catalán, gallego, euskera y chino simplificado de cada identificador."""
     out = {}
     for i in range(0, len(ids), 150):
         values = ' '.join('wd:' + q for q in ids[i:i + 150])
-        langs = ', '.join(f'"{lang}"' for lang in LANGS_WIKIDATA)
+        langs = ', '.join(f'"{lang}"' for lang in LANGS_WIKIDATA + ZH_WIKIDATA)
         query = f'SELECT ?item ?label WHERE {{ VALUES ?item {{ {values} }} ?item rdfs:label ?label . FILTER(LANG(?label) IN ({langs})) }}'
         req = urllib.request.Request(
             'https://query.wikidata.org/sparql',
@@ -318,6 +321,10 @@ def fetch_wikidata(ids):
         time.sleep(2)
         for b in reply['results']['bindings']:
             out.setdefault(b['item']['value'].rsplit('/', 1)[1], {})[b['label']['xml:lang']] = b['label']['value']
+    for labels in out.values():
+        zh = [labels.pop(lang, None) for lang in ZH_WIKIDATA]
+        if zh[0] or zh[1]:
+            labels['zh'] = zh[0] or zh[1]
     return out
 
 
@@ -338,8 +345,12 @@ def main():
     for f in features:
         for lang, text in labels.get(f.pop('wd') or '', {}).items():
             f['names'][lang] = text[0].upper() + text[1:]
+    # Los nombres corregidos a mano mandan también sobre los de Wikidata.
+    fixes = json.load(open(CORRECCIONES, encoding='utf8'))['features']
+    for f in features:
+        f['names'].update(fixes.get(f['id'], {}).get('names', {}))
     features.sort(key=lambda f: (f['rank'], f['id']))
-    source = 'Natural Earth 1:10m (dominio público); nombres en ca, gl y eu de Wikidata (CC0)'
+    source = 'Natural Earth 1:10m (dominio público); nombres en ca, gl, eu y zh (simplificado) de Wikidata (CC0)'
     json.dump({'source': source, 'features': features}, open(OUT, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     kinds = {}
     for f in features:

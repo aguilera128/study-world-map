@@ -1,8 +1,8 @@
 {
- "_": "Nombres de las placas tectónicas en cada idioma, de Wikidata (CC0), consultados el 10-nov-2026.",
+ "_": "Nombres de las placas tectónicas en cada idioma, de Wikidata (CC0), consultados el 10-nov-2026. El chino, pasado a simplificado y a los nombres de los libros de China continental (亚欧板块, 澳大利亚板块); el gallego, con el adjetivo en minúscula.",
  "names": {
   "Pacific Plate": {
-   "zh": "太平洋板塊",
+   "zh": "太平洋板块",
    "eu": "Pazifikoko plaka",
    "gl": "Placa pacífica",
    "ca": "Placa pacífica",
@@ -14,7 +14,7 @@
    "es": "Placa Pacífica"
   },
   "North American Plate": {
-   "zh": "北美洲板塊",
+   "zh": "北美洲板块",
    "eu": "Ipar Amerikako plaka",
    "gl": "Placa norteamericana",
    "ca": "Placa nord-americana",
@@ -50,7 +50,7 @@
    "es": "Placa Africana"
   },
   "Eurasian Plate": {
-   "zh": "歐亞大陸板塊",
+   "zh": "亚欧板块",
    "eu": "Eurasiako plaka",
    "gl": "Placa eurasiática",
    "ca": "Placa eurasiàtica",
@@ -62,7 +62,7 @@
    "es": "Placa euroasiática"
   },
   "Antarctic Plate": {
-   "zh": "南極洲板塊",
+   "zh": "南极洲板块",
    "ca": "Placa antàrtica",
    "pt": "Placa da Antártica",
    "it": "Placca antartica",
@@ -74,7 +74,7 @@
    "gl": "Placa antártica"
   },
   "Australian Plate": {
-   "zh": "印度-澳洲板塊",
+   "zh": "澳大利亚板块",
    "eu": "Indoaustraliako plaka",
    "ca": "Placa australiana",
    "pt": "Placa australiana",
@@ -83,7 +83,7 @@
    "fr": "Plaque australienne",
    "en": "Australian Plate",
    "es": "Placa Australiana",
-   "gl": "Placa Australiana"
+   "gl": "Placa australiana"
   },
   "Indian Plate": {
    "zh": "印度板块",
@@ -94,7 +94,7 @@
    "fr": "Plaque indienne",
    "en": "Indian Plate",
    "es": "Placa Índica",
-   "gl": "Placa India",
+   "gl": "Placa india",
    "eu": "Indiako plaka"
   },
   "Arabian Plate": {
@@ -107,7 +107,7 @@
    "fr": "Plaque arabique",
    "en": "Arabian Plate",
    "es": "Placa arábiga",
-   "gl": "Placa Arábiga"
+   "gl": "Placa arábiga"
   },
   "Nazca Plate": {
    "zh": "纳斯卡板块",
@@ -155,7 +155,7 @@
    "fr": "Plaque philippine",
    "en": "Philippine Sea Plate",
    "es": "Placa Filipina",
-   "gl": "Placa Filipina"
+   "gl": "Placa filipina"
   },
   "Scotia Plate": {
    "zh": "斯科舍板块",
@@ -179,7 +179,7 @@
    "fr": "Plaque somalienne",
    "en": "Somali Plate",
    "es": "Placa Somalí",
-   "gl": "Placa Somalí"
+   "gl": "Placa somalí"
   },
   "Juan de Fuca Plate": {
    "zh": "胡安·德富卡板块",
