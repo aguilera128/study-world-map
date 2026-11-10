@@ -191,7 +191,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'ata 2026, Malabo',
-        nota: 'En xaneiro de 2026 trasladou oficialmente a súa capital de Malabo (na illa de Bioko) a Ciudad de la Paz, no continente. Moitos libros aínda indican Malabo.',
+        nota: 'En xaneiro de 2026 designou oficialmente como capital Ciudad de la Paz, no continente, en lugar de Malabo (na illa de Bioko); o traslado faise pouco a pouco. Moitos libros aínda indican Malabo.',
       },
       SSD: { nota: 'É o país máis novo do mundo: independizouse de Sudán en 2011.' },
       SWZ: { alias: ['Suazilandia'], capAlias: ['Lobamba'], nota: 'Ata 2018 chamábase Suazilandia. Mbabane é a capital administrativa e Lobamba, a lexislativa.' },

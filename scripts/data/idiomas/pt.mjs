@@ -208,7 +208,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'até 2026, Malabo',
-        nota: 'Em janeiro de 2026 transferiu oficialmente sua capital de Malabo (na ilha de Bioko) para Ciudad de la Paz, no continente. Muitos livros ainda indicam Malabo.',
+        nota: 'Em janeiro de 2026 designou oficialmente como capital Ciudad de la Paz, no continente, em lugar de Malabo (na ilha de Bioko); a mudança faz-se aos poucos. Muitos livros ainda indicam Malabo.',
       },
       MWI: { capital: 'Lilongwe', capAlias: ['Lilongué'] },
       RWA: { capital: 'Kigali', capAlias: ['Quigali'] },

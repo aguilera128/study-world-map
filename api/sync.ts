@@ -3,7 +3,8 @@ import { neon } from '@neondatabase/serverless';
 // Sincronización del progreso entre dispositivos, sin cuentas. Es la única función del proyecto.
 //
 //   POST /api/sync           { data }         → crea un código nuevo y guarda el progreso  → { code }
-//   GET  /api/sync?code=…                      → { data, updatedAt }  (404 si el código no existe)
+//   GET  /api/sync   (cabecera X-Sync-Code)    → { data, updatedAt }  (404 si el código no existe)
+//        (también admite ?code=…, que usaban las versiones anteriores de la aplicación)
 //   PUT  /api/sync           { code, data }    → guarda el progreso de ese código           → { updatedAt }
 //   DELETE /api/sync         { code }          → borra lo guardado con ese código
 //
@@ -69,7 +70,7 @@ export default {
 
     try {
       if (request.method === 'GET') {
-        const code = cleanCode(new URL(request.url).searchParams.get('code'));
+        const code = cleanCode(request.headers.get('x-sync-code') ?? new URL(request.url).searchParams.get('code'));
         if (!code) return fail(400, 'código no válido');
         const rows = await sql`select data, updated_at from progress_sync where code = ${code}`;
         if (!rows.length) return fail(404, 'código desconocido');
@@ -79,10 +80,10 @@ export default {
       if (request.method === 'POST') {
         const body = await readBody(request);
         if (!body || !isData(body.data)) return fail(400, 'progreso no válido');
+        // De paso, se borra lo que lleva un año sin usarse (antes del límite, para que se haga siempre).
+        await sql`delete from progress_sync where updated_at < now() - make_interval(days => ${KEEP_DAYS})`;
         const recent = await sql`select count(*)::int as n from progress_sync where created_at > now() - interval '1 hour'`;
         if (recent[0].n >= MAX_NEW_PER_HOUR) return fail(429, 'demasiados códigos nuevos; prueba más tarde');
-        // De paso, se borra lo que lleva un año sin usarse.
-        await sql`delete from progress_sync where updated_at < now() - make_interval(days => ${KEEP_DAYS})`;
         const code = newCode();
         await sql`insert into progress_sync (code, data) values (${code}, ${JSON.stringify(body.data)}::jsonb)`;
         return json({ code }, 201);

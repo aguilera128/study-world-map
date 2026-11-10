@@ -198,7 +198,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'fins al 2026, Malabo',
-        nota: 'El gener del 2026 va traslladar oficialment la capital de Malabo (a l’illa de Bioko) a Ciudad de la Paz, al continent. Molts llibres encara indiquen Malabo.',
+        nota: 'El gener del 2026 va designar oficialment com a capital Ciudad de la Paz, al continent, en lloc de Malabo (a l’illa de Bioko); el trasllat es fa a poc a poc. Molts llibres encara indiquen Malabo.',
       },
       SSD: { nota: 'És el país més jove del món: es va independitzar del Sudan l’any 2011.' },
       SWZ: { alias: ['Swazilàndia'], capAlias: ['Lobamba'], nota: 'Fins al 2018 es deia Swazilàndia. Mbabane és la capital administrativa i Lobamba, la legislativa.' },

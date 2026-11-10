@@ -185,7 +185,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: '2026ra arte, Malabo',
-        nota: '2026ko urtarrilean hiriburua ofizialki aldatu zuen: Malabotik (Bioko uhartean) Ciudad de la Pazera, kontinentean. Liburu askok Malabo diote oraindik.',
+        nota: '2026ko urtarrilean Ciudad de la Paz, kontinentean, izendatu zuen ofizialki hiriburu, Malaboren ordez (Bioko uhartean); lekualdaketa pixkanaka egiten ari da. Liburu askok Malabo diote oraindik.',
       },
       SOM: { capital: 'Mogadixu', capAlias: ['Muqdisho', 'Mogadiscio'] },
       SSD: { nota: 'Munduko herrialderik gazteena da: 2011n independizatu zen Sudanetik.' },

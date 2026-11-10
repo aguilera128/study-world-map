@@ -187,7 +187,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'fino al 2026, Malabo',
-        nota: 'Nel gennaio 2026 ha trasferito ufficialmente la capitale da Malabo (sull’isola di Bioko) a Ciudad de la Paz, sul continente. Molti libri indicano ancora Malabo.',
+        nota: 'Nel gennaio 2026 ha designato ufficialmente come capitale Ciudad de la Paz, sul continente, al posto di Malabo (sull’isola di Bioko); il trasferimento avviene gradualmente. Molti libri indicano ancora Malabo.',
       },
       SSD: { alias: ['Sudan del Sud'], nota: 'È il paese più giovane del mondo: è diventato indipendente dal Sudan nel 2011.' },
       SWZ: { alias: ['Swaziland'], capAlias: ['Lobamba'], nota: 'Fino al 2018 si chiamava Swaziland. Mbabane è la capitale amministrativa e Lobamba quella legislativa.' },

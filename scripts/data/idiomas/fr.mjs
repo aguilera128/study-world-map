@@ -183,7 +183,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'jusqu’en 2026, Malabo',
-        nota: 'En janvier 2026, elle a officiellement transféré sa capitale de Malabo (sur l’île de Bioko) à Ciudad de la Paz, sur le continent. Beaucoup de livres indiquent encore Malabo.',
+        nota: 'En janvier 2026, elle a officiellement désigné Ciudad de la Paz, sur le continent, comme capitale à la place de Malabo (sur l’île de Bioko) ; le transfert se fait progressivement. Beaucoup de livres indiquent encore Malabo.',
       },
       SSD: { nota: 'C’est le plus jeune pays du monde : il est devenu indépendant du Soudan en 2011.' },
       SWZ: { alias: ['Swaziland'], capAlias: ['Lobamba'], nota: 'Jusqu’en 2018, il s’appelait Swaziland. Mbabane est la capitale administrative et Lobamba, la capitale législative.' },

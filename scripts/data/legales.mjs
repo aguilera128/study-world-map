@@ -1,8 +1,9 @@
 // Textos de las páginas legales y de donaciones. Los datos del titular salen de sitio.mjs.
 //
 // Lo que se afirma sobre la aplicación está comprobado en el código (src/app/store.ts y
-// public/consent.js): progreso y ajustes solo en el navegador, ubicación solo en memoria, y nada
-// de Google sin consentimiento. Si eso cambia, hay que cambiar también estos textos.
+// public/consent.js, src/app/sync.ts y api/sync.ts): progreso y ajustes en el navegador y, solo si
+// se crea un código, también en la base de datos; ubicación solo en memoria; y nada de Google sin
+// consentimiento. Si eso cambia, hay que cambiar también estos textos.
 
 import { DONAR_URL, REVISION_LEGAL, SITE, TITULAR } from './sitio.mjs';
 
@@ -79,8 +80,9 @@ ${titularBlock()}
     <h3>Progreso, ajustes y listas de estudio</h3>
     <p>Se guardan solo en el almacenamiento local de tu navegador, para que no pierdas lo aprendido. No se envían a ningún servidor y el titular no tiene acceso a ellos, salvo que uses la sincronización que se explica a continuación. Puedes borrarlos desde la propia aplicación («Progreso») o borrando los datos del sitio en tu navegador.</p>
     <h3>Seguir en otro dispositivo (opcional)</h3>
-    <p>Si en «Progreso» pulsas «Crear mi código», tu progreso se guarda también en una base de datos para que puedas continuar en otro dispositivo. Se guarda únicamente un código de doce letras y cifras generado al azar, el progreso (qué países o accidentes geográficos te sabes y tus mejores notas) y la fecha. No se guarda tu nombre, tu correo ni tu dirección IP, y el código no está asociado a ninguna persona.</p>
-    <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra datos técnicos de la conexión. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Puedes borrar lo guardado en cualquier momento con «Borrar lo guardado con este código»; si no, se borra solo cuando pasa un año sin usarse.</p>
+    <p>Si en «Progreso» pulsas «Crear mi código», tu progreso se guarda también en una base de datos para que puedas continuar en otro dispositivo. Se guarda únicamente un código de doce letras y cifras generado al azar, el progreso (qué países o accidentes geográficos te sabes, tus mejores notas y el resultado del reto del día) y la fecha. En la base de datos no se guarda tu nombre, tu correo ni tu dirección IP, y el código no está asociado a ninguna persona. Las listas de estudio y los ajustes no se envían.</p>
+    <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra durante un tiempo limitado datos técnicos de cada petición, entre ellos la dirección IP y la dirección solicitada. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Si abres un enlace que lleva el código (el del código QR), ese código forma parte de la dirección de esa visita.</p>
+    <p>Puedes borrar lo guardado en cualquier momento con «Borrar lo guardado con este código». «Dejar de sincronizar» solo desconecta el dispositivo en el que lo pulsas: lo guardado sigue ahí para tus otros dispositivos. Lo que lleve más de un año sin usarse se borra.</p>
 
     <h3>Ubicación</h3>
     <p>La función «Tiempo real» sitúa tu posición en el mapa a partir de la zona horaria de tu dispositivo, sin pedirte nada. Si pulsas el botón de ubicación exacta, tu navegador te pedirá permiso y la aplicación usará tu posición redondeada (unos 1 km). En ambos casos la ubicación solo se usa en la pantalla: no se guarda ni se envía a ningún sitio.</p>
@@ -107,7 +109,7 @@ ${titularBlock()}
     <p>Study World Map está pensado para estudiantes. No pide datos personales para usarse. Si tienes menos de 14 años, pide a tu madre, a tu padre o a la persona que te cuide que decida si se aceptan las cookies de analítica (art. 7 de la Ley Orgánica 3/2018).</p>
 
     <h2>Tus derechos</h2>
-    <p>Puedes pedir el acceso, la rectificación o la supresión de tus datos, la limitación de su tratamiento, oponerte a él o pedir su portabilidad, escribiendo a ${email()}. Si crees que no se han respetado tus derechos, puedes reclamar ante la <a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a>.</p>
+    <p>Puedes pedir el acceso, la rectificación o la supresión de tus datos, la limitación de su tratamiento, oponerte a él o pedir su portabilidad, escribiendo a ${email()}. Como no sabemos de quién es cada código de sincronización, para atender una petición sobre un progreso guardado necesitamos que nos indiques el código. Si crees que no se han respetado tus derechos, puedes reclamar ante la <a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a>.</p>
 ${revision}`,
     },
 
@@ -143,7 +145,7 @@ ${revision}`,
     </table></div>
 
     <h2>Cómo cambiar o retirar tu consentimiento</h2>
-    <p>En cualquier momento, desde la ${consentLink} (también en el pie de cada página). Además, puedes borrar las cookies y los datos del sitio desde los ajustes de tu navegador; si lo haces, también se borrará tu progreso.</p>
+    <p>En cualquier momento, desde la ${consentLink} (también en el pie de cada página). Al rechazar, la web deja de cargar Google Analytics y borra sus cookies. Además, puedes borrar las cookies y los datos del sitio desde los ajustes de tu navegador; si lo haces, también se borrará tu progreso.</p>
 ${revision}`,
     },
 

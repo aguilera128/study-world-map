@@ -228,7 +228,7 @@ export const PAISES = [
   p('GNQ', 'Guinea Ecuatorial', 'Ciudad de la Paz', 'africa', {
     capAlias: ['Malabo'],
     capNota: 'hasta 2026, Malabo',
-    nota: 'En enero de 2026 trasladó oficialmente su capital de Malabo (en la isla de Bioko) a Ciudad de la Paz, en el continente. Muchos libros todavía indican Malabo.',
+    nota: 'En enero de 2026 designó oficialmente como capital Ciudad de la Paz, en el continente, en lugar de Malabo (en la isla de Bioko); el traslado se hace poco a poco. Muchos libros todavía indican Malabo.',
   }),
   p('KEN', 'Kenia', 'Nairobi', 'africa', { alias: ['Kenya'] }),
   p('LSO', 'Lesoto', 'Maseru', 'africa', { alias: ['Lesotho'] }),

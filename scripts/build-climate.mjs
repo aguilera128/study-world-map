@@ -35,7 +35,10 @@ export function escolar(cls, lat, lon) {
   if (cls.startsWith('BW')) return 'desertico';
   if (cls.startsWith('BS')) return 'semiarido';
   // Verano seco (Cs): mediterráneo, salvo en Irán y Asia central, donde es la estepa de inviernos fríos.
-  if (cls.startsWith('Cs')) return lon > 45 && lon < 100 ? 'semiarido' : 'mediterraneo';
+  // Tampoco por debajo de los 29° de latitud: ahí el verano seco de Köppen solo sale en sierras y
+  // altiplanos (Sierra Madre Occidental de México, Andes, Etiopía), que los libros dan como clima
+  // de montaña. El mediterráneo de verdad está entre los 30° y los 45°, en las fachadas oeste.
+  if (cls.startsWith('Cs')) return lon > 45 && lon < 100 ? 'semiarido' : Math.abs(lat) < 29 ? 'montana' : 'mediterraneo';
   // Invierno seco (Cw): dentro de los trópicos es el tropical de las mesetas africanas y americanas;
   // fuera, el subtropical húmedo de Asia oriental.
   if (cls.startsWith('Cw')) return tropico ? 'tropical' : 'subtropical';

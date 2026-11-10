@@ -146,13 +146,43 @@
     banner = null;
   }
 
+  // Al rechazar se borran las cookies que Google Analytics hubiera dejado (_ga y _ga_<id>).
+  function dropAnalyticsCookies() {
+    var host = location.hostname;
+    var domains = ['', host, '.' + host, '.' + host.split('.').slice(-2).join('.')];
+    document.cookie.split(';').forEach(function (pair) {
+      var name = pair.split('=')[0].trim();
+      if (!/^_ga(_|$)|^_gid$|^_gat/.test(name)) return;
+      domains.forEach(function (domain) {
+        document.cookie = name + '=; Max-Age=0; path=/' + (domain ? '; domain=' + domain : '');
+      });
+    });
+  }
+
+  // La web la usan estudiantes: el aviso recuerda a los menores de 14 años que pregunten antes.
+  var MINORS = {
+    es: 'Si tienes menos de 14 años, pregunta antes a un adulto.',
+    en: 'If you are under 14, ask an adult first.',
+    fr: 'Si tu as moins de 14 ans, demande d’abord à un adulte.',
+    de: 'Wenn du unter 14 bist, frag zuerst einen Erwachsenen.',
+    it: 'Se hai meno di 14 anni, chiedi prima a un adulto.',
+    pt: 'Se tens menos de 14 anos, pergunta primeiro a um adulto.',
+    ca: 'Si tens menys de 14 anys, pregunta abans a un adult.',
+    gl: 'Se tes menos de 14 anos, pregunta antes a un adulto.',
+    eu: '14 urte baino gutxiago badituzu, galdetu lehenengo heldu bati.',
+    zh: '如果你未满 14 岁，请先询问成年人。',
+  };
+
   function choose(value) {
     var before = read();
     save(value);
     close();
     if (value === 'granted') loadGtm();
-    // Retirar el permiso con GTM ya cargado: recargar es la forma segura de dejar de medir.
-    else if (before === 'granted' && loaded) location.reload();
+    else {
+      dropAnalyticsCookies();
+      // Retirar el permiso con GTM ya cargado: recargar es la forma segura de dejar de medir.
+      if (before === 'granted' && loaded) location.reload();
+    }
   }
 
   function open() {
@@ -167,9 +197,10 @@
     banner.className = 'swm-consent';
     banner.setAttribute('role', 'dialog');
     banner.setAttribute('aria-label', 'Cookies');
-    var text = TEXTS[location.pathname.split('/')[1]] || TEXTS.es;
+    var lang = location.pathname.split('/')[1];
+    var text = TEXTS[lang] || TEXTS.es;
     banner.innerHTML =
-      '<p>' + text[0] + ' <a href="/cookies/" style="color:inherit">' + text[1] + '</a>.</p>' +
+      '<p>' + text[0] + ' ' + (MINORS[lang] || MINORS.es) + ' <a href="/cookies/" style="color:inherit">' + text[1] + '</a>.</p>' +
       '<div><button type="button" data-v="denied">' + text[2] + '</button>' +
       '<button type="button" data-v="granted">' + text[3] + '</button></div>';
     banner.addEventListener('click', function (e) {

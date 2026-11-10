@@ -56,9 +56,10 @@ const local = () => {
 };
 
 async function request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: unknown, code?: string): Promise<{ status: number; body: Record<string, unknown> }> {
-  const res = await fetch(code && method === 'GET' ? `/api/sync?code=${code}` : '/api/sync', {
+  // El código va en una cabecera, no en la dirección: así no queda en los registros del alojamiento.
+  const res = await fetch('/api/sync', {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(code && method === 'GET' ? { 'X-Sync-Code': code } : {}) },
     body: body ? JSON.stringify(body) : undefined,
     keepalive: method === 'PUT',
   });

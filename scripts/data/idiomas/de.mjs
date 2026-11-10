@@ -192,7 +192,7 @@ export default {
       GNQ: {
         capAlias: ['Malabo'],
         capNota: 'bis 2026 Malabo',
-        nota: 'Im Januar 2026 verlegte es seine Hauptstadt offiziell von Malabo (auf der Insel Bioko) nach Ciudad de la Paz auf dem Festland. Viele Bücher nennen noch Malabo.',
+        nota: 'Im Januar 2026 bestimmte es offiziell Ciudad de la Paz auf dem Festland zur Hauptstadt, anstelle von Malabo (auf der Insel Bioko); der Umzug erfolgt schrittweise. Viele Bücher nennen noch Malabo.',
       },
       SSD: { nota: 'Er ist das jüngste Land der Welt: 2011 wurde er vom Sudan unabhängig.' },
       SWZ: { alias: ['Swasiland'], capAlias: ['Lobamba'], nota: 'Bis 2018 hieß es Swasiland. Mbabane ist die Verwaltungshauptstadt und Lobamba die gesetzgebende.' },
