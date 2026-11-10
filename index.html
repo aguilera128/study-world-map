@@ -8,8 +8,7 @@
       name="description"
       content="Mapamundi interactivo en 3D y 2D para aprender los 197 países del mundo, sus capitales y sus banderas. Gratis, sin registro y en español: juega, falla, repasa y aprende geografía a tu ritmo."
     />
-    <meta name="theme-color" content="#f1eadb" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0d1520" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0d1520" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Study World Map · Aprende los países del mundo jugando" />
     <meta
@@ -85,10 +84,10 @@
       try {
         var saved = JSON.parse(localStorage.getItem('mapamundi:ajustes') || '{}');
         var theme = (saved.state && saved.state.theme) || 'auto';
-        if (theme === 'auto') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'paper';
+        if (theme === 'auto') theme = 'night'; // quien no ha elegido tema ve el de noche
         document.documentElement.dataset.theme = theme;
       } catch (e) {
-        document.documentElement.dataset.theme = 'paper';
+        document.documentElement.dataset.theme = 'night';
       }
     </script>
   </head>

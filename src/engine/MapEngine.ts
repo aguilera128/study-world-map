@@ -230,6 +230,7 @@ export class MapEngine {
   private zoneLabels: FeatureLabels | null = null;
   private skyTexture: { value: Texture | null } = { value: null };
   private cutFaces: Mesh | null = null;
+  private heightBefore = 0;
   private core: Mesh | null = null;
   private planetView: 'interior' | 'atmosphere' | null = null;
   private guideLabels: FeatureLabels | null = null;
@@ -691,6 +692,11 @@ export class MapEngine {
    * Solo tiene sentido con el globo formado: quien lo llama pone antes la vista en 3D.
    */
   setPlanetView(view: 'interior' | 'atmosphere' | null) {
+    // Al dejar la atmósfera, la cámara vuelve a la altura que tenía antes de alejarse.
+    if (this.planetView === 'atmosphere' && view !== 'atmosphere' && this.heightBefore) this.flyTo({ h: this.heightBefore });
+    if (view === 'atmosphere' && this.planetView !== 'atmosphere') this.heightBefore = this.rig.h;
+    else if (view !== 'atmosphere') this.heightBefore = 0;
+    const already = this.planetView === view;
     this.planetView = view;
     this.uniforms.uCut.value = view === 'interior' ? 1 : 0;
     this.own.halo.uShells.value = view === 'atmosphere' ? 1 : 0;
@@ -747,7 +753,7 @@ export class MapEngine {
       this.flyTo({ lon: (x + y) / 2, lat: 24 * DEG });
     }
     // Las capas de la atmósfera ocupan bastante más que el globo: se aleja la cámara para que quepan.
-    if (view === 'atmosphere') this.flyTo({ h: this.rig.h * 1.7 });
+    if (view === 'atmosphere' && !already) this.flyTo({ h: this.rig.h * 1.7 });
     this.invalidate();
   }
 

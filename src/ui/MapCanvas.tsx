@@ -177,7 +177,15 @@ export default function MapCanvas() {
     setLocalEngine(engine);
 
     const offs = [
-      engine.on('click', (hit) => useApp.getState().mapClick(hit)),
+      engine.on('click', (hit) => {
+        // En pantallas táctiles no hay cursor: con el planeta abierto, tocar una capa enseña su ficha.
+        if (hit.layer !== undefined) {
+          setLayerId(hit.layer);
+          pointerAt.current = hit;
+          return;
+        }
+        useApp.getState().mapClick(hit);
+      }),
       engine.on('pointer', (info) => {
         setHovered(info ? info.index : -1);
         setLayerId(info?.layer ?? null);
@@ -201,12 +209,11 @@ export default function MapCanvas() {
   useEffect(() => engine?.setPadding(pad), [engine, pad]);
   // El globo gira solo en la portada del mundo: en el mapa de un país se lo llevaría de la vista.
   useEffect(() => engine?.setAutoRotate(screen === 'home' && !atlas.frame), [engine, screen, atlas]);
-  // Durante la partida la noche se atenúa: los colores de las respuestas tienen que seguir leyéndose.
   const playing = screen === 'play' || screen === 'results';
   // Durante la partida el tiempo real se aparta: el día y la noche oscurecerían medio mapa.
   const live = realTime && !playing;
   const daylight = live && layers.dayNight;
-  useEffect(() => engine?.setDaylight(daylight ? (playing ? 0.5 : 1) : 0), [engine, daylight, playing]);
+  useEffect(() => engine?.setDaylight(daylight ? 1 : 0), [engine, daylight]);
   useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
   useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
   useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);

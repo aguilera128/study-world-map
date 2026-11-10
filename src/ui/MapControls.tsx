@@ -134,7 +134,12 @@ function LayersMenu() {
         <Icon name="layers" size={19} />
       </button>
       {open && wide && (
-        <div className="float absolute bottom-0 right-12 flex max-h-[calc(100dvh-7rem)] w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3" role="group" aria-label={t('Capas del mapa')}>
+        <div
+          // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
+          className={`float absolute bottom-0 right-12 flex w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3 ${realTime ? 'max-h-[calc(100dvh-18.5rem)]' : 'max-h-[calc(100dvh-7rem)]'}`}
+          role="group"
+          aria-label={t('Capas del mapa')}
+        >
           {content}
         </div>
       )}

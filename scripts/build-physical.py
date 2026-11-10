@@ -12,6 +12,9 @@ Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repo
      (los cinco de abajo y rivers_europe)
   2. python scripts/build-physical.py <carpeta> [--wikidata]
 
+Lo que Natural Earth empareja o sitúa mal se corrige con scripts/data/fisico-correcciones.json
+(también se puede aplicar solo, sin los datos: python scripts/build-physical.py --correcciones).
+
 Lo único que se decide aquí es qué entra: para rotular, los elementos más importantes de cada clase
 según el `scalerank` de Natural Earth (ver CLASES); para el reto de geografía física (`quiz`), los
 de scripts/data/fisico-temario.json.
@@ -78,6 +81,7 @@ RIOS_FUERA = re.compile(r'Protoka|Branch|Bratul|Delta|Canal|Borcea')
 # Lo que entra en el reto de geografía física (selección editorial, ver el propio fichero).
 TEMARIO = os.path.join(HERE, 'data', 'fisico-temario.json')
 EXTRA = os.path.join(HERE, 'data', 'fisico-extra.json')
+CORRECCIONES = os.path.join(HERE, 'data', 'fisico-correcciones.json')
 
 
 def dbf(path):
@@ -272,7 +276,23 @@ def build(folder):
         base = f['kind'] + '-' + slug(f['names'].get('en') or f['names']['es'])
         seen[base] = seen.get(base, 0) + 1
         f['id'] = base if seen[base] == 1 else f'{base}-{seen[base]}'
-    return kept
+    return corregir(kept)
+
+
+def corregir(features):
+    """Aplica scripts/data/fisico-correcciones.json: lo que Natural Earth empareja o sitúa mal."""
+    fixes = json.load(open(CORRECCIONES, encoding='utf8'))['features']
+    for f in features:
+        fix = fixes.pop(f['id'], None)
+        if not fix:
+            continue
+        for key in ('at', 'elev', 'lines'):
+            if key in fix:
+                f[key] = fix[key]
+        f['names'].update(fix.get('names', {}))
+    if fixes:
+        sys.exit(f'Correcciones sin elemento: {sorted(fixes)}')
+    return features
 
 
 def fetch_wikidata(ids):
@@ -302,6 +322,13 @@ def fetch_wikidata(ids):
 
 
 def main():
+    if '--correcciones' in sys.argv:
+        # Solo las correcciones, sobre el fichero ya generado (no hace falta Natural Earth).
+        data = json.load(open(OUT, encoding='utf8'))
+        data['features'] = corregir(data['features'])
+        json.dump(data, open(OUT, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+        print(f"{OUT}: correcciones aplicadas")
+        return
     folder = sys.argv[1]
     features = build(folder)
     if '--wikidata' in sys.argv:

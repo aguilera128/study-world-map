@@ -21,13 +21,17 @@ export const useWide = () => useMedia('(min-width: 60rem)');
 
 export const useReducedMotion = () => useMedia('(prefers-reduced-motion: reduce)');
 
-/** Tema efectivo («auto» sigue al sistema); también lo aplica al documento. */
+/**
+ * Tema efectivo; también lo aplica al documento. «auto» es quien nunca ha pulsado el botón del tema:
+ * ve el de noche, que es como mejor se aprecian el globo y el cielo. El botón solo guarda claro u oscuro.
+ */
 export function useTheme(): ThemeName {
   const choice = useSettings((s) => s.theme);
-  const systemDark = useMedia('(prefers-color-scheme: dark)');
-  const theme: ThemeName = choice === 'auto' ? (systemDark ? 'night' : 'paper') : choice;
+  const theme: ThemeName = choice === 'auto' ? 'night' : choice;
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
+    // la barra del navegador, del color del papel de cada tema
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'night' ? '#0d1520' : '#f1eadb');
   }, [theme]);
   return theme;
 }

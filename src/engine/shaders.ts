@@ -440,6 +440,8 @@ attribute float aSize;    // tamaño angular del país, en radianes
 uniform float uPxPerRad;  // píxeles (CSS) por radián en el punto enfocado
 uniform float uThreshold; // por debajo de este tamaño en pantalla aparece el marcador
 uniform float uMarkerPx;  // diámetro del marcador, en píxeles de dispositivo
+uniform float uCut;       // 1 = gajo del planeta abierto
+uniform vec2 uCutLon;
 varying vec3 vColor;
 varying float vShow;
 varying float vEmph;
@@ -456,6 +458,8 @@ void main() {
   float facing = dot(normalize(mat3(viewMatrix) * n), normalize(-mv.xyz));
   float px = aSize * uPxPerRad;
   vShow = (1.0 - smoothstep(uThreshold * 0.85, uThreshold * 1.15, px)) * aux.g * smoothstep(0.02, 0.12, facing);
+  // Con el planeta abierto, los países diminutos que caen en el gajo quitado no llevan marcador.
+  if (uCut > 0.5 && position.y > 0.0 && position.x > uCutLon.x && position.x < uCutLon.y) vShow = 0.0;
   gl_PointSize = vShow > 0.01 ? uMarkerPx : 0.0;
   vColor = state.rgb;
   vEmph = aux.r;
@@ -757,7 +761,9 @@ varying vec3 vDir;
 
 void main() {
   // de la pantalla a la dirección de la mirada, deshaciendo la proyección y el giro de la cámara
-  vec3 view = vec3(position.x / projectionMatrix[0][0], position.y / projectionMatrix[1][1], -1.0);
+  // (la proyección está descentrada para apartar el globo de los paneles: de ahí los dos sumandos;
+  // sin ellos la galaxia quedaría corrida respecto a las estrellas)
+  vec3 view = vec3((position.x + projectionMatrix[2][0]) / projectionMatrix[0][0], (position.y + projectionMatrix[2][1]) / projectionMatrix[1][1], -1.0);
   vDir = view * mat3(viewMatrix);
   gl_Position = vec4(position.xy, 1.0, 1.0);
 }

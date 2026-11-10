@@ -23,6 +23,22 @@ export interface ExportRequest {
 
 const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+/** ¿Se ve el elemento? Se mira a mano (display, visibility y opacity hasta la raíz): checkVisibility no está en todos los navegadores. */
+function isVisible(el: Element, root: Element): boolean {
+  for (let node: Element | null = el; node; node = node === root ? null : node.parentElement) {
+    const style = getComputedStyle(node);
+    if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.05) return false;
+  }
+  return true;
+}
+
+/** Rectángulo de esquinas redondeadas; sin roundRect (navegadores viejos), recto. */
+function rounded(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
+  else ctx.rect(x, y, w, h);
+}
+
 /** Dibuja el texto de los elementos tal como está en pantalla (misma fuente, color y sitio). */
 function drawLabels(ctx: CanvasRenderingContext2D, roots: Element[], scale: number, dx: number, dy: number, halo: string) {
   for (const root of roots) {
@@ -30,7 +46,7 @@ function drawLabels(ctx: CanvasRenderingContext2D, roots: Element[], scale: numb
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const el = node.parentElement;
       const text = node.textContent?.trim();
-      if (!el || !text || !el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) continue;
+      if (!el || !text || !isVisible(el, root)) continue;
       const range = document.createRange();
       range.selectNodeContents(node);
       const box = range.getBoundingClientRect();
@@ -40,8 +56,7 @@ function drawLabels(ctx: CanvasRenderingContext2D, roots: Element[], scale: numb
       if (!/rgba?\(0, 0, 0, 0\)|transparent/.test(style.backgroundColor)) {
         const pill = el.getBoundingClientRect();
         ctx.fillStyle = style.backgroundColor;
-        ctx.beginPath();
-        ctx.roundRect((pill.left - dx) * scale, (pill.top - dy) * scale, pill.width * scale, pill.height * scale, 8 * scale);
+        rounded(ctx, (pill.left - dx) * scale, (pill.top - dy) * scale, pill.width * scale, pill.height * scale, 8 * scale);
         ctx.fill();
       } else {
         ctx.strokeStyle = halo;
@@ -134,8 +149,7 @@ export function composeImage(request: ExportRequest): HTMLCanvasElement {
         const x = 20 + (i % columns) * ((width - 40) / columns);
         const line = y + Math.floor(i / columns) * row;
         ctx.fillStyle = item.color;
-        ctx.beginPath();
-        ctx.roundRect(x, line - 7, 14, 14, 3);
+        rounded(ctx, x, line - 7, 14, 14, 3);
         ctx.fill();
         ctx.strokeStyle = rule;
         ctx.lineWidth = 1;
