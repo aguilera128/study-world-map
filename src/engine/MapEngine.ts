@@ -221,6 +221,7 @@ export class MapEngine {
   private graticule: Mesh | null = null;
   private graticuleLabels: FeatureLabels | null = null;
   private zoneLabels: FeatureLabels | null = null;
+  private skyTexture: { value: Texture | null } = { value: null };
   private cutFaces: Mesh | null = null;
   private core: Mesh | null = null;
   private planetView: 'interior' | 'atmosphere' | null = null;
@@ -270,6 +271,8 @@ export class MapEngine {
       uOutlineAlpha: { value: 0 },
       uSilhouette: { value: 1 },
       uShells: { value: 0 },
+      uSunView: { value: new Vector3(0, 0, 1) },
+      uSunLit: { value: 0 },
     },
     shadow: { uOffset: { value: new Vector2(0.03, -0.045) }, uColor: { value: new Vector3() }, uAlpha: { value: 0 } },
     frame: { uOffset: { value: new Vector2() }, uColor: { value: new Vector3() }, uAlpha: { value: 0 } },
@@ -356,15 +359,11 @@ export class MapEngine {
 
     // ── capas, de abajo arriba ──
     const sky = { transparent: true, depthWrite: false };
-    // La Vía Láctea, detrás de las estrellas: un cuadrado a pantalla completa (71 KB de textura).
-    const galaxy = new TextureLoader().load('/data/milkyway.webp', () => this.invalidate());
-    galaxy.wrapS = RepeatWrapping;
-    galaxy.generateMipmaps = false;
-    galaxy.minFilter = LinearFilter;
-    this.disposables.push(galaxy);
+    // La Vía Láctea, detrás de las estrellas: un cuadrado a pantalla completa. Su textura (casi
+    // 1 MB) no se pide hasta que el cielo se ve: ver loadSky.
     const screen = new BufferGeometry();
     screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
-    this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: { value: galaxy } }, sky)), -2);
+    this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
     this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, this.own.stars, sky)), -1);
     const ocean = oceanGeometry();
     this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);
@@ -509,6 +508,7 @@ export class MapEngine {
     this.own.ocean.uDepth.value = this.showDepth && this.seabedReady ? p.seaDepth : 0;
     this.own.fill.uReliefAmt.value = this.showRelief && this.reliefReady ? p.relief : 0;
     this.own.stars.uStars.value = this.showStars ? p.stars : 0;
+    this.loadSky();
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
     this.own.halo.uFalloff.value = p.haloFalloff;
@@ -622,6 +622,7 @@ export class MapEngine {
     this.own.ocean.uGridAlpha.value = grid ? this.palette.gridAlpha : 0;
     this.own.ocean.uGlint.value = glint ? this.palette.glint : 0;
     this.own.stars.uStars.value = stars ? this.palette.stars : 0;
+    this.loadSky();
     this.invalidate();
   }
 
@@ -871,6 +872,17 @@ export class MapEngine {
     this.own.fill.uRelief.value ??= relief;
   }
 
+  /** Pide la textura de la Vía Láctea la primera vez que el cielo está a la vista (tema de noche, estrellas activas). */
+  private loadSky() {
+    if (this.skyTexture.value || !this.showStars || this.palette.stars <= 0) return;
+    const galaxy = new TextureLoader().load('/data/milkyway.webp', () => this.invalidate());
+    galaxy.wrapS = RepeatWrapping;
+    galaxy.generateMipmaps = false;
+    galaxy.minFilter = LinearFilter;
+    this.disposables.push(galaxy);
+    this.skyTexture.value = galaxy;
+  }
+
   /** Gira el cielo: hora sidérea de Greenwich, en grados. */
   setSidereal(deg: number) {
     this.own.stars.uSidereal.value = deg * DEG;
@@ -1066,7 +1078,18 @@ export class MapEngine {
     // la cámara: al acercarse baja hasta su punto del mapa en vez de quedar detrás del observador.
     const rig = this.rig;
     const alt = item.alt * rig.morph;
-    const p = rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
+    // Los astros (la Luna a 60 radios, el Sol a 23 500) van a su distancia real con el globo formado:
+    // casi siempre quedan fuera de la pantalla o detrás de la Tierra, como de verdad.
+    const p =
+      item.alt > 10 && rig.morph > 0.999
+        ? rig.projectFar(item.lon, item.lat, 1 + item.alt, this.screen)
+        : rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
+    // Con el planeta abierto, lo que cae sobre el gajo quitado no tiene dónde apoyarse.
+    if (this.planetView === 'interior' && rig.morph > 0.999 && item.alt <= 10 && item.lat > 0) {
+      const { x, y } = this.uniforms.uCutLon.value;
+      const lon = Math.atan2(Math.sin(item.lon), Math.cos(item.lon));
+      if (lon > x && lon < y) p.visible = false;
+    }
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
     item.el.toggleAttribute('data-hidden', !p.visible);
   }
@@ -1548,6 +1571,10 @@ export class MapEngine {
     const d = rig.camera.position.length();
     const silhouette = d / Math.sqrt(Math.max(d * d - 1, 1e-3));
     this.own.halo.uSilhouette.value = silhouette;
+    // La atmósfera se ilumina según de dónde venga el Sol respecto a quien mira (solo en tiempo
+    // real y de noche: en el tema claro el halo es la sombra del globo sobre el papel).
+    this.own.halo.uSunView.value.copy(this.uniforms.uSun.value).transformDirection(this.rig.camera.matrixWorldInverse);
+    this.own.halo.uSunLit.value = this.uniforms.uNight.value * (this.palette.stars > 0 ? 1 : 0) * (morph > 0.999 ? 1 : 0);
     this.own.halo.uExtent.value = silhouette * 1.9;
     const formed = smoothstep(0.88, 1, morph);
     this.own.halo.uAlpha.value = this.palette.haloAlpha * formed;

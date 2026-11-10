@@ -520,31 +520,54 @@
   pointer-events: auto;
 }
 
-/* Disco con resplandor, sin rayos: tapa poco mapa y se lee sobre cualquier color. */
+/* El Sol: disco casi blanco (así se ve desde el espacio), corona cálida que se pierde poco a poco
+   y dos destellos finos en cruz, como los que deja una lente. */
 .sun-marker {
+  position: relative;
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 34%, #fff6c9, #ffcd2e 55%, #f5a300);
+  background: radial-gradient(circle, #ffffff 0 42%, #fff6cf 62%, #ffdf7a 82%, #ffc23a);
   box-shadow:
-    0 0 0 1px rgb(120 70 0 / 0.35),
-    0 0 14px 5px rgb(255 196 0 / 0.75),
-    0 0 40px 16px rgb(255 190 0 / 0.3);
+    0 0 8px 3px rgb(255 248 214 / 0.95),
+    0 0 30px 12px rgb(255 214 110 / 0.6),
+    0 0 80px 36px rgb(255 176 50 / 0.26),
+    0 0 170px 90px rgb(255 150 30 / 0.1);
+}
+
+.sun-marker::before,
+.sun-marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgb(255 244 205 / 0.75) 42%, #fff 50%, rgb(255 244 205 / 0.75) 58%, transparent);
+  transform: translate(-50%, -50%) rotate(18deg);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+
+.sun-marker::after {
+  width: 96px;
+  transform: translate(-50%, -50%) rotate(108deg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .sun-marker {
-    animation: sun-glow 4s ease-in-out infinite;
+    animation: sun-glow 5s ease-in-out infinite;
   }
 }
 
 @keyframes sun-glow {
   50% {
     box-shadow:
-      0 0 0 1px rgb(120 70 0 / 0.35),
-      0 0 18px 6px rgb(255 196 0 / 0.85),
-      0 0 50px 20px rgb(255 190 0 / 0.36);
+      0 0 10px 4px rgb(255 248 214 / 1),
+      0 0 36px 15px rgb(255 214 110 / 0.68),
+      0 0 96px 44px rgb(255 176 50 / 0.3),
+      0 0 190px 100px rgb(255 150 30 / 0.12);
   }
 }
 

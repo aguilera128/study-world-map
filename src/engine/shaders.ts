@@ -509,6 +509,8 @@ uniform vec3 uOutline;     // contorno fino pegado al globo
 uniform float uOutlineAlpha;
 uniform float uSilhouette; // radio aparente del globo en el plano del cuadrado
 uniform float uShells;     // 1 = capas de la atmósfera en vez del resplandor
+uniform vec3 uSunView;     // dirección del Sol vista desde la cámara (x derecha, y arriba, z hacia quien mira)
+uniform float uSunLit;     // 1 = la atmósfera se ilumina según el Sol (tiempo real)
 varying vec2 vPos;
 
 // Las cinco capas de la atmósfera como anillos alrededor del globo. La altura está muy exagerada
@@ -536,13 +538,28 @@ void main() {
     return;
   }
   float glowR = length(vPos - uOffset) / uSilhouette;
-  float glow = uAlpha * (glowR < 1.0 ? 1.0 : exp(-(glowR - 1.0) * uFalloff));
+  // El aire del borde solo brilla donde le da el Sol. «side» dice si este punto del borde mira al
+  // Sol; «back», si el Sol está detrás de la Tierra (contraluz) o detrás de quien mira (de frente).
+  // A contraluz la luz atraviesa la atmósfera casi de canto: un anillo fino y muy brillante, cálido
+  // junto al terminador. De frente, un resplandor azul suave. En el lado de noche casi nada.
+  vec2 rim = normalize(vPos + vec2(1e-5));
+  float side = dot(rim, uSunView.xy);
+  float back = -uSunView.z;
+  float lit = max(smoothstep(-0.22, 0.18, side), smoothstep(0.8, 0.98, back));
+  float forward = pow(max(back, 0.0), 3.0);
+  float sunny = mix(1.0, (0.1 + 0.9 * lit) * (0.8 + 1.3 * forward), uSunLit);
+  float falloff = uFalloff * (1.0 + 2.2 * forward * uSunLit);
+  float glow = min(1.0, uAlpha * sunny) * (glowR < 1.0 ? 1.0 : exp(-(glowR - 1.0) * falloff));
+  // El color del ocaso, donde el borde pasa del día a la noche.
+  float dusk = exp(-side * side * 22.0) * (0.25 + 0.75 * max(back, 0.0)) * uSunLit;
+  vec3 air = mix(uColor, vec3(1.0, 0.62, 0.34), dusk * 0.75);
+  air = mix(air, vec3(0.86, 0.93, 1.0), forward * lit * 0.5 * uSunLit);
   float r = length(vPos) / uSilhouette;
   float px = fwidth(r);
   float ring = uOutlineAlpha * (1.0 - smoothstep(1.2 * px, 2.4 * px, r - 1.0));
   float a = ring + glow * (1.0 - ring);
   if (a <= 0.003) discard;
-  gl_FragColor = vec4((uOutline * ring + uColor * glow * (1.0 - ring)) / a, a);
+  gl_FragColor = vec4((uOutline * ring + air * glow * (1.0 - ring)) / a, a);
 }
 `;
 
@@ -743,17 +760,6 @@ uniform float uSidereal;
 uniform float uMorph;
 uniform float uStars;
 varying vec3 vDir;
-${NOISE3}
-
-// Polvo de estrellas: una estrella débil en algunas celdas del cielo, más cuanto más brilla la galaxia ahí.
-float dust(vec3 dir, float cells, float density) {
-  vec3 q = dir * cells;
-  vec3 cell = floor(q);
-  float h = hash(cell);
-  vec3 f = fract(q) - 0.5 - (vec3(hash(cell + 7.0), hash(cell + 13.0), hash(cell + 29.0)) - 0.5) * 0.5;
-  return step(1.0 - density, h) * smoothstep(0.3, 0.0, length(f)) * (0.4 + 0.6 * fract(h * 57.0));
-}
-
 void main() {
   vec3 dir = normalize(vDir);
   // Se deshace el giro de la hora sidérea: «sky» es la dirección en el cielo fijo (ecuatorial J2000).
@@ -762,14 +768,11 @@ void main() {
   float ra = atan(sky.x, sky.z);
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
   vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
-  vec3 glow = texture2D(uSky, uv).rgb;
-  float lum = max(glow.r, max(glow.g, glow.b));
-  // La imagen da dónde está la galaxia, cuánto brilla y de qué color (eso es real). A este aumento
-  // se vería como una mancha borrosa, así que su luz se reparte en un velo tenue y en un polvo de
-  // estrellas débiles: las estrellas sueltas de ese polvo son un dibujo, no un catálogo.
-  float grain = dust(sky, 520.0, lum * 0.55) + 0.7 * dust(sky, 1100.0, lum * 0.7) + 0.5 * dust(sky, 2300.0, lum * 0.8);
-  vec3 tint = glow / max(lum, 0.001);
-  vec3 color = glow * 0.5 + mix(vec3(1.0), tint, 0.6) * grain * (0.35 + lum);
+  // El cielo vacío del mapa no es negro del todo (un grano gris de estrellas muy débiles): se recorta.
+  vec3 glow = max(texture2D(uSky, uv).rgb - 0.13, 0.0) * 1.15;
+  // Todo lo que se ve es el mapa de la NASA: el brillo de la galaxia, su polvo y el grano de las
+  // estrellas débiles. Se atenúa para que quede de fondo y no compita con el globo.
+  vec3 color = glow * glow * 0.2 + glow * 0.62;
   float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(color / max(a, 0.001), a);

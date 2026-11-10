@@ -77,10 +77,11 @@ function MoonDisc({ phase, size = 22 }: { phase: MoonPhase; size?: number }) {
   );
 }
 
-// En el globo el Sol y la Luna flotan separados de la Tierra, la Luna más cerca. No es a escala
-// (la Luna está a 60 radios y el Sol a 23 500): solo indica desde qué lado alumbra cada uno.
-const SUN_ALT = 0.55;
-const MOON_ALT = 0.24;
+// En el globo el Sol y la Luna van a su distancia real, en radios terrestres sobre la superficie
+// (la Luna a unos 60 del centro y el Sol a unos 23 500): casi siempre quedan fuera de la pantalla
+// o detrás de la Tierra. Su tamaño en pantalla no es a escala (medirían unos pocos píxeles).
+const SUN_ALT = 149_600_000 / 6371 - 1;
+const MOON_ALT = 384_400 / 6371 - 1;
 
 const percent = (lit: number) => `${Math.round(lit * 100)} %`;
 

@@ -276,6 +276,31 @@ export class CameraRig {
     return out;
   }
 
+  /**
+   * Posición en pantalla de un astro: un punto en la dirección (lon, lat) a `distance` radios del
+   * centro de la Tierra, mucho más allá de lo que alcanza el plano lejano de la cámara. Queda oculto
+   * si cae detrás de la cámara o si la Tierra lo tapa.
+   */
+  projectFar(lon: number, lat: number, distance: number, out: ScreenPoint): ScreenPoint {
+    const cam = this.camera;
+    // A estas distancias un fotograma de retraso en la cámara son cientos de píxeles: se pone al día.
+    cam.updateMatrixWorld();
+    const c = cam.position;
+    const p = this.tmp.set(Math.cos(lat) * Math.sin(lon), Math.sin(lat), Math.cos(lat) * Math.cos(lon)).multiplyScalar(distance);
+    const [dx, dy, dz] = [p.x - c.x, p.y - c.y, p.z - c.z];
+    // ¿La recta de la cámara al astro atraviesa la esfera (radio 1, centrada en el origen)?
+    const t = clamp(-(c.x * dx + c.y * dy + c.z * dz) / (dx * dx + dy * dy + dz * dz), 0, 1);
+    const clear = Math.hypot(c.x + dx * t, c.y + dy * t, c.z + dz * t) > 1;
+    const v = p.applyMatrix4(cam.matrixWorldInverse);
+    const ahead = v.z < 0;
+    const m = cam.projectionMatrix.elements;
+    // La proyección está descentrada (el globo se aparta de los paneles): cuentan también m[8] y m[9].
+    out.x = ((m[0] * v.x + m[8] * v.z) / -v.z + 1) * 0.5 * this.width;
+    out.y = (1 - (m[5] * v.y + m[9] * v.z) / -v.z) * 0.5 * this.height;
+    out.visible = ahead && clear;
+    return out;
+  }
+
   /** Pose que encuadra un rectángulo geográfico en la vista indicada (1 = globo, 0 = plano). */
   fit(bounds: Bounds, morph: number, minSpanDeg = 0): Pose {
     const [w, s, e, n] = bounds;
