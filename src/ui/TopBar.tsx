@@ -1,3 +1,4 @@
+import { PlanetButton } from './PlanetDialog';
 import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
 import { useApp, useSettings, type Screen } from '../app/store';
@@ -114,6 +115,7 @@ export function TopBar() {
             <NavButton screen="progress" icon="chart">
               {t('Progreso')}
             </NavButton>
+            <PlanetButton labels={labels} />
           </nav>
         )}
 

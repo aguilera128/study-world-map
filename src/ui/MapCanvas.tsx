@@ -16,6 +16,7 @@ import { Icon } from './Icon';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
 import { lang, LOCALE, t } from '../i18n';
+import { density } from '../game/population';
 
 const TONE_CLASS: Record<Tone, string> = {
   ok: 'bg-ok text-white',
@@ -216,8 +217,8 @@ export default function MapCanvas() {
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);
 
   const mapState = useMemo(
-    () => computeMapState({ atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, byClimate: layers.climate, byZone: layers.timezones }),
-    [atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, layers.climate, layers.timezones],
+    () => computeMapState({ atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, byClimate: layers.climate, byZone: layers.timezones, byDensity: layers.population }),
+    [atlas, screen, session, selected, exploreScope, lists, progressMode, draft, progress, layers.climate, layers.timezones, layers.population],
   );
   // La primera vez que un motor recibe los estilos se aplican de golpe, sin transición.
   const styled = useRef<MapEngine | null>(null);
@@ -285,6 +286,9 @@ export default function MapCanvas() {
               </span>
             )}
             {country.climate.length > 0 && <span className="font-normal text-ink-soft">· {climateText(country.climate, 2)}</span>}
+            {layers.population && density(country) !== null && (
+              <span className="tabular font-normal text-ink-soft">· {t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}</span>
+            )}
             {screen === 'progress' && country.kind === 'country' && (
               <span className="font-normal text-ink-soft">· {MASTERY_LABELS[mastery(progress[country.id]?.[progressMode])]}</span>
             )}

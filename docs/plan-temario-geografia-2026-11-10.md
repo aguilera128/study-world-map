@@ -14,20 +14,25 @@ fuente y licencia comprobadas. «Por comprobar» significa que no he abierto tod
 | Retícula, hora local, día y noche | capas y tarjeta de tiempo real |
 | Relieve submarino (plataforma, llanuras abisales, fosas, dorsales) | color del mar, batimetría de Natural Earth |
 
-## Estado a 10-nov-2026 (noche)
+## Estado a 10-nov-2026 (final del día)
 
 Hecho: relieve, capa «Montañas, ríos y mares», líneas imaginarias, corrientes oceánicas (movimiento
-del agua y capa), mapa «Geografía física» con los retos Localizar y Nombrar sobre 287 accidentes
-(la selección está en `scripts/data/fisico-temario.json`), reto de coordenadas con retícula de
-grados y capa de husos horarios.
+del agua, capa y 22 corrientes con nombre, cálidas y frías), mapa «Geografía física» con los retos
+Localizar y Nombrar sobre 305 accidentes (selección en `scripts/data/fisico-temario.json` y
+`fisico-extra.json`), reto de coordenadas, husos horarios, placas y volcanes, densidad de población
+y la ventana «El planeta» (interior de la Tierra y capas de la atmósfera).
 
-Pendiente: corrientes con nombre (cálidas y frías), placas y volcanes, atmósfera, interior de la
-Tierra y mapas temáticos por país. Todos necesitan decidir fuente o diseño antes de empezar.
+Fuentes y licencias de lo añadido al final:
+- Placas: Bird (2003), PB2002, conversión de Hugo Ahlenius/Nordpil, ODC-By 1.0 (pide atribución).
+- Volcanes: NOAA NCEI, dominio público. Entran los 289 con erupción desde 1964.
+- Población: Banco Mundial, indicador SP.POP.TOTL, año 2025, CC BY 4.0 (pide atribución).
+- Corrientes con nombre y accidentes extra: nombres y posiciones de Wikidata (CC0). Qué corriente es
+  cálida o fría y dónde va su rótulo es una elección editorial, sin fuente citada.
+- Interior y atmósfera: cifras de libro de texto, sin fuente citada; revisarlas con una oficial.
 
-Del temario no están en Natural Earth y habría que buscarles otra fuente: Apeninos, cordillera
-Cantábrica, sistemas Central e Ibérico, Júcar, Segura, Miño, estrechos de Bering, Ormuz y Dover,
-penínsulas Ibérica, Itálica, Balcánica y de Anatolia, Jutlandia, Galápagos, lago de Maracaibo y
-meseta de Irán.
+Pendiente: mapas históricos, proyecciones, flujos migratorios y comerciales (aplazados, ver abajo),
+y la revisión nativa de las traducciones. Siguen sin fuente: Miño, Jutlandia, península del
+Labrador, meseta de Irán, desiertos de Mojave y de Arabia, golfos de Cádiz y de Valencia y Cotopaxi.
 
 ## Fases
 

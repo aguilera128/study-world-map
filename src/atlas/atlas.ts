@@ -64,6 +64,7 @@ function decodeCountry(raw: RawCountry, index: number, q: number): Country {
     anchor: raw.anchor,
     size: raw.size,
     areaKm2: raw.areaKm2,
+    population: raw.population,
     tz: raw.tz,
     tzMulti: raw.tzMulti ?? false,
     capital: raw.capital,

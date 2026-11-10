@@ -161,8 +161,8 @@ float gnoise(vec3 p) {
 
 // Altura del agua: varias escalas de ola, de las que solo cuentan las que en pantalla miden entre
 // unos 4 y unos 25 píxeles. Más grandes parecen olas gigantes al acercar el mapa; más finas, la
-// pendiente por píxel sale en bloques de 2×2 y se ve una cuadrícula. Cada una pesa 1/frecuencia
-// (misma pendiente en todas).
+// pendiente por píxel sale en bloques de 2×2 y se ve una cuadrícula. Cada una pesa algo menos que
+// la anterior, con la misma pendiente.
 // Giro fijo (ortonormal) entre escalas de ola.
 const mat3 TURN = mat3(0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6);
 
@@ -187,30 +187,25 @@ float carried(vec3 p, vec3 drift) {
 }
 
 float swell(vec3 p, float px, vec3 drift) {
-  vec3 q = p;
   float h = 0.0;
-  // La ola más grande mide unos 50 km: con el globo entero en pantalla queda en un grano muy fino
-  // y tenue (desde el espacio no se ven olas), y el oleaje aparece al acercarse.
-  float f = 120.0;
-  float a = 1.0;
-  for (int i = 0; i < 8; i++) {
+  // Las escalas van de 2,07 en 2,07 desde olas de unos 50 km. Solo se calculan las cuatro que caben
+  // en esa ventana de tamaños en pantalla, empezando por la más gruesa que entra: con el globo
+  // entero queda un grano tenue (desde el espacio no se ven olas) y el oleaje aparece al acercarse.
+  // Calcular solo esas, en vez de recorrerlas todas, abarata mucho el sombreador (y su compilación).
+  float first = max(ceil(log(0.03 / (px * 120.0)) / log(2.07)), 0.0);
+  for (int j = 0; j < 4; j++) {
+    float k = first + float(j);
+    float f = 120.0 * pow(2.07, k);
     float visible = 1.0 - smoothstep(0.1, 0.4, px * f);
-    // Las escalas van de mayor a menor: si esta ya no se ve, las siguientes tampoco. Con el mapa
-    // alejado se ahorra así más de la mitad del ruido, que es lo caro en un móvil.
-    if (visible <= 0.0) break;
-    // demasiado grande en pantalla (más de ~25 px por ola): se salta
     float fine = smoothstep(0.03, 0.08, px * f);
-    // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
-    if (fine > 0.0) {
-      vec3 at = q * f + vec3(h * f * 0.35) + uTime * vec3(0.05, 0.035, 0.02);
-      h += fine * visible * a / f * (uFlowAmt > 0.0 ? carried(at, drift) : gnoise(at));
-    }
-    // cada escala, girada respecto a la anterior: sin esto las celdas del ruido se alinean y se ve
+    // cada escala, girada respecto a las vecinas: sin esto las celdas del ruido se alinean y se ve
     // una cuadrícula
-    q = TURN * q;
-    drift = TURN * drift;
-    f *= 2.07;
-    a *= 0.86;
+    float turn = mod(k, 3.0);
+    vec3 q = turn < 0.5 ? p : (turn < 1.5 ? TURN * p : TURN * (TURN * p));
+    vec3 pull = turn < 0.5 ? drift : (turn < 1.5 ? TURN * drift : TURN * (TURN * drift));
+    // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
+    vec3 at = q * f + vec3(h * f * 0.35) + uTime * vec3(0.05, 0.035, 0.02);
+    h += fine * visible * pow(0.86, k) / f * carried(at, pull);
   }
   return h;
 }

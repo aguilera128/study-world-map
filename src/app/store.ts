@@ -37,6 +37,7 @@ export const LAYERS = {
   grid: t('Meridianos y paralelos'),
   guides: t('Líneas imaginarias'),
   timezones: t('Husos horarios'),
+  population: t('Densidad de población'),
   relief: t('Relieve'),
   depth: t('Profundidad del mar'),
   currents: t('Corrientes oceánicas'),
@@ -54,7 +55,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population'];
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {

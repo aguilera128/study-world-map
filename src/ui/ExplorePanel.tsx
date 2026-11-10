@@ -78,6 +78,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
           )}
           {country.climate.length > 0 && <Fact label={t('Clima')}>{climateText(country.climate)}</Fact>}
           {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
+          {country.population && <Fact label={t('Población')}>{country.population.toLocaleString(LOCALE)}</Fact>}
           {neighbors.length > 0 && (
             <Fact label={t('Vecinos')}>
               <span className="flex flex-wrap gap-1.5">

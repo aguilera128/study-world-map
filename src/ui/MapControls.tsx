@@ -1,3 +1,4 @@
+import { DENSITY_LABELS } from '../game/population';
 import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, showWhole, useApp, useSettings, type LayerId } from '../app/store';
@@ -22,7 +23,7 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
   );
 }
 
-const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'tectonics', 'climate', 'grid', 'guides', 'timezones', 'glint', 'stars'];
+const MAP_LAYERS: LayerId[] = ['relief', 'features', 'depth', 'currents', 'tectonics', 'climate', 'population', 'grid', 'guides', 'timezones', 'glint', 'stars'];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
 /** Botón de capas: qué se dibuja sobre el mapa. */
@@ -93,6 +94,21 @@ function LayersMenu() {
                 </li>
               ))}
             </ul>
+          )}
+          {layers.population && (
+            // Leyenda del mapa de densidad, con los mismos colores con los que se pinta.
+            <div className="text-xs font-semibold text-ink-soft">
+              <p className="mb-1">{t('Habitantes por km²')}</p>
+              <ul className="grid grid-cols-1 gap-y-1">
+                {DENSITY_LABELS.map((label, i) => (
+                  <li key={label} className="tabular flex items-center gap-1.5">
+                    <span className="h-3 w-3 shrink-0 rounded-[3px] border border-rule-strong" style={{ background: PALETTES[theme].styles[Style.density + i].color }} />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1.5 font-normal text-ink-faint">{t('Fuente: Banco Mundial')}</p>
+            </div>
           )}
           {realTime ? (
             group(t('Tiempo real'), REAL_TIME_LAYERS)

@@ -6,6 +6,7 @@ import { mastery, type Outcome, type Progress } from '../game/progress';
 import { currentQuestion, type Session } from '../game/session';
 import type { Screen } from './store';
 import { offsetMinutes } from './time';
+import { density, densityClass } from '../game/population';
 
 const offsets = new Map<string, number | null>();
 /** Minutos respecto a UTC de una zona horaria, ahora. Se calcula una vez por zona. */
@@ -37,6 +38,8 @@ export interface MapInput {
   byClimate?: boolean;
   /** Capa de husos horarios: cada país, del color de su hora actual. */
   byZone?: boolean;
+  /** Capa de población: cada país, del color de su densidad. */
+  byDensity?: boolean;
 }
 
 const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help, failed: Style.fail };
@@ -46,7 +49,7 @@ const MARK_STYLE: Record<Outcome, number> = { first: Style.ok, later: Style.help
  * mapa político para explorar, mapa mudo durante el juego, colores de dominio en el progreso…
  */
 export function computeMapState(input: MapInput): MapState {
-  const { atlas, screen, session, selected, progressMode, draft, progress, byClimate, byZone } = input;
+  const { atlas, screen, session, selected, progressMode, draft, progress, byClimate, byZone, byDensity } = input;
   const n = atlas.countries.length;
   const styles = new Uint8Array(n).fill(Style.muted);
   const active = new Uint8Array(n);
@@ -60,6 +63,10 @@ export function computeMapState(input: MapInput): MapState {
   const political = (i: number) => {
     const country = atlas.countries[i];
     if (byClimate && country.climate.length) return Style.climate + CLIMATE_KEYS.indexOf(country.climate[0]);
+    if (byDensity) {
+      const value = density(country);
+      if (value !== null) return Style.density + densityClass(value);
+    }
     // Husos: seis colores que se repiten de hora en hora, así dos husos seguidos nunca coinciden.
     // Es la hora oficial de hoy en la capital (con el horario de verano, si lo hay).
     if (byZone && country.tz) {

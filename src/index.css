@@ -722,3 +722,56 @@
 .feature-label.volcan {
   color: color-mix(in srgb, var(--ink) 40%, #e0452a);
 }
+
+/* «El planeta»: ventana y movimiento del interior de la Tierra (solo si no se ha pedido reducirlo). */
+.planet-dialog::backdrop {
+  background: rgb(var(--shadow) / 0.55);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .planet-flow {
+    animation: planet-flow 2.4s linear infinite;
+  }
+
+  .planet-flow-back {
+    animation: planet-flow 3.2s linear infinite reverse;
+  }
+
+  .planet-glow {
+    animation: planet-glow 2.8s ease-in-out infinite alternate;
+  }
+
+  .planet-meteor {
+    animation: planet-meteor 3.5s ease-in infinite;
+  }
+}
+
+@keyframes planet-flow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes planet-glow {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
+@keyframes planet-meteor {
+  0% {
+    stroke-dashoffset: 60;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  45%,
+  100% {
+    stroke-dashoffset: -60;
+    opacity: 0;
+  }
+}

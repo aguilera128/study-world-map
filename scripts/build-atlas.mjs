@@ -28,6 +28,8 @@ import { CLIMAS, climasDe } from './data/climas.mjs';
 import { IDIOMAS } from './data/idiomas/index.mjs';
 import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './data/paises.mjs';
 
+/** Población por país (Banco Mundial, CC BY 4.0) y año del dato. */
+const POBLACION = JSON.parse(readFileSync(new URL('./data/poblacion.worldbank.json', import.meta.url), 'utf8'));
 const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const AUDIT = process.argv.includes('--audit');
@@ -406,6 +408,8 @@ const entidades = codigos.map((codigo) => {
     // tamaño angular (radianes) del polígono principal: decide cuándo hace falta un marcador
     size: red(Math.sqrt(mayor.area), 5),
     areaKm2: Math.round(wcByIso3.get(codigo)?.area ?? 0) || undefined,
+    // Banco Mundial (scripts/data/poblacion.worldbank.json); sin dato para algunos territorios.
+    population: POBLACION.values[codigo],
     // zona horaria de la capital y si en el país hay más de una hora
     tz: hora.zona ?? undefined,
     tzMulti: hora.variasHoras || undefined,

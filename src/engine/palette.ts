@@ -24,9 +24,11 @@ export const Style = {
   climate: 18,
   /** Tierra sin más, de fondo en el mapa de geografía física: deja ver el relieve. */
   land: 28,
+  /** Mapa de densidad de población: density + (0…4), de menos a más. */
+  density: 29,
 } as const;
 
-export const STYLE_COUNT = 29;
+export const STYLE_COUNT = 34;
 
 export interface StyleDef {
   color: string;
@@ -152,6 +154,11 @@ export const PAPER: Palette = {
     s('#dfeaf2'), // polar
     s('#a8927d'), // alta montaña
     s('#e7dfc8'), // tierra (mapa físico)
+    s('#f4ecd2'), // densidad 0
+    s('#f0d596'), // densidad 1
+    s('#e7ab5b'), // densidad 2
+    s('#cf7534'), // densidad 3
+    s('#93401f'), // densidad 4
   ],
 };
 
@@ -221,6 +228,11 @@ export const NIGHT: Palette = {
     s('#cfdde8'), // polar
     s('#9b8773'), // alta montaña
     s('#75806e'), // tierra (mapa físico)
+    s('#3d4654'), // densidad 0
+    s('#6b6748'), // densidad 1
+    s('#a5873f'), // densidad 2
+    s('#d8923c'), // densidad 3
+    s('#f5b75a'), // densidad 4
   ],
 };
 
