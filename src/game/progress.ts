@@ -68,6 +68,23 @@ export function sanitizeProgress(raw: unknown): Progress {
   return out;
 }
 
+/**
+ * Junta dos progresos (el de este dispositivo y el de otro): de cada país y reto se queda la ficha
+ * más reciente y, si son del mismo momento, la que más veces se ha preguntado.
+ */
+export function mergeProgress(a: Progress, b: Progress): Progress {
+  const out: Progress = { ...a };
+  for (const [country, modes] of Object.entries(b)) {
+    const merged = { ...out[country] };
+    for (const [mode, theirs] of Object.entries(modes) as [ModeId, SkillStats][]) {
+      const ours = merged[mode];
+      if (!ours || theirs.last > ours.last || (theirs.last === ours.last && theirs.seen > ours.seen)) merged[mode] = theirs;
+    }
+    out[country] = merged;
+  }
+  return out;
+}
+
 const DAY = 86_400_000;
 const BOX_WEIGHT = [4, 6, 4, 2, 1.2, 0.6];
 

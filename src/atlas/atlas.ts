@@ -188,7 +188,8 @@ export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atla
     // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
     const world = await getJson<RawAtlas>('/data/atlas.json');
     const backdrop = world.countries.map(
-      (c): RawCountry => ({ id: c.id, a2: null, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color }),
+      // (con su bandera: al pasar el cursor se sigue viendo qué país es)
+      (c): RawCountry => ({ id: c.id, a2: c.a2, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color }),
     );
     raw.countries = [...backdrop, ...raw.countries];
   }

@@ -5,14 +5,17 @@ import './index.css';
 // El diccionario del idioma tiene que estar cargado antes de importar la aplicación: muchos módulos
 // traducen sus textos al evaluarse (los títulos de los retos, las etiquetas de las capas…).
 await initI18n();
-const [{ default: App }, { getEngine }, { useApp, useProgress, useSettings }] = await Promise.all([
+const [{ default: App }, { getEngine }, { useApp, useProgress, useSettings }, { initSync }] = await Promise.all([
   import('./App'),
   import('./app/engineRef'),
   import('./app/store'),
+  import('./app/sync'),
 ]);
 
 // Sin <StrictMode>: en desarrollo montaría dos veces el lienzo y crearía dos contextos WebGL.
 createRoot(document.getElementById('root')!).render(<App />);
+// Progreso compartido entre dispositivos, si este tiene un código (src/app/sync.ts).
+initSync();
 
 // Funcionamiento sin conexión (public/sw.js). En desarrollo no: serviría copias viejas de Vite.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {

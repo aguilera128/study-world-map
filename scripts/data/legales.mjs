@@ -67,9 +67,9 @@ ${revision}`,
     {
       path: '/privacidad/',
       title: 'Política de privacidad · Study World Map',
-      description: 'Qué datos trata Study World Map, para qué y cómo ejercer tus derechos. La aplicación no tiene cuentas y guarda tu progreso solo en tu dispositivo.',
+      description: 'Qué datos trata Study World Map, para qué y cómo ejercer tus derechos. La aplicación no tiene cuentas y guarda tu progreso en tu dispositivo; solo si tú lo pides se guarda además con un código para usarlo en otro.',
       body: `    <h1>Política de privacidad</h1>
-    <p class="lead">Resumen: no hay cuentas ni formularios. Tu progreso se queda en tu dispositivo. Solo si aceptas las cookies de analítica se envían datos de uso a Google Analytics.</p>
+    <p class="lead">Resumen: no hay cuentas ni formularios. Tu progreso se queda en tu dispositivo, salvo que crees un código para llevarlo a otro. Solo si aceptas las cookies de analítica se envían datos de uso a Google Analytics.</p>
 
     <h2>Responsable del tratamiento</h2>
 ${titularBlock()}
@@ -77,7 +77,10 @@ ${titularBlock()}
     <h2>Qué datos se tratan y para qué</h2>
 
     <h3>Progreso, ajustes y listas de estudio</h3>
-    <p>Se guardan solo en el almacenamiento local de tu navegador, para que no pierdas lo aprendido. No se envían a ningún servidor y el titular no tiene acceso a ellos. Puedes borrarlos desde la propia aplicación («Progreso») o borrando los datos del sitio en tu navegador.</p>
+    <p>Se guardan solo en el almacenamiento local de tu navegador, para que no pierdas lo aprendido. No se envían a ningún servidor y el titular no tiene acceso a ellos, salvo que uses la sincronización que se explica a continuación. Puedes borrarlos desde la propia aplicación («Progreso») o borrando los datos del sitio en tu navegador.</p>
+    <h3>Seguir en otro dispositivo (opcional)</h3>
+    <p>Si en «Progreso» pulsas «Crear mi código», tu progreso se guarda también en una base de datos para que puedas continuar en otro dispositivo. Se guarda únicamente un código de doce letras y cifras generado al azar, el progreso (qué países o accidentes geográficos te sabes y tus mejores notas) y la fecha. No se guarda tu nombre, tu correo ni tu dirección IP, y el código no está asociado a ninguna persona.</p>
+    <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra datos técnicos de la conexión. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Puedes borrar lo guardado en cualquier momento con «Borrar lo guardado con este código»; si no, se borra solo cuando pasa un año sin usarse.</p>
 
     <h3>Ubicación</h3>
     <p>La función «Tiempo real» sitúa tu posición en el mapa a partir de la zona horaria de tu dispositivo, sin pedirte nada. Si pulsas el botón de ubicación exacta, tu navegador te pedirá permiso y la aplicación usará tu posición redondeada (unos 1 km). En ambos casos la ubicación solo se usa en la pantalla: no se guarda ni se envía a ningún sitio.</p>
@@ -127,12 +130,13 @@ ${revision}`,
     <p>Son cookies propias del dominio, pero las gestiona Google. Más información en la <a href="/privacidad/">política de privacidad</a> y en la <a href="https://policies.google.com/technologies/cookies?hl=es">explicación de Google</a>.</p>
 
     <h2>Almacenamiento técnico (no requiere consentimiento)</h2>
-    <p>No son cookies: se guardan solo en tu navegador, nunca se envían a ningún servidor y son necesarios para que la aplicación funcione como pides.</p>
+    <p>No son cookies: se guardan solo en tu navegador, no se envían a ningún servidor (salvo el progreso, si creas un código para llevarlo a otro dispositivo) y son necesarios para que la aplicación funcione como pides.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Nombre</th><th scope="col">Para qué sirve</th><th scope="col">Duración</th></tr></thead>
       <tbody>
         <tr><td><code>mapamundi:ajustes</code></td><td>Tema, vista, reto elegido y listas de estudio.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>mapamundi:progreso</code></td><td>Lo que ya te sabes y tus mejores notas.</td><td>Hasta que la borres</td></tr>
+        <tr><td><code>mapamundi:sync</code></td><td>Tu código para seguir en otro dispositivo, si lo has creado.</td><td>Hasta que dejes de sincronizar</td></tr>
         <tr><td><code>swm:consent</code></td><td>Recordar si aceptaste o rechazaste las cookies.</td><td>Hasta que la borres</td></tr>
         <tr><td>Caché <code>swm-*</code></td><td>Copia de la aplicación para usarla sin conexión.</td><td>Hasta la siguiente versión</td></tr>
       </tbody>

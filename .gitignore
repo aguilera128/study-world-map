@@ -2,6 +2,9 @@ node_modules
 dist
 .vercel
 *.local
+# secretos: ningún .env va al repositorio
+.env
+.env.*
 *.log
 .DS_Store
 .claude/settings.local.json

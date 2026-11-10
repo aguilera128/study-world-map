@@ -1,5 +1,6 @@
 import { useMemo, useState, type CSSProperties } from 'react';
 import { useApp, useMapDef, useProgress, useSettings } from '../app/store';
+import { createCode, deleteRemote, formatCode, joinCode, leaveSync, syncLink, useSync } from '../app/sync';
 import { PALETTES, Style } from '../engine/palette';
 import { modesOf, resolveScope } from '../game/config';
 import { MASTERY_LABELS, summarize } from '../game/progress';
@@ -24,6 +25,92 @@ function LevelBar({ levels, total, colors }: { levels: number[]; total: number; 
         />
       ))}
     </div>
+  );
+}
+
+/** Llevar el progreso a otro dispositivo con un código, sin cuentas. */
+function SyncCard() {
+  const { code, status, at } = useSync();
+  const [entry, setEntry] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const run = async (action: () => Promise<string | null>) => {
+    setBusy(true);
+    setError(await action());
+    setBusy(false);
+  };
+
+  return (
+    <section className="mt-6 rounded-[12px] border border-rule-strong bg-surface p-4" aria-label={t('Seguir en otro dispositivo')}>
+      <h2 className="label">{t('Seguir en otro dispositivo')}</h2>
+      {code ? (
+        <>
+          <p className="display tabular mt-2 text-2xl tracking-wide">{formatCode(code)}</p>
+          <p className="mt-1 text-sm text-ink-soft">
+            {status === 'offline'
+              ? t('Sin conexión: se sincronizará cuando vuelva.')
+              : status === 'syncing' || !at
+                ? t('Sincronizando…')
+                : t('Sincronizado. Escribe este código en el otro dispositivo o abre allí el enlace.')}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="btn min-h-10 px-3 text-sm"
+              onClick={() => {
+                void navigator.clipboard?.writeText(syncLink(code)).then(() => setCopied(true));
+              }}
+            >
+              <Icon name="link" size={16} />
+              {copied ? t('Enlace copiado') : t('Copiar enlace')}
+            </button>
+            <button type="button" className="btn btn-ghost min-h-10 px-3 text-sm" onClick={leaveSync}>
+              {t('Dejar de sincronizar')}
+            </button>
+            <button type="button" disabled={busy} className="btn btn-ghost min-h-10 px-3 text-sm text-bad" onClick={() => void run(deleteRemote)}>
+              {t('Borrar lo guardado con este código')}
+            </button>
+          </div>
+          <p className="mt-3 text-xs text-ink-faint">{t('Quien tenga el código puede ver y cambiar este progreso. No guardamos ningún dato personal.')}</p>
+        </>
+      ) : (
+        <>
+          <p className="mt-2 text-sm text-ink-soft">{t('Crea un código y úsalo en el móvil, la tableta o el ordenador para seguir donde lo dejaste. Sin cuentas ni correo.')}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button type="button" disabled={busy} className="btn btn-accent min-h-10 px-3 text-sm" onClick={() => void run(createCode)}>
+              {t('Crear mi código')}
+            </button>
+          </div>
+          <form
+            className="mt-3 flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void run(() => joinCode(entry));
+            }}
+          >
+            <input
+              value={entry}
+              onChange={(e) => setEntry(e.target.value)}
+              placeholder={t('Ya tengo un código')}
+              aria-label={t('Ya tengo un código')}
+              autoCapitalize="characters"
+              autoComplete="off"
+              spellCheck={false}
+              className="tabular min-h-10 min-w-0 flex-1 rounded-[10px] border border-rule-strong bg-paper px-3 text-sm uppercase placeholder:normal-case"
+            />
+            <button type="submit" disabled={busy || !entry.trim()} className="btn min-h-10 px-3 text-sm">
+              {t('Usar')}
+            </button>
+          </form>
+        </>
+      )}
+      {error && (
+        <p role="alert" className="mt-2 text-sm text-bad">
+          {error}
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -168,6 +255,7 @@ export function ProgressPanel() {
           )}
         </div>
       )}
+      <SyncCard />
     </Panel>
   );
 }

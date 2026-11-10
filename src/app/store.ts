@@ -15,7 +15,7 @@ import {
   type ModeId,
   type StudyList,
 } from '../game/config';
-import { record, sanitizeProgress, type Outcome, type Progress } from '../game/progress';
+import { record, sanitizeProgress, type Outcome, type Progress, mergeProgress } from '../game/progress';
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { dailyConfig, dailyKey, dailyRng, recordDaily, type DailyRecord } from '../game/daily';
 import { isMapId, MAPS, type MapDef } from '../game/maps';
@@ -162,9 +162,28 @@ interface ProgressState {
   recordGame(config: GameConfig, grade: number, ms: number): boolean;
   /** Borra lo aprendido y las marcas de un mapa; lo del otro no se toca. */
   reset(atlas: Atlas): void;
+  /** Mezcla con lo de este dispositivo el progreso de otro (sincronización, src/app/sync.ts). */
+  absorb(remote: unknown): void;
 }
 
 const bestKey = (c: GameConfig) => `${c.mode}/${c.answer}/${c.scope}/${c.length}`;
+
+/** Progreso, marcas y reto del día de una fuente que no es de fiar (lo guardado, lo de otro dispositivo), ya validados. */
+function cleanSaved(raw: unknown): Pick<ProgressState, 'progress' | 'bests' | 'daily'> {
+  const saved = (raw && typeof raw === 'object' ? raw : {}) as Partial<ProgressState>;
+  const bests: Record<string, Best> = {};
+  if (saved.bests && typeof saved.bests === 'object') {
+    for (const [key, b] of Object.entries(saved.bests)) {
+      if (b && [b.grade, b.ms, b.at].every((v) => typeof v === 'number' && Number.isFinite(v))) bests[key] = b;
+    }
+  }
+  const d = saved.daily;
+  const daily =
+    d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.date)) && Number.isFinite(d.grade) && Number.isInteger(d.streak) && d.streak > 0
+      ? { date: d.date, grade: d.grade, streak: d.streak }
+      : null;
+  return { progress: sanitizeProgress(saved.progress), bests, daily };
+}
 
 export const useProgress = create<ProgressState>()(
   persist(
@@ -182,6 +201,21 @@ export const useProgress = create<ProgressState>()(
         // La primera partida de un reto no se anuncia como récord.
         return improved && !!best;
       },
+      absorb: (remote) =>
+        set((s) => {
+          const theirs = cleanSaved(remote);
+          const bests = { ...s.bests };
+          for (const [key, b] of Object.entries(theirs.bests)) {
+            const mine = bests[key];
+            if (!mine || b.grade > mine.grade + 1e-9 || (Math.abs(b.grade - mine.grade) < 1e-9 && b.ms < mine.ms)) bests[key] = b;
+          }
+          // Reto del día: el día más reciente; si es el mismo, la racha más larga.
+          const daily =
+            !s.daily || (theirs.daily && (theirs.daily.date > s.daily.date || (theirs.daily.date === s.daily.date && theirs.daily.streak > s.daily.streak)))
+              ? (theirs.daily ?? s.daily)
+              : s.daily;
+          return { progress: mergeProgress(s.progress, theirs.progress), bests, daily };
+        }),
       reset: (atlas) =>
         set((s) => {
           // Una marca es del mapa que tiene su zona; las de las listas de estudio, del mundo.
@@ -201,21 +235,7 @@ export const useProgress = create<ProgressState>()(
       version: 1,
       partialize: ({ progress, bests, daily }) => ({ progress, bests, daily }),
       // Igual que con los ajustes: lo guardado se valida antes de usarlo.
-      merge: (persisted, current) => {
-        const saved = (persisted ?? {}) as Partial<ProgressState>;
-        const bests: Record<string, Best> = {};
-        if (saved.bests && typeof saved.bests === 'object') {
-          for (const [key, b] of Object.entries(saved.bests)) {
-            if (b && [b.grade, b.ms, b.at].every((v) => typeof v === 'number' && Number.isFinite(v))) bests[key] = b;
-          }
-        }
-        const d = saved.daily;
-        const daily =
-          d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.date)) && Number.isFinite(d.grade) && Number.isInteger(d.streak) && d.streak > 0
-            ? { date: d.date, grade: d.grade, streak: d.streak }
-            : null;
-        return { ...current, progress: sanitizeProgress(saved.progress), bests, daily };
-      },
+      merge: (persisted, current) => ({ ...current, ...cleanSaved(persisted) }),
     },
   ),
 );
