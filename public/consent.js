@@ -70,70 +70,70 @@
     es: [
       '¿Nos dejas usar cookies de Google Analytics para contar las visitas y ver qué partes de la web se usan? ' +
         'Solo sirven para mejorarla: nada de publicidad. Si no aceptas, la web funciona igual.',
-      'Más información',
+      'Más información sobre las cookies',
       'Rechazar',
       'Aceptar',
     ],
     en: [
       'May we use Google Analytics cookies to count visits and see which parts of the site are used? ' +
         'They only help us improve it: no advertising. If you decline, the site works just the same.',
-      'More information (in Spanish)',
+      'More about cookies (in Spanish)',
       'Decline',
       'Accept',
     ],
     fr: [
       'Acceptez-vous que nous utilisions les cookies de Google Analytics pour compter les visites et voir quelles parties du site sont utilisées ? ' +
         'Ils servent uniquement à l’améliorer : aucune publicité. Si vous refusez, le site fonctionne de la même façon.',
-      'En savoir plus (en espagnol)',
+      'En savoir plus sur les cookies (en espagnol)',
       'Refuser',
       'Accepter',
     ],
     de: [
       'Dürfen wir Cookies von Google Analytics verwenden, um Besuche zu zählen und zu sehen, welche Teile der Seite genutzt werden? ' +
         'Sie dienen nur der Verbesserung: keine Werbung. Wenn du ablehnst, funktioniert die Seite genauso.',
-      'Mehr erfahren (auf Spanisch)',
+      'Mehr über Cookies (auf Spanisch)',
       'Ablehnen',
       'Akzeptieren',
     ],
     it: [
       'Possiamo usare i cookie di Google Analytics per contare le visite e vedere quali parti del sito vengono usate? ' +
         'Servono solo a migliorarlo: niente pubblicità. Se rifiuti, il sito funziona lo stesso.',
-      'Maggiori informazioni (in spagnolo)',
+      'Maggiori informazioni sui cookie (in spagnolo)',
       'Rifiuta',
       'Accetta',
     ],
     pt: [
       'Podemos usar cookies do Google Analytics para contar as visitas e ver quais partes do site são usadas? ' +
         'Servem só para melhorá-lo: nada de publicidade. Se você recusar, o site funciona do mesmo jeito.',
-      'Mais informações (em espanhol)',
+      'Mais sobre os cookies (em espanhol)',
       'Recusar',
       'Aceitar',
     ],
     ca: [
       'Ens deixes usar galetes de Google Analytics per a comptar les visites i veure quines parts del web s’usen? ' +
         'Només serveixen per a millorar-lo: res de publicitat. Si no acceptes, el web funciona igual.',
-      'Més informació (en castellà)',
+      'Més informació sobre les galetes (en castellà)',
       'Rebutjar',
       'Acceptar',
     ],
     gl: [
       'Déixasnos usar cookies de Google Analytics para contar as visitas e ver que partes da web se usan? ' +
         'Só serven para mellorala: nada de publicidade. Se non aceptas, a web funciona igual.',
-      'Máis información (en castelán)',
+      'Máis información sobre as cookies (en castelán)',
       'Rexeitar',
       'Aceptar',
     ],
     eu: [
       'Google Analytics-en cookieak erabiltzen uzten diguzu, bisitak zenbatzeko eta webgunearen zein atal erabiltzen diren ikusteko? ' +
         'Hobetzeko bakarrik balio dute: publizitaterik ez. Onartzen ez baduzu, webguneak berdin funtzionatzen du.',
-      'Informazio gehiago (gaztelaniaz)',
+      'Cookieei buruzko informazio gehiago (gaztelaniaz)',
       'Baztertu',
       'Onartu',
     ],
     zh: [
       '可以让我们使用 Google Analytics 的 Cookie 来统计访问量、了解网站哪些部分被使用吗？' +
         '它们只用于改进网站，不用于广告。如果你拒绝，网站照常可用。',
-      '了解更多（西班牙语）',
+      '了解 Cookie 详情（西班牙语）',
       '拒绝',
       '接受',
     ],

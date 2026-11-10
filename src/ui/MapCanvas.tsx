@@ -190,7 +190,8 @@ export default function MapCanvas() {
 
       <div
         ref={tipRef}
-        role="tooltip"
+        role={showTip ? 'tooltip' : undefined}
+        aria-hidden={!showTip}
         className={`float pointer-events-none fixed left-0 top-0 z-40 flex items-center gap-2 px-2.5 py-1.5 text-sm font-semibold transition-opacity duration-150 ${showTip ? 'opacity-100' : 'opacity-0'}`}
       >
         {country && (

@@ -161,6 +161,9 @@ float swell(vec3 p, float px) {
   float a = 1.0;
   for (int i = 0; i < 6; i++) {
     float visible = 1.0 - smoothstep(0.18, 0.5, px * f);
+    // Las escalas van de mayor a menor: si esta ya no se ve, las siguientes tampoco. Con el mapa
+    // alejado se ahorra así más de la mitad del ruido, que es lo caro en un móvil.
+    if (visible <= 0.0) break;
     // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
     h += visible * a / f * gnoise(p * f + vec3(h * f * 0.35));
     f *= 2.07;

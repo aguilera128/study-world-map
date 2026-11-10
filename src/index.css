@@ -290,8 +290,9 @@
 }
 
 .btn-accent {
-  background: var(--accent);
-  border-color: var(--accent);
+  /* Un punto más oscuro que el acento: el texto claro llega así al contraste 4,5:1. */
+  background: color-mix(in srgb, var(--accent) 88%, black);
+  border-color: color-mix(in srgb, var(--accent) 88%, black);
   color: var(--on-accent);
 }
 
