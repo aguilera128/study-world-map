@@ -202,6 +202,8 @@ export class MapEngine {
   private seaTimer = 0;
   private labels: FeatureLabels | null = null;
   private guides: Mesh | null = null;
+  private graticule: Mesh | null = null;
+  private graticuleLabels: FeatureLabels | null = null;
   private guideLabels: FeatureLabels | null = null;
   private riverMaterial: ShaderMaterial | null = null;
   private rivers: Mesh | null = null;
@@ -232,6 +234,7 @@ export class MapEngine {
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
+    graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     river: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
@@ -461,6 +464,8 @@ export class MapEngine {
     this.own.river.uLine.value.copy(vec3(p.river));
     this.own.river.uLineEmph.value.copy(vec3(p.river));
     this.own.guide.uLine.value.copy(vec3(p.guide));
+    this.own.graticule.uLine.value.copy(vec3(p.grid));
+    this.own.graticule.uLineEmph.value.copy(vec3(p.grid));
     this.own.guide.uLineEmph.value.copy(vec3(p.guide));
     u.uNightTint.value.copy(vec3(p.nightTint));
     u.uNightDim.value = p.nightDim;
@@ -629,6 +634,44 @@ export class MapEngine {
     mesh.renderOrder = 5;
     this.scene.add(mesh);
     return mesh;
+  }
+
+  /**
+   * Retícula cada 15° dibujada también sobre tierra y con los grados rotulados, para leer
+   * coordenadas. `west` es la letra del oeste en el idioma de la página («O», «W»).
+   */
+  setGraticule(on: boolean, west = 'O') {
+    if (this.graticule) this.graticule.visible = on;
+    if (!on) {
+      this.graticuleLabels?.set([]);
+      this.invalidate();
+      return;
+    }
+    if (!this.graticule) {
+      const start: number[] = [];
+      const end: number[] = [];
+      for (let lat = -75; lat <= 75; lat += 15) {
+        for (let lon = -180; lon < 180; lon += 3) this.segment(start, end, lon, lat, lon + 3, lat);
+      }
+      for (let lon = -180; lon < 180; lon += 15) {
+        for (let lat = -84; lat < 84; lat += 3) this.segment(start, end, lon, lat, lon, lat + 3);
+      }
+      this.graticule = this.segments(start, end, this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own.graticule, { transparent: true, depthWrite: false }));
+      this.disposables.push(this.graticule.geometry);
+    }
+    if (!this.graticuleLabels && this.canvas.parentElement) this.graticuleLabels = new FeatureLabels(this.canvas.parentElement);
+    const labels: MapFeature[] = [];
+    // latitudes, sobre cuatro meridianos; longitudes, sobre el ecuador y los paralelos 45
+    for (let lat = -75; lat <= 75; lat += 15) {
+      const text = lat === 0 ? '0°' : `${Math.abs(lat)}° ${lat > 0 ? 'N' : 'S'}`;
+      for (const lon of [-157.5, -67.5, 22.5, 112.5]) labels.push({ kind: 'grado', rank: 0, lon, lat, text });
+    }
+    for (let lon = -165; lon <= 180; lon += 15) {
+      const text = lon === 0 || lon === 180 ? `${Math.abs(lon)}°` : `${Math.abs(lon)}° ${lon > 0 ? 'E' : west}`;
+      for (const lat of [-52.5, 7.5, 52.5]) labels.push({ kind: 'grado', rank: 0, lon, lat, text });
+    }
+    this.graticuleLabels?.set(labels);
+    this.invalidate();
   }
 
   /**
@@ -1306,6 +1349,7 @@ export class MapEngine {
     this.own.line.uWidth.value = LINE_WIDTH * dpr;
     this.own.river.uWidth.value = 1.4 * dpr;
     this.own.guide.uWidth.value = 1.6 * dpr;
+    this.own.graticule.uWidth.value = dpr;
     this.own.line.uEmphWidth.value = LINE_WIDTH_EMPH * dpr;
     this.own.marker.uPxPerRad.value = 1 / rig.worldPerPixel;
     this.own.marker.uMarkerPx.value = MARKER_DIAMETER * dpr;
@@ -1329,6 +1373,7 @@ export class MapEngine {
     for (const item of this.tracked) this.place(item);
     this.labels?.place(rig, ALT.marker);
     this.guideLabels?.place(rig, ALT.marker);
+    this.graticuleLabels?.place(rig, ALT.marker);
     this.emit('view', {
       lon: rig.lon / DEG,
       lat: rig.lat / DEG,
@@ -1359,6 +1404,7 @@ export class MapEngine {
     clearTimeout(this.seaTimer);
     this.labels?.dispose();
     this.guideLabels?.dispose();
+    this.graticuleLabels?.dispose();
     this.rivers?.geometry.dispose();
     this.disposed = true;
     cancelAnimationFrame(this.raf);

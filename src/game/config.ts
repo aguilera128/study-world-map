@@ -9,7 +9,7 @@ export type { RegionFilterDef };
  * Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. `region` es
  * el equivalente a `continent` en el mapa de un país: a qué comunidad autónoma pertenece una provincia.
  */
-export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region';
+export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region' | 'coords';
 
 /**
  * Variante del reto: cómo se responde.
@@ -82,6 +82,13 @@ export const MODES: ModeDef[] = [
     title: t('Climas'),
     summary: t('Di qué clima tiene cada país.'),
     answers: ['choice', 'guided'],
+  },
+  {
+    // Leer latitud y longitud: se da un punto por sus coordenadas y hay que decir qué país hay ahí.
+    id: 'coords',
+    title: t('Coordenadas'),
+    summary: t('Te damos una latitud y una longitud y dices qué país hay ahí.'),
+    answers: ['map', 'choice'],
   },
   {
     // Solo en el mapa de un país; su título y su resumen los pone cada mapa (./maps.ts).

@@ -159,6 +159,11 @@ export default function MapCanvas() {
         : null,
     );
   }, [engine, layers.guides]);
+  // Jugando a coordenadas: retícula con grados también sobre tierra, y sin la lectura de la posición
+  // del cursor, que daría la respuesta.
+  const playedMode = useApp((s) => s.session?.config.mode);
+  const readingCoords = screen === 'play' && playedMode === 'coords';
+  useEffect(() => engine?.setGraticule(readingCoords, t('O')), [engine, readingCoords]);
   // Accidentes geográficos: el fichero solo se descarga si se enciende la capa o si el mapa es el
   // de geografía física, que necesita los ríos dibujados. Jugando no hay rótulos: darían la respuesta.
   const physical = (atlas as Atlas | null)?.map === 'fisico';
@@ -267,7 +272,7 @@ export default function MapCanvas() {
       <span
         ref={coordsRef}
         aria-hidden="true"
-        className="tabular pointer-events-none fixed bottom-3 left-1/2 z-10 hidden -translate-x-1/2 text-[0.6875rem] font-semibold tracking-[0.12em] text-ink-faint wide:block"
+        className={`tabular pointer-events-none fixed bottom-3 left-1/2 z-10 hidden -translate-x-1/2 text-[0.6875rem] font-semibold tracking-[0.12em] text-ink-faint ${readingCoords ? '' : 'wide:block'}`}
       />
     </>
   );

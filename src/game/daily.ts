@@ -15,7 +15,8 @@ const dayNumber = (key: string) => Math.round(Date.UTC(+key.slice(0, 4), +key.sl
 
 /** El reto que toca ese día: los retos se van turnando, siempre con todo el mundo y diez preguntas. */
 export function dailyConfig(key: string): GameConfig {
-  const modes = modesOf('world');
+  // El de coordenadas no entra: el reto del día mantiene los mismos retos de siempre.
+  const modes = modesOf('world').filter((m) => m.id !== 'coords');
   const mode = modes[dayNumber(key) % modes.length];
   return { map: 'world', mode: mode.id, answer: mode.answers[0], scope: 'mundo', length: 10 };
 }

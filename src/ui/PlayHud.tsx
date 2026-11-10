@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
-import { formatTime } from '../app/format';
+import { formatCoords, formatTime } from '../app/format';
 import { useApp, useMapDef } from '../app/store';
 import type { Atlas } from '../atlas/atlas';
 import type { ClimateKey, ContinentKey, Country } from '../atlas/types';
@@ -44,6 +44,16 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
     case 'climate':
       label = t('¿Qué clima tiene?');
       main = country.name;
+      break;
+    case 'coords':
+      // Las coordenadas son las del punto interior del país que se usa para rotularlo.
+      label = t('¿Qué país hay en estas coordenadas?');
+      main = (
+        <span className="flex flex-wrap items-baseline gap-x-4">
+          <span className="tabular">{formatCoords(country.anchor[0], country.anchor[1])}</span>
+          {resolved && <span>{country.name}</span>}
+        </span>
+      );
       break;
     case 'name':
       label = text.askName;

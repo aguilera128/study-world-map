@@ -673,3 +673,10 @@
   letter-spacing: 0.04em;
   text-shadow: none;
 }
+
+/* Grados de la retícula, mientras se juega a coordenadas. */
+.feature-label.grado {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}

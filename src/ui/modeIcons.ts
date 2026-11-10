@@ -9,6 +9,7 @@ export const MODE_ICONS: Record<ModeId, IconName> = {
   flag: 'flag',
   climate: 'thermo',
   region: 'continents',
+  coords: 'globe',
 };
 
 export const ANSWER_ICONS: Record<AnswerKind, IconName> = { map: 'pin', choice: 'options', guided: 'eye', type: 'keyboard' };
