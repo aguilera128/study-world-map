@@ -35,6 +35,10 @@ el propio dispositivo.
 - **Progreso.** El mapa coloreado según lo bien que te sabes cada país, por reto y por zona.
 - Tema claro («papel») y oscuro, diseño adaptado a móvil, y respeto de la preferencia de
   movimiento reducido del sistema.
+- **Teclado.** Con el mapa enfocado (Tab), las flechas lo mueven, `+` y `−` acercan y alejan, e
+  Intro elige el país que queda bajo el punto de mira, igual que si se pulsara.
+- **Instalable y sin conexión.** Tras la primera visita, un service worker (`public/sw.js`) guarda
+  la aplicación y el atlas, así que funciona sin red y se puede instalar como app.
 
 ## Cómo ayuda a aprender
 

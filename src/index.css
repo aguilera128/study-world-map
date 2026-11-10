@@ -442,6 +442,34 @@
   outline: none;
 }
 
+/* Punto de mira del teclado (Intro elige el país que hay debajo). */
+.map-reticle {
+  position: fixed;
+  z-index: 20;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--paper);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.map-reticle::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.map-canvas:focus-visible + .map-reticle {
+  opacity: 1;
+}
+
 /* El motor mueve estos elementos con `transform`; el contenido se centra sobre el punto. */
 .map-pin {
   position: fixed;

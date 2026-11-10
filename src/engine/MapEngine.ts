@@ -303,7 +303,22 @@ export class MapEngine {
     canvas.addEventListener('pointercancel', this.onPointerUp, { signal });
     canvas.addEventListener('pointerleave', this.onPointerLeave, { signal });
     canvas.addEventListener('wheel', this.onWheel, { signal, passive: false });
+    canvas.addEventListener('keydown', this.onKeyDown, { signal });
+    canvas.addEventListener('blur', this.onPointerLeave, { signal });
+    canvas.addEventListener(
+      'focus',
+      () => {
+        // Solo con teclado: al pulsar con el ratón ya manda el puntero.
+        if (!canvas.matches(':focus-visible')) return;
+        const c = this.aim();
+        this.hoverAt(c.x, c.y);
+      },
+      { signal },
+    );
     canvas.addEventListener('contextmenu', (e) => e.preventDefault(), { signal });
+    // En móvil el sistema puede retirar el contexto WebGL (otra app, poca memoria). three.js vuelve a
+    // subir mallas y texturas al recuperarlo, pero el motor solo pinta si algo cambia: hay que pedirlo.
+    canvas.addEventListener('webglcontextrestored', () => this.invalidate(), { signal });
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
@@ -856,6 +871,55 @@ export class MapEngine {
     this.rig.zoomBy(Math.exp(clamp(e.deltaY * unit, -240, 240) * speed), p.x, p.y);
     this.invalidate();
     this.hoverAt(p.x, p.y);
+  };
+
+  /** Centro del hueco que deja libre la interfaz: el punto de mira del teclado. */
+  private aim(): { x: number; y: number } {
+    const p = this.padTarget;
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
+    return { x: p.left + (w - p.left - p.right) / 2, y: p.top + (h - p.top - p.bottom) / 2 };
+  }
+
+  /**
+   * Teclado (con el lienzo enfocado): flechas para mover el mapa, + y − para el zoom, e Intro o
+   * espacio para elegir el país que queda en el punto de mira, igual que si se pulsara.
+   */
+  private onKeyDown = (e: KeyboardEvent) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    const step = 70;
+    const pan: Record<string, [number, number]> = {
+      ArrowLeft: [step, 0],
+      ArrowRight: [-step, 0],
+      ArrowUp: [0, step],
+      ArrowDown: [0, -step],
+    };
+    const c = this.aim();
+    if (pan[e.key]) {
+      if (!this.settled) return;
+      this.flight = null;
+      this.intent = null;
+      this.inertia = null;
+      this.idleUntil = performance.now() + 4000;
+      this.rig.panBy(...pan[e.key]);
+    } else if (e.key === '+' || e.key === '=' || e.key === '-') {
+      if (!this.settled) return;
+      this.flight = null;
+      this.intent = null;
+      this.rig.zoomBy(e.key === '-' ? 1 / 0.75 : 0.75, c.x, c.y);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      const hit = this.pick(c.x, c.y, true);
+      if (hit) this.emit('click', hit);
+      if (e.key === ' ') e.preventDefault();
+      return;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    this.invalidate();
+    // pick() lee la cámara: se actualiza ya, sin esperar al fotograma, para resaltar el país correcto.
+    this.rig.apply();
+    this.hoverAt(c.x, c.y);
   };
 
   private hoverAt(x: number, y: number) {

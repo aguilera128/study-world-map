@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
 import { REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
-import { mastery, record, selectionWeight, summarize, type Progress } from './progress';
+import { mastery, record, sanitizeProgress, selectionWeight, summarize, type Progress } from './progress';
 import { advance, attemptsLeft, createSession, currentQuestion, gradeLabel, missed, score, submit, type Session } from './session';
 import { editDistance, hint, matchesAnswer, normalize } from './text';
 
@@ -188,6 +188,19 @@ describe('progreso', () => {
     const s = summarize(p, ['ESP', 'FRA', 'ITA', 'PRT'], 'locate');
     expect(s).toMatchObject({ total: 4, seen: 2, mastered: 1, levels: [2, 1, 0, 0, 1] });
     expect(s.ratio).toBeCloseTo((5 + 1) / 20);
+  });
+
+  it('descarta el progreso guardado que no tenga la forma esperada', () => {
+    const ok = record({}, 'ESP', 'locate', 'first', NOW);
+    expect(sanitizeProgress(ok)).toEqual(ok);
+    expect(sanitizeProgress(null)).toEqual({});
+    expect(sanitizeProgress('basura')).toEqual({});
+    const raw = {
+      ESP: { locate: { box: 9, seen: 2, right: 1, last: NOW }, borrado: { box: 1, seen: 1, right: 0, last: NOW } },
+      FRA: { name: { box: '3', seen: 1, right: 1, last: NOW } },
+      xx: { locate: { box: 1, seen: 1, right: 0, last: NOW } },
+    };
+    expect(sanitizeProgress(raw)).toEqual({ ESP: { locate: { box: 5, seen: 2, right: 1, last: NOW } } });
   });
 });
 

@@ -43,6 +43,29 @@ export function record(progress: Progress, country: string, mode: ModeId, outcom
   return { ...progress, [country]: { ...progress[country], [mode]: stats } };
 }
 
+const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag'];
+const isCount = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
+
+/**
+ * Limpia un progreso leído del navegador: descarta lo que no tenga la forma esperada (datos de otra
+ * versión, almacenamiento corrupto) en lugar de dejar que rompa la partida.
+ */
+export function sanitizeProgress(raw: unknown): Progress {
+  const out: Progress = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [country, modes] of Object.entries(raw)) {
+    if (!/^[A-Z]{3}$/.test(country) || !modes || typeof modes !== 'object') continue;
+    const clean: Partial<Record<ModeId, SkillStats>> = {};
+    for (const mode of MODE_IDS) {
+      const s = (modes as Record<string, Partial<SkillStats> | undefined>)[mode];
+      if (!s || !isCount(s.box) || !isCount(s.seen) || !isCount(s.right) || !isCount(s.last)) continue;
+      clean[mode] = { box: Math.min(MAX_BOX, Math.max(1, Math.round(s.box))), seen: s.seen, right: s.right, last: s.last };
+    }
+    if (Object.keys(clean).length) out[country] = clean;
+  }
+  return out;
+}
+
 const DAY = 86_400_000;
 const BOX_WEIGHT = [4, 6, 4, 2, 1.2, 0.6];
 

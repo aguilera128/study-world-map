@@ -170,16 +170,34 @@ export function Icon({ name, size = 20, className }: { name: IconName; size?: nu
   );
 }
 
-/** Rosa de los vientos de la marca: la aguja norte va en bermellón. */
+/** Punta de la rosa partida en dos mitades (llena y clara), como en las cartas náuticas. */
+function RosePoint({ rot, r, w, fill, light }: { rot: number; r: number; w: number; fill: string; light: number }) {
+  return (
+    <g transform={`rotate(${rot} 16 16)`}>
+      <path d={`M16 ${16 - r}L${16 - w} ${16 - w}L16 16z`} fill={fill} />
+      <path d={`M16 ${16 - r}L${16 + w} ${16 - w}L16 16z`} fill={fill} opacity={light} />
+    </g>
+  );
+}
+
+/**
+ * Rosa de los vientos de la marca: cuatro puntas cardinales y cuatro diagonales, con el norte en
+ * bermellón. public/favicon.svg es el mismo dibujo con colores fijos: si cambia uno, cambia el otro.
+ */
 export function Logo({ size = 30 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="1.600" />
-      <circle cx="16" cy="16" r="10.500" fill="none" stroke="currentColor" strokeWidth="0.800" strokeDasharray="1 2.300" />
-      <path d="M16 3.500 19 16h-6z" fill="var(--accent)" />
-      <path d="M16 28.500 13 16h6z" fill="currentColor" />
-      <path d="M3.500 16 16 13v6zM28.500 16 16 19v-6z" fill="currentColor" opacity="0.350" />
-      <circle cx="16" cy="16" r="1.600" fill="var(--paper)" stroke="currentColor" strokeWidth="1" />
+      <circle cx="16" cy="16" r="14.2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <g opacity="0.6">
+        {[45, 135, 225, 315].map((rot) => (
+          <RosePoint key={rot} rot={rot} r={9.2} w={1.9} fill="currentColor" light={0.5} />
+        ))}
+      </g>
+      {[90, 180, 270].map((rot) => (
+        <RosePoint key={rot} rot={rot} r={13.2} w={2.9} fill="currentColor" light={0.35} />
+      ))}
+      <RosePoint rot={0} r={13.2} w={2.9} fill="var(--accent)" light={0.6} />
+      <circle cx="16" cy="16" r="1.8" fill="var(--paper)" stroke="currentColor" strokeWidth="1" />
     </svg>
   );
 }

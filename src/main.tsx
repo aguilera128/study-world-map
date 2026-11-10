@@ -7,6 +7,11 @@ import './index.css';
 // Sin <StrictMode>: en desarrollo montaría dos veces el lienzo y crearía dos contextos WebGL.
 createRoot(document.getElementById('root')!).render(<App />);
 
+// Funcionamiento sin conexión (public/sw.js). En desarrollo no: serviría copias viejas de Vite.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => void navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}
+
 // Solo en desarrollo: acceso al estado desde la consola (`__swm.useApp.getState()`).
 if (import.meta.env.DEV) {
   /**

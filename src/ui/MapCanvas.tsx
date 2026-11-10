@@ -163,8 +163,19 @@ export default function MapCanvas() {
         ref={canvasRef}
         className="map-canvas transition-opacity duration-700"
         style={{ opacity: engine ? 1 : 0 }}
-        aria-label="Mapa del mundo interactivo"
-        role="img"
+        tabIndex={0}
+        role="application"
+        aria-roledescription="mapa"
+        aria-label="Mapa del mundo interactivo. Flechas para moverlo, más y menos para acercar o alejar, Intro para elegir el país del centro."
+      />
+      {/* Punto de mira del teclado: marca qué país elige Intro. Solo se ve con el mapa enfocado. */}
+      <div
+        aria-hidden="true"
+        className="map-reticle"
+        style={{
+          left: pad.left + (window.innerWidth - pad.left - pad.right) / 2,
+          top: pad.top + (window.innerHeight - pad.top - pad.bottom) / 2,
+        }}
       />
 
       {/* Durante la partida no se marca dónde está el jugador: sería una pista. */}

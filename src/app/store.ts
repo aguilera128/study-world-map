@@ -14,7 +14,7 @@ import {
   type ModeId,
   type StudyList,
 } from '../game/config';
-import { record, type Outcome, type Progress } from '../game/progress';
+import { record, sanitizeProgress, type Outcome, type Progress } from '../game/progress';
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
@@ -123,7 +123,22 @@ export const useProgress = create<ProgressState>()(
       },
       reset: () => set({ progress: {}, bests: {} }),
     }),
-    { name: 'mapamundi:progreso', version: 1 },
+    {
+      name: 'mapamundi:progreso',
+      version: 1,
+      partialize: ({ progress, bests }) => ({ progress, bests }),
+      // Igual que con los ajustes: lo guardado se valida antes de usarlo.
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<ProgressState>;
+        const bests: Record<string, Best> = {};
+        if (saved.bests && typeof saved.bests === 'object') {
+          for (const [key, b] of Object.entries(saved.bests)) {
+            if (b && [b.grade, b.ms, b.at].every((v) => typeof v === 'number' && Number.isFinite(v))) bests[key] = b;
+          }
+        }
+        return { ...current, progress: sanitizeProgress(saved.progress), bests };
+      },
+    },
   ),
 );
 
