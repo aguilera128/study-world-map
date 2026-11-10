@@ -24,6 +24,20 @@ const TONE_CLASS: Record<Tone, string> = {
   info: 'bg-ink text-paper',
 };
 
+/** Trazado de un río tal como viene en fisico.json (milésimas de grado, en diferencias) → grados. */
+function decodeLine(deltas: number[]): number[] {
+  const out = new Array<number>(deltas.length);
+  let x = 0;
+  let y = 0;
+  for (let i = 0; i < deltas.length; i += 2) {
+    x += deltas[i];
+    y += deltas[i + 1];
+    out[i] = x / 1000;
+    out[i + 1] = y / 1000;
+  }
+  return out;
+}
+
 /** Rótulo clavado sobre un país: el motor lo mueve con el mapa. */
 function Pin({ engine, atlas, label }: { engine: MapEngine; atlas: Atlas; label: MapLabel }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -147,7 +161,7 @@ export default function MapCanvas() {
   }, [engine, layers.guides]);
   // Accidentes geográficos: el fichero solo se descarga si se enciende la capa o si el mapa es el
   // de geografía física, que necesita los ríos dibujados. Jugando no hay rótulos: darían la respuesta.
-  const physical = atlas.map === 'fisico';
+  const physical = (atlas as Atlas | null)?.map === 'fisico';
   const featureLabels = layers.features && screen !== 'play';
   useEffect(() => {
     if (!engine || !(layers.features || physical)) return;
@@ -159,7 +173,7 @@ export default function MapCanvas() {
         engine.setFeatures(
           data.features.map((f) => {
             const name = f.names[lang] ?? f.names.es;
-            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines, text: !featureLabels ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
+            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text: !featureLabels ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
           }),
         );
       })

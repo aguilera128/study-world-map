@@ -133,6 +133,18 @@ def simplify(line, tol):
     return simplify(line[:where + 1], tol)[:-1] + simplify(line[where:], tol)
 
 
+def deltas(line):
+    """Trazado en milésimas de grado: el primer punto y, después, la diferencia con el anterior."""
+    out, px, py = [], 0, 0
+    for lon, lat in line:
+        x, y = round(lon * 1000), round(lat * 1000)
+        if out and x == px and y == py:
+            continue
+        out += [x - px, y - py]
+        px, py = x, y
+    return out
+
+
 def slug(text):
     text = unicodedata.normalize('NFD', text.lower())
     return re.sub(r'[^a-z0-9]+', '-', ''.join(c for c in text if unicodedata.category(c) != 'Mn')).strip('-')
@@ -191,7 +203,7 @@ def build(folder):
         if not river['river']:
             continue
         longest = max(river['parts'], key=len)
-        lines = [[round(v, 3) for p in simplify(part, 0.006) for v in p] for part in river['parts']]
+        lines = [deltas(simplify(part, 0.006)) for part in river['parts']]
         add('rio', river['rank'], RIOS_RANK, longest[len(longest) // 2], river['row'], lines=lines)
 
     # Temario: por cada nombre, el elemento de su clase que se llama exactamente así; si no hay, el

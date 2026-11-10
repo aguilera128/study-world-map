@@ -77,6 +77,8 @@ export interface RawAtlas {
   source: string;
   /** Encuadre de la vista general cuando el mapa no es el mundo entero. */
   frame?: Bounds;
+  /** El atlas lleva de fondo los países de otro (el del mundo), que no repite: se le añaden al cargarlo. */
+  base?: 'world';
   regions: Record<RegionKey, RegionInfo>;
   /** Nombre de cada continente, en el orden en que se ofrecen como respuesta. */
   continents: Record<ContinentKey, string>;

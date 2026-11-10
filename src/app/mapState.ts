@@ -44,7 +44,7 @@ export function computeMapState(input: MapInput): MapState {
   let pulse = -1;
   // En el mapa de geografía física los países son el fondo: tierra lisa, para que se lea el relieve.
   if (atlas.map === 'fisico') {
-    for (let i = 0; i < n; i++) if (atlas.countries[i].kind === 'context') styles[i] = Style.blank;
+    for (let i = 0; i < n; i++) if (atlas.countries[i].kind === 'context') styles[i] = atlas.countries[i].id === 'ATA' ? Style.ice : Style.land;
   }
   // Con la capa de climas, el mapa político se pinta por el clima más extendido de cada país.
   const political = (i: number) => {

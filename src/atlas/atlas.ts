@@ -183,6 +183,14 @@ export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atla
     getJson<RawAtlas>(`${dir}/atlas.json`),
     lang === 'es' ? null : getJson<RawNames>(`${dir}/names.${lang}.json`),
   ]);
+  if (raw.base === 'world') {
+    // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
+    const world = await getJson<RawAtlas>('/data/atlas.json');
+    const backdrop = world.countries.map(
+      (c): RawCountry => ({ id: c.id, a2: null, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color }),
+    );
+    raw.countries = [...backdrop, ...raw.countries];
+  }
   if (names) {
     for (const key of Object.keys(raw.regions) as RegionKey[]) raw.regions[key].name = names.regions[key];
     raw.continents = names.continents;

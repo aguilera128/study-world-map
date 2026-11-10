@@ -51,23 +51,36 @@ export class FeatureLabels {
     // Con el globo entero en pantalla solo lo más destacado; cada vez que se dobla el zoom, un nivel más.
     const maxRank = Math.floor(Math.log2(Math.max(1 / rig.worldPerPixel, 1) / 220)) + 1;
     const taken: number[] = [];
+    const placed: { text: string; x: number; y: number }[] = [];
     let count = 0;
     for (const item of this.items) {
       const f = item.feature;
       let show = f.rank <= maxRank && count < MAX_LABELS;
       if (show) {
         const p = rig.project(f.lon * DEG, f.lat * DEG, alt, this.point);
-        show = p.visible && p.x > 0 && p.y > 0 && p.x < rig.width && p.y < rig.height;
+        // ponytail: ancho estimado por número de letras; medir cada rótulo saldría más exacto y más caro
+        item.width ||= f.text.length * 6.6 + 14;
+        const x0 = p.x - item.width / 2;
+        const y0 = p.y - 9;
+        // Dentro del mapa y fuera de lo que tapan los paneles (el margen que la interfaz reserva).
+        const pad = rig.pad;
+        show = p.visible && x0 > pad.left && p.y > Math.max(pad.top, 56) && x0 + item.width < rig.width - pad.right && p.y < rig.height - pad.bottom;
         if (show) {
-          // ponytail: ancho estimado por número de letras; medir cada rótulo saldría más exacto y más caro
-          item.width ||= f.text.length * 6.6 + 14;
-          const x0 = p.x - item.width / 2;
-          const y0 = p.y - 9;
           for (let k = 0; k < taken.length; k += 2) {
             if (Math.abs(taken[k] - x0) < item.width && Math.abs(taken[k + 1] - y0) < 18) {
               show = false;
               break;
             }
+          }
+          // Un nombre que se repite a lo largo de una línea (el ecuador…) no sale dos veces seguidas.
+          if (show && f.kind === 'guia') {
+            for (const other of placed) {
+              if (other.text === f.text && Math.hypot(other.x - p.x, other.y - p.y) < 420) {
+                show = false;
+                break;
+              }
+            }
+            if (show) placed.push({ text: f.text, x: p.x, y: p.y });
           }
           if (show) {
             taken.push(x0, y0);

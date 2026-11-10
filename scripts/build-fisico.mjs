@@ -10,7 +10,8 @@
 // temario (`quiz`). La salida no se versiona: se regenera en `pnpm dev` y `pnpm build`.
 //
 // Cada accidente es una entidad de tipo `country` sin polígonos: el motor la enseña como un
-// marcador en su ancla, que es lo que se toca. Los países son de tipo `context`: solo decorado.
+// marcador en su ancla, que es lo que se toca. Los países de fondo no van aquí: el atlas dice
+// `base: 'world'` y la aplicación los toma del atlas del mundo, que ya tiene descargado.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -50,21 +51,35 @@ const grupoDe = (clase) => Object.keys(GRUPOS).find((g) => GRUPOS[g].clases.incl
 const red = (v) => Math.round(v * 100) / 100;
 
 const elementos = fisico.features.filter((f) => f.quiz);
-const entidades = [
-  // Los países, de fondo: ni se nombran ni se tocan.
-  ...mundo.countries.map((c) => ({ id: c.id, a2: null, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color })),
-  ...elementos.map((f) => {
-    const [lon, lat] = f.at;
-    const m = MARGEN[f.kind];
-    const marco = [red(Math.max(lon - m, -180)), red(Math.max(lat - m * 0.6, -85)), red(Math.min(lon + m, 180)), red(Math.min(lat + m * 0.6, 85))];
-    return { id: f.id, a2: null, name: f.names.es, kind: 'country', bbox: [lon, lat, lon, lat], frame: marco, anchor: [lon, lat], size: 0, polys: [], regions: [grupoDe(f.kind)], color: 0 };
-  }),
-];
+/** Palabra que aclara qué es un río o un lago cuando su nombre no lo dice («Tajo», «Victoria»). */
+const TIPO = {
+  rio: { es: 'río', en: 'river', fr: 'fleuve', de: 'Fluss', it: 'fiume', pt: 'rio', ca: 'riu', gl: 'río', eu: 'ibaia', zh: '河' },
+  lago: { es: 'lago', en: 'lake', fr: 'lac', de: 'See', it: 'lago', pt: 'lago', ca: 'llac', gl: 'lago', eu: 'aintzira', zh: '湖' },
+};
+const YA_LO_DICE = /(^|[\s-])(río|rio|river|fleuve|fluss|fiume|riu|ibaia|lago|lake|lac|see|llac|aintzira|mar|sea|mer|meer|itsasoa)([\s-]|$)|[河江湖海]/i;
+/** Nombre de un elemento en un idioma y los que también valen al escribirlo. */
+function nombre(f, idioma) {
+  const propio = f.names[idioma] ?? f.names.en ?? f.names.es;
+  const tipo = TIPO[f.kind]?.[idioma];
+  const n = tipo && !YA_LO_DICE.test(propio) ? `${propio} (${tipo})` : propio;
+  const alias = [...new Set([propio, f.names.es].filter((a) => a !== n))];
+  return { n, a: alias.length ? alias : undefined };
+}
+
+// Solo los accidentes: los países de fondo los pone la aplicación desde el atlas del mundo (`base`).
+const entidades = elementos.map((f) => {
+  const [lon, lat] = f.at;
+  const m = MARGEN[f.kind];
+  const marco = [red(Math.max(lon - m, -180)), red(Math.max(lat - m * 0.6, -85)), red(Math.min(lon + m, 180)), red(Math.min(lat + m * 0.6, 85))];
+  const { n, a } = nombre(f, 'es');
+  return { id: f.id, a2: null, name: n, aliases: a, kind: 'country', bbox: [lon, lat, lon, lat], frame: marco, anchor: [lon, lat], size: 0, polys: [], regions: [grupoDe(f.kind)], color: 0 };
+});
 
 const atlas = {
   version: 1,
   q: mundo.q,
   source: fisico.source,
+  base: 'world',
   regions: Object.fromEntries(Object.entries(GRUPOS).map(([clave, g]) => [clave, { name: g.nombre.es, frame: MUNDO }])),
   continents: {},
   zones: {},
@@ -82,12 +97,11 @@ let sinNombre = 0;
 for (const idioma of IDIOMAS) {
   const countries = {};
   for (const f of elementos) {
-    const n = f.names[idioma] ?? f.names.en ?? f.names.es;
     if (!f.names[idioma]) sinNombre++;
-    countries[f.id] = { n, a: n === f.names.es ? undefined : [f.names.es] };
+    countries[f.id] = nombre(f, idioma);
   }
   const regions = Object.fromEntries(Object.entries(GRUPOS).map(([clave, g]) => [clave, g.nombre[idioma]]));
   writeFileSync(join(destino, `names.${idioma}.json`), JSON.stringify({ regions, continents: {}, countries }));
 }
 
-console.log(`mapa fisico: ${elementos.length} accidentes geográficos + ${mundo.countries.length} países de fondo · ${(json.length / 1024).toFixed(0)} kB · ${sinNombre} nombres sin traducir`);
+console.log(`mapa fisico: ${elementos.length} accidentes geográficos · ${(json.length / 1024).toFixed(0)} kB · ${sinNombre} nombres sin traducir`);

@@ -22,9 +22,11 @@ export const Style = {
   ice: 17,
   /** Mapa de climas: climate + (0…9), en el orden de CLIMATE_KEYS. */
   climate: 18,
+  /** Tierra sin más, de fondo en el mapa de geografía física: deja ver el relieve. */
+  land: 28,
 } as const;
 
-export const STYLE_COUNT = 28;
+export const STYLE_COUNT = 29;
 
 export interface StyleDef {
   color: string;
@@ -146,6 +148,7 @@ export const PAPER: Palette = {
     s('#b497c9'), // continental
     s('#dfeaf2'), // polar
     s('#a8927d'), // alta montaña
+    s('#e7dfc8'), // tierra (mapa físico)
   ],
 };
 
@@ -213,6 +216,7 @@ export const NIGHT: Palette = {
     s('#a086bb'), // continental
     s('#cfdde8'), // polar
     s('#9b8773'), // alta montaña
+    s('#75806e'), // tierra (mapa físico)
   ],
 };
 
