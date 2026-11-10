@@ -10,7 +10,7 @@ export function normalize(text: string): string {
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
-    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/[^\p{L}\p{N} ]+/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/^(el|la|los|las|the|le|les|der|die|das|il|lo|gli|els|os|as) /, '');

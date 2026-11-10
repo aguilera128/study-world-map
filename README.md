@@ -146,7 +146,7 @@ src/
 ## Idiomas
 
 Español en la raíz y, cada uno en su prefijo, inglés (`/en/`), francés, alemán, italiano, portugués
-de Brasil, valenciano/catalán (`/ca/`) y gallego. Cada idioma tiene su dirección, sus páginas
+de Brasil, valenciano/catalán (`/ca/`), gallego, euskera y chino simplificado (`/zh/`). Cada idioma tiene su dirección, sus páginas
 estáticas y sus `hreflang`. Las traducciones no las ha revisado un hablante nativo. Para añadir un idioma:
 
 1. `src/i18n/index.ts`: darlo de alta en `LANGS` y `LOCALES`, y crear `src/i18n/<idioma>.ts` copiando

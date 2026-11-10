@@ -24,6 +24,7 @@ export default {
     privacidad: 'Privacy (in spagnolo)',
     cookies: 'Cookie (in spagnolo)',
     configurar: 'Impostazioni dei cookie',
+    error: 'Segnala un errore',
     idiomas: 'Lingue',
   },
   paises: {

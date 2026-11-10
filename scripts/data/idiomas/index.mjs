@@ -3,6 +3,7 @@
 //   ruta, zonas, retos, pie, paises, juego   textos de las páginas estáticas (scripts/build-pages.mjs)
 //   index                      traducción de los textos de index.html, en el orden de es.mjs
 //   y                          conjunción que sustituye al «&» de los nombres de CLDR
+//   tambien                    (opcional) otro idioma cuyos nombres también se aceptan al escribir
 //   nombres                    regiones, continentes y, por país: correcciones, alias y notas
 //                              (scripts/build-atlas.mjs; el español está en ../paises.mjs)
 //
@@ -18,6 +19,8 @@
 
 import en from './en.mjs';
 import es from './es.mjs';
+import zh from './zh.mjs';
+import eu from './eu.mjs';
 import gl from './gl.mjs';
 import ca from './ca.mjs';
 import pt from './pt.mjs';
@@ -25,4 +28,4 @@ import it from './it.mjs';
 import de from './de.mjs';
 import fr from './fr.mjs';
 
-export const IDIOMAS = { es, en, fr, de, it, pt, ca, gl };
+export const IDIOMAS = { es, en, fr, de, it, pt, ca, gl, eu, zh };

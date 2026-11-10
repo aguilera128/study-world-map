@@ -120,6 +120,7 @@ ${body}
         <a href="/privacidad/">${T.pie.privacidad}</a>
         <a href="/cookies/">${T.pie.cookies}</a>
         <a href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">${T.pie.configurar}</a>
+        <a href="mailto:${TITULAR.email}?subject=${encodeURIComponent('Study World Map: error')}">${T.pie.error}</a>
       </nav>${
         others.length
           ? `\n      <nav aria-label="${T.pie.idiomas}">\n${others.map(([l, p]) => `        <a href="${p}" hreflang="${l}" lang="${l}">${PAGINAS[l].nombre}</a>`).join('\n')}\n      </nav>`
@@ -168,7 +169,9 @@ const RETOS = [
 
 const juegoPath = (lang, r, z) => {
   const ruta = PAGINAS[lang].ruta;
-  return `${base(lang)}${ruta.juego}/${ruta.retos[r.id]}-${ruta.de}-${ruta.zonas[z.id]}/`;
+  // Casi todos los idiomas dicen «reto de zona»; el que no (euskera: «Europako herrialdeak») da su propio `slug`.
+  const slug = ruta.slug ? ruta.slug(r.id, z.id) : `${ruta.retos[r.id]}-${ruta.de}-${ruta.zonas[z.id]}`;
+  return `${base(lang)}${ruta.juego}/${slug}/`;
 };
 for (const z of ZONAS) for (const r of RETOS) sitemap.push(Object.fromEntries(LANGS.map((lang) => [lang, juegoPath(lang, r, z)])));
 

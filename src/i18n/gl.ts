@@ -94,6 +94,7 @@ const gl: Record<string, string> = {
   Privacidad: 'Privacidade',
   Cookies: 'Cookies',
   'Configurar cookies': 'Configurar as cookies',
+  'Informar de un error': 'Informar dun erro',
 
   // ── partida ──
   '¡Bien!': 'Ben!',

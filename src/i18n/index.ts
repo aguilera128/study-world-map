@@ -15,11 +15,13 @@ export const LANGS = {
   pt: 'Português',
   ca: 'Valencià / Català',
   gl: 'Galego',
+  eu: 'Euskara',
+  zh: '中文',
 } as const;
 
 export type Lang = keyof typeof LANGS;
 
-const LOCALES: Record<Lang, string> = { gl: 'gl-ES', ca: 'ca-ES', pt: 'pt-BR', it: 'it-IT', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', en: 'en-GB' };
+const LOCALES: Record<Lang, string> = { zh: 'zh-CN', eu: 'eu-ES', gl: 'gl-ES', ca: 'ca-ES', pt: 'pt-BR', it: 'it-IT', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', en: 'en-GB' };
 
 /** Idioma de una dirección: el primer tramo de la ruta, si es uno de los disponibles. */
 export function pathLang(pathname: string): Lang {

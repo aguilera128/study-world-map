@@ -426,3 +426,16 @@ describe('partida', () => {
     expect(gradeLabel(4.9)).toBe('A repasar');
   });
 });
+
+describe('respuestas escritas en otras escrituras', () => {
+  it('compara nombres en chino tal cual y acepta el nombre en alfabeto latino como alias', () => {
+    expect(matchesAnswer('北京', ['北京', 'Beijing'])).toBe(true);
+    expect(matchesAnswer(' beijing ', ['北京', 'Beijing'])).toBe(true);
+    expect(matchesAnswer('东京', ['北京', 'Beijing'])).toBe(false);
+  });
+
+  it('sigue ignorando tildes y signos en alfabeto latino', () => {
+    expect(matchesAnswer('sao tome', ['São Tomé'])).toBe(true);
+    expect(matchesAnswer("n'djamena", ['N’Djamena'])).toBe(true);
+  });
+});

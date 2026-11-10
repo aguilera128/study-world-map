@@ -39,7 +39,7 @@ The app and its pages are also available in English, with country and capital na
 
 ## Otros idiomas
 
-La aplicación y sus páginas existen también en francés (/fr/), alemán (/de/), italiano (/it/), portugués de Brasil (/pt/), valenciano/catalán (/ca/) y gallego (/gl/), con los nombres de países y capitales de cada idioma.
+La aplicación y sus páginas existen también en francés (/fr/), alemán (/de/), italiano (/it/), portugués de Brasil (/pt/), valenciano/catalán (/ca/), gallego (/gl/), euskera (/eu/) y chino simplificado (/zh/), con los nombres de países y capitales de cada idioma.
 
 ## Fuentes de los datos
 

@@ -95,7 +95,7 @@ const HOVER_LIFT = 0.34;
 const MARKER_THRESHOLD = 8;
 const MARKER_DIAMETER = 13;
 const LINE_WIDTH = 1.15;
-const LINE_WIDTH_EMPH = 2.4;
+const LINE_WIDTH_EMPH = 2.8;
 
 /** Velocidad máxima de la inercia tras soltar un arrastre, en píxeles por segundo. */
 const MAX_FLING = 1300;
@@ -466,7 +466,7 @@ export class MapEngine {
       g += (this.hoverColor[1] - g) * k;
       b += (this.hoverColor[2] - b) * k;
       lift += HOVER_LIFT;
-      emph = Math.max(emph, 0.85);
+      emph = 1;
     }
     const o = i * 5;
     this.tgt[o] = r;

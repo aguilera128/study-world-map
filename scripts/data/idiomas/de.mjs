@@ -24,6 +24,7 @@ export default {
     privacidad: 'Datenschutz (auf Spanisch)',
     cookies: 'Cookies (auf Spanisch)',
     configurar: 'Cookie-Einstellungen',
+    error: 'Fehler melden',
     idiomas: 'Sprachen',
   },
   paises: {

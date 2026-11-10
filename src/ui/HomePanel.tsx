@@ -197,6 +197,15 @@ export function HomePanel() {
         >
           {t('Configurar cookies')}
         </button>
+        {' · '}
+        <a
+          href={`mailto:hola@studyworldmap.com?subject=${encodeURIComponent('Study World Map: error')}`}
+          title={t('Informar de un error')}
+          aria-label={t('Informar de un error')}
+          className="inline-block translate-y-[3px] hover:text-ink"
+        >
+          <Icon name="bug" size={14} />
+        </a>
       </p>
     </Panel>
   );

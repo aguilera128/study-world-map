@@ -123,6 +123,20 @@
       'Rexeitar',
       'Aceptar',
     ],
+    eu: [
+      'Google Analytics-en cookieak erabiltzen uzten diguzu, bisitak zenbatzeko eta webgunearen zein atal erabiltzen diren ikusteko? ' +
+        'Hobetzeko bakarrik balio dute: publizitaterik ez. Onartzen ez baduzu, webguneak berdin funtzionatzen du.',
+      'Informazio gehiago (gaztelaniaz)',
+      'Baztertu',
+      'Onartu',
+    ],
+    zh: [
+      '可以让我们使用 Google Analytics 的 Cookie 来统计访问量、了解网站哪些部分被使用吗？' +
+        '它们只用于改进网站，不用于广告。如果你拒绝，网站照常可用。',
+      '了解更多（西班牙语）',
+      '拒绝',
+      '接受',
+    ],
   };
 
   var banner = null;

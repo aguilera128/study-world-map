@@ -495,6 +495,7 @@ mkdirSync(dirBanderas, { recursive: true });
 // ./data/idiomas/<idioma>.mjs, que además corrige lo que haga falta.
 const capitales = JSON.parse(readFileSync(join(ROOT, 'scripts', 'data', 'capitales.wikidata.json'), 'utf8'));
 const idiomas = Object.keys(IDIOMAS).filter((idioma) => idioma !== 'es');
+const hechos = {};
 for (const idioma of idiomas) {
   const propio = IDIOMAS[idioma].nombres;
   const cldr = new Intl.DisplayNames([idioma], { type: 'region' });
@@ -513,8 +514,15 @@ for (const idioma of idiomas) {
       // Una nota en español traducida a medias confunde más que ayuda: o está, o se avisa.
       if ((e.note && !entry.t) || (e.capitalNote && !entry.cn)) throw new Error(`names.${idioma}: falta traducir la nota de ${e.id}`);
     }
+    // Idiomas con otra escritura (chino): también valen, al escribir, los nombres en alfabeto latino.
+    const latino = hechos[IDIOMAS[idioma].tambien]?.[e.id];
+    if (latino) {
+      entry.a = [...(entry.a ?? []), latino.n, ...(latino.a ?? [])];
+      if (latino.c) entry.ca = [...(entry.ca ?? []), latino.c, ...(latino.ca ?? [])];
+    }
     paises[e.id] = entry;
   }
+  hechos[idioma] = paises;
   for (const clave of Object.keys(REGIONES)) if (!propio.regiones[clave]) throw new Error(`names.${idioma}: falta la región ${clave}`);
   for (const clave of Object.keys(CONTINENTES)) if (!propio.continentes[clave]) throw new Error(`names.${idioma}: falta el continente ${clave}`);
   writeFileSync(join(dirDatos, `names.${idioma}.json`), JSON.stringify({ regions: propio.regiones, continents: propio.continentes, countries: paises }));

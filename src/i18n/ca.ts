@@ -95,6 +95,7 @@ const ca: Record<string, string> = {
   Privacidad: 'Privacitat',
   Cookies: 'Galetes',
   'Configurar cookies': 'Configurar les galetes',
+  'Informar de un error': 'Informar d’un error',
 
   // ── partida ──
   '¡Bien!': 'Molt bé!',

@@ -94,6 +94,7 @@ const it: Record<string, string> = {
   Privacidad: 'Privacy',
   Cookies: 'Cookie',
   'Configurar cookies': 'Impostazioni dei cookie',
+  'Informar de un error': 'Segnala un errore',
 
   // ── partida ──
   '¡Bien!': 'Giusto!',

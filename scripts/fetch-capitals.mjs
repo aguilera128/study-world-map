@@ -17,10 +17,15 @@ const norm = (s) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
 
-const query = `SELECT ?iso ?cap ?es ${LANGS.map((l) => `?${l}`).join(' ')} WHERE {
+// En chino, la etiqueta «zh» de Wikidata mezcla caracteres tradicionales y simplificados y usos de
+// Taiwán: se prefiere la de China continental y, si falta, la simplificada genérica.
+const VARIANTS = { zh: ['zh-cn', 'zh-hans', 'zh'] };
+const columns = LANGS.flatMap((l) => (VARIANTS[l] ?? [l]).map((tag, i) => ({ l, tag, name: `${l}${i}` })));
+
+const query = `SELECT ?iso ?cap ?es ${columns.map((c) => `?${c.name}`).join(' ')} WHERE {
   ?c wdt:P298 ?iso; wdt:P36 ?cap.
   OPTIONAL { ?cap rdfs:label ?es FILTER(lang(?es) = "es") }
-  ${LANGS.map((l) => `OPTIONAL { ?cap rdfs:label ?${l} FILTER(lang(?${l}) = "${l}") }`).join('\n  ')}
+  ${columns.map((c) => `OPTIONAL { ?cap rdfs:label ?${c.name} FILTER(lang(?${c.name}) = "${c.tag}") }`).join('\n  ')}
 }`;
 
 const res = await fetch(`https://query.wikidata.org/sparql?query=${encodeURIComponent(query)}`, {
@@ -31,6 +36,8 @@ const rows = (await res.json()).results.bindings;
 
 const byIso = new Map();
 for (const row of rows) {
+  // Cada idioma se queda con la primera variante que tenga etiqueta.
+  for (const l of LANGS) row[l] = columns.filter((c) => c.l === l).map((c) => row[c.name]).find(Boolean);
   const iso = row.iso.value;
   if (!byIso.has(iso)) byIso.set(iso, []);
   byIso.get(iso).push(row);

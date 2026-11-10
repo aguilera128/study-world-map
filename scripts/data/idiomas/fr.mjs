@@ -23,6 +23,7 @@ export default {
     privacidad: 'Confidentialité (en espagnol)',
     cookies: 'Cookies (en espagnol)',
     configurar: 'Paramètres des cookies',
+    error: 'Signaler un problème',
     idiomas: 'Langues',
   },
   paises: {
