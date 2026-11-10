@@ -233,7 +233,24 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    background: linear-gradient(to right, var(--paper) 84%, transparent);
+    /* El papel se desvanece en un tramo ancho y con curva suave (no lineal), para que no se vea
+       dónde empieza ni dónde acaba. El tramo no captura el ratón: ver Panel en primitives.tsx. */
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      var(--paper) 54%,
+      color-mix(in srgb, var(--paper) 90%, transparent) 60%,
+      color-mix(in srgb, var(--paper) 74%, transparent) 66%,
+      color-mix(in srgb, var(--paper) 56%, transparent) 72%,
+      color-mix(in srgb, var(--paper) 38%, transparent) 78%,
+      color-mix(in srgb, var(--paper) 23%, transparent) 84%,
+      color-mix(in srgb, var(--paper) 11%, transparent) 90%,
+      color-mix(in srgb, var(--paper) 4%, transparent) 95%,
+      transparent
+    );
+  }
+  .panel > * {
+    pointer-events: auto;
   }
 }
 
