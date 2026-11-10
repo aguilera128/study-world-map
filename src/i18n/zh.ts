@@ -398,6 +398,7 @@ const zh: Record<string, string> = {
   'unos {n} millones de °C': '约 {n} 百万 °C',
   'Edad': '年龄',
   'unos {n} millones de años': '约 {n} 百万年',
+  'Vista desde {n} km de altura': '从 {n} 千米高处观看',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

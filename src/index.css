@@ -519,6 +519,79 @@ p {
   transform: translate(-50%, -50%);
 }
 
+/* Regla de escala, en el borde derecho: rayas a distancias reales que se abren o se juntan con el zoom. */
+.scale-ruler {
+  position: fixed;
+  right: 0;
+  top: 15.5rem;
+  bottom: 16.5rem;
+  z-index: 10;
+  width: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  color: var(--ink-soft);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-height: 44rem) {
+  .scale-ruler {
+    display: none;
+  }
+}
+
+.scale-height {
+  margin: 0 0.75rem 0.5rem 0;
+  min-height: 1em;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--ink-faint);
+}
+
+.scale-ticks {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  /* las rayas se desvanecen arriba en vez de cortarse */
+  mask-image: linear-gradient(to top, #000 78%, transparent);
+}
+
+.scale-ticks > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--rule-strong);
+  transition:
+    transform 0.25s var(--ease-out-soft),
+    opacity 0.25s;
+}
+
+.scale-ticks > span.major {
+  width: 1.1rem;
+  background: var(--ink-soft);
+}
+
+.scale-ticks > span > span {
+  position: absolute;
+  right: 1.45rem;
+  top: -0.55em;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scale-ticks > span {
+    transition: none;
+  }
+}
+
 /* Tiempo real: el Sol y la Luna en su cénit y el punto donde está el usuario. */
 .sky-marker {
   position: relative;

@@ -398,6 +398,7 @@ const gl: Record<string, string> = {
   'unos {n} millones de °C': 'uns {n} millóns de °C',
   'Edad': 'Idade',
   'unos {n} millones de años': 'uns {n} millóns de anos',
+  'Vista desde {n} km de altura': 'Vista desde {n} km de altura',
   'Reflejo del agua': 'Reflexo da auga',
   Estrellas: 'Estrelas',
   'Día y noche': 'Día e noite',

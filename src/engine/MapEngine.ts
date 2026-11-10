@@ -90,6 +90,10 @@ export interface ViewInfo {
   /** 0 = lo más lejos posible, 1 = lo más cerca. */
   zoom: number;
   morph: number;
+  /** Kilómetros que mide un píxel de pantalla en el centro de la vista. */
+  kmPerPixel: number;
+  /** Altura de la cámara sobre la superficie, en kilómetros. */
+  heightKm: number;
 }
 
 interface EngineEvents {
@@ -1656,6 +1660,8 @@ export class MapEngine {
       lat: rig.lat / DEG,
       zoom: clamp(1 - Math.log(rig.h / 0.09) / Math.log(rig.maxHeight() / 0.09), 0, 1),
       morph,
+      kmPerPixel: rig.worldPerPixel * 6371,
+      heightKm: rig.h * 6371,
     });
   }
 

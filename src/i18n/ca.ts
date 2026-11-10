@@ -399,6 +399,7 @@ const ca: Record<string, string> = {
   'unos {n} millones de °C': 'uns {n} milions de °C',
   'Edad': 'Edat',
   'unos {n} millones de años': 'uns {n} milions d’anys',
+  'Vista desde {n} km de altura': 'Vista des de {n} km d’alçada',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',

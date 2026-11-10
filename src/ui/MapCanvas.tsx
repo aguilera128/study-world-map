@@ -11,11 +11,12 @@ import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
 import { PALETTES } from '../engine/palette';
 import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
-import { useNow, useReducedMotion, useTheme } from './hooks';
+import { useNow, useReducedMotion, useTheme, useWide } from './hooks';
 import { Icon } from './Icon';
 import { DISCONTINUITIES, INTERIOR } from './planetLayers';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
+import { ScaleRuler } from './ScaleRuler';
 import { lang, LOCALE, t } from '../i18n';
 import { density } from '../game/population';
 
@@ -210,6 +211,7 @@ export default function MapCanvas() {
   // El globo gira solo en la portada del mundo: en el mapa de un país se lo llevaría de la vista.
   useEffect(() => engine?.setAutoRotate(screen === 'home' && !atlas.frame), [engine, screen, atlas]);
   const playing = screen === 'play' || screen === 'results';
+  const wideScreen = useWide();
   // Durante la partida el tiempo real se aparta: el día y la noche oscurecerían medio mapa.
   const live = realTime && !playing;
   const daylight = live && layers.dayNight;
@@ -291,6 +293,8 @@ export default function MapCanvas() {
       />
 
       {/* Durante la partida no se marca dónde está el jugador: sería una pista. */}
+      {/* La regla de escala: solo donde hay sitio y fuera de la partida. */}
+      {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
 

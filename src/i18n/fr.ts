@@ -398,6 +398,7 @@ const fr: Record<string, string> = {
   'unos {n} millones de °C': 'environ {n} millions de °C',
   'Edad': 'Âge',
   'unos {n} millones de años': 'environ {n} millions d’années',
+  'Vista desde {n} km de altura': 'Vue depuis {n} km d’altitude',
   'Reflejo del agua': 'Reflet de l’eau',
   Estrellas: 'Étoiles',
   'Día y noche': 'Jour et nuit',

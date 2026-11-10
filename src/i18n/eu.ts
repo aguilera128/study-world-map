@@ -399,6 +399,7 @@ const eu: Record<string, string> = {
   'unos {n} millones de °C': '{n} milioi °C inguru',
   'Edad': 'Adina',
   'unos {n} millones de años': '{n} milioi urte inguru',
+  'Vista desde {n} km de altura': '{n} km-ko altueratik ikusita',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',
