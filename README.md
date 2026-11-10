@@ -22,6 +22,10 @@ el propio dispositivo.
   | Banderas | Se enseña una bandera | Pulsando el país en el mapa o con opciones |
 - **Reto de climas y mapa de climas.** Un sexto reto, «¿Qué clima tiene?», y una capa que colorea el
   mapa por clima, con su leyenda.
+- **España por provincias.** Un segundo mapa, que se elige en la portada: las 50 provincias, Ceuta y
+  Melilla, con retos de localizar, nombrar, capitales y «¿a qué comunidad autónoma pertenece?». Las
+  zonas son agrupaciones de comunidades y su progreso se guarda aparte del de los países. Las listas
+  de estudio y el reto del día son, de momento, solo del mapa del mundo.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
   servidor), con racha de días seguidos y botón para compartir el resultado.
 - **Listas de estudio.** En «Países → Elegir países» se crea una selección con justo los países que
@@ -124,7 +128,10 @@ No necesita variables de entorno.
    punto en polígono), sin leer píxeles.
 4. El color y la elevación de cada país viven en una textura de un píxel por país: pintar o
    levantar un país es escribir 4 bytes.
-5. El día y la noche se calculan en el sombreador a partir de la dirección del Sol
+5. `scripts/build-maps.mjs` genera, con ese mismo formato, el atlas de cada país por provincias
+   (`public/data/es/`): la aplicación carga uno u otro y el motor no distingue. Las provincias son
+   sus «países», las comunidades sus «regiones» y los países de alrededor, decorado.
+6. El día y la noche se calculan en el sombreador a partir de la dirección del Sol
    (`src/engine/sun.ts`, fórmulas del Astronomical Almanac). La hora de cada país sale de la base
    de zonas horarias del propio navegador (`Intl`), así que respeta los cambios de hora sin
    librerías ni tablas; el atlas solo guarda qué zona corresponde a cada capital.
@@ -134,12 +141,16 @@ No necesita variables de entorno.
 ```
 scripts/
   build-atlas.mjs        generador del atlas
+  build-maps.mjs         generador de los atlas de un país por provincias (public/data/<mapa>/)
+  build-subdivisions.mjs reduce la capa de subdivisiones de Natural Earth a las fronteras de un país (solo al añadir un país)
+  fetch-subdivisions.mjs trae de Wikidata los nombres de provincias, comunidades y capitales (solo al añadir un país o un idioma)
   build-pages.mjs        páginas estáticas por idioma: países y capitales, juegos por continente, portadas, legales y sitemap
   fetch-capitals.mjs     trae de Wikidata los nombres de las capitales en cada idioma (solo al añadir un idioma)
   data/idiomas/          un fichero por idioma: textos de las páginas, nombres, alias y notas
   data/sitio.mjs         datos del titular y enlace de donación (el build de Vercel falla si faltan)
   data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)
+  data/mapas/            un país por provincias: datos en español (es.mjs), fronteras (es.topo.json) y nombres de Wikidata (es.wikidata.json)
 src/
   atlas/                 carga del atlas, búsqueda del país de un punto y triangulación
   engine/                motor del mapa: cámara, sombreadores, paletas, entrada
@@ -149,6 +160,24 @@ src/
 ```
 
 `src/game/` y `src/atlas/` no dependen de React ni de three.js y están cubiertos por pruebas.
+
+### Añadir otro país por provincias
+
+España es el primero; el resto (Estados Unidos, México, Francia…) se añade sobre todo con datos:
+
+1. `scripts/data/mapas/<país>.mjs`, copiando `es.mjs`: subdivisiones con su capital y su región, países
+   de alrededor, correcciones de nombres y textos de sus tres páginas estáticas. Darlo de alta en
+   `scripts/data/mapas/index.mjs`.
+2. Descargar `ne_10m_admin_1_states_provinces.geojson` de
+   [natural-earth-vector](https://github.com/nvkelso/natural-earth-vector) (40 MB, fuera del repositorio) y
+   ejecutar `node scripts/build-subdivisions.mjs <ruta> <país>`: deja `<país>.topo.json`.
+3. `node scripts/fetch-subdivisions.mjs <país>`: deja `<país>.wikidata.json`, y lista lo que hay que
+   revisar a mano.
+4. En la aplicación: su clave en `MapId` (`src/atlas/types.ts`) y su entrada en `MAPS`
+   (`src/game/maps.ts`), con sus retos, sus zonas y los textos que hablan de «provincias».
+
+`build-maps.mjs` no corta por el antimeridiano: un país que lo cruce (Estados Unidos, Rusia) necesita
+antes ese recorte, que `build-atlas.mjs` sí hace.
 
 ## Idiomas
 
@@ -179,13 +208,23 @@ Los textos legales solo están en español.
   ficha y aceptan la alternativa al escribir. Guinea Ecuatorial figura con Ciudad de la Paz, su
   capital oficial desde enero de 2026 (también se acepta Malabo).
 
+- **Provincias de España**: las 50 provincias más Ceuta y Melilla, que no son provincias pero se
+  estudian con ellas. Los nombres van en castellano (Lérida, Gerona, La Coruña, Orense, Vizcaya…) y al
+  escribir se aceptan los oficiales (Lleida, Girona, A Coruña, Ourense, Bizkaia…). En los demás
+  idiomas salen de Wikidata: la provincia que se llama como su capital toma el nombre de la ciudad.
+  No se da la superficie de las provincias: la fuente cartográfica está simplificada y no es un dato fiable.
+
 Para corregir un nombre o una capital, o cambiar qué países se preguntan, edita
-`scripts/data/paises.mjs`: el generador comprueba que la lista sea coherente y avisa si no.
+`scripts/data/paises.mjs` (o `scripts/data/mapas/es.mjs` para las provincias): el generador comprueba
+que la lista sea coherente y avisa si no.
 
 ## Créditos
 
 - Cartografía: [Natural Earth](https://www.naturalearthdata.com) (dominio público), vía
-  [world-atlas](https://github.com/topojson/world-atlas).
+  [world-atlas](https://github.com/topojson/world-atlas); las provincias, de su capa 1:10m de
+  subdivisiones (`ne_10m_admin_1_states_provinces`), reducida con
+  [topojson](https://github.com/topojson) (`scripts/build-subdivisions.mjs`).
+- Nombres de provincias, comunidades y capitales en otros idiomas: [Wikidata](https://www.wikidata.org) (CC0).
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
