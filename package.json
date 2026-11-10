@@ -9,9 +9,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "atlas": "node scripts/build-atlas.mjs",
-    "dev": "node scripts/build-atlas.mjs && node scripts/build-pages.mjs && vite",
-    "build": "node scripts/build-atlas.mjs && node scripts/build-pages.mjs && tsc --noEmit && vite build",
+    "atlas": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs",
+    "dev": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-pages.mjs && vite",
+    "build": "node scripts/build-atlas.mjs && node scripts/build-maps.mjs && node scripts/build-pages.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
@@ -41,6 +41,8 @@
     "polylabel": "^2.1.0",
     "tailwindcss": "^4.3.5",
     "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1",
+    "topojson-simplify": "^3.0.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.7",
     "vitest": "^5.1.0",

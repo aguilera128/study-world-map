@@ -9,6 +9,8 @@ dist
 # Generado por scripts/build-atlas.mjs (se regenera en `pnpm dev` y `pnpm build`)
 public/data/atlas.json
 public/data/names.*.json
+# atlas de cada país por provincias (scripts/build-maps.mjs)
+public/data/*/
 public/flags/
 public/paises-y-capitales/
 public/aviso-legal/
