@@ -14,6 +14,7 @@ import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
+import { t } from '../i18n';
 
 const TONE_CLASS: Record<Tone, string> = {
   ok: 'bg-ok text-white',
@@ -155,8 +156,7 @@ export default function MapCanvas() {
     return (
       <div className="fixed inset-0 grid place-items-center p-8 text-center">
         <p className="max-w-sm text-ink-soft">
-          Tu navegador no ha podido iniciar los gráficos 3D (WebGL). Prueba a actualizarlo o a abrir la página en otro
-          navegador.
+          {t('Tu navegador no ha podido iniciar los gráficos 3D (WebGL). Prueba a actualizarlo o a abrir la página en otro navegador.')}
         </p>
       </div>
     );
@@ -170,8 +170,8 @@ export default function MapCanvas() {
         style={{ opacity: engine ? 1 : 0 }}
         tabIndex={0}
         role="application"
-        aria-roledescription="mapa"
-        aria-label="Mapa del mundo interactivo. Flechas para moverlo, más y menos para acercar o alejar, Intro para elegir el país del centro."
+        aria-roledescription={t('mapa')}
+        aria-label={t('Mapa del mundo interactivo. Flechas para moverlo, más y menos para acercar o alejar, Intro para elegir el país del centro.')}
       />
       {/* Punto de mira del teclado: marca qué país elige Intro. Solo se ve con el mapa enfocado. */}
       <div
@@ -197,10 +197,10 @@ export default function MapCanvas() {
             <Flag a2={country.a2} height={15} />
             <span>{country.name}</span>
             {localTime && (
-              <span className="tabular flex items-center gap-1 font-normal text-ink-soft" title="Hora local">
+              <span className="tabular flex items-center gap-1 font-normal text-ink-soft" title={t('Hora local')}>
                 <Icon name="clock" size={13} />
                 {localTime}
-                {country.tzMulti && country.capital && <> en {country.capital}</>}
+                {country.tzMulti && country.capital && <> {t('en {place}', { place: country.capital })}</>}
               </span>
             )}
             {screen === 'progress' && country.kind === 'country' && (

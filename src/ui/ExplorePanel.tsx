@@ -10,6 +10,7 @@ import { useNow } from './hooks';
 import { Icon } from './Icon';
 import { Flag, Panel } from './primitives';
 import { ScopeChips } from './ScopeChips';
+import { LOCALE, t } from '../i18n';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
 
@@ -25,7 +26,7 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
 function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
   const select = useApp((s) => s.select);
   const sovereign = country.sovereign ? atlas.byIdOrThrow(country.sovereign) : null;
-  const neighbors = country.neighbors.map((i) => atlas.countries[i]).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  const neighbors = country.neighbors.map((i) => atlas.countries[i]).sort((a, b) => a.name.localeCompare(b.name, LOCALE));
   const now = useNow(20_000);
   const time = country.tz ? clockIn(country.tz, now) : null;
   const offset = country.tz ? offsetMinutes(country.tz, now) : null;
@@ -33,16 +34,16 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
     country.kind === 'country'
       ? null
       : sovereign
-        ? `Territorio de ${sovereign.name}`
+        ? t('Territorio de {x}', { x: sovereign.name })
         : country.kind === 'disputed'
-          ? 'Territorio especial'
-          : 'Territorio';
+          ? t('Territorio especial')
+          : t('Territorio');
 
   return (
     <div style={{ animation: 'rise 0.4s var(--ease-out-soft) both' }}>
       <button type="button" onClick={() => select(-1)} className="btn btn-ghost -ml-3 mt-3 min-h-9 px-3 text-sm">
         <Icon name="back" size={16} />
-        Volver a la lista
+        {t('Volver a la lista')}
       </button>
       <article className="cartouche mt-2 p-5">
         <div className="flex items-start gap-4">
@@ -54,27 +55,27 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
         </div>
         <dl className="mt-4">
           {country.capital && (
-            <Fact label="Capital">
+            <Fact label={t('Capital')}>
               {country.capital}
               {country.capitalNote && <span className="font-normal text-ink-soft"> ({country.capitalNote})</span>}
             </Fact>
           )}
-          {country.continents.length > 0 && <Fact label="Continente">{atlas.continents[country.continents[0]]}</Fact>}
+          {country.continents.length > 0 && <Fact label={t('Continente')}>{atlas.continents[country.continents[0]]}</Fact>}
           {country.regions.length > 0 && country.regions[0].startsWith('am-') && (
-            <Fact label="Región">{atlas.regions[country.regions[0]].name}</Fact>
+            <Fact label={t('Región')}>{atlas.regions[country.regions[0]].name}</Fact>
           )}
           {time && offset !== null && (
-            <Fact label="Hora local">
+            <Fact label={t('Hora local')}>
               <span className="tabular">{time}</span>
               <span className="font-normal text-ink-soft">
-                {country.tzMulti && country.capital ? ` en ${country.capital}` : ''} · {offsetLabel(offset)} ·{' '}
+                {country.tzMulti && country.capital ? ` ${t('en {place}', { place: country.capital })}` : ''} · {offsetLabel(offset)} ·{' '}
                 {differenceLabel(offset - localOffsetMinutes(now))}
               </span>
             </Fact>
           )}
-          {country.areaKm2 && <Fact label="Superficie">{formatArea(country.areaKm2)}</Fact>}
+          {country.areaKm2 && <Fact label={t('Superficie')}>{formatArea(country.areaKm2)}</Fact>}
           {neighbors.length > 0 && (
-            <Fact label="Vecinos">
+            <Fact label={t('Vecinos')}>
               <span className="flex flex-wrap gap-1.5">
                 {neighbors.map((n) => (
                   <button
@@ -82,7 +83,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
                     type="button"
                     onClick={() => select(n.index, true)}
                     className="tile px-2 py-0.5 text-sm font-semibold"
-                    title={`Ver ${n.name}`}
+                    title={t('Ver {x}', { x: n.name })}
                   >
                     {n.name}
                   </button>
@@ -117,7 +118,7 @@ export function ExplorePanel() {
   // Con texto en el buscador se busca en todo el mapa (territorios incluidos); sin él, se ve la lista elegida.
   const rows = useMemo(() => {
     const pool = q ? atlas.countries : scope.countries.map((i) => atlas.countries[i]);
-    const sorted = [...pool].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    const sorted = [...pool].sort((a, b) => a.name.localeCompare(b.name, LOCALE));
     if (!q) return sorted;
     const keys = (c: Country) => [c.name, ...c.aliases, c.capital ?? ''].map(normalize).filter(Boolean);
     const starts = sorted.filter((c) => keys(c).some((k) => k.startsWith(q)));
@@ -131,12 +132,12 @@ export function ExplorePanel() {
   };
 
   return (
-    <Panel label="Explorar el mapa">
+    <Panel label={t('Explorar el mapa')}>
       <p className="label" style={order(0)}>
-        Explorar y estudiar
+        {t('Explorar y estudiar')}
       </p>
       <h1 className="display mt-2.5 text-[1.75rem] wide:text-[2.1rem]" style={order(1)}>
-        Estúdialos antes de jugar
+        {t('Estúdialos antes de jugar')}
       </h1>
 
       <form
@@ -154,8 +155,8 @@ export function ExplorePanel() {
             setQuery(e.target.value);
             if (selected >= 0) select(-1);
           }}
-          placeholder="Buscar país o capital…"
-          aria-label="Buscar país o capital"
+          placeholder={t('Buscar país o capital…')}
+          aria-label={t('Buscar país o capital')}
           autoComplete="off"
           spellCheck={false}
           className="min-h-11 w-full rounded-[10px] border border-rule-strong bg-surface pl-10 pr-4 font-semibold outline-none placeholder:font-normal placeholder:text-ink-faint focus:border-ink"
@@ -173,7 +174,7 @@ export function ExplorePanel() {
           )}
 
           <div className="mt-4 flex items-baseline justify-between gap-3" style={order(4)}>
-            <h2 className="label">{q ? `Resultados · ${rows.length}` : plural(rows.length, 'país', 'países')}</h2>
+            <h2 className="label">{q ? `${t('Resultados')} · ${rows.length}` : plural(rows.length, t('país'), t('países'))}</h2>
             {!q && (
               <button
                 type="button"
@@ -183,7 +184,7 @@ export function ExplorePanel() {
                 }}
                 className="label transition-colors hover:text-accent"
               >
-                Practicar estos →
+                {t('Practicar estos →')}
               </button>
             )}
           </div>
@@ -201,19 +202,19 @@ export function ExplorePanel() {
                     {country.capital && <span className="block truncate text-xs text-ink-soft">{country.capital}</span>}
                   </span>
                   <span className="shrink-0 text-sm font-semibold text-ink-soft">
-                    {country.continents.length ? atlas.continents[country.continents[0]] : 'Territorio'}
+                    {country.continents.length ? atlas.continents[country.continents[0]] : t('Territorio')}
                   </span>
                 </button>
               </li>
             ))}
-            {rows.length === 0 && <li className="border-t border-rule py-4 text-sm text-ink-soft">No hay ningún país con ese nombre.</li>}
+            {rows.length === 0 && <li className="border-t border-rule py-4 text-sm text-ink-soft">{t('No hay ningún país con ese nombre.')}</li>}
           </ul>
         </>
       )}
 
       <button type="button" onClick={() => go('home')} className="btn btn-ghost -ml-3 mt-5 min-h-10 px-3 text-sm" style={order(6)}>
         <Icon name="back" size={16} />
-        Volver a los retos
+        {t('Volver a los retos')}
       </button>
     </Panel>
   );

@@ -3,6 +3,7 @@ import { getEngine } from '../app/engineRef';
 import { LAYERS, useApp, useSettings, type LayerId } from '../app/store';
 import { resolveScope } from '../game/config';
 import { Icon, type IconName } from './Icon';
+import { t } from '../i18n';
 
 function Control({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
   return (
@@ -59,20 +60,20 @@ function LayersMenu() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        title="Capas del mapa"
-        aria-label="Capas del mapa"
+        title={t('Capas del mapa')}
+        aria-label={t('Capas del mapa')}
         aria-expanded={open}
         className={`grid h-10 w-10 place-items-center transition-colors hover:text-ink ${open ? 'text-ink' : 'text-ink-soft'}`}
       >
         <Icon name="layers" size={19} />
       </button>
       {open && (
-        <div className="float absolute bottom-0 right-12 flex w-52 flex-col gap-3 bg-surface! px-3.5 py-3" role="group" aria-label="Capas del mapa">
-          {group('Mapa', MAP_LAYERS)}
+        <div className="float absolute bottom-0 right-12 flex w-52 flex-col gap-3 bg-surface! px-3.5 py-3" role="group" aria-label={t('Capas del mapa')}>
+          {group(t('Mapa'), MAP_LAYERS)}
           {realTime ? (
-            group('Tiempo real', REAL_TIME_LAYERS)
+            group(t('Tiempo real'), REAL_TIME_LAYERS)
           ) : (
-            <p className="text-xs text-ink-faint">Activa «Tiempo real» para ver el día y la noche, el Sol y la Luna.</p>
+            <p className="text-xs text-ink-faint">{t('Activa «Tiempo real» para ver el día y la noche, el Sol y la Luna.')}</p>
           )}
         </div>
       )}
@@ -104,10 +105,10 @@ export function MapControls() {
     >
       {/* En pantallas táctiles el zoom se hace pellizcando: solo queda la vuelta a la vista general. */}
       <span className="flex flex-col divide-y divide-rule pointer-coarse:hidden">
-        <Control icon="plus" label="Acercar" onClick={() => getEngine()?.zoomBy(0.6)} />
-        <Control icon="minus" label="Alejar" onClick={() => getEngine()?.zoomBy(1 / 0.6)} />
+        <Control icon="plus" label={t('Acercar')} onClick={() => getEngine()?.zoomBy(0.6)} />
+        <Control icon="minus" label={t('Alejar')} onClick={() => getEngine()?.zoomBy(1 / 0.6)} />
       </span>
-      <Control icon="target" label="Vista general" onClick={reset} />
+      <Control icon="target" label={t('Vista general')} onClick={reset} />
       <LayersMenu />
     </div>
   );

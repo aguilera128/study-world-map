@@ -3,6 +3,7 @@ import { plural } from '../app/format';
 import { useSettings } from '../app/store';
 import { REGION_FILTERS } from '../game/config';
 import { Icon } from './Icon';
+import { t } from '../i18n';
 
 /** Selector de qué países entran: las regiones del mundo y las listas de estudio guardadas. */
 export function ScopeChips({
@@ -17,7 +18,7 @@ export function ScopeChips({
 }) {
   const lists = useSettings((s) => s.lists);
   return (
-    <div role="radiogroup" aria-label="Países que entran" className="flex flex-wrap gap-1.5">
+    <div role="radiogroup" aria-label={t('Países que entran')} className="flex flex-wrap gap-1.5">
       {REGION_FILTERS.map((r) => (
         <button
           key={r.id}
@@ -38,10 +39,10 @@ export function ScopeChips({
           aria-checked={value === list.id}
           onClick={() => onChange(list.id)}
           className="tile flex min-h-9 items-center gap-1.5 px-3 text-sm font-semibold"
-          title={`Lista de estudio: ${plural(list.countries.length, 'país', 'países')}`}
+          title={`${t('Lista de estudio')}: ${plural(list.countries.length, t('país'), t('países'))}`}
         >
           <Icon name="list" size={15} />
-          {list.name}
+          {t(list.name)}
         </button>
       ))}
       {children}

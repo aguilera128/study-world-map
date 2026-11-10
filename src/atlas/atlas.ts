@@ -152,8 +152,38 @@ export class Atlas {
   }
 }
 
-export async function loadAtlas(url = '/data/atlas.json'): Promise<Atlas> {
+/** Nombres de un idioma (public/data/names.<idioma>.json): lo que cambia del atlas al traducirlo. */
+interface RawNames {
+  regions: Record<RegionKey, string>;
+  continents: Record<ContinentKey, string>;
+  /** n = nombre, c = capital, a = alias, ca = alias de la capital, cn = nota de la capital, t = nota */
+  countries: Record<string, { n: string; c?: string; a?: string[]; ca?: string[]; cn?: string; t?: string }>;
+}
+
+async function getJson<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`No se pudo cargar el atlas (${res.status})`);
-  return new Atlas((await res.json()) as RawAtlas);
+  return (await res.json()) as T;
+}
+
+/** Carga el atlas (en español) y, si el idioma es otro, le pone encima los nombres de ese idioma. */
+export async function loadAtlas(lang = 'es'): Promise<Atlas> {
+  const [raw, names] = await Promise.all([
+    getJson<RawAtlas>('/data/atlas.json'),
+    lang === 'es' ? null : getJson<RawNames>(`/data/names.${lang}.json`),
+  ]);
+  if (names) {
+    for (const key of Object.keys(raw.regions) as RegionKey[]) raw.regions[key].name = names.regions[key];
+    raw.continents = names.continents;
+    for (const country of raw.countries) {
+      const own = names.countries[country.id];
+      country.name = own.n;
+      country.capital = own.c;
+      country.aliases = own.a;
+      country.capitalAliases = own.ca;
+      country.capitalNote = own.cn;
+      country.note = own.t;
+    }
+  }
+  return new Atlas(raw);
 }

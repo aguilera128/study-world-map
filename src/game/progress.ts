@@ -1,4 +1,5 @@
 import type { ModeId } from './config';
+import { t } from '../i18n';
 
 // Progreso entre partidas. Cada país lleva, por reto, una "caja" de Leitner (1–5): los aciertos
 // a la primera lo suben de caja y los fallos lo devuelven a la primera. Las cajas bajas se
@@ -82,7 +83,7 @@ export function selectionWeight(progress: Progress, country: string, mode: ModeI
 /** Nivel de dominio para pintar el mapa de progreso: 0 sin ver · 1 aprendiendo · 2 · 3 · 4 dominado. */
 export type Mastery = 0 | 1 | 2 | 3 | 4;
 
-export const MASTERY_LABELS = ['Sin practicar', 'Aprendiendo', 'A medias', 'Casi', 'Dominado'] as const;
+export const MASTERY_LABELS = ['Sin practicar', 'Aprendiendo', 'A medias', 'Casi', 'Dominado'].map((label) => t(label));
 
 export function mastery(stats: SkillStats | undefined): Mastery {
   if (!stats) return 0;

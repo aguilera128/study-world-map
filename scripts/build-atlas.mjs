@@ -24,6 +24,7 @@ import { geoEquirectangular } from 'd3-geo';
 import { geoProject } from 'd3-geo-projection';
 import polylabel from 'polylabel';
 import * as topojson from 'topojson-client';
+import { NOMBRES } from './data/nombres.mjs';
 import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './data/paises.mjs';
 
 const require = createRequire(import.meta.url);
@@ -489,6 +490,36 @@ const dirBanderas = join(ROOT, 'public', 'flags');
 mkdirSync(dirDatos, { recursive: true });
 mkdirSync(dirBanderas, { recursive: true });
 
+// Nombres en los demás idiomas: un fichero pequeño por idioma, que la aplicación carga encima del
+// atlas (ver src/atlas/atlas.ts). El país sale de CLDR, la capital de Wikidata y lo demás, de
+// ./data/nombres.mjs, que además corrige lo que haga falta.
+const capitales = JSON.parse(readFileSync(join(ROOT, 'scripts', 'data', 'capitales.wikidata.json'), 'utf8'));
+const idiomas = Object.keys(NOMBRES);
+for (const idioma of idiomas) {
+  const propio = NOMBRES[idioma];
+  const cldr = new Intl.DisplayNames([idioma], { type: 'region' });
+  const paises = {};
+  for (const e of entidades) {
+    const extra = propio.paises[e.id] ?? {};
+    // CLDR abrevia con «&»; en los nombres de la aplicación va la conjunción del idioma.
+    const name = extra.nombre ?? (e.a2 ? cldr.of(e.a2.toUpperCase()).replace(' & ', propio.y ?? ' and ') : null);
+    if (!name) throw new Error(`names.${idioma}: falta el nombre de ${e.id}`);
+    const entry = { n: name, a: extra.alias, t: extra.nota };
+    if (e.kind === 'country') {
+      entry.c = extra.capital ?? capitales[e.id]?.[idioma] ?? capitales[e.id]?.en;
+      if (!entry.c) throw new Error(`names.${idioma}: falta la capital de ${e.id}`);
+      entry.ca = extra.capAlias;
+      entry.cn = extra.capNota;
+      // Una nota en español traducida a medias confunde más que ayuda: o está, o se avisa.
+      if ((e.note && !entry.t) || (e.capitalNote && !entry.cn)) throw new Error(`names.${idioma}: falta traducir la nota de ${e.id}`);
+    }
+    paises[e.id] = entry;
+  }
+  for (const clave of Object.keys(REGIONES)) if (!propio.regiones[clave]) throw new Error(`names.${idioma}: falta la región ${clave}`);
+  for (const clave of Object.keys(CONTINENTES)) if (!propio.continentes[clave]) throw new Error(`names.${idioma}: falta el continente ${clave}`);
+  writeFileSync(join(dirDatos, `names.${idioma}.json`), JSON.stringify({ regions: propio.regiones, continents: propio.continentes, countries: paises }));
+}
+
 let banderas = 0;
 for (const e of entidades) {
   if (!e.a2) continue;
@@ -508,7 +539,7 @@ writeFileSync(join(dirDatos, 'atlas.json'), json);
 const nPaises = entidades.filter((e) => e.kind === 'country').length;
 console.log(
   `atlas: ${nPaises} países + ${entidades.length - nPaises} territorios · ${totalPuntos} puntos · ` +
-    `${(json.length / 1024).toFixed(0)} kB · ${banderas} banderas · colores ${uso.join('/')}`,
+    `${(json.length / 1024).toFixed(0)} kB · ${banderas} banderas · colores ${uso.join('/')} · nombres: ${idiomas.join(', ')}`,
 );
 
 if (AUDIT) {

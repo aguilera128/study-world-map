@@ -3,6 +3,7 @@ import type { ContinentKey } from '../atlas/types';
 import { inputOf, MAX_ATTEMPTS, type GameConfig, type Scope } from './config';
 import { selectionWeight, type Outcome, type Progress } from './progress';
 import { matchesAnswer } from './text';
+import { t } from '../i18n';
 
 // Lógica de una partida, sin interfaz ni mapa: funciones puras sobre un objeto `Session`.
 //
@@ -323,11 +324,11 @@ export function score(session: Session): Score {
 
 /** Calificación escolar española para una nota sobre 10. */
 export function gradeLabel(grade: number): string {
-  if (grade >= 9) return 'Sobresaliente';
-  if (grade >= 7) return 'Notable';
-  if (grade >= 6) return 'Bien';
-  if (grade >= 5) return 'Suficiente';
-  return 'A repasar';
+  if (grade >= 9) return t('Sobresaliente');
+  if (grade >= 7) return t('Notable');
+  if (grade >= 6) return t('Bien');
+  if (grade >= 5) return t('Suficiente');
+  return t('A repasar');
 }
 
 /** Países que no salieron a la primera, en el orden en que se preguntaron. */

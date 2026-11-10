@@ -7,6 +7,8 @@ import { Icon } from './Icon';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
 import { Panel, Segmented, Step } from './primitives';
 import { ScopeChips } from './ScopeChips';
+import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
+import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
 
@@ -37,21 +39,21 @@ export function HomePanel() {
   const best = bestFor(bests, config);
 
   return (
-    <Panel label="Elegir partida">
+    <Panel label={t('Elegir partida')}>
       <p className="label" style={order(0)}>
-        Atlas interactivo · {atlas.quizzable.length} países
+        {t('Atlas interactivo · {n} países', { n: atlas.quizzable.length })}
       </p>
       <h1 className="display mt-2.5 text-[clamp(1.6rem,8vw,2.1rem)] wide:text-[clamp(1.9rem,4.4vh,2.3rem)]" style={order(1)}>
-        <span className="block whitespace-nowrap">Aprende el mundo,</span>
-        <em className="block whitespace-nowrap font-semibold text-accent">país a país.</em>
+        <span className="block whitespace-nowrap">{t('Aprende el mundo,')}</span>
+        <em className="block whitespace-nowrap font-semibold text-accent">{t('país a país.')}</em>
       </h1>
       <p className="mt-2.5 max-w-[26rem] text-ink-soft" style={order(2)}>
-        Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.
+        {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
 
       <section className="mt-5" style={order(3)}>
-        <Step n={1}>Reto</Step>
-        <div role="radiogroup" aria-label="Reto" className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
+        <Step n={1}>{t('Reto')}</Step>
+        <div role="radiogroup" aria-label={t('Reto')} className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
           {MODES.map((m) => (
             <button
               key={m.id}
@@ -71,13 +73,13 @@ export function HomePanel() {
             className="tile flex min-w-0 items-center gap-1.5 border-dashed px-2 py-2 text-left text-ink-soft"
           >
             <Icon name="compass" size={16} className="shrink-0" />
-            <span className="truncate text-[0.8125rem] font-bold leading-tight">Explorar</span>
+            <span className="truncate text-[0.8125rem] font-bold leading-tight">{t('Explorar')}</span>
           </button>
         </div>
         <p className="mt-2 text-sm text-ink-soft">{mode.summary}</p>
         {mode.answers.length > 1 && (
           <Segmented
-            label="Cómo responder"
+            label={t('Cómo responder')}
             value={config.answer}
             onChange={(answer) => setConfig({ answer })}
             options={mode.answers.map((a) => ({
@@ -94,7 +96,7 @@ export function HomePanel() {
       </section>
 
       <section className="mt-4" style={order(4)}>
-        <Step n={2}>Países</Step>
+        <Step n={2}>{t('Países')}</Step>
         <ScopeChips value={config.scope} onChange={(scope) => setConfig({ scope })}>
           <button
             type="button"
@@ -102,21 +104,21 @@ export function HomePanel() {
             className="tile flex min-h-9 items-center gap-1.5 border-dashed px-3 text-sm font-semibold text-ink-soft"
           >
             <Icon name="pencil" size={15} />
-            Elegir países
+            {t('Elegir países')}
           </button>
         </ScopeChips>
       </section>
 
       <section className="mt-4" style={order(5)}>
-        <Step n={3}>Preguntas</Step>
+        <Step n={3}>{t('Preguntas')}</Step>
         <Segmented
-          label="Número de preguntas"
+          label={t('Número de preguntas')}
           value={config.length}
           onChange={(length) => setConfig({ length })}
           options={[
             { value: 10, label: '10' },
             { value: 20, label: '20' },
-            { value: 'all', label: `Todos (${total})` },
+            { value: 'all', label: t('Todos ({n})', { n: total }) },
           ]}
         />
       </section>
@@ -127,15 +129,15 @@ export function HomePanel() {
         style={order(6)}
       >
         <button type="button" onClick={() => start()} disabled={!total} className="btn btn-accent min-h-12 px-7 text-lg wide:min-h-13">
-          Empezar
+          {t('Empezar')}
           <Icon name="arrow" size={20} />
         </button>
         <p className="text-sm text-ink-soft">
-          {plural(questions, 'pregunta', 'preguntas')}
+          {plural(questions, t('pregunta'), t('preguntas'))}
           {best && (
             <>
               {' '}
-              · tu mejor nota: <strong className="text-ink">{formatGrade(best.grade)}</strong>
+              · {t('tu mejor nota')}: <strong className="text-ink">{formatGrade(best.grade)}</strong>
             </>
           )}
         </p>
@@ -146,13 +148,17 @@ export function HomePanel() {
         onClick={() => go('progress')}
         className="group mt-4 block w-full max-w-[26rem] text-left wide:mt-6"
         style={order(7)}
-        title="Ver mi progreso"
+        title={t('Ver mi progreso')}
       >
         <div className="flex items-baseline justify-between gap-3 text-sm">
           <span className="text-ink-soft">
-            Dominas <strong className="text-ink">{summary.mastered}</strong> de {summary.total} en «{mode.title}»
+            {tx('Dominas {n} de {total} en «{mode}»', {
+              n: <strong className="text-ink">{summary.mastered}</strong>,
+              total: summary.total,
+              mode: mode.title,
+            })}
           </span>
-          <span className="label transition-colors group-hover:text-accent">Ver progreso →</span>
+          <span className="label transition-colors group-hover:text-accent">{t('Ver progreso →')}</span>
         </div>
         <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-sunken">
           <div className="bg-ok transition-[width] duration-700" style={{ width: `${summary.ratio * 100}%` }} />
@@ -165,17 +171,17 @@ export function HomePanel() {
         style={order(8)}
       >
         <Icon name="heart" size={16} />
-        Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto
+        {t('Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto')}
       </a>
 
       <p className="mt-4 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
-        Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)
+        {t('Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)')}
         <br />
         {[
-          ['/paises-y-capitales/', 'Países y capitales'],
-          ['/aviso-legal/', 'Aviso legal'],
-          ['/privacidad/', 'Privacidad'],
-          ['/cookies/', 'Cookies'],
+          [t('/paises-y-capitales/'), t('Países y capitales')],
+          ['/aviso-legal/', t('Aviso legal')],
+          ['/privacidad/', t('Privacidad')],
+          ['/cookies/', t('Cookies')],
         ].map(([href, label]) => (
           <span key={href}>
             <a href={href} className="underline hover:text-ink">
@@ -189,8 +195,22 @@ export function HomePanel() {
           onClick={() => (window as Window & { swmConsent?: { open(): void } }).swmConsent?.open()}
           className="underline hover:text-ink"
         >
-          Configurar cookies
+          {t('Configurar cookies')}
         </button>
+        {' · '}
+        {/* Cada idioma es una dirección distinta: cambiar de idioma es ir a ella. */}
+        <select
+          aria-label={t('Idioma')}
+          value={lang}
+          onChange={(e) => window.location.assign(homeOf(e.target.value as Lang))}
+          className="cursor-pointer rounded border border-rule-strong bg-surface px-1 py-0.5 text-ink-soft"
+        >
+          {Object.entries(LANGS).map(([id, name]) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
+        </select>
       </p>
     </Panel>
   );

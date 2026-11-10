@@ -8,6 +8,7 @@ dist
 
 # Generado por scripts/build-atlas.mjs (se regenera en `pnpm dev` y `pnpm build`)
 public/data/atlas.json
+public/data/names.*.json
 public/flags/
 public/paises-y-capitales/
 public/aviso-legal/

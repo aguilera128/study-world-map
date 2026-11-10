@@ -18,6 +18,7 @@ import { record, sanitizeProgress, type Outcome, type Progress } from '../game/p
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
+import { lang, t } from '../i18n';
 
 // Estado de la aplicación en tres almacenes:
 //   useSettings  preferencias y listas de estudio          (se guardan en el navegador)
@@ -30,15 +31,15 @@ export type ThemeChoice = 'auto' | 'paper' | 'night';
 
 /** Capas del mapa que se pueden ocultar. Las cuatro últimas solo existen en el modo de tiempo real. */
 export const LAYERS = {
-  grid: 'Meridianos y paralelos',
-  glint: 'Reflejo del agua',
+  grid: t('Meridianos y paralelos'),
+  glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
-  stars: 'Estrellas',
-  dayNight: 'Día y noche',
-  sun: 'Sol',
-  moon: 'Luna',
-  you: 'Mi ubicación',
-} as const;
+  stars: t('Estrellas'),
+  dayNight: t('Día y noche'),
+  sun: t('Sol'),
+  moon: t('Luna'),
+  you: t('Mi ubicación'),
+};
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, true])) as Layers;
@@ -320,10 +321,10 @@ export const useApp = create<AppState>()((set, get) => {
 
     load: async () => {
       try {
-        const atlas = await loadAtlas();
+        const atlas = await loadAtlas(lang);
         set({ atlas, error: null, location: approximateLocation(atlas) });
       } catch (e) {
-        set({ error: e instanceof Error ? e.message : 'No se pudo cargar el mapa.' });
+        set({ error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });
       }
     },
 
@@ -365,7 +366,7 @@ export const useApp = create<AppState>()((set, get) => {
       if (verdict === 'ignored') {
         // Pulsar fuera del cuestionario no penaliza, pero se explica por qué no cuenta.
         if (answer.kind === 'country' && session.status === 'asking' && !session.pool.includes(answer.index)) {
-          addLabel(answer.index, `${atlas.countries[answer.index].name} no entra en esta partida`, 'info', 1600);
+          addLabel(answer.index, t('{country} no entra en esta partida', { country: atlas.countries[answer.index].name }), 'info', 1600);
         }
         return;
       }

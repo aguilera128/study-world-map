@@ -14,6 +14,7 @@ import { RealTimeStatus } from './ui/RealTime';
 import { ResultsPanel } from './ui/ResultsPanel';
 import { TopBar } from './ui/TopBar';
 import { useTheme } from './ui/hooks';
+import { t } from './i18n';
 
 // El lienzo arrastra three.js: se descarga aparte, en paralelo con los datos del atlas.
 const mapCanvas = import('./ui/MapCanvas');
@@ -24,10 +25,10 @@ function Loading({ error }: { error: string | null }) {
     <div className="fixed inset-0 z-50 grid place-items-center bg-paper p-8 text-center">
       {error ? (
         <div className="max-w-sm">
-          <p className="display text-2xl">No se ha podido cargar el mapa</p>
+          <p className="display text-2xl">{t('No se ha podido cargar el mapa')}</p>
           <p className="mt-2 text-ink-soft">{error}</p>
           <button type="button" onClick={() => window.location.reload()} className="btn btn-primary mt-5">
-            Reintentar
+            {t('Reintentar')}
           </button>
         </div>
       ) : (
@@ -35,7 +36,7 @@ function Loading({ error }: { error: string | null }) {
           <div className="animate-[spin_2.4s_cubic-bezier(0.6,0,0.4,1)_infinite]">
             <Logo size={52} />
           </div>
-          <p className="label">Desplegando el atlas…</p>
+          <p className="label">{t('Desplegando el atlas…')}</p>
         </div>
       )}
     </div>

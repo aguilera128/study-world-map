@@ -4,7 +4,7 @@
 //   · /assets (con hash en el nombre), banderas e iconos: la copia guardada; si no está, la red.
 // Subir VERSION borra las cachés anteriores al activarse.
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = `swm-${VERSION}`;
 const PRECACHE = ['/', '/data/atlas.json'];
 
@@ -98,6 +98,6 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') event.respondWith(networkFirst(request));
-  else if (url.pathname === '/data/atlas.json') event.respondWith(staleWhileRevalidate(request, event));
+  else if (url.pathname.startsWith('/data/')) event.respondWith(staleWhileRevalidate(request, event));
   else if (/^\/(assets|flags|icons)\//.test(url.pathname)) event.respondWith(cacheFirst(request));
 });

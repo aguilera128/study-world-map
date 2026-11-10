@@ -9,6 +9,7 @@ import { gradeLabel, missed, score } from '../game/session';
 import { useLast } from './hooks';
 import { Icon } from './Icon';
 import { Flag, Panel } from './primitives';
+import { t } from '../i18n';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
 
@@ -48,9 +49,9 @@ export function ResultsPanel() {
   const perfect = result.first === result.total;
 
   return (
-    <Panel label="Resultado">
+    <Panel label={t('Resultado')}>
       <p className="label" style={order(0)}>
-        {reviewOnly ? 'Repaso' : 'Resultado'} · {mode.title} · {session.scopeLabel}
+        {reviewOnly ? t('Repaso') : t('Resultado')} · {mode.title} · {session.scopeLabel}
       </p>
 
       <div className="mt-5 flex items-center gap-5" style={order(1)}>
@@ -63,35 +64,37 @@ export function ResultsPanel() {
         </div>
         <div className="min-w-0">
           <h1 className="display text-[1.75rem]">
-            {perfect ? '¡Pleno!' : result.grade >= 7 ? '¡Muy bien!' : result.grade >= 5 ? 'Vas por buen camino' : 'Toca repasar'}
+            {perfect ? t('¡Pleno!') : result.grade >= 7 ? t('¡Muy bien!') : result.grade >= 5 ? t('Vas por buen camino') : t('Toca repasar')}
           </h1>
           <p className="mt-1 text-sm text-ink-soft">
             {perfect
-              ? 'Has acertado todo a la primera.'
-              : `Has acertado a la primera ${result.first} de ${plural(result.total, 'pregunta', 'preguntas')}.`}
+              ? t('Has acertado todo a la primera.')
+              : t('Has acertado a la primera {n} de {total}.', { n: result.first, total: plural(result.total, t('pregunta'), t('preguntas')) })}
           </p>
           {newBest && (
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-highlight px-2 py-0.5 text-sm font-bold text-[#1b2a3a]">
               <Icon name="star" size={15} />
-              Nueva mejor marca
+              {t('Nueva mejor marca')}
             </p>
           )}
         </div>
       </div>
 
       <div className="mt-6 flex gap-2" style={order(2)}>
-        <Tile value={result.first} label="A la primera" tone={TONE.first} />
-        <Tile value={result.later} label="Con ayuda" tone={TONE.later} />
-        <Tile value={result.failed} label="Sin acertar" tone={TONE.failed} />
+        <Tile value={result.first} label={t('A la primera')} tone={TONE.first} />
+        <Tile value={result.later} label={t('Con ayuda')} tone={TONE.later} />
+        <Tile value={result.failed} label={t('Sin acertar')} tone={TONE.failed} />
       </div>
       <div className="mt-2 flex gap-2" style={order(3)}>
-        <Tile value={formatTime(result.ms)} label="Tiempo" />
-        <Tile value={result.bestStreak} label="Mejor racha" />
+        <Tile value={formatTime(result.ms)} label={t('Tiempo')} />
+        <Tile value={result.bestStreak} label={t('Mejor racha')} />
       </div>
 
       {toReview.length > 0 && (
         <section className="mt-6" style={order(4)}>
-          <h2 className="label mb-2">Para repasar · {toReview.length}</h2>
+          <h2 className="label mb-2">
+            {t('Para repasar')} · {toReview.length}
+          </h2>
           <ul className="thin-scroll -mx-1 max-h-56 overflow-y-auto px-1">
             {toReview.map((index) => {
               const country = atlas.countries[index];
@@ -102,7 +105,7 @@ export function ResultsPanel() {
                     type="button"
                     onClick={() => getEngine()?.frameCountry(index)}
                     className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-[rgb(var(--shadow)/0.07)]"
-                    title="Ver en el mapa"
+                    title={t('Ver en el mapa')}
                   >
                     <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${TONE[session.marks[index] ?? 'failed']}`} />
                     <Flag a2={country.a2} height={18} />
@@ -120,14 +123,14 @@ export function ResultsPanel() {
         {toReview.length > 0 && (
           <button type="button" onClick={() => start(toReview)} className="btn btn-accent min-h-12 px-5">
             <Icon name="replay" size={18} />
-            Repasar {plural(toReview.length, 'fallo', 'fallos')}
+            {t('Repasar {n}', { n: plural(toReview.length, t('fallo'), t('fallos')) })}
           </button>
         )}
         <button type="button" onClick={() => start()} className={`btn min-h-12 px-5 ${toReview.length ? '' : 'btn-accent'}`}>
-          Otra partida
+          {t('Otra partida')}
         </button>
         <button type="button" onClick={() => go('home')} className="btn btn-ghost min-h-12 px-4">
-          Cambiar de reto
+          {t('Cambiar de reto')}
         </button>
       </div>
     </Panel>

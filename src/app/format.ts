@@ -1,4 +1,7 @@
-const integer = new Intl.NumberFormat('es-ES');
+import { LOCALE, t } from '../i18n';
+
+const integer = new Intl.NumberFormat(LOCALE);
+const decimal = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 1 });
 
 /** 505992 → «505.992 km²» */
 export const formatArea = (km2: number) => `${integer.format(km2)} km²`;
@@ -11,8 +14,7 @@ export function formatTime(ms: number): string {
 
 /** 8.5 → «8,5» · 10 → «10» */
 export function formatGrade(grade: number): string {
-  const rounded = Math.round(grade * 10) / 10;
-  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1).replace('.', ',');
+  return decimal.format(Math.round(grade * 10) / 10);
 }
 
 /** 40.4168, −3.7038 → «40°25′N 3°42′O» */
@@ -23,7 +25,7 @@ export function formatCoords(lon: number, lat: number): string {
     const min = Math.floor((abs - deg) * 60);
     return `${deg}°${String(min).padStart(2, '0')}′${value >= 0 ? positive : negative}`;
   };
-  return `${part(lat, 'N', 'S')} ${part(lon, 'E', 'O')}`;
+  return `${part(lat, 'N', 'S')} ${part(lon, 'E', t('O'))}`;
 }
 
 /** «1 país» / «3 países» */

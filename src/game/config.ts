@@ -1,5 +1,6 @@
 import type { Atlas } from '../atlas/atlas';
 import type { Bounds, RegionKey } from '../atlas/types';
+import { t } from '../i18n';
 
 /** Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. */
 export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag';
@@ -40,32 +41,32 @@ export interface ModeDef {
 export const MODES: ModeDef[] = [
   {
     id: 'locate',
-    title: 'Localizar',
-    summary: 'Te damos el nombre de un país y lo buscas en el mapa.',
+    title: t('Localizar'),
+    summary: t('Te damos el nombre de un país y lo buscas en el mapa.'),
     answers: ['map'],
   },
   {
     id: 'continent',
-    title: 'Continentes',
-    summary: 'Di en qué continente está cada país.',
+    title: t('Continentes'),
+    summary: t('Di en qué continente está cada país.'),
     answers: ['choice', 'guided'],
   },
   {
     id: 'name',
-    title: 'Nombrar',
-    summary: 'Señalamos un país en el mapa y dices cuál es.',
+    title: t('Nombrar'),
+    summary: t('Señalamos un país en el mapa y dices cuál es.'),
     answers: ['choice', 'type'],
   },
   {
     id: 'capital',
-    title: 'Capitales',
-    summary: 'Une cada país con su capital.',
+    title: t('Capitales'),
+    summary: t('Une cada país con su capital.'),
     answers: ['choice', 'map', 'type'],
   },
   {
     id: 'flag',
-    title: 'Banderas',
-    summary: 'Reconoce de qué país es cada bandera.',
+    title: t('Banderas'),
+    summary: t('Reconoce de qué país es cada bandera.'),
     answers: ['map', 'choice'],
   },
 ];
@@ -73,9 +74,9 @@ export const MODES: ModeDef[] = [
 export const modeDef = (id: ModeId): ModeDef => MODES.find((m) => m.id === id)!;
 
 export function answerLabel(mode: ModeId, answer: AnswerKind): string {
-  if (mode === 'continent') return answer === 'guided' ? 'Viéndolo en el mapa' : 'Solo con el nombre';
-  if (mode === 'capital' && answer === 'map') return 'Buscando el país';
-  return { map: 'En el mapa', choice: 'Con opciones', guided: 'Con el mapa', type: 'Escribiendo' }[answer];
+  if (mode === 'continent') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
+  if (mode === 'capital' && answer === 'map') return t('Buscando el país');
+  return { map: t('En el mapa'), choice: t('Con opciones'), guided: t('Con el mapa'), type: t('Escribiendo') }[answer];
 }
 
 /** Intentos antes de dar la solución, según cómo se responde. */
@@ -100,14 +101,14 @@ export interface RegionFilterDef {
 }
 
 export const REGION_FILTERS: RegionFilterDef[] = [
-  { id: 'mundo', label: 'Mundo', keys: [] },
-  { id: 'europa', label: 'Europa', keys: ['europa'] },
-  { id: 'asia', label: 'Asia', keys: ['asia'] },
-  { id: 'africa', label: 'África', keys: ['africa'] },
-  { id: 'america', label: 'América', keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'], frame: [-125, -56, -35, 62] },
-  { id: 'america-nc', label: 'Norte y Centroamérica', keys: ['am-norte', 'am-central', 'am-caribe'], frame: [-128, 6, -58, 58] },
-  { id: 'america-sur', label: 'Sudamérica', keys: ['am-sur'] },
-  { id: 'oceania', label: 'Oceanía', keys: ['oceania'] },
+  { id: 'mundo', label: t('Mundo'), keys: [] },
+  { id: 'europa', label: t('Europa'), keys: ['europa'] },
+  { id: 'asia', label: t('Asia'), keys: ['asia'] },
+  { id: 'africa', label: t('África'), keys: ['africa'] },
+  { id: 'america', label: t('América'), keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'], frame: [-125, -56, -35, 62] },
+  { id: 'america-nc', label: t('Norte y Centroamérica'), keys: ['am-norte', 'am-central', 'am-caribe'], frame: [-128, 6, -58, 58] },
+  { id: 'america-sur', label: t('Sudamérica'), keys: ['am-sur'] },
+  { id: 'oceania', label: t('Oceanía'), keys: ['oceania'] },
 ];
 
 /** Lista de estudio: una selección de países (por id ISO) para preparar un examen concreto. */
@@ -120,6 +121,7 @@ export interface StudyList {
 /** Lista de ejemplo que viene de serie: los 50 países que suelen pedirse «por importancia». */
 export const SAMPLE_LIST: StudyList = {
   id: 'lista-50-principales',
+  // En español: es lo que se guarda en el navegador. Se traduce al mostrarlo (ver resolveScope).
   name: '50 países principales',
   countries: (
     'DEU SAU DZA ARG AUS AUT BEL BRA CAN CHL CHN COL KOR EGY ARE ESP USA PHL FRA GRC IND IDN IRN IRQ ISR ' +
@@ -141,7 +143,8 @@ export function resolveScope(atlas: Atlas, id: string, lists: StudyList[]): Scop
   const list = lists.find((l) => l.id === id);
   if (list) {
     const countries = list.countries.map((c) => atlas.indexOf(c)).filter((i) => i >= 0 && atlas.countries[i].kind === 'country');
-    return { id, label: list.name, countries, frame: null, isList: true };
+    // Una lista con nombre conocido (la de ejemplo) se enseña traducida; las del usuario, tal cual.
+    return { id, label: t(list.name), countries, frame: null, isList: true };
   }
   const def = REGION_FILTERS.find((r) => r.id === id) ?? REGION_FILTERS[0];
   const countries = def.keys.length

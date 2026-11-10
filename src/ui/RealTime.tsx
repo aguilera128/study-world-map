@@ -5,6 +5,8 @@ import type { MapEngine } from '../engine/MapEngine';
 import { dayPhase, moonPhase, sublunarPoint, subsolarPoint, sunAltitude, type DayPhase, type MoonPhase, type SunPosition } from '../engine/sun';
 import { useMedia, useNow } from './hooks';
 import { Icon } from './Icon';
+import { LOCALE, t } from '../i18n';
+import { tx } from '../i18n/tx';
 
 /** Elemento que el motor mantiene centrado sobre un punto del mapa. */
 function Tracked({ engine, lon, lat, alt = 0, children }: { engine: MapEngine; lon: number; lat: number; alt?: number; children: ReactNode }) {
@@ -61,19 +63,19 @@ export function RealTimeMarkers({
     <>
       {layers.moon && (
         <Tracked engine={engine} lon={moon.lon} lat={moon.lat} alt={MOON_ALT}>
-          <div className="sky-marker" role="img" aria-label={`Aquí la Luna está en lo más alto. ${phase.name}, ${percent(phase.lit)} iluminada`}>
+          <div className="sky-marker" role="img" aria-label={t('Aquí la Luna está en lo más alto. {phase}, {lit} iluminada', { phase: t(phase.name), lit: percent(phase.lit) })}>
             <MoonDisc phase={phase} size={18} />
             <span className="sky-tip">
-              Luna · {phase.name.toLowerCase().replace('luna ', '')} ({percent(phase.lit)})
+              {t(phase.name)} ({percent(phase.lit)})
             </span>
           </div>
         </Tracked>
       )}
       {layers.sun && (
         <Tracked engine={engine} lon={sun.lon} lat={sun.lat} alt={SUN_ALT}>
-          <div className="sky-marker" role="img" aria-label="Aquí es mediodía: el Sol está en lo más alto">
+          <div className="sky-marker" role="img" aria-label={t('Aquí es mediodía: el Sol está en lo más alto')}>
             <span className="sun-marker" />
-            <span className="sky-tip">Sol · debajo de él es mediodía</span>
+            <span className="sky-tip">{t('Sol · debajo de él es mediodía')}</span>
           </div>
         </Tracked>
       )}
@@ -90,13 +92,13 @@ export function RealTimeMarkers({
 }
 
 const PHASE_TEXT: Record<DayPhase, string> = {
-  day: 'es de día',
-  twilight: 'está entre dos luces',
-  night: 'es de noche',
+  day: t('es de día'),
+  twilight: t('está entre dos luces'),
+  night: t('es de noche'),
 };
 
-const clock = new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit' });
-const day = new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+const clock = new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit' });
+const day = new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'short' });
 
 /** Tarjeta del modo de tiempo real: la hora del usuario, si donde está es de día y su ubicación. */
 export function RealTimeStatus() {
@@ -134,18 +136,18 @@ export function RealTimeStatus() {
       <p className="mt-1 text-[0.8125rem] leading-snug text-ink-soft wide:mt-1.5">
         {phase ? (
           <>
-            Donde estás <strong className="text-ink">{PHASE_TEXT[phase]}</strong>
+            {tx('Donde estás {phase}', { phase: <strong className="text-ink">{PHASE_TEXT[phase]}</strong> })}
             {country && <span className="hidden wide:inline"> · {country}</span>}
-            {location && !location.exact && <span className="hidden text-ink-faint wide:inline"> (según tu zona horaria)</span>}
+            {location && !location.exact && <span className="hidden text-ink-faint wide:inline"> {t('(según tu zona horaria)')}</span>}
           </>
         ) : (
-          'No sabemos en qué parte del mapa estás.'
+          t('No sabemos en qué parte del mapa estás.')
         )}
       </p>
       {showMoon && (
         <p className="mt-1 flex items-center gap-1.5 text-[0.8125rem] text-ink-soft">
           <MoonDisc phase={moon} size={15} />
-          {moon.name} · {percent(moon.lit)}
+          {t(moon.name)} · {percent(moon.lit)}
         </p>
       )}
       {!location?.exact && (
@@ -153,15 +155,15 @@ export function RealTimeStatus() {
           type="button"
           onClick={locateExact}
           disabled={locating === 'asking'}
-          title="Tu ubicación solo se usa aquí, en tu navegador: no se envía ni se guarda."
+          title={t('Tu ubicación solo se usa aquí, en tu navegador: no se envía ni se guarda.')}
           className="mt-1.5 flex items-center gap-1.5 text-[0.8125rem] font-bold underline decoration-rule-strong underline-offset-4 hover:text-accent"
         >
           <Icon name="target" size={14} />
-          {locating === 'asking' ? 'Buscándote…' : 'Usar mi ubicación exacta'}
+          {locating === 'asking' ? t('Buscándote…') : t('Usar mi ubicación exacta')}
         </button>
       )}
-      {locating === 'denied' && <p className="mt-1 text-xs text-ink-faint">Sin permiso de ubicación: se usa la zona horaria.</p>}
-      {locating === 'unavailable' && <p className="mt-1 text-xs text-ink-faint">Este dispositivo no ha podido dar su ubicación.</p>}
+      {locating === 'denied' && <p className="mt-1 text-xs text-ink-faint">{t('Sin permiso de ubicación: se usa la zona horaria.')}</p>}
+      {locating === 'unavailable' && <p className="mt-1 text-xs text-ink-faint">{t('Este dispositivo no ha podido dar su ubicación.')}</p>}
     </motion.div>
   );
 }

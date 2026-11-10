@@ -1,4 +1,5 @@
 import { modeDef, REGION_FILTERS, type GameConfig, type ModeId, type StudyList } from '../game/config';
+import { t } from '../i18n';
 
 // Una lista de estudio se comparte dentro de la propia dirección de la página:
 //   https://…/?lista=Examen%20del%20martes~ESP.FRA.ITA
@@ -23,7 +24,7 @@ export function parseSharedList(search: string): StudyList | null {
   if (!raw) return null;
   const cut = raw.lastIndexOf('~');
   if (cut < 0) return null;
-  const name = raw.slice(0, cut).trim().slice(0, 60) || 'Lista compartida';
+  const name = raw.slice(0, cut).trim().slice(0, 60) || t('Lista compartida');
   const countries = [...new Set(raw.slice(cut + 1).split('.'))].filter((id) => /^[A-Z]{3}$/.test(id));
   if (!countries.length) return null;
   return { id: listId(name, countries), name, countries };

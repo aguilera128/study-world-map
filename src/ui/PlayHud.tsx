@@ -12,11 +12,13 @@ import { MODE_ICONS } from './modeIcons';
 import { useElapsed, useLast, usePad } from './hooks';
 import { Icon } from './Icon';
 import { Flag } from './primitives';
+import { t } from '../i18n';
+import { tx } from '../i18n/tx';
 
 const STAMP: Record<Outcome, { text: string; className: string }> = {
-  first: { text: '¡Bien!', className: 'text-ok' },
-  later: { text: 'Con ayuda', className: 'text-help' },
-  failed: { text: 'A repasar', className: 'text-bad' },
+  first: { text: t('¡Bien!'), className: 'text-ok' },
+  later: { text: t('Con ayuda'), className: 'text-help' },
+  failed: { text: t('A repasar'), className: 'text-bad' },
 };
 
 /** Lo que se pregunta: un rótulo pequeño y, en grande, el dato que se da como pista. */
@@ -26,23 +28,23 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
   let main: ReactNode;
   switch (config.mode) {
     case 'locate':
-      label = 'Búscalo en el mapa';
+      label = t('Búscalo en el mapa');
       main = country.name;
       break;
     case 'continent':
-      label = '¿En qué continente está?';
+      label = t('¿En qué continente está?');
       main = country.name;
       break;
     case 'name':
-      label = '¿Qué país es el señalado?';
+      label = t('¿Qué país es el señalado?');
       main = resolved ? country.name : <span className="text-ink-faint">¿…?</span>;
       break;
     case 'capital':
-      label = byMap ? '¿De qué país es la capital?' : '¿Cuál es su capital?';
+      label = byMap ? t('¿De qué país es la capital?') : t('¿Cuál es su capital?');
       main = byMap ? country.capital : country.name;
       break;
     case 'flag':
-      label = '¿De qué país es esta bandera?';
+      label = t('¿De qué país es esta bandera?');
       main = (
         <span className="flex items-center gap-4">
           <Flag a2={country.a2} height={66} className="rounded-md" />
@@ -76,24 +78,23 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
   switch (config.mode) {
     case 'continent':
       return (
-        <>
-          {country.name} está en {strong(atlas.continents[country.continents[0]])}.
-        </>
+        <>{tx('{country} está en {where}.', { country: country.name, where: strong(atlas.continents[country.continents[0]]) })}</>
       );
     case 'capital':
       return (
         <>
-          La capital de {country.name} es {strong(country.capital)}
-          {country.capitalNote ? ` (${country.capitalNote})` : ''}.
+          {tx('La capital de {country} es {capital}{note}.', {
+            country: country.name,
+            capital: strong(country.capital),
+            note: country.capitalNote ? ` (${country.capitalNote})` : '',
+          })}
         </>
       );
     case 'flag':
-      return <>Es la bandera de {strong(country.name)}.</>;
+      return <>{tx('Es la bandera de {country}.', { country: strong(country.name) })}</>;
     default:
       return (
-        <>
-          Es {strong(country.name)}, en {atlas.regions[country.regions[0]].name}.
-        </>
+        <>{tx('Es {country}, en {region}.', { country: strong(country.name), region: atlas.regions[country.regions[0]].name })}</>
       );
   }
 }
@@ -175,8 +176,8 @@ function TypeAnswer({ session, country }: { session: Session; country: Country }
           value={resolved ? expected : text}
           onChange={(e) => setText(e.target.value)}
           disabled={resolved}
-          placeholder={session.config.mode === 'capital' ? 'Escribe la capital…' : 'Escribe el país…'}
-          aria-label="Tu respuesta"
+          placeholder={session.config.mode === 'capital' ? t('Escribe la capital…') : t('Escribe el país…')}
+          aria-label={t('Tu respuesta')}
           autoComplete="off"
           autoCapitalize="words"
           spellCheck={false}
@@ -184,11 +185,11 @@ function TypeAnswer({ session, country }: { session: Session; country: Country }
           className="min-h-13 w-full min-w-0 rounded-[10px] border border-rule-strong bg-surface px-4 text-lg font-bold outline-none placeholder:font-normal placeholder:text-ink-faint focus:border-ink disabled:text-ink-soft"
         />
         <button type="submit" disabled={resolved || !text.trim()} className="btn btn-primary min-h-13 shrink-0">
-          Comprobar
+          {t('Comprobar')}
         </button>
       </div>
       <p className="float mx-auto min-h-7 px-3 py-0.5 text-center text-sm text-ink-soft" style={{ visibility: !resolved && wrongCount > 0 ? 'visible' : 'hidden' }}>
-        Pista: <span className="tabular font-bold tracking-[0.12em] text-ink">{hint(expected, Math.max(1, wrongCount))}</span>
+        {t('Pista')}: <span className="tabular font-bold tracking-[0.12em] text-ink">{hint(expected, Math.max(1, wrongCount))}</span>
       </p>
     </form>
   );
@@ -257,13 +258,13 @@ export function PlayHud() {
           <div className="flex min-h-7 items-center justify-between gap-3">
             {quitting ? (
               <div className="flex w-full items-center justify-between gap-3">
-                <span className="text-sm font-semibold">¿Salir de la partida?</span>
+                <span className="text-sm font-semibold">{t('¿Salir de la partida?')}</span>
                 <span className="flex gap-2">
                   <button type="button" onClick={() => go('home')} className="btn min-h-8 px-3 text-sm">
-                    Sí, salir
+                    {t('Sí, salir')}
                   </button>
                   <button type="button" onClick={() => setQuitting(false)} className="btn btn-primary min-h-8 px-3 text-sm">
-                    Seguir
+                    {t('Seguir')}
                   </button>
                 </span>
               </div>
@@ -274,7 +275,7 @@ export function PlayHud() {
                   <span className="truncate">
                     {mode.title} · {session.scopeLabel}
                   </span>
-                  {question.review && <span className="rounded bg-help-soft px-1.5 py-0.5 text-help">Repaso</span>}
+                  {question.review && <span className="rounded bg-help-soft px-1.5 py-0.5 text-help">{t('Repaso')}</span>}
                 </span>
                 <span className="flex shrink-0 items-center gap-3">
                   <span className="label tabular">
@@ -284,10 +285,10 @@ export function PlayHud() {
                     type="button"
                     onClick={() => setQuitting(true)}
                     className="btn btn-ghost -mr-2 min-h-7 gap-1 px-2 text-xs"
-                    title="Salir de la partida (Esc)"
+                    title={t('Salir de la partida (Esc)')}
                   >
                     <Icon name="close" size={14} />
-                    Salir
+                    {t('Salir')}
                   </button>
                 </span>
               </>
@@ -301,7 +302,7 @@ export function PlayHud() {
               {resolved ? (
                 <Solution atlas={atlas} config={session.config} country={country} />
               ) : (
-                <span className="flex items-center gap-1.5" title={`Intentos: te quedan ${attempts - session.wrong.length}`}>
+                <span className="flex items-center gap-1.5" title={t('Intentos: te quedan {n}', { n: attempts - session.wrong.length })}>
                   {Array.from({ length: attempts }, (_, i) => (
                     <span
                       key={i}
@@ -310,13 +311,13 @@ export function PlayHud() {
                       }`}
                     />
                   ))}
-                  <span className="ml-1">{session.wrong.length ? 'Casi… prueba otra vez' : 'intentos'}</span>
+                  <span className="ml-1">{session.wrong.length ? t('Casi… prueba otra vez') : t('intentos')}</span>
                 </span>
               )}
             </span>
             <span className="tabular flex shrink-0 items-center gap-3 font-semibold">
               {session.streak >= 2 && (
-                <span className="flex items-center gap-1 text-accent" title="Aciertos seguidos a la primera">
+                <span className="flex items-center gap-1 text-accent" title={t('Aciertos seguidos a la primera')}>
                   <Icon name="flame" size={16} />
                   {session.streak}
                 </span>
@@ -362,7 +363,7 @@ export function PlayHud() {
         <div className="flex min-h-12 items-center justify-center gap-3">
           {failed ? (
             <button type="button" onClick={next} autoFocus className="btn btn-primary min-h-12 px-6">
-              Siguiente
+              {t('Siguiente')}
               <Icon name="arrow" size={18} />
             </button>
           ) : resolved ? null : (
@@ -370,7 +371,7 @@ export function PlayHud() {
               {input === 'map' && (
                 <span className="float flex min-h-10 items-center gap-2 px-3.5 text-sm font-semibold">
                   <Icon name="pin" size={16} />
-                  Toca el país en el mapa
+                  {t('Toca el país en el mapa')}
                 </span>
               )}
               <button
@@ -379,7 +380,7 @@ export function PlayHud() {
                 className="float flex min-h-10 items-center gap-1.5 px-3.5 text-sm font-semibold text-ink-soft hover:text-ink"
               >
                 <Icon name="help" size={16} />
-                No lo sé
+                {t('No lo sé')}
               </button>
             </>
           )}

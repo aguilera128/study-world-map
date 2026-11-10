@@ -7,6 +7,8 @@ import { MODE_ICONS } from './modeIcons';
 import { useTheme } from './hooks';
 import { Icon } from './Icon';
 import { Panel, Segmented } from './primitives';
+import { t } from '../i18n';
+import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
 
@@ -61,27 +63,24 @@ export function ProgressPanel() {
   };
 
   return (
-    <Panel label="Mi progreso">
+    <Panel label={t('Mi progreso')}>
       <p className="label" style={order(0)}>
-        Mi progreso
+        {t('Mi progreso')}
       </p>
       <h1 className="display mt-3 text-[2rem] wide:text-[2.5rem]" style={order(1)}>
         {world.mastered > 0 ? (
-          <>
-            Dominas <span className="text-ok">{world.mastered}</span> de {world.total} países
-          </>
+          tx('Dominas {n} de {total} países', { n: <span className="text-ok">{world.mastered}</span>, total: world.total })
         ) : (
-          'Tu mapa de lo aprendido'
+          t('Tu mapa de lo aprendido')
         )}
       </h1>
       <p className="mt-2 text-ink-soft" style={order(2)}>
-        Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más
-        a menudo en las partidas.
+        {t('Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.')}
       </p>
 
       <div className="mt-5" style={order(3)}>
         <Segmented
-          label="Reto"
+          label={t('Reto')}
           value={mode}
           onChange={setMode}
           options={MODES.map((m) => ({
@@ -112,7 +111,7 @@ export function ProgressPanel() {
               type="button"
               onClick={() => practice(scope.id)}
               className="group block w-full rounded-lg px-2 py-2 text-left transition-colors hover:bg-[rgb(var(--shadow)/0.07)]"
-              title={`Practicar ${scope.label}`}
+              title={t('Practicar {x}', { x: scope.label })}
             >
               <div className="mb-1.5 flex items-baseline justify-between gap-3">
                 <span className="flex items-center gap-1.5 font-semibold">
@@ -123,7 +122,7 @@ export function ProgressPanel() {
                   <span className="group-hover:hidden">
                     {summary.mastered} / {summary.total}
                   </span>
-                  <span className="hidden font-bold text-accent group-hover:inline">Practicar →</span>
+                  <span className="hidden font-bold text-accent group-hover:inline">{t('Practicar →')}</span>
                 </span>
               </div>
               <LevelBar levels={summary.levels} total={summary.total} colors={colors} />
@@ -134,11 +133,11 @@ export function ProgressPanel() {
 
       <div className="mt-6 flex flex-wrap items-center gap-2.5" style={order(6)}>
         <button type="button" onClick={() => practice('mundo')} className="btn btn-accent min-h-12 px-5">
-          Practicar lo que peor llevo
+          {t('Practicar lo que peor llevo')}
           <Icon name="arrow" size={18} />
         </button>
         <button type="button" onClick={() => go('home')} className="btn btn-ghost min-h-12 px-4">
-          Volver
+          {t('Volver')}
         </button>
       </div>
 
@@ -146,7 +145,7 @@ export function ProgressPanel() {
         <div className="mt-6 text-sm text-ink-soft" style={order(7)}>
           {confirming ? (
             <span className="flex flex-wrap items-center gap-2">
-              ¿Borrar todo lo aprendido y los récords?
+              {t('¿Borrar todo lo aprendido y los récords?')}
               <button
                 type="button"
                 onClick={() => {
@@ -155,15 +154,15 @@ export function ProgressPanel() {
                 }}
                 className="btn min-h-8 px-3 text-sm text-bad"
               >
-                Sí, borrar
+                {t('Sí, borrar')}
               </button>
               <button type="button" onClick={() => setConfirming(false)} className="btn min-h-8 px-3 text-sm">
-                Cancelar
+                {t('Cancelar')}
               </button>
             </span>
           ) : (
             <button type="button" onClick={() => setConfirming(true)} className="underline decoration-rule-strong underline-offset-4 hover:text-ink">
-              Borrar mi progreso
+              {t('Borrar mi progreso')}
             </button>
           )}
         </div>

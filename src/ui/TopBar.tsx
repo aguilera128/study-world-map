@@ -2,6 +2,7 @@ import { getEngine } from '../app/engineRef';
 import { useApp, useSettings, type Screen } from '../app/store';
 import { useTheme } from './hooks';
 import { Icon, Logo, type IconName } from './Icon';
+import { t } from '../i18n';
 
 // Los rótulos de los botones aparecen algo más tarde que el resto del diseño ancho: con la marca
 // delante no caben en una línea hasta los 64rem.
@@ -47,7 +48,7 @@ export function TopBar() {
         disabled={playing}
         onClick={() => go('home')}
         className="pointer-events-auto flex items-center gap-2.5 rounded-lg pr-2 text-ink"
-        aria-label="Study World Map: volver al inicio"
+        aria-label={t('Study World Map: volver al inicio')}
       >
         <Logo />
         <span className={`display text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
@@ -55,12 +56,12 @@ export function TopBar() {
 
       <div className="pointer-events-auto flex items-center gap-1 wide:gap-2">
         {!playing && (
-          <nav className="flex items-center gap-0.5" aria-label="Secciones">
+          <nav className="flex items-center gap-0.5" aria-label={t('Secciones')}>
             <NavButton screen="explore" icon="compass">
-              Explorar
+              {t('Explorar')}
             </NavButton>
             <NavButton screen="progress" icon="chart">
-              Progreso
+              {t('Progreso')}
             </NavButton>
           </nav>
         )}
@@ -69,19 +70,19 @@ export function TopBar() {
           type="button"
           onClick={toggleRealTime}
           aria-pressed={realTime}
-          title="Tiempo real: dónde es de día y dónde de noche ahora mismo"
-          aria-label="Tiempo real"
+          title={t('Tiempo real: dónde es de día y dónde de noche ahora mismo')}
+          aria-label={t('Tiempo real')}
           className={`btn btn-ghost min-h-10 px-2.5 text-sm ${realTime ? 'bg-ink! text-paper!' : ''}`}
         >
           <Icon name="daynight" size={18} />
-          <span className={labels}>Tiempo real</span>
+          <span className={labels}>{t('Tiempo real')}</span>
         </button>
 
-        <div role="radiogroup" aria-label="Vista del mapa" className="float flex p-0.5">
+        <div role="radiogroup" aria-label={t('Vista del mapa')} className="float flex p-0.5">
           {(
             [
-              ['globe', 'globe', 'Globo 3D'],
-              ['flat', 'map', 'Mapa 2D'],
+              ['globe', 'globe', t('Globo 3D')],
+              ['flat', 'map', t('Mapa 2D')],
             ] as const
           ).map(([mode, icon, label]) => (
             <button
@@ -107,8 +108,8 @@ export function TopBar() {
         <button
           type="button"
           onClick={() => setTheme(theme === 'night' ? 'paper' : 'night')}
-          title={theme === 'night' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-          aria-label={theme === 'night' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+          title={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
+          aria-label={theme === 'night' ? t('Cambiar a tema claro') : t('Cambiar a tema oscuro')}
           className="btn btn-ghost btn-icon min-h-10 w-10"
         >
           <Icon name={theme === 'night' ? 'sun' : 'moon'} size={19} />

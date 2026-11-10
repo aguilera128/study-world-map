@@ -1,3 +1,5 @@
+import { t } from '../i18n';
+
 // Hora local de cada país. Todo se apoya en la base de datos de zonas horarias del propio navegador
 // (Intl), que ya conoce los cambios de hora de verano: aquí no hay tablas ni librerías.
 
@@ -62,12 +64,12 @@ export function offsetLabel(minutes: number): string {
 
 /** Diferencia con la hora del usuario, en palabras: «6 h más que tú», «misma hora que tú». */
 export function differenceLabel(minutes: number): string {
-  if (minutes === 0) return 'misma hora que tú';
+  if (minutes === 0) return t('misma hora que tú');
   const abs = Math.abs(minutes);
   const hours = Math.floor(abs / 60);
   const rest = abs % 60;
   const amount = [hours ? `${hours} h` : '', rest ? `${rest} min` : ''].filter(Boolean).join(' ');
-  return `${amount} ${minutes > 0 ? 'más' : 'menos'} que tú`;
+  return t(minutes > 0 ? '{amount} más que tú' : '{amount} menos que tú', { amount });
 }
 
 /** Zona horaria del dispositivo («Europe/Madrid»), o null si no se puede saber. */
