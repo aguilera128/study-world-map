@@ -46,6 +46,10 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
       label = t('¿Qué clima tiene?');
       main = country.name;
       break;
+    case 'inhabitants':
+      label = t('¿Cuál de estos países tiene más habitantes?');
+      main = resolved ? country.name : <span className="text-ink-faint">¿…?</span>;
+      break;
     case 'population':
       label = t('¿Su densidad de población es alta, media o baja?');
       main = country.name;
@@ -110,6 +114,8 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       );
     case 'climate':
       return <>{tx('Clima de {country}: {climate}.', { country: country.name, climate: strong(climateText(country.climate)) })}</>;
+    case 'inhabitants':
+      return <>{tx('{country} tiene {n} habitantes.', { country: strong(country.name), n: (country.population ?? 0).toLocaleString(LOCALE) })}</>;
     case 'population': {
       const level = levelOf(country);
       return (

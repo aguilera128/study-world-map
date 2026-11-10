@@ -11,7 +11,7 @@ import { gradeLabel, missed, score } from '../game/session';
 import { useLast } from './hooks';
 import { Icon } from './Icon';
 import { Flag, Panel } from './primitives';
-import { t } from '../i18n';
+import { t, LOCALE } from '../i18n';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
 
@@ -23,6 +23,7 @@ function answerFor(country: Country, config: GameConfig, { continents, regions }
   if (config.mode === 'region') return regions[country.regions[0]].name;
   if (config.mode === 'continent') return continents[country.continents[0]];
   if (config.mode === 'climate') return climateText(country.climate, 2);
+  if (config.mode === 'inhabitants') return country.population ? country.population.toLocaleString(LOCALE) : null;
   if (config.mode === 'population') {
     const level = levelOf(country);
     return level ? levelLabel(level) : null;

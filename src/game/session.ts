@@ -118,11 +118,39 @@ function distance(atlas: Atlas, a: number, b: number): number {
   return 2 * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
+/** Un país se considera claramente menos poblado que otro si no llega a dos tercios de su población. */
+const CLEAR_GAP = 1.5;
+
+/** Países de `pool` claramente menos poblados que `country`, del más al menos poblado. */
+function clearlySmaller(atlas: Atlas, pool: number[], country: number): number[] {
+  const own = atlas.countries[country].population ?? 0;
+  return pool
+    .filter((i) => i !== country && (atlas.countries[i].population ?? 0) * CLEAR_GAP <= own)
+    .sort((a, b) => (atlas.countries[b].population ?? 0) - (atlas.countries[a].population ?? 0));
+}
+
+/**
+ * Países por los que se puede preguntar «¿cuál tiene más habitantes?»: los que tienen dato y al
+ * menos otros tres claramente menos poblados entre los que elegir.
+ */
+function mostPopulated(atlas: Atlas, countries: number[]): number[] {
+  const known = countries.filter((i) => atlas.countries[i].population);
+  const askable = new Set(known.filter((i) => clearlySmaller(atlas, known, i).length >= 3));
+  // Los demás siguen en el conjunto para servir de opciones, pero no se preguntan: van al final.
+  return [...known.filter((i) => askable.has(i)), ...known.filter((i) => !askable.has(i))];
+}
+
 function makeOptions(atlas: Atlas, config: GameConfig, pool: number[], country: number, rng: Rng): Option[] {
   if (inputOf(config.answer) !== 'choice') return [];
   if (config.mode === 'continent') {
     // Siempre los mismos continentes y en el mismo orden: aquí no hay que buscar la respuesta.
     return (Object.keys(atlas.continents) as ContinentKey[]).map((key) => ({ id: key, label: atlas.continents[key], country: -1 }));
+  }
+  if (config.mode === 'inhabitants') {
+    // El país preguntado y tres bastante menos poblados, de los más cercanos a él en tamaño: así
+    // hay que saber cuál es mayor, sin que la diferencia sea dudosa.
+    const smaller = clearlySmaller(atlas, pool, country).slice(0, 8);
+    return shuffle([country, ...shuffle(smaller, rng).slice(0, 3)], rng).map((i) => ({ id: atlas.countries[i].id, label: atlas.countries[i].name, country: i }));
   }
   if (config.mode === 'population') {
     // Siempre los tres niveles, de menos a más, con su tramo a la vista.
@@ -189,8 +217,14 @@ export function createSession(
   { only, rng = Math.random }: SessionOptions = {},
 ): Session {
   // En el reto de población solo entran los países con dato de densidad.
-  const pool = config.mode === 'population' ? scope.countries.filter((i) => levelOf(atlas.countries[i]) !== null) : scope.countries;
-  const source = only ? only.filter((i) => pool.includes(i)) : pool;
+  const pool =
+    config.mode === 'population'
+      ? scope.countries.filter((i) => levelOf(atlas.countries[i]) !== null)
+      : config.mode === 'inhabitants'
+        ? mostPopulated(atlas, scope.countries)
+        : scope.countries;
+  const askable = config.mode === 'inhabitants' ? pool.filter((i) => clearlySmaller(atlas, pool, i).length >= 3) : pool;
+  const source = only ? only.filter((i) => askable.includes(i)) : askable;
   const n = only || config.length === 'all' ? source.length : Math.min(config.length, source.length);
   const chosen = weightedSample(source, n, (i) => selectionWeight(progress, atlas.countries[i].id, config.mode, now), rng);
   return {

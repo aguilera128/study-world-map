@@ -9,7 +9,7 @@ export type { RegionFilterDef };
  * Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. `region` es
  * el equivalente a `continent` en el mapa de un país: a qué comunidad autónoma pertenece una provincia.
  */
-export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region' | 'coords' | 'population';
+export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region' | 'coords' | 'population' | 'inhabitants';
 
 /**
  * Variante del reto: cómo se responde.
@@ -88,6 +88,13 @@ export const MODES: ModeDef[] = [
     title: t('Población'),
     summary: t('Di si la densidad de población de cada país es alta, media o baja.'),
     answers: ['choice', 'guided'],
+  },
+  {
+    // Comparar países por su número de habitantes: no hay cortes que aprender, solo cuál es mayor.
+    id: 'inhabitants',
+    title: t('Habitantes'),
+    summary: t('De cuatro países, di cuál tiene más habitantes.'),
+    answers: ['choice'],
   },
   {
     // Leer latitud y longitud: se da un punto por sus coordenadas y hay que decir qué país hay ahí.

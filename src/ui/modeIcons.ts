@@ -11,6 +11,7 @@ export const MODE_ICONS: Record<ModeId, IconName> = {
   region: 'continents',
   coords: 'globe',
   population: 'chart',
+  inhabitants: 'chart',
 };
 
 export const ANSWER_ICONS: Record<AnswerKind, IconName> = { map: 'pin', choice: 'options', guided: 'eye', type: 'keyboard' };
