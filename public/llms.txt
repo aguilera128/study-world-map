@@ -19,6 +19,16 @@ Los 197 países son los 193 miembros de la ONU, Ciudad del Vaticano, Palestina, 
 - [Mapa interactivo y juegos](https://www.studyworldmap.com/): la aplicación.
 - [Países del mundo y sus capitales](https://www.studyworldmap.com/paises-y-capitales/): lista completa de los 197 países por continente, con capital, bandera y superficie, y preguntas frecuentes.
 
+### Juegos por continente
+
+Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/capitales-de-europa/`, `/juego/banderas-de-europa/`…), con la lista y un enlace que abre el reto ya elegido:
+
+- [Países de Europa](https://www.studyworldmap.com/juego/paises-de-europa/)
+- [Países de Asia](https://www.studyworldmap.com/juego/paises-de-asia/)
+- [Países de África](https://www.studyworldmap.com/juego/paises-de-africa/)
+- [Países de América](https://www.studyworldmap.com/juego/paises-de-america/)
+- [Países de Oceanía](https://www.studyworldmap.com/juego/paises-de-oceania/)
+
 ## Fuentes de los datos
 
 - Cartografía: Natural Earth (dominio público).

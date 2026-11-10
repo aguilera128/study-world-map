@@ -122,7 +122,7 @@ No necesita variables de entorno.
 ```
 scripts/
   build-atlas.mjs        generador del atlas
-  build-pages.mjs        páginas estáticas: países y capitales, aviso legal, privacidad, cookies, donar
+  build-pages.mjs        páginas estáticas: países y capitales, juegos por continente, legales, donar y sitemap
   data/sitio.mjs         datos del titular y enlace de donación (el build de Vercel falla si faltan)
   data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)

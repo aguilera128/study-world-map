@@ -1,4 +1,4 @@
-import type { StudyList } from '../game/config';
+import { modeDef, REGION_FILTERS, type GameConfig, type ModeId, type StudyList } from '../game/config';
 
 // Una lista de estudio se comparte dentro de la propia dirección de la página:
 //   https://…/?lista=Examen%20del%20martes~ESP.FRA.ITA
@@ -30,3 +30,22 @@ export function parseSharedList(search: string): StudyList | null {
 }
 
 export const newListId = () => `lista-${Date.now().toString(36)}`;
+
+// Las páginas por continente (/juego/…) enlazan a un reto ya elegido: /?reto=capitales&zona=europa
+const RETOS: Record<string, ModeId> = {
+  localizar: 'locate',
+  continentes: 'continent',
+  nombrar: 'name',
+  capitales: 'capital',
+  banderas: 'flag',
+};
+
+/** Reto y zona pedidos en la dirección, o null si no hay ninguno válido. */
+export function parsePreset(search: string): Partial<GameConfig> | null {
+  const params = new URLSearchParams(search);
+  const mode = RETOS[params.get('reto') ?? ''];
+  const zona = params.get('zona');
+  const scope = REGION_FILTERS.some((r) => r.id === zona) ? zona! : undefined;
+  if (!mode && !scope) return null;
+  return { ...(mode && { mode, answer: modeDef(mode).answers[0] }), ...(scope && { scope }) };
+}

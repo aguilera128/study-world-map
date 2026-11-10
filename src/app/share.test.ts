@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SAMPLE_LIST } from '../game/config';
-import { parseSharedList, shareUrl } from './share';
+import { parsePreset, parseSharedList, shareUrl } from './share';
 
 const BASE = 'https://studyworldmap.example/';
 
@@ -36,5 +36,16 @@ describe('listas compartidas', () => {
     // un nombre vacío o larguísimo se sanea
     expect(parseSharedList('?lista=~ESP')!.name).toBe('Lista compartida');
     expect(parseSharedList(`?lista=${'a'.repeat(200)}~ESP`)!.name).toHaveLength(60);
+  });
+});
+
+describe('reto y zona en la dirección', () => {
+  it('lee reto y zona válidos', () => {
+    expect(parsePreset('?reto=capitales&zona=europa')).toEqual({ mode: 'capital', answer: 'choice', scope: 'europa' });
+    expect(parsePreset('?zona=africa')).toEqual({ scope: 'africa' });
+  });
+  it('ignora valores desconocidos', () => {
+    expect(parsePreset('?reto=hack&zona=marte')).toBeNull();
+    expect(parsePreset('')).toBeNull();
   });
 });

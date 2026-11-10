@@ -1,6 +1,6 @@
 import { AnimatePresence, MotionConfig } from 'motion/react';
 import { lazy, Suspense, useEffect } from 'react';
-import { parseSharedList } from './app/share';
+import { parsePreset, parseSharedList } from './app/share';
 import { useApp, useSettings } from './app/store';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import { ExplorePanel } from './ui/ExplorePanel';
@@ -55,13 +55,17 @@ export default function App() {
     void load();
   }, [load]);
 
-  // Lista de estudio recibida por enlace: se guarda, se deja elegida y se limpia la dirección.
+  // Lista de estudio o reto recibidos por enlace: se guardan, se dejan elegidos y se limpia la dirección.
   useEffect(() => {
     const shared = parseSharedList(window.location.search);
-    if (!shared) return;
+    const preset = parsePreset(window.location.search);
+    if (!shared && !preset) return;
     const settings = useSettings.getState();
-    settings.saveList(shared);
-    settings.setConfig({ scope: shared.id });
+    if (shared) {
+      settings.saveList(shared);
+      settings.setConfig({ scope: shared.id });
+    }
+    if (preset) settings.setConfig(preset);
     window.history.replaceState(null, '', window.location.pathname);
   }, []);
 

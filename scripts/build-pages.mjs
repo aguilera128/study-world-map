@@ -1,7 +1,9 @@
 // Genera las páginas HTML estáticas del sitio (sin JavaScript, legibles por buscadores y asistentes
 // de IA, que no ven nada de la aplicación):
 //   public/paises-y-capitales/   los 197 países por continente, con capital y bandera (desde el atlas)
+//   public/juego/<reto>-de-<zona>/   países, capitales y banderas por continente, con enlace al reto
 //   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs
+//   public/sitemap.xml   todas las páginas anteriores menos las legales
 //
 // Se ejecuta después de build-atlas.mjs (lee public/data/atlas.json); la salida no se versiona.
 
@@ -128,6 +130,9 @@ const CSS = `
     .pending { background:#ffd95a; color:#1b2a3a; padding:0 .25rem; border-radius:3px; }
     footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--rule); font-size:.8rem; color:var(--soft); }
     footer nav { display:flex; flex-wrap:wrap; gap:.25rem 1rem; margin-top:.5rem; }
+    .flags { display:grid; grid-template-columns:repeat(auto-fill,minmax(9rem,1fr)); gap:.75rem; padding:0; list-style:none; }
+    .flags li { background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:.6rem; text-align:center; font-size:.9rem; }
+    .flags img { display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover; border-radius:4px; box-shadow:0 0 0 1px var(--rule); margin-bottom:.4rem; }
     @media (max-width:36rem) { .num { display:none; } }`;
 
 const FOOTER = `    <footer>
@@ -183,6 +188,146 @@ function write(path, html) {
   writeFileSync(`${dir}index.html`, html);
 }
 
+// ───────────────────────── juegos por continente (/juego/…) ─────────────────────────
+// Cada página enlaza a la aplicación con el reto y la zona ya elegidos (?reto=…&zona=…, ver
+// src/app/share.ts). Los países de cada zona salen igual que en el juego: por región del atlas.
+
+const ZONAS = [
+  { id: 'europa', name: 'Europa', keys: ['europa'] },
+  { id: 'asia', name: 'Asia', keys: ['asia'] },
+  { id: 'africa', name: 'África', keys: ['africa'] },
+  { id: 'america', name: 'América', keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'] },
+  { id: 'oceania', name: 'Oceanía', keys: ['oceania'] },
+].map((z) => ({
+  ...z,
+  list: countries.filter((c) => c.regions.some((r) => z.keys.includes(r))).sort((a, b) => a.name.localeCompare(b.name, 'es')),
+}));
+
+const RETOS = [
+  { id: 'paises', reto: 'localizar', label: 'Países' },
+  { id: 'capitales', reto: 'capitales', label: 'Capitales' },
+  { id: 'banderas', reto: 'banderas', label: 'Banderas' },
+];
+
+const juegoPath = (r, z) => `/juego/${r.id}-de-${z.id}/`;
+const nameOf = (i) => atlas.countries[i]?.name;
+const flag = (c) => `<img src="/flags/${c.a2}.svg" alt="" width="24" height="18" loading="lazy" />`;
+
+function juegoBody(r, z) {
+  const n = z.list.length;
+  const zn = esc(z.name);
+  const byArea = z.list.filter((c) => c.areaKm2).sort((a, b) => b.areaKm2 - a.areaKm2);
+  const islas = z.list.filter((c) => !c.neighbors?.length).length;
+  const otherRetos = RETOS.filter((o) => o !== r).map((o) => `<a href="${juegoPath(o, z)}">${o.label} de ${zn}</a>`);
+  const otherZonas = ZONAS.filter((o) => o !== z).map((o) => `<a href="${juegoPath(r, o)}">${r.label} de ${esc(o.name)}</a>`);
+
+  const intro = {
+    paises: `Te damos el nombre de un país de ${zn} y tienes que encontrarlo en el mapa. Si fallas, te dice qué país has pulsado y te lo vuelve a preguntar más tarde, hasta que te sepas los ${n}.`,
+    capitales: `Une cada uno de los ${n} países de ${zn} con su capital: con opciones, buscando el país en el mapa o escribiendo la respuesta. Las capitales que fallas vuelven a salir hasta que te las sabes.`,
+    banderas: `Reconoce las ${n} banderas de ${zn}: te enseñamos una bandera y pulsas su país en el mapa o eliges entre opciones. Las que fallas se repiten más a menudo.`,
+  }[r.id];
+
+  const content = {
+    paises: `    <h2>Los ${n} países de ${zn}</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">País</th><th scope="col">Limita con</th><th scope="col" class="num">Superficie</th></tr></thead>
+      <tbody>
+${z.list
+  .map((c) => {
+    const vecinos = (c.neighbors ?? []).map(nameOf).filter(Boolean).sort((a, b) => a.localeCompare(b, 'es'));
+    return `        <tr><td>${flag(c)} ${esc(c.name)}</td><td>${esc(vecinos.join(', ') || 'Sin fronteras terrestres')}</td><td class="num">${km2(c.areaKm2)}</td></tr>`;
+  })
+  .join('\n')}
+      </tbody>
+    </table></div>
+    <ul class="facts">
+      <li>El país más grande de ${zn} es <strong>${esc(byArea[0].name)}</strong> (${km2(byArea[0].areaKm2)})${
+        // Sin la superficie de todos (al Vaticano le falta en la fuente) no se puede decir cuál es el más pequeño.
+        byArea.length === n ? ` y el más pequeño, <strong>${esc(byArea.at(-1).name)}</strong> (${km2(byArea.at(-1).areaKm2)})` : ''
+      }.</li>
+      <li>${islas} de los ${n} países no tienen fronteras terrestres con ningún otro.</li>
+    </ul>`,
+    capitales: `    <h2>Capitales de los ${n} países de ${zn}</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">País</th><th scope="col">Capital</th></tr></thead>
+      <tbody>
+${z.list
+  .map(
+    (c) =>
+      `        <tr><td>${flag(c)} ${esc(c.name)}</td><td><strong>${esc(c.capital ?? '—')}</strong>${c.capitalNote ? ` <small>(${esc(c.capitalNote)})</small>` : ''}</td></tr>`,
+  )
+  .join('\n')}
+      </tbody>
+    </table></div>`,
+    banderas: `    <h2>Las ${n} banderas de ${zn}</h2>
+    <ul class="flags">
+${z.list.map((c) => `      <li><img src="/flags/${c.a2}.svg" alt="Bandera de ${esc(c.name)}" width="160" height="120" loading="lazy" />${esc(c.name)}</li>`).join('\n')}
+    </ul>`,
+  }[r.id];
+
+  return `    <h1>${r.label} de ${zn}: juego en el mapa</h1>
+    <p class="lead">${intro}</p>
+    <a class="cta" href="/?reto=${r.reto}&amp;zona=${z.id}">Jugar: ${r.label.toLowerCase()} de ${zn} →</a>
+    <p>Gratis, sin registro y sin anuncios. Tu progreso se guarda en tu dispositivo.</p>
+${content}
+    <h2>Sigue practicando</h2>
+    <nav class="toc" aria-label="Otros retos de ${zn}">${otherRetos.join(' ')}</nav>
+    <nav class="toc" aria-label="${r.label} de otros continentes">${otherZonas.join(' ')}</nav>
+    <p><a href="/paises-y-capitales/">Todos los países del mundo y sus capitales</a></p>`;
+}
+
+const TITULOS = {
+  paises: (z) => [
+    `Países de ${z.name}: juego para aprenderlos en el mapa`,
+    `Aprende los ${z.list.length} países de ${z.name} jugando: encuéntralos en el mapa, con sus fronteras y su superficie. Gratis y sin registro.`,
+  ],
+  capitales: (z) => [
+    `Capitales de ${z.name}: lista y juego para aprenderlas`,
+    `Las capitales de los ${z.list.length} países de ${z.name} en una lista y en un juego con mapa que repite las que fallas. Gratis y sin registro.`,
+  ],
+  banderas: (z) => [
+    `Banderas de ${z.name}: las ${z.list.length} banderas y juego`,
+    `Las ${z.list.length} banderas de ${z.name} con el nombre de su país, y un juego para reconocerlas en el mapa. Gratis y sin registro.`,
+  ],
+};
+
+const juegos = [];
+for (const z of ZONAS) {
+  for (const r of RETOS) {
+    const path = juegoPath(r, z);
+    const [title, description] = TITULOS[r.id](z);
+    juegos.push(path);
+    write(
+      path,
+      page({
+        path,
+        title: `${title} · Study World Map`,
+        ogTitle: title,
+        description,
+        jsonLd: {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: title,
+          url: `${SITE}${path}`,
+          inLanguage: 'es',
+          isPartOf: { '@type': 'WebSite', name: 'Study World Map', url: `${SITE}/` },
+          mainEntity: {
+            '@type': 'ItemList',
+            name: `${r.label} de ${z.name}`,
+            numberOfItems: z.list.length,
+            itemListElement: z.list.map((c, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: r.id === 'capitales' && c.capital ? `${c.capital} (${c.name})` : c.name,
+            })),
+          },
+        },
+        body: juegoBody(r, z),
+      }),
+    );
+  }
+}
+
 // ───────────────────────── páginas ─────────────────────────
 
 write(
@@ -197,6 +342,11 @@ write(
     body: `    <h1>Países del mundo y sus capitales</h1>
     <p class="lead">Los ${countries.length} países del mundo ordenados por continente, con su capital, su bandera y su superficie. Cuando quieras aprendértelos, practica con el mapa interactivo: te pregunta más lo que fallas hasta que te lo sabes.</p>
     <a class="cta" href="/">Practicar en el mapa interactivo →</a>
+    <p>Juegos por continente:</p>
+    <nav class="toc" aria-label="Juegos por continente">
+${ZONAS.map((z) => `      <a href="/juego/paises-de-${z.id}/">Países de ${esc(z.name)}</a>`).join('\n')}
+    </nav>
+    <p>Lista por continente:</p>
     <nav class="toc" aria-label="Continentes">
 ${groups.map((g) => `      <a href="#${g.key}">${esc(g.name)}</a>`).join('\n')}
     </nav>
@@ -212,8 +362,18 @@ ${FAQ.map(([q, a]) => `        <dt>${esc(q)}</dt>\n        <dd>${esc(a)}</dd>`).
 
 for (const legal of legalPages()) write(legal.path, page({ ...legal, prose: true }));
 
+const urls = ['/', '/paises-y-capitales/', ...juegos, '/donar/'];
+writeFileSync(
+  'public/sitemap.xml',
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}
+</urlset>
+`,
+);
+
 const pending = [...Object.values(TITULAR), DONAR_URL].filter((v) => v.startsWith('PENDIENTE'));
-console.log(`páginas: paises-y-capitales (${countries.length} países) + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`);
+console.log(`páginas: paises-y-capitales (${countries.length} países) + ${juegos.length} juegos + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`);
 // En Vercel no se publica un aviso legal a medias.
 if (pending.length && process.env.VERCEL) {
   throw new Error(`build-pages: faltan datos en scripts/data/sitio.mjs:\n  ${pending.join('\n  ')}`);
