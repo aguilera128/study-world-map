@@ -15,7 +15,7 @@ import { useNow, useReducedMotion, useTheme } from './hooks';
 import { Icon } from './Icon';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
-import { t } from '../i18n';
+import { lang, LOCALE, t } from '../i18n';
 
 const TONE_CLASS: Record<Tone, string> = {
   ok: 'bg-ok text-white',
@@ -135,6 +135,37 @@ export default function MapCanvas() {
   const playing = screen === 'play' || screen === 'results';
   const daylight = realTime && layers.dayNight;
   useEffect(() => engine?.setDaylight(daylight ? (playing ? 0.5 : 1) : 0), [engine, daylight, playing]);
+  useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
+  useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
+  useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);
+  useEffect(() => {
+    engine?.setGuides(
+      layers.guides
+        ? [t('Círculo polar ártico'), t('Trópico de Cáncer'), t('Ecuador'), t('Trópico de Capricornio'), t('Círculo polar antártico'), t('Meridiano de Greenwich')]
+        : null,
+    );
+  }, [engine, layers.guides]);
+  // Accidentes geográficos: el fichero solo se descarga si se enciende la capa.
+  useEffect(() => {
+    if (!engine || !layers.features) return;
+    let cancelled = false;
+    fetch('/data/fisico.json')
+      .then((res) => res.json())
+      .then((data: { features: { kind: string; rank: number; at: [number, number]; elev?: number; names: Record<string, string>; lines?: number[][] }[] }) => {
+        if (cancelled) return;
+        engine.setFeatures(
+          data.features.map((f) => {
+            const name = f.names[lang] ?? f.names.es;
+            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines, text: f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name };
+          }),
+        );
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      engine.setFeatures([]);
+    };
+  }, [engine, layers.features]);
   useEffect(() => engine?.setLayers(layers.grid, layers.glint, layers.stars), [engine, layers.grid, layers.glint, layers.stars]);
   useEffect(() => engine?.setSidereal(siderealAngle(now)), [engine, now]);
   useEffect(() => engine?.setSun(sun.lon, sun.lat), [engine, sun]);

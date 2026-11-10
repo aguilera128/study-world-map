@@ -42,6 +42,8 @@ export interface Palette {
   glint: number;
   /** Cuánto se distinguen el mar profundo y las aguas someras (0 = color plano). */
   seaDepth: number;
+  /** Fuerza del sombreado del relieve sobre la tierra (0 = plano). */
+  relief: number;
   /** Brillo de las estrellas alrededor del globo (0 = sin estrellas: sobre papel no pegan). */
   stars: number;
   /** Color y fuerza del borde claro del globo. */
@@ -66,6 +68,10 @@ export interface Palette {
   sheetShadowAlpha: number;
   line: string;
   lineEmph: string;
+  /** Color de los ríos. */
+  river: string;
+  /** Color de las líneas imaginarias (ecuador, trópicos…). */
+  guide: string;
   /** Oscurecimiento de las paredes de un país levantado. */
   wallTint: number;
   /** Color al pasar el cursor: se mezcla con el del país. */
@@ -84,6 +90,7 @@ export const PAPER: Palette = {
   gridAlpha: 0.22,
   glint: 0.3,
   seaDepth: 0.85,
+  relief: 0.9,
   stars: 0,
   rim: '#dcecf0',
   rimAmount: 0.3,
@@ -101,6 +108,8 @@ export const PAPER: Palette = {
   sheetShadowAlpha: 0.16,
   line: '#8f897a',
   lineEmph: '#1b2a3a',
+  river: '#4f86ab',
+  guide: '#b4492f',
   wallTint: 0.7,
   hover: '#ffd95a',
   hoverMix: 0.62,
@@ -146,6 +155,7 @@ export const NIGHT: Palette = {
   gridAlpha: 0.14,
   glint: 0.32,
   seaDepth: 1.35,
+  relief: 1,
   stars: 1,
   rim: '#6ea6d8',
   rimAmount: 0.42,
@@ -163,6 +173,8 @@ export const NIGHT: Palette = {
   sheetShadowAlpha: 0.4,
   line: '#364250',
   lineEmph: '#f3ead7',
+  river: '#5f9cc4',
+  guide: '#f0a070',
   wallTint: 0.6,
   hover: '#ffd866',
   hoverMix: 0.5,

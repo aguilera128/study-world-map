@@ -628,3 +628,48 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Rótulos de accidentes geográficos (src/engine/labels.ts): el motor los coloca con `transform`. */
+.feature-label {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 15;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  /* halo del color del papel para que se lea sobre cualquier país */
+  text-shadow:
+    0 0 3px var(--paper),
+    0 0 3px var(--paper),
+    0 0 6px var(--paper);
+  will-change: transform;
+}
+
+.feature-label.water {
+  font-style: italic;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--ink) 70%, #2f7fb5);
+}
+
+.feature-label.oceano,
+.feature-label.cordillera {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.feature-label.guia {
+  /* pastilla opaca: tapa la línea por debajo y se lee sobre cualquier país */
+  padding: 1px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-shadow: none;
+}

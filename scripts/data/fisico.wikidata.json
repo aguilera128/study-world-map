@@ -1,0 +1,1782 @@
+{
+"Q1001294": {
+"ca": "Altiplà Polar",
+"eu": "Antartikako goi-ordokia"
+},
+"Q1029702": {
+"ca": "Sierra Madre del Sur",
+"eu": "Hegoaldeko Sierra Madre",
+"gl": "Serra Madre do Sur"
+},
+"Q10362010": {
+"ca": "Indaiá"
+},
+"Q1037396": {
+"ca": "Bogda Feng"
+},
+"Q104437": {
+"ca": "Riu Yukon",
+"eu": "Yukon ibaia",
+"gl": "Río Yukón"
+},
+"Q1045888": {
+"ca": "Puncak Jaya",
+"eu": "Puncak Jaya",
+"gl": "Puncak Jaya"
+},
+"Q1054325": {
+"ca": "Riu Saint Clair"
+},
+"Q1062": {
+"ca": "llac Ontario",
+"eu": "Ontario",
+"gl": "lago Ontario"
+},
+"Q1066": {
+"ca": "llac Superior",
+"eu": "Superior",
+"gl": "Lago Superior"
+},
+"Q1072879": {
+"ca": "muntanyes Qilian",
+"eu": "Qilian mendiak"
+},
+"Q1089367": {
+"ca": "muntanyes Chugach"
+},
+"Q10965": {
+"ca": "Ebre",
+"eu": "Ebro",
+"gl": "río Ebro"
+},
+"Q1124584": {
+"ca": "Sierra Madre Occidental",
+"eu": "Mendebaldeko Sierra Madre",
+"gl": "Serra Madre Occidental"
+},
+"Q1132302": {
+"eu": "Cordillera Real",
+"gl": "Cordilleira Real"
+},
+"Q1139110": {
+"ca": "Muntanyes Ellsworth",
+"eu": "Ellsworth mendiak"
+},
+"Q1143852": {
+"ca": "Lek"
+},
+"Q1152951": {
+"ca": "Nederrijn",
+"gl": "río Nederrijn"
+},
+"Q116685": {
+"ca": "llac Tana",
+"eu": "Tana",
+"gl": "Lago Tana"
+},
+"Q1169": {
+"ca": "llac Michigan",
+"eu": "Michigan",
+"gl": "Lago Michigan"
+},
+"Q117615": {
+"ca": "riu Mamoré",
+"eu": "Mamoré"
+},
+"Q118251": {
+"ca": "riu Madeira",
+"eu": "Madeira",
+"gl": "Río Madeira"
+},
+"Q118350": {
+"ca": "Illes Carolines",
+"eu": "Karolinak",
+"gl": "Illas Carolinas"
+},
+"Q118771": {
+"ca": "Rio Negro",
+"eu": "Rio Negro",
+"gl": "Río Negro, río Amazonas"
+},
+"Q118863": {
+"ca": "illa del Nord",
+"eu": "Ipar uhartea",
+"gl": "Illa Norte"
+},
+"Q118899": {
+"ca": "Altiplà Brasiler",
+"eu": "Brasilgo goi-lautada",
+"gl": "Altiplano brasileiro"
+},
+"Q1195285": {
+"ca": "Muntanyes Nanling",
+"gl": "Montañas Nanling"
+},
+"Q120314": {
+"ca": "mont Wutai",
+"eu": "Wutai mendia",
+"gl": "Monte Wutai"
+},
+"Q120755": {
+"ca": "illa del Sud",
+"eu": "Hego uhartea",
+"gl": "Illa Sur, Nova Zelandia"
+},
+"Q1239": {
+"ca": "oceà Índic",
+"eu": "Indiako ozeanoa",
+"gl": "océano Índico"
+},
+"Q12431": {
+"ca": "Pirineus",
+"eu": "Pirinioak",
+"gl": "Pireneos"
+},
+"Q1247": {
+"ca": "mar Carib",
+"eu": "Karibe itsasoa",
+"gl": "mar Caribe"
+},
+"Q125309": {
+"ca": "llac Txad",
+"eu": "Txad",
+"gl": "Lago Chad"
+},
+"Q125888": {
+"ca": "llac Albert",
+"eu": "Albert",
+"gl": "Lago Alberte"
+},
+"Q12630": {
+"ca": "golf de Mèxic",
+"eu": "Mexikoko golkoa",
+"gl": "Golfo de México"
+},
+"Q127031": {
+"ca": "estret de Taiwan",
+"eu": "Taiwan itsasartea",
+"gl": "Estreito de Taiwán"
+},
+"Q12707": {
+"ca": "Grans Planes",
+"eu": "Zabaldi handiak",
+"gl": "Grandes Planicies"
+},
+"Q127892": {
+"ca": "riu Paraná",
+"eu": "Paraná",
+"gl": "Río Paraná"
+},
+"Q128102": {
+"ca": "Irtix",
+"eu": "Irtyx",
+"gl": "Río Irtysh"
+},
+"Q12837": {
+"ca": "península Ibèrica",
+"eu": "Iberiar penintsula",
+"gl": "Península Ibérica"
+},
+"Q128500": {
+"ca": "Tarbagataj"
+},
+"Q1286": {
+"ca": "Alps",
+"eu": "Alpeak",
+"gl": "Alpes"
+},
+"Q1288": {
+"ca": "Carpats",
+"eu": "Karpatoak",
+"gl": "Montes Cárpatos"
+},
+"Q128880": {
+"ca": "mar d'Arafura",
+"eu": "Arafura itsasoa",
+"gl": "Mar de Arafura"
+},
+"Q130018": {
+"ca": "Denali",
+"eu": "Denali mendia",
+"gl": "Denali"
+},
+"Q130135": {
+"ca": "serralada de l'Atles",
+"eu": "Atlasa",
+"gl": "Cordal do Atlas"
+},
+"Q130978": {
+"ca": "península de Yucatán",
+"eu": "Yucatán penintsula",
+"gl": "Península do Iucatán"
+},
+"Q131217": {
+"ca": "golf de Siam",
+"eu": "Thailandiako golkoa",
+"gl": "Golfo de Tailandia"
+},
+"Q131274": {
+"ca": "mar de Beaufort",
+"eu": "Beaufort itsasoa",
+"gl": "Mar de Beaufort"
+},
+"Q131377": {
+"ca": "Namib",
+"eu": "Namib",
+"gl": "Deserto do Namib"
+},
+"Q131418": {
+"ca": "mar de Timor",
+"eu": "Timorko itsasoa",
+"gl": "Mar de Timor"
+},
+"Q131792": {
+"ca": "Orinoco",
+"eu": "Orinoko",
+"gl": "Río Orinoco"
+},
+"Q132868": {
+"ca": "mar de Grenlàndia",
+"eu": "Groenlandiako itsasoa",
+"gl": "mar de Groenlandia"
+},
+"Q1344617": {
+"eu": "Chilia adarra"
+},
+"Q134485": {
+"ca": "Balqaş",
+"eu": "Balkash aintzira",
+"gl": "Lago Balkhash"
+},
+"Q134750": {
+"ca": "riu Sant Llorenç",
+"eu": "San Laurendi ibaia",
+"gl": "Río San Lourenzo"
+},
+"Q1359850": {
+"ca": "Betpak-Dala"
+},
+"Q1383": {
+"ca": "llac Huron",
+"eu": "Huron aintzira",
+"gl": "Lago Huron"
+},
+"Q13989": {
+"ca": "Honshū",
+"eu": "Honshu",
+"gl": "Honshu"
+},
+"Q14081": {
+"ca": "volcà Chimborazo",
+"eu": "Chimborazo",
+"gl": "Volcán Chimborazo"
+},
+"Q141501": {
+"ca": "Llanos",
+"eu": "Los Llanos",
+"gl": "Llanos"
+},
+"Q142148": {
+"ca": "Riu São Francisco",
+"eu": "São Francisco",
+"gl": "Río São Francisco"
+},
+"Q14294": {
+"ca": "Tajo",
+"eu": "Tajo",
+"gl": "Río Texo"
+},
+"Q143014": {
+"ca": "Cordillera Oriental",
+"eu": "Ekialdeko Mendikatea",
+"gl": "Cordilleira Oriental"
+},
+"Q14314106": {
+"ca": "Desert occidental (Egipte)",
+"eu": "Mendebaldeko basamortua",
+"gl": "Deserto occidental"
+},
+"Q143650": {
+"ca": "Mar de Hoces",
+"eu": "Drake pasaia",
+"gl": "Mar de Hoces"
+},
+"Q144040": {
+"ca": "Sierra Madre Oriental",
+"eu": "Ekialdeko Sierra Madre",
+"gl": "Serra Madre Oriental"
+},
+"Q145165": {
+"ca": "Gran Desert de Victòria",
+"eu": "Victoria Basamortu Handia",
+"gl": "Gran Deserto de Victoria"
+},
+"Q1469": {
+"ca": "Riu Loira",
+"eu": "Loira",
+"gl": "río Loira"
+},
+"Q1471": {
+"ca": "Sena",
+"eu": "Sena",
+"gl": "Río Sena"
+},
+"Q1472009": {
+"eu": "Neuquén ibaia",
+"gl": "Río Neuquén"
+},
+"Q147304": {
+"ca": "Gran Planúria del Nord de la Xina",
+"eu": "Ipar Txinako lautada",
+"gl": "Chaira do norte da China"
+},
+"Q1497": {
+"ca": "Mississipi",
+"eu": "Mississippi ibaia",
+"gl": "Río Mississippi"
+},
+"Q1511505": {
+"eu": "Jenisei Txikia"
+},
+"Q1519602": {
+"ca": "Riu Grande"
+},
+"Q15288": {
+"ca": "llac Làdoga",
+"eu": "Ladoga",
+"gl": "Lago Ladoga"
+},
+"Q155197": {
+"ca": "altiplà de la Sibèria Central",
+"eu": "Erdialdeko Siberiako goi-ordokia",
+"gl": "Altiplano de Siberia Central"
+},
+"Q155322": {
+"ca": "Sikhoté-Alín",
+"eu": "Sikhote-Alin",
+"gl": "Sikhote-Alin"
+},
+"Q156054": {
+"ca": "riu Tocantins",
+"eu": "Tocantins ibaia",
+"gl": "Río Tocantins"
+},
+"Q1560829": {
+"ca": "Ulugh Muztagh"
+},
+"Q156684": {
+"ca": "Serralada d'Alaska",
+"eu": "Alaskako mendikatea"
+},
+"Q1569231": {
+"gl": "Río Nanpan"
+},
+"Q159183": {
+"ca": "mar de les Filipines",
+"eu": "Filipinetako itsasoa",
+"gl": "Mar de Filipinas"
+},
+"Q159252": {
+"ca": "mar dels Txuktxis",
+"eu": "Txuktxien itsasoa",
+"gl": "Mar de Chukchi"
+},
+"Q160194": {
+"ca": "mar de Sulu",
+"eu": "Suluko itsasoa",
+"gl": "Mar de Sulu"
+},
+"Q160636": {
+"ca": "Río Bravo",
+"eu": "Río Grande",
+"gl": "Río Grande, América do Norte"
+},
+"Q161750": {
+"ca": "Pamir",
+"eu": "Pamir mendiak"
+},
+"Q162737": {
+"ca": "Angarà",
+"eu": "Angara",
+"gl": "Río Angara"
+},
+"Q163758": {
+"ca": "massís Vinson",
+"eu": "Vinson",
+"gl": "Macizo Vinson"
+},
+"Q1644": {
+"ca": "Elba",
+"eu": "Elba",
+"gl": "Río Elba"
+},
+"Q164466": {
+"ca": "mar de Ross",
+"eu": "Ross itsasoa",
+"gl": "Mar de Ross"
+},
+"Q165100": {
+"ca": "canal de Moçambic",
+"eu": "Mozambikeko kanala",
+"gl": "Canle de Mozambique"
+},
+"Q1653": {
+"ca": "Danubi",
+"eu": "Danubio",
+"gl": "Río Danubio"
+},
+"Q165440": {
+"ca": "Dhaulagiri",
+"eu": "Dhaulagiri",
+"gl": "Dhaulagiri"
+},
+"Q165481": {
+"ca": "Illes Grans de la Sonda",
+"eu": "Sondako Uharte Handiak",
+"gl": "Illas maiores da Sonda"
+},
+"Q165608": {
+"ca": "península de Kola",
+"eu": "Kola",
+"gl": "Península de Kola"
+},
+"Q166": {
+"ca": "mar Negra",
+"eu": "Itsaso Beltza",
+"gl": "Mar Negro"
+},
+"Q166162": {
+"ca": "Onega",
+"eu": "Onega",
+"gl": "Lago Onega"
+},
+"Q1668781": {
+"ca": "braç de Sfântu Gheorghe"
+},
+"Q166966": {
+"ca": "Xatt al-Arab",
+"eu": "Xatt al-Arab"
+},
+"Q167021": {
+"ca": "Zagros",
+"eu": "Zagros mendiak",
+"gl": "Montes Zagros"
+},
+"Q169132": {
+"ca": "Panjab",
+"eu": "Punjab",
+"gl": "Panxab"
+},
+"Q169274": {
+"ca": "mar dels Sargassos",
+"eu": "Sargazoen itsasoa",
+"gl": "Mar dos Argazos"
+},
+"Q1693": {
+"ca": "mar del Nord",
+"eu": "Ipar itsasoa",
+"gl": "Mar do Norte"
+},
+"Q169966": {
+"ca": "Dècan",
+"eu": "Dekan goi-ordokia",
+"gl": "Deccan"
+},
+"Q17": {
+"ca": "Japó",
+"eu": "Japonia",
+"gl": "Xapón"
+},
+"Q170383": {
+"ca": "Aïr",
+"eu": "Aïr mendiak",
+"gl": "Montañas de Aïr"
+},
+"Q171510": {
+"ca": "mar de Banda",
+"eu": "Banda itsasoa",
+"gl": "Mar de Banda"
+},
+"Q171649": {
+"ca": "riu Ubangi",
+"eu": "Ubangi",
+"gl": "Río Ubangi"
+},
+"Q171847": {
+"ca": "Riu Araguaia",
+"eu": "Araguaia"
+},
+"Q172070": {
+"ca": "Mont Kenya",
+"eu": "Kenya",
+"gl": "Monte Kenya"
+},
+"Q172691": {
+"ca": "Thar",
+"eu": "Thar basamortua",
+"gl": "Deserto do Thar"
+},
+"Q172702": {
+"ca": "Karakum",
+"eu": "Karakum",
+"gl": "Deserto de Karakum"
+},
+"Q173343": {
+"ca": "mar de Weddell",
+"eu": "Weddell itsasoa",
+"gl": "Mar de Weddell"
+},
+"Q173596": {
+"ca": "llac Vänern",
+"eu": "Vänern",
+"gl": "Lago Vänern"
+},
+"Q173862": {
+"ca": "llac de Nicaragua",
+"eu": "Nikaraguako aintzira",
+"gl": "Lago de Nicaragua"
+},
+"Q178167": {
+"ca": "mont Kosciuszko",
+"eu": "Kosciuszko mendia",
+"gl": "Monte Kosciuszko"
+},
+"Q178543": {
+"ca": "Península de Baixa Califòrnia",
+"eu": "Kaliforniako penintsula",
+"gl": "Península de California"
+},
+"Q178741": {
+"ca": "Gran Llac Salat",
+"eu": "Aintzira Gazi Handia",
+"gl": "Gran Lago Salgado"
+},
+"Q1796029": {
+"eu": "Maud Erreginaren mendiak"
+},
+"Q179842": {
+"ca": "altiplà del Tibet",
+"eu": "Tibeteko goi-ordokia",
+"gl": "Altiplano do Tíbet"
+},
+"Q180531": {
+"ca": "golf d'Alaska",
+"eu": "Alaskako golkoa",
+"gl": "Golfo de Alasca"
+},
+"Q180558": {
+"ca": "riu Bafing",
+"gl": "Río Bafing"
+},
+"Q181475": {
+"ca": "Riu Orange",
+"eu": "Orange",
+"gl": "Río Orange"
+},
+"Q181482": {
+"ca": "riu Darling",
+"eu": "Darling ibaia"
+},
+"Q181528": {
+"ca": "desert de Líbia",
+"eu": "Libiako basamortua",
+"gl": "Deserto de Libia"
+},
+"Q1817102": {
+"ca": "muntanyes Mackenzie",
+"eu": "Mackenzie mendiak"
+},
+"Q182343": {
+"ca": "Riu Niàgara",
+"eu": "Niagara ibaia",
+"gl": "Río Niágara"
+},
+"Q183078": {
+"ca": "riu Murray",
+"eu": "Murray ibaia",
+"gl": "Río Murray"
+},
+"Q183295": {
+"ca": "Drakensberg",
+"eu": "Drakensberg",
+"gl": "Drakensberg"
+},
+"Q183455": {
+"ca": "mar de Bellingshausen",
+"eu": "Bellingshausen itsasoa",
+"gl": "Mar de Bellingshausen"
+},
+"Q184189": {
+"ca": "mar de Labrador",
+"eu": "Labrador itsasoa",
+"gl": "Mar do Labrador"
+},
+"Q184364": {
+"ca": "Kyzyl Kum",
+"eu": "Kyzyl Kum"
+},
+"Q184382": {
+"ca": "pampa",
+"eu": "Panpa",
+"gl": "Pampa"
+},
+"Q185605": {
+"ca": "península Antàrtica",
+"eu": "Penintsula antartikoa",
+"gl": "Península Antártica"
+},
+"Q1858056": {
+"ca": "Mont Katahdin",
+"eu": "Katahdin mendia"
+},
+"Q186541": {
+"ca": "riu Kasai",
+"eu": "Kasai (ibaia)",
+"gl": "Río Kasai"
+},
+"Q186547": {
+"ca": "Alps Escandinaus",
+"eu": "Eskandinaviako Alpeak",
+"gl": "Alpes Escandinavos"
+},
+"Q18758": {
+"ca": "península de Malaca",
+"eu": "Malaysiar penintsula",
+"gl": "Península Malaia"
+},
+"Q187871": {
+"ca": "Kunlun",
+"eu": "Kunlun mendiak",
+"gl": "Kunlun"
+},
+"Q188203": {
+"ca": "Canal de Bristol",
+"eu": "Bristolgo kanala",
+"gl": "Canle de Bristol"
+},
+"Q189262": {
+"ca": "estret de Davis",
+"eu": "Davis itsasartea",
+"gl": "Estreito de Davis"
+},
+"Q1898305": {
+"ca": "Atles Saharià",
+"eu": "Saharako Atlasa"
+},
+"Q1908889": {
+"ca": "Altiplà de Mato Grosso"
+},
+"Q191829": {
+"ca": "riu Magdalena",
+"eu": "Magdalena ibaia",
+"gl": "río Magdalena"
+},
+"Q191832": {
+"ca": "Aldan",
+"eu": "Aldan"
+},
+"Q192305": {
+"ca": "Plana Indogangètica",
+"eu": "Indo-gangear ordokia",
+"gl": "Chaira indoganxética"
+},
+"Q192583": {
+"ca": "Serralades Australianes",
+"eu": "Mendikate Banatzaile Handia",
+"gl": "Gran Cordilleira Divisoria"
+},
+"Q192626": {
+"ca": "illes Hawaii",
+"eu": "Hawaii uharteak",
+"gl": "Arquipélago de Hawai"
+},
+"Q19270": {
+"ca": "mar de Cèlebes",
+"eu": "Celebesko itsasoa",
+"gl": "Mar de Célebes"
+},
+"Q194477": {
+"ca": "estret de Macassar",
+"eu": "Makassar itsasartea",
+"gl": "Estreito de Macasar"
+},
+"Q2007598": {
+"eu": "F Domoa"
+},
+"Q200952": {
+"ca": "riu Ucayali",
+"eu": "Ucayali ibaia",
+"gl": "Río Ucayali"
+},
+"Q201678": {
+"ca": "Muntanyes Iàblonoi",
+"eu": "Jablonovy"
+},
+"Q202905": {
+"ca": "Okeechobee",
+"eu": "Okeechobee aintzira"
+},
+"Q204703": {
+"ca": "mar de Scotia",
+"eu": "Scotia itsasoa",
+"gl": "Mar de Scotia"
+},
+"Q204806": {
+"ca": "riu Benue",
+"eu": "Benue",
+"gl": "río Benue"
+},
+"Q205655": {
+"ca": "Estret de Singapur",
+"eu": "Singapur itsasartea",
+"gl": "Estreito de Singapur"
+},
+"Q206650": {
+"ca": "Alps Neozelandesos",
+"eu": "Hegoaldeko Alpeak",
+"gl": "Alpes do Sur"
+},
+"Q207692": {
+"ca": "muntanya Wuyi",
+"eu": "Wuyi mendiak"
+},
+"Q207702": {
+"ca": "estret de Hudson",
+"eu": "Hudson itsasartea",
+"gl": "Estreito de Hudson"
+},
+"Q2078034": {
+"eu": "Grand Teton"
+},
+"Q208347": {
+"ca": "Gran Chaco",
+"eu": "Gran Chaco",
+"gl": "Gran Chaco"
+},
+"Q208643": {
+"ca": "arxipèlag malai",
+"eu": "Malaiar artxipelagoa",
+"gl": "Arquipélago Malaio"
+},
+"Q209530": {
+"ca": "Vaal",
+"eu": "Vaal ibaia"
+},
+"Q210252": {
+"ca": "Kliutxevskoi",
+"gl": "Klyuchevskaya Sopka"
+},
+"Q21195": {
+"ca": "Escandinàvia",
+"eu": "Eskandinavia",
+"gl": "Escandinavia"
+},
+"Q213237": {
+"ca": "península Valdés",
+"eu": "Valdés penintsula",
+"gl": "Península Valdés"
+},
+"Q213704": {
+"ca": "Pic Bolívar",
+"eu": "Pico Bolívar",
+"gl": "Pico Bolívar"
+},
+"Q214284": {
+"ca": "Serralada Stanovoi",
+"eu": "Stanovoi"
+},
+"Q215917": {
+"ca": "Verkhoiansk",
+"eu": "Verkhoiansk mendikatea",
+"gl": "Cordilleira Verkhoiansk"
+},
+"Q216171": {
+"ca": "Waal",
+"eu": "Waal",
+"gl": "río Waal"
+},
+"Q216941": {
+"ca": "Xi Jiang",
+"eu": "Xi",
+"gl": "Xi Jiang - 西江"
+},
+"Q217818": {
+"ca": "IJssel",
+"eu": "IJssel",
+"gl": "Río IJssel"
+},
+"Q221666": {
+"ca": "Mont Stanley",
+"eu": "Stanley mendia",
+"gl": "Monte Stanley"
+},
+"Q2220": {
+"ca": "Riu Peace"
+},
+"Q2226": {
+"ca": "riu Slave",
+"gl": "Río Slave"
+},
+"Q223": {
+"ca": "Groenlàndia",
+"eu": "Groenlandia",
+"gl": "Groenlandia"
+},
+"Q2237": {
+"ca": "riu Saskatchewan Nord"
+},
+"Q2251": {
+"ca": "Colúmbia",
+"eu": "Columbia ibaia",
+"gl": "Río Columbia"
+},
+"Q2279579": {
+"ca": "Riu Shire",
+"gl": "Río Shire"
+},
+"Q22890": {
+"ca": "illa d'Irlanda",
+"eu": "Irlanda",
+"gl": "Illa de Irlanda"
+},
+"Q229107": {
+"ca": "Kailash",
+"eu": "Kailash"
+},
+"Q229269": {
+"ca": "Rub al Kali",
+"eu": "Rub al-Khali",
+"gl": "Rub al-Khalí"
+},
+"Q232912": {
+"ca": "estret de Florida",
+"eu": "Floridako itsasartea",
+"gl": "Estreito de Florida"
+},
+"Q233770": {
+"ca": "península del Cap York",
+"eu": "York lurmuturraren penintsula",
+"gl": "Península de Cabo York"
+},
+"Q23406": {
+"ca": "mar Roja",
+"eu": "Itsaso Gorria",
+"gl": "Mar Vermello"
+},
+"Q234796": {
+"ca": "illes de la Línia",
+"eu": "Lerroko uharteak",
+"gl": "Illas da Liña"
+},
+"Q23522": {
+"ca": "Balcans",
+"eu": "Balkanak",
+"gl": "Balcáns"
+},
+"Q235539": {
+"ca": "mont Whitney",
+"eu": "Whitney mendia",
+"gl": "Monte Whitney"
+},
+"Q23666": {
+"ca": "Gran Bretanya",
+"eu": "Britainia Handia",
+"gl": "Gran Bretaña"
+},
+"Q26076": {
+"ca": "Irauadi",
+"eu": "Irawadi",
+"gl": "Río Irauadi"
+},
+"Q26422": {
+"ca": "Salween",
+"eu": "Salween",
+"gl": "Río Salween"
+},
+"Q26439": {
+"ca": "Argun",
+"eu": "Argun"
+},
+"Q26777": {
+"ca": "Sierra Nevada",
+"eu": "Sierra Nevada",
+"gl": "Serra Nevada"
+},
+"Q270627": {
+"ca": "riu Colorado",
+"eu": "Colorado"
+},
+"Q27092": {
+"ca": "mar del Japó",
+"eu": "Japoniako itsasoa",
+"gl": "Mar do Xapón"
+},
+"Q271435": {
+"ca": "Vindhya"
+},
+"Q272074": {
+"ca": "riu Snake",
+"eu": "Snake ibaia",
+"gl": "Río Snake, río Columbia"
+},
+"Q2750140": {
+"ca": "riu Kagera",
+"eu": "Kagera (ibaia)",
+"gl": "Río Kagera"
+},
+"Q275662": {
+"ca": "Mount Hood",
+"eu": "Mount Hood",
+"gl": "Monte Hood"
+},
+"Q276776": {
+"ca": "mar d'Aral Sud",
+"eu": "Hegoaldeko Aral itsasoa"
+},
+"Q284495": {
+"ca": "riu Teslin"
+},
+"Q2913098": {
+"ca": "muntanyes Pensacola"
+},
+"Q293713": {
+"ca": "Gran Khingan",
+"eu": "Khingan Handia"
+},
+"Q3040": {
+"ca": "badia de Hudson",
+"eu": "Hudson badia",
+"gl": "Baía de Hudson"
+},
+"Q3045552": {
+"ca": "Cúpula C",
+"eu": "C Domoa"
+},
+"Q3047": {
+"ca": "riu Saskatchewan",
+"eu": "Saskatchewan ibaia",
+"gl": "Río Saskatchewan"
+},
+"Q309104": {
+"ca": "Tibesti",
+"eu": "Tibesti"
+},
+"Q31379": {
+"eu": "La Grande Rivière"
+},
+"Q319288": {
+"ca": "Altiplà d'Etiòpia",
+"eu": "Etiopiar mendigunea",
+"gl": "Macizo etíope"
+},
+"Q31945": {
+"ca": "Aràbia",
+"eu": "Arabia",
+"gl": "Península de Arabia"
+},
+"Q319671": {
+"ca": "Muntanyes Transantàrtiques",
+"eu": "Mendi Transantartikoak",
+"gl": "Montes Transantárticos"
+},
+"Q326896": {
+"ca": "Gran Desert Arenós",
+"eu": "Hondarrezko Basamortu Handia"
+},
+"Q3272": {
+"ca": "Llac Winnipeg",
+"eu": "Winnipeg",
+"gl": "Lago Winnipeg"
+},
+"Q3292": {
+"ca": "riu Nelson"
+},
+"Q3321738": {
+"eu": "Chamberlin mendia (Alaska)"
+},
+"Q3321842": {
+"ca": "mont Fridtjof Nansen"
+},
+"Q33254": {
+"ca": "mar de Tasmània",
+"eu": "Tasmaniako itsasoa",
+"gl": "Mar de Tasmania"
+},
+"Q3358037": {
+"ca": "mar d'Aral Nord",
+"eu": "Iparraldeko Aral itsasoa"
+},
+"Q3359409": {
+"ca": "Micronèsia",
+"eu": "Mikronesia",
+"gl": "Micronesia"
+},
+"Q33629": {
+"ca": "mar de Kara",
+"eu": "Kara",
+"gl": "Mar de Kara"
+},
+"Q339162": {
+"ca": "desert de Síria",
+"eu": "Siriar basamortua",
+"gl": "Deserto sirio"
+},
+"Q3392": {
+"ca": "Nil",
+"eu": "Nilo",
+"gl": "Nilo"
+},
+"Q3411": {
+"ca": "Mackenzie",
+"eu": "Mackenzie",
+"gl": "Río Mackenzie"
+},
+"Q34589": {
+"ca": "Eufrates",
+"eu": "Eufrates",
+"gl": "Río Éufrates"
+},
+"Q34640": {
+"ca": "canal de la Mànega",
+"eu": "Mantxako kanala",
+"gl": "Canal da Mancha"
+},
+"Q34675": {
+"ca": "golf Pèrsic",
+"eu": "Persiar golkoa",
+"gl": "Golfo Pérsico"
+},
+"Q3492": {
+"ca": "Sumatra",
+"eu": "Sumatra",
+"gl": "Sumatra"
+},
+"Q3503": {
+"ca": "Riu Congo",
+"eu": "Kongo",
+"gl": "Río Congo"
+},
+"Q35342": {
+"ca": "llac Titicaca",
+"eu": "Titikaka",
+"gl": "Lago Titicaca"
+},
+"Q3542": {
+"ca": "riu Níger",
+"eu": "Niger",
+"gl": "río Níxer"
+},
+"Q35591": {
+"ca": "Tigris",
+"eu": "Tigris",
+"gl": "Río Tigris"
+},
+"Q35600": {
+"ca": "Urals",
+"eu": "Uralak",
+"gl": "Montes Urais"
+},
+"Q3569": {
+"ca": "Riu Senegal",
+"eu": "Senegal",
+"gl": "Río Senegal"
+},
+"Q3593416": {
+"ca": "Tasmània"
+},
+"Q35942": {
+"ca": "Polinèsia",
+"eu": "Polinesia",
+"gl": "Polinesia"
+},
+"Q36117": {
+"ca": "Borneo",
+"eu": "Borneo",
+"gl": "Borneo"
+},
+"Q36124": {
+"ca": "estret de Gibraltar",
+"eu": "Gibraltarko itsasartea",
+"gl": "estreito de Xibraltar"
+},
+"Q37040": {
+"ca": "badia de Baffin",
+"eu": "Baffin badia",
+"gl": "Baía de Baffin"
+},
+"Q37056": {
+"ca": "Península de Taimir",
+"eu": "Taimyr penintsula",
+"gl": "Península de Taimir"
+},
+"Q370807": {
+"ca": "altiplà Rockefeller"
+},
+"Q37394": {
+"ca": "Melanèsia",
+"eu": "Melanesia",
+"gl": "Melanesia"
+},
+"Q3740828": {
+"ca": "Islàndia"
+},
+"Q375816": {
+"ca": "Caatinga",
+"eu": "Katinga",
+"gl": "Caatinga"
+},
+"Q37660": {
+"ca": "mar de la Xina Meridional",
+"eu": "Hegoaldeko Txinako itsasoa",
+"gl": "Mar da China Meridional"
+},
+"Q377264": {
+"ca": "Apenins Lígurs"
+},
+"Q3783": {
+"ca": "riu Amazones",
+"eu": "Amazonas",
+"gl": "río Amazonas"
+},
+"Q37960": {
+"ca": "mar Groga",
+"eu": "Itsaso Horia",
+"gl": "Mar Amarelo"
+},
+"Q38272": {
+"ca": "illes Britàniques",
+"eu": "Britainiar uharteak",
+"gl": "Illas Británicas"
+},
+"Q38684": {
+"ca": "golf de Bengala",
+"eu": "Bengalako golkoa",
+"gl": "Golfo de Bengala"
+},
+"Q39739": {
+"gl": "Aconcagua"
+},
+"Q40285": {
+"ca": "Nova Guinea",
+"eu": "Ginea Berria",
+"gl": "Illa de Nova Guinea"
+},
+"Q40556": {
+"ca": "Banya d'Àfrica",
+"eu": "Afrikako Adarra",
+"gl": "Corno de África"
+},
+"Q40855": {
+"ca": "Dniéper",
+"eu": "Dnieper",
+"gl": "Río Dniepr"
+},
+"Q41179": {
+"ca": "Mekong",
+"eu": "Mekong",
+"gl": "Río Mekong"
+},
+"Q41413": {
+"ca": "Pic Ismail Samani",
+"eu": "Ismoil Somoni haitza",
+"gl": "Monte Ismail Samani"
+},
+"Q41430": {
+"ca": "golf de Guinea",
+"eu": "Gineako golkoa",
+"gl": "golfo de Guinea"
+},
+"Q41573": {
+"ca": "golf de Biscaia",
+"eu": "Bizkaiko golkoa",
+"gl": "Golfo de Biscaia"
+},
+"Q41602": {
+"ca": "mar d'Okhotsk",
+"eu": "Okhotskeko itsasoa",
+"gl": "Mar de Ojotsk"
+},
+"Q41735": {
+"ca": "mar d'Irlanda",
+"eu": "Irlandako itsasoa",
+"gl": "Mar de Irlanda"
+},
+"Q42070": {
+"ca": "Gobi",
+"eu": "Gobi",
+"gl": "Deserto de Gobi"
+},
+"Q43105": {
+"ca": "Elbrús",
+"eu": "Elbrus",
+"gl": "Monte Elbrus"
+},
+"Q43106": {
+"ca": "riu Zambezi",
+"eu": "Zambezi",
+"gl": "Río Zambeze"
+},
+"Q43512": {
+"ca": "K2",
+"eu": "K2",
+"gl": "K2"
+},
+"Q44725": {
+"ca": "mar de Bering",
+"eu": "Bering",
+"gl": "Mar de Bering"
+},
+"Q4527": {
+"ca": "Ghats Occidentals",
+"eu": "Mendebaldeko Ghat mendiak",
+"gl": "Ghats occidentais"
+},
+"Q45341": {
+"ca": "mar de la Xina Oriental",
+"eu": "Ekialdeko Txinako itsasoa",
+"gl": "Mar da China Oriental"
+},
+"Q45403": {
+"ca": "Brahmaputra",
+"eu": "Brahmaputra",
+"gl": "Río Brahmaputra"
+},
+"Q4558": {
+"ca": "serralada de les Cascades",
+"eu": "Ur-jauzien mendikatea",
+"gl": "Cordilleira das Cascadas"
+},
+"Q45823": {
+"ca": "mar de Barentsz",
+"eu": "Barents",
+"gl": "Mar de Barents"
+},
+"Q464909": {
+"ca": "desert de Núbia",
+"eu": "Nubiako basamortua"
+},
+"Q465055": {
+"ca": "Ghats Orientals",
+"eu": "Ekialdeko Ghat mendiak"
+},
+"Q46841": {
+"ca": "Lena",
+"eu": "Lena",
+"gl": "Río Lena"
+},
+"Q470049": {
+"ca": "American Highland"
+},
+"Q47141": {
+"ca": "desert d'Atacama",
+"eu": "Atacamako basamortua",
+"gl": "Deserto de Atacama"
+},
+"Q47545": {
+"ca": "mar de Noruega",
+"eu": "Norvegiako itsasoa",
+"gl": "mar de Noruega"
+},
+"Q47632": {
+"ca": "mar d'Andaman",
+"eu": "Andaman itsasoa",
+"gl": "Mar de Andamán"
+},
+"Q47700": {
+"ca": "Kalahari",
+"eu": "Kalahari",
+"gl": "Kalahari"
+},
+"Q4814791": {
+"ca": "Nil Blanc",
+"eu": "Nilo Zuria",
+"gl": "Nilo Branco"
+},
+"Q48359": {
+"ca": "estret de Malaca",
+"eu": "Malakako itsasartea",
+"gl": "Estreito de Malaca"
+},
+"Q484725": {
+"ca": "Elburz",
+"eu": "Elburz mendiak",
+"gl": "Alborz"
+},
+"Q488266": {
+"ca": "península de Iamal",
+"eu": "Jamal",
+"gl": "Península de Yamal"
+},
+"Q4915": {
+"ca": "riu Ohio",
+"eu": "Ohio ibaia",
+"gl": "Río Ohio"
+},
+"Q4918": {
+"ca": "mar Mediterrània",
+"eu": "Mediterraneoa",
+"gl": "mar Mediterráneo"
+},
+"Q49364": {
+"ca": "mar de Java",
+"eu": "Javako itsasoa",
+"gl": "mar de Xava"
+},
+"Q5089": {
+"ca": "Ganges",
+"eu": "Ganges",
+"gl": "Río Ganxes"
+},
+"Q513": {
+"ca": "Everest",
+"eu": "Everest",
+"gl": "Everest"
+},
+"Q52052": {
+"ca": "Estret de Corea",
+"eu": "Koreako itsasartea",
+"gl": "Estreito de Corea"
+},
+"Q5413": {
+"ca": "Iang-Tsé",
+"eu": "Ibai Urdina",
+"gl": "Río Yangtzé"
+},
+"Q5419": {
+"ca": "Missouri",
+"eu": "Missouri ibaia",
+"gl": "Río Missouri"
+},
+"Q544914": {
+"ca": "Mar de les Lacadives",
+"eu": "Lakadiveetako itsasoa",
+"gl": "Mar das Laquedivas"
+},
+"Q545": {
+"ca": "mar Bàltica",
+"eu": "Itsaso Baltikoa",
+"gl": "mar Báltico"
+},
+"Q5451": {
+"ca": "Himàlaia",
+"eu": "Himalaia",
+"gl": "Himalaia"
+},
+"Q5456": {
+"ca": "Andes",
+"eu": "Andeak",
+"gl": "Andes"
+},
+"Q5463": {
+"ca": "muntanyes Rocoses",
+"eu": "Mendi Harritsuak",
+"gl": "Montañas Rochosas"
+},
+"Q5469": {
+"ca": "Karakoram",
+"eu": "Karakorum",
+"gl": "Karakorum"
+},
+"Q5472": {
+"ca": "Hindu Kush",
+"eu": "Hindu Kush",
+"gl": "Hindu Kush"
+},
+"Q5474": {
+"ca": "Tian Shan",
+"eu": "Tian Shan",
+"gl": "Tian Shan"
+},
+"Q5477": {
+"ca": "Caucas",
+"eu": "Kaukaso",
+"gl": "Cordilleira do Cáucaso"
+},
+"Q548": {
+"ca": "Vístula",
+"eu": "Vistula",
+"gl": "Río Vístula"
+},
+"Q5484": {
+"ca": "mar Càspia",
+"eu": "Kaspiar itsasoa",
+"gl": "Mar Caspio"
+},
+"Q5492": {
+"ca": "llac Erie",
+"eu": "Erie",
+"gl": "Lago Erie"
+},
+"Q5505": {
+"ca": "llac Victòria",
+"eu": "Victoria",
+"gl": "Lago Vitoria"
+},
+"Q5511": {
+"ca": "Llac Tanganyika",
+"eu": "Tanganyika",
+"gl": "Lago Tanganica"
+},
+"Q5513": {
+"ca": "Baikal",
+"eu": "Baikal",
+"gl": "Lago Baikal"
+},
+"Q552": {
+"ca": "Òder",
+"eu": "Oder",
+"gl": "río Oder"
+},
+"Q5525": {
+"ca": "Gran Llac dels Ossos",
+"eu": "Hartzaren Aintzira Handia",
+"gl": "Gran Lago do Oso"
+},
+"Q5532": {
+"ca": "Llac Malawi",
+"eu": "Nyassa",
+"gl": "Lago Niassa"
+},
+"Q5539": {
+"ca": "Gran Llac de l'Esclau",
+"eu": "Esklaboen Aintzira Handia",
+"gl": "Gran Lago do Escravo"
+},
+"Q560198": {
+"ca": "Altiplà de Mongolia",
+"eu": "Mongoliako goi-lautada",
+"gl": "Altiplano de Mongolia"
+},
+"Q560549": {
+"ca": "Plana del Nord d'Europa",
+"eu": "Iparraldeko Europako ordokia",
+"gl": "Chaira europea setentrional"
+},
+"Q572801": {
+"ca": "Mont Washington",
+"eu": "Washington mendia",
+"gl": "Monte Washington"
+},
+"Q575516": {
+"ca": "depressió de Turan",
+"eu": "Turango sakonunea",
+"gl": "Depresión de Turan"
+},
+"Q583": {
+"ca": "Mont Blanc",
+"eu": "Mont Blanc",
+"gl": "Mont Blanc"
+},
+"Q584": {
+"ca": "Rin",
+"eu": "Rhin",
+"gl": "Río Rin"
+},
+"Q584279": {
+"ca": "Alt Atles",
+"eu": "Atlas Garaia"
+},
+"Q58705": {
+"ca": "mar d'Aràbia",
+"eu": "Arabiako itsasoa",
+"gl": "Mar Arábigo"
+},
+"Q593197": {
+"ca": "Dom A",
+"eu": "A Domoa"
+},
+"Q5955": {
+"ca": "massís de l'Altai",
+"eu": "Altai",
+"gl": "Montañas Altai"
+},
+"Q599529": {
+"ca": "Estepa Pòntica",
+"eu": "Estepa Pontikoa"
+},
+"Q60064": {
+"ca": "Península d'Alaska",
+"eu": "Alaskako penintsula",
+"gl": "Península de Alasca"
+},
+"Q60140": {
+"ca": "subcontinent indi",
+"eu": "Indiako azpikontinentea",
+"gl": "subcontinente indio"
+},
+"Q602925": {
+"ca": "estepa kazakh"
+},
+"Q60967": {
+"ca": "mont Kinabalu",
+"eu": "Kinabalu mendia",
+"gl": "Monte Kinabalu"
+},
+"Q61304": {
+"ca": "Golf de Campeche",
+"eu": "Campecheko golkoa",
+"gl": "Golfo de Campeche"
+},
+"Q615328": {
+"ca": "Hongshui"
+},
+"Q626": {
+"ca": "Volga",
+"eu": "Volga",
+"gl": "río Volga"
+},
+"Q6362901": {
+"eu": "Kangto"
+},
+"Q639478": {
+"ca": "Javaés"
+},
+"Q6583": {
+"ca": "Sàhara",
+"eu": "Sahara",
+"gl": "Deserto do Sáhara"
+},
+"Q660304": {
+"ca": "Pacific Coast Ranges",
+"eu": "Bareko kostako mendikateak",
+"gl": "Cadeas montañosas da costa do Pacífico"
+},
+"Q664": {
+"ca": "Nova Zelanda",
+"eu": "Zeelanda Berria",
+"gl": "Nova Zelandia"
+},
+"Q669037": {
+"ca": "Índies Occidentals",
+"eu": "Mendebaldeko Indiak",
+"gl": "Indias Occidentais"
+},
+"Q682334": {
+"ca": "muntanyes Altun",
+"eu": "Altun mendiak"
+},
+"Q686021": {
+"ca": "riu Allegheny",
+"eu": "Allegheny ibaia",
+"gl": "Río Allegheny"
+},
+"Q6862": {
+"ca": "Amur",
+"eu": "Amur",
+"gl": "Río Amur"
+},
+"Q68740": {
+"ca": "illa de Hawaii",
+"eu": "Hawaii (uhartea)",
+"gl": "Illa de Hawai"
+},
+"Q710": {
+"ca": "Kiribati",
+"eu": "Kiribati",
+"gl": "Kiribati"
+},
+"Q72154": {
+"ca": "mar d'Amundsen",
+"eu": "Amundsen itsasoa",
+"gl": "Mar de Amundsen"
+},
+"Q724367": {
+"ca": "Belukha",
+"eu": "Belukha"
+},
+"Q7296": {
+"ca": "Kilimanjaro",
+"eu": "Kilimanjaro",
+"gl": "Kilimanjaro"
+},
+"Q7348": {
+"ca": "Indus",
+"eu": "Indus",
+"gl": "Río Indo"
+},
+"Q7354": {
+"ca": "oceà Antàrtic",
+"eu": "Ozeano Australa",
+"gl": "Océano Antártico"
+},
+"Q7355": {
+"ca": "riu Groc",
+"eu": "Ibai Horia",
+"gl": "Río Amarelo"
+},
+"Q736707": {
+"ca": "Llac Saint Clair",
+"eu": "Saint Clair (aintzira)"
+},
+"Q7463928": {
+"ca": "Madagascar",
+"eu": "Madagaskar"
+},
+"Q748355": {
+"ca": "Mont Shasta",
+"gl": "Monte Shasta"
+},
+"Q75745": {
+"ca": "Selengà",
+"eu": "Selenge"
+},
+"Q776155": {
+"ca": "riu Paranaíba",
+"eu": "Paranaíba (ibaia)"
+},
+"Q7835": {
+"ca": "Crimea",
+"eu": "Krimea",
+"gl": "Crimea"
+},
+"Q78707": {
+"ca": "Ienissei",
+"eu": "Jenisei",
+"gl": "río Ienissei"
+},
+"Q788": {
+"ca": "oceà Àrtic",
+"eu": "Ozeano Artikoa",
+"gl": "océano Ártico"
+},
+"Q78879": {
+"ca": "Riu Kolimà",
+"eu": "Kolyma",
+"gl": "Río Kolyma"
+},
+"Q7988": {
+"ca": "mar dels Làptev",
+"eu": "Laptev",
+"gl": "Mar de Laptev"
+},
+"Q80240": {
+"ca": "Ural",
+"eu": "Ural",
+"gl": "Río Ural"
+},
+"Q804330": {
+"ca": "Serralada Blanca",
+"eu": "Cordillera Blanca"
+},
+"Q81136": {
+"ca": "pas del Nord-oest",
+"eu": "Ipar-mendebaldeko igarobide",
+"gl": "Paso de Noroeste"
+},
+"Q812": {
+"ca": "Florida",
+"eu": "Florida",
+"gl": "Florida"
+},
+"Q8168": {
+"ca": "riu Petxora",
+"eu": "Petxora",
+"gl": "Río Pechora"
+},
+"Q817337": {
+"ca": "Río Negro",
+"eu": "Río Negro",
+"gl": "Río Negro, Arxentina"
+},
+"Q8187": {
+"ca": "Dvinà Septentrional",
+"eu": "Ipar Dvina",
+"gl": "Río Dviná Setentrional"
+},
+"Q82812": {
+"ca": "Riu Súkhona"
+},
+"Q82931": {
+"ca": "mar del Corall",
+"eu": "Koral itsasoa",
+"gl": "Mar do Coral"
+},
+"Q8319": {
+"ca": "riu Arkansas",
+"eu": "Arkansas ibaia",
+"gl": "Río Arkansas"
+},
+"Q836812": {
+"ca": "Lualaba",
+"eu": "Lualaba ibaia"
+},
+"Q842139": {
+"ca": "serralada Annamita",
+"eu": "Annamgo mendikatea"
+},
+"Q8463325": {
+"ca": "serralada Occidental"
+},
+"Q85377": {
+"ca": "Arxipèlag Àrtic Canadenc",
+"eu": "Uhartedi Artikoa",
+"gl": "Illas Árticas do Canadá"
+},
+"Q856509": {
+"ca": "Xunjiang"
+},
+"Q858306": {
+"ca": "península de Shandong",
+"eu": "Shandong penintsula"
+},
+"Q876280": {
+"ca": "llacuna Merín",
+"eu": "Merín aintzira"
+},
+"Q882739": {
+"ca": "Nil Blau",
+"eu": "Nilo Urdina",
+"gl": "Río Nilo Azul"
+},
+"Q908741": {
+"ca": "estret de Luzon",
+"eu": "Luzongo itsasartea"
+},
+"Q916349": {
+"ca": "riu Itenez"
+},
+"Q920070": {
+"ca": "Muntanyes de la costa",
+"eu": "Kostako mendikatea"
+},
+"Q924312": {
+"ca": "Mont Sidley"
+},
+"Q928": {
+"ca": "Filipines",
+"eu": "Filipinak",
+"gl": "Filipinas"
+},
+"Q929910": {
+"ca": "serralada Brooks",
+"eu": "Brooks mendikatea"
+},
+"Q93332": {
+"ca": "Apalatxes",
+"eu": "Appalacheak",
+"gl": "Apalaches"
+},
+"Q947477": {
+"ca": "Madison"
+},
+"Q97": {
+"ca": "oceà Atlàntic",
+"eu": "Ozeano Atlantikoa",
+"gl": "océano Atlántico"
+},
+"Q973": {
+"ca": "Obi",
+"eu": "Ob",
+"gl": "Río Obi"
+},
+"Q98": {
+"ca": "oceà Pacífic",
+"eu": "Ozeano Barea",
+"gl": "océano Pacífico"
+},
+"Q993": {
+"ca": "Kamtxatka",
+"eu": "Kamtxatka",
+"gl": "Península de Kamchatka"
+}
+}

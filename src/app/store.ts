@@ -35,6 +35,11 @@ export type ThemeChoice = 'auto' | 'paper' | 'night';
 /** Capas del mapa que se pueden ocultar. Las cuatro últimas solo existen en el modo de tiempo real. */
 export const LAYERS = {
   grid: t('Meridianos y paralelos'),
+  guides: t('Líneas imaginarias'),
+  relief: t('Relieve'),
+  depth: t('Profundidad del mar'),
+  currents: t('Corrientes oceánicas'),
+  features: t('Montañas, ríos y mares'),
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
   stars: t('Estrellas'),
@@ -47,7 +52,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents'];
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {

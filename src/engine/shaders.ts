@@ -122,6 +122,9 @@ uniform vec3 uGrid;
 uniform float uGridAlpha;
 uniform float uGlint;     // fuerza del reflejo del agua (0 = mate)
 uniform float uTime;      // segundos, para el vaivén lento del agua
+uniform sampler2D uFlow;  // corrientes medias reales (scripts/build-currents.py)
+uniform float uFlowAmt;   // 1 = el agua se mueve con la corriente
+uniform float uFlowShow;  // 1 = capa «Corrientes oceánicas» a la vista
 uniform sampler2D uSeabed; // profundidad real del mar (scripts/build-depth.py)
 uniform float uDepth;     // cuánto se distinguen el mar profundo y las aguas someras (0 = color plano)
 varying vec2 vLonLat;
@@ -162,7 +165,27 @@ float gnoise(vec3 p) {
 // Giro fijo (ortonormal) entre escalas de ola.
 const mat3 TURN = mat3(0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6);
 
-float swell(vec3 p, float px) {
+// Corriente en un punto: xyz = hacia dónde va el agua (vector sobre la esfera, sin unidades de
+// distancia) y w = velocidad en m/s. En la textura, rojo y verde son la velocidad hacia el este y
+// hacia el norte de −1 a 1 m/s, y azul vale 1 donde hay dato.
+vec4 current(vec2 ll) {
+  vec3 t = texture2D(uFlow, vec2(ll.x / 6.283185307 + 0.5, ll.y / 3.141592654 + 0.5)).rgb;
+  vec2 uv = (t.rg * 255.0 - 128.0) / 127.0 * t.b;
+  vec3 east = vec3(cos(ll.x), 0.0, -sin(ll.x));
+  vec3 north = vec3(-sin(ll.y) * sin(ll.x), cos(ll.y), -sin(ll.y) * cos(ll.x));
+  float speed = length(uv);
+  return vec4(speed > 1e-4 ? (east * uv.x + north * uv.y) / speed : vec3(0.0), speed);
+}
+
+// Ruido que la corriente arrastra. El dibujo se desplaza en la dirección «drift» y, para que no se
+// estire sin fin, se alternan dos copias desfasadas medio ciclo que se funden una en otra.
+float carried(vec3 p, vec3 drift) {
+  float a = fract(uTime / 9.0);
+  float b = fract(uTime / 9.0 + 0.5);
+  return mix(gnoise(p - drift * b + vec3(3.7)), gnoise(p - drift * a), 1.0 - abs(2.0 * a - 1.0));
+}
+
+float swell(vec3 p, float px, vec3 drift) {
   vec3 q = p;
   float h = 0.0;
   // La ola más grande mide unos 50 km: con el globo entero en pantalla queda en un grano muy fino
@@ -177,10 +200,14 @@ float swell(vec3 p, float px) {
     // demasiado grande en pantalla (más de ~25 px por ola): se salta
     float fine = smoothstep(0.03, 0.08, px * f);
     // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
-    if (fine > 0.0) h += fine * visible * a / f * gnoise(q * f + vec3(h * f * 0.35) + uTime * vec3(0.2, 0.14, 0.09));
+    if (fine > 0.0) {
+      vec3 at = q * f + vec3(h * f * 0.35) + uTime * vec3(0.05, 0.035, 0.02);
+      h += fine * visible * a / f * (uFlowAmt > 0.0 ? carried(at, drift) : gnoise(at));
+    }
     // cada escala, girada respecto a la anterior: sin esto las celdas del ruido se alinean y se ve
     // una cuadrícula
     q = TURN * q;
+    drift = TURN * drift;
     f *= 2.07;
     a *= 0.86;
   }
@@ -189,9 +216,11 @@ float swell(vec3 p, float px) {
 
 // Brillo del agua: reflejo de la luz (del Sol real en el modo de tiempo real) roto en destellos finos
 // por el oleaje, un velo ancho alrededor y un aclarado hacia el borde del globo (Fresnel).
-vec3 glint(vec3 normal, vec3 toEye, vec3 geo) {
+vec3 glint(vec3 normal, vec3 toEye, vec3 geo, vec4 flow) {
   float px = max(length(fwidth(geo)) * 0.7071, 1e-7);
-  float h = swell(geo, px);
+  // La dirección es la real; la velocidad se comprime (raíz cuadrada) para que también se note
+  // dónde la corriente es débil. Una corriente de 1 m/s arrastra el oleaje 5 olas por ciclo.
+  float h = swell(geo, px, flow.xyz * sqrt(flow.w) * 5.0 * uFlowAmt);
   // pendiente de la ola en pantalla → inclina la normal (en espacio de cámara)
   vec2 slope = vec2(dFdx(h), dFdy(h)) / px;
   vec3 n = normalize(normalize(normal) - 0.16 * vec3(slope, 0.0));
@@ -231,8 +260,16 @@ void main() {
   float meridian = (1.0 - clamp(d.x, 0.0, 1.0)) * (1.0 - smoothstep(0.15, 0.5, w.x));
   float parallel = 1.0 - clamp(d.y, 0.0, 1.0);
   float line = max(meridian, parallel);
-  vec3 c = mix(sea(vLonLat), uGrid, line * uGridAlpha);
-  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo) + glint(vNormal, vToEye, normalize(vGeo)), 1.0);
+  vec3 geo = normalize(vGeo);
+  vec4 flow = uFlowAmt + uFlowShow > 0.0 ? current(vLonLat) : vec4(0.0);
+  vec3 water = sea(vLonLat);
+  // Capa de corrientes: vetas claras que avanzan con el agua, más visibles cuanto más rápida va.
+  if (uFlowShow > 0.0) {
+    float streak = carried(geo * 70.0, flow.xyz * sqrt(flow.w) * 4.0) + 0.5 * carried(geo * 150.0, flow.xyz * sqrt(flow.w) * 8.0);
+    water += uFlowShow * smoothstep(0.02, 0.4, flow.w) * (0.3 + 1.2 * smoothstep(-0.15, 0.45, streak)) * vec3(0.48, 0.66, 0.70);
+  }
+  vec3 c = mix(water, uGrid, line * uGridAlpha);
+  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo) + glint(vNormal, vToEye, vGeo, flow), 1.0);
 }
 `;
 
@@ -244,9 +281,11 @@ varying vec3 vColor;
 varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
+varying vec2 vLonLat;
 
 void main() {
   vGeo = geoVector(position.xy);
+  vLonLat = position.xy;
   vec4 state = stateOf(position.z);
   vec3 n;
   vec3 p = surface(position.xy, uBaseAlt + state.a * uLift, n);
@@ -268,9 +307,11 @@ varying vec3 vColor;
 varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
+varying vec2 vLonLat;
 
 void main() {
   vGeo = geoVector(position.xy);
+  vLonLat = position.xy;
   vec4 state = stateOf(position.z);
   vec3 n;
   vec3 p = surface(position.xy, uBaseAlt + state.a * uLift * aTop, n);
@@ -288,9 +329,15 @@ varying vec3 vColor;
 varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
+varying vec2 vLonLat;
+uniform sampler2D uRelief; // sombreado real del relieve (scripts/build-relief.py)
+uniform float uReliefAmt; // 0 = sin relieve
 
 void main() {
-  gl_FragColor = vec4(shade(vColor, vNormal, vToEye, vGeo), 1.0);
+  // En la textura, 206/255 es terreno llano: más oscuro, ladera en sombra; más claro, al sol.
+  float relief = texture2D(uRelief, vec2(vLonLat.x / 6.283185307 + 0.5, vLonLat.y / 3.141592654 + 0.5)).r / 0.808;
+  vec3 c = vColor * mix(1.0, relief, uReliefAmt);
+  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo), 1.0);
 }
 `;
 
@@ -308,14 +355,17 @@ uniform float uWidth;     // grosor normal, en píxeles de dispositivo
 uniform float uEmphWidth; // grosor de un contorno enfatizado
 uniform vec3 uLine;
 uniform vec3 uLineEmph;
+uniform float uFlat; // 1 = línea que no es una frontera (un río, el ecuador): no se enfatiza
 varying vec3 vColor;
 varying float vDist; // distancia al eje del tramo, en píxeles
 varying float vHalf;
 
 void main() {
-  vec4 state = stateOf(aStart.z);
-  float emph = auxOf(aStart.z).r;
-  float alt = uBaseAlt + state.a * uLift;
+  // aStart.z < 0: el tramo va por el mar y no sube con ningún país
+  float owned = step(0.0, aStart.z);
+  vec4 state = stateOf(max(aStart.z, 0.0));
+  float emph = auxOf(max(aStart.z, 0.0)).r * (1.0 - uFlat);
+  float alt = uBaseAlt + state.a * uLift * owned;
   vec3 n;
   vec4 ca = projectionMatrix * viewMatrix * vec4(surface(aStart.xy, alt, n), 1.0);
   vec4 cb = projectionMatrix * viewMatrix * vec4(surface(aEnd, alt, n), 1.0);

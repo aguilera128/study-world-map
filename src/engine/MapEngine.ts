@@ -1,4 +1,8 @@
 import {
+  LinearFilter,
+  BufferAttribute,
+  InstancedBufferAttribute,
+  InstancedBufferGeometry,
   DataTexture,
   DoubleSide,
   LineLoop,
@@ -25,6 +29,7 @@ import type { MeshData } from '../atlas/mesh';
 import type { Bounds } from '../atlas/types';
 import { CameraRig, type Padding, type Pose, type ScreenPoint } from './camera';
 import { fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
+import { FeatureLabels, type MapFeature } from './labels';
 import { rgb, Style, STYLE_COUNT, type Palette } from './palette';
 import { DEG, wrapLon } from './projection';
 import {
@@ -188,7 +193,18 @@ export class MapEngine {
   private showGrid = true;
   private showGlint = true;
   private seabedReady = false;
+  private flowReady = false;
+  private showCurrents = false;
+  private showRelief = false;
+  private showDepth = true;
+  private reliefReady = false;
+  private reliefHd = false;
   private seaTimer = 0;
+  private labels: FeatureLabels | null = null;
+  private guides: Mesh | null = null;
+  private guideLabels: FeatureLabels | null = null;
+  private riverMaterial: ShaderMaterial | null = null;
+  private rivers: Mesh | null = null;
   private showStars = true;
 
   // ── uniformes compartidos por todos los materiales ──
@@ -212,9 +228,12 @@ export class MapEngine {
     uNightDim: { value: 0.5 },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
+    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
+    guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    river: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
     marker: { uPxPerRad: { value: 1 }, uThreshold: { value: MARKER_THRESHOLD }, uMarkerPx: { value: 16 } },
     halo: {
@@ -289,9 +308,22 @@ export class MapEngine {
     // Profundidad real del mar. Hasta que llega, el mar se pinta de un solo color.
     const seabed = new TextureLoader().load('/data/depth.webp', () => {
       this.seabedReady = true;
-      this.own.ocean.uDepth.value = this.palette.seaDepth;
+      this.own.ocean.uDepth.value = this.showDepth ? this.palette.seaDepth : 0;
       this.invalidate();
     });
+    // Corrientes medias reales: con ellas el oleaje avanza hacia donde va el agua.
+    const flow = new TextureLoader().load('/data/currents.png', () => {
+      this.flowReady = true;
+      this.own.ocean.uFlowAmt.value = 1;
+      this.own.ocean.uFlowShow.value = this.showCurrents ? 1 : 0;
+      this.invalidate();
+    });
+    flow.colorSpace = NoColorSpace;
+    flow.wrapS = RepeatWrapping;
+    flow.generateMipmaps = false;
+    flow.minFilter = LinearFilter;
+    this.disposables.push(flow);
+    this.own.ocean.uFlow.value = flow;
     seabed.colorSpace = NoColorSpace;
     seabed.wrapS = RepeatWrapping;
     this.disposables.push(seabed);
@@ -302,8 +334,8 @@ export class MapEngine {
     this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, this.own.stars, sky)), -1);
     const ocean = oceanGeometry();
     this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);
-    this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill)), 1);
-    this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, this.own.wall)), 2);
+    this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, this.own.fill)), 1);
+    this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, { ...this.own.wall, ...this.own.fill })), 2);
 
     const blended = { transparent: true, depthWrite: false };
     this.halo = new Mesh(quadGeometry(), this.material(HALO_VERT, HALO_FRAG, 0, this.own.halo, blended));
@@ -426,13 +458,18 @@ export class MapEngine {
     u.uRimPower.value = p.rimPower;
     u.uLine.value.copy(vec3(p.line));
     u.uLineEmph.value.copy(vec3(p.lineEmph));
+    this.own.river.uLine.value.copy(vec3(p.river));
+    this.own.river.uLineEmph.value.copy(vec3(p.river));
+    this.own.guide.uLine.value.copy(vec3(p.guide));
+    this.own.guide.uLineEmph.value.copy(vec3(p.guide));
     u.uNightTint.value.copy(vec3(p.nightTint));
     u.uNightDim.value = p.nightDim;
     this.own.ocean.uOcean.value.copy(vec3(p.ocean));
     this.own.ocean.uGrid.value.copy(vec3(p.grid));
     this.own.ocean.uGridAlpha.value = this.showGrid ? p.gridAlpha : 0;
     this.own.ocean.uGlint.value = this.showGlint ? p.glint : 0;
-    this.own.ocean.uDepth.value = this.seabedReady ? p.seaDepth : 0;
+    this.own.ocean.uDepth.value = this.showDepth && this.seabedReady ? p.seaDepth : 0;
+    this.own.fill.uReliefAmt.value = this.showRelief && this.reliefReady ? p.relief : 0;
     this.own.stars.uStars.value = this.showStars ? p.stars : 0;
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
@@ -548,6 +585,125 @@ export class MapEngine {
     this.own.ocean.uGlint.value = glint ? this.palette.glint : 0;
     this.own.stars.uStars.value = stars ? this.palette.stars : 0;
     this.invalidate();
+  }
+
+  /** Rotula los accidentes geográficos y dibuja los ríos; con una lista vacía los quita. */
+  setFeatures(features: MapFeature[]) {
+    if (!this.labels && features.length && this.canvas.parentElement) this.labels = new FeatureLabels(this.canvas.parentElement);
+    this.labels?.set(features);
+    if (this.rivers) {
+      this.scene.remove(this.rivers);
+      this.rivers.geometry.dispose();
+      this.rivers = null;
+    }
+    const start: number[] = [];
+    const end: number[] = [];
+    for (const f of features) {
+      for (const line of f.lines ?? []) {
+        for (let i = 0; i + 3 < line.length; i += 2) this.segment(start, end, line[i], line[i + 1], line[i + 2], line[i + 3]);
+      }
+    }
+    if (start.length) {
+      this.riverMaterial ??= this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own.river, { transparent: true, depthWrite: false });
+      this.rivers = this.segments(start, end, this.riverMaterial);
+    }
+    this.invalidate();
+  }
+
+  /** Añade un tramo (en grados) con el país que tiene debajo, para que suba con él al levantarse. */
+  private segment(start: number[], end: number[], lon0: number, lat0: number, lon1: number, lat1: number) {
+    start.push(lon0 * DEG, lat0 * DEG, this.atlas.locate((lon0 + lon1) / 2, (lat0 + lat1) / 2));
+    end.push(lon1 * DEG, lat1 * DEG);
+  }
+
+  /** Líneas sueltas sobre el mapa, con la misma plantilla que las fronteras (lineGeometry): un rectángulo por tramo. */
+  private segments(start: number[], end: number[], material: ShaderMaterial): Mesh {
+    const geometry = new InstancedBufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(new Float32Array([0, -1, 0, 1, -1, 0, 1, 1, 0, 0, 1, 0]), 3));
+    geometry.setIndex(new BufferAttribute(new Uint16Array([0, 1, 2, 0, 2, 3]), 1));
+    geometry.setAttribute('aStart', new InstancedBufferAttribute(new Float32Array(start), 3));
+    geometry.setAttribute('aEnd', new InstancedBufferAttribute(new Float32Array(end), 2));
+    geometry.instanceCount = end.length / 2;
+    const mesh = new Mesh(geometry, material);
+    mesh.frustumCulled = false;
+    mesh.renderOrder = 5;
+    this.scene.add(mesh);
+    return mesh;
+  }
+
+  /**
+   * Líneas imaginarias con su nombre: ecuador, trópicos, círculos polares y meridiano de Greenwich.
+   * Los nombres van de norte a sur y Greenwich al final; sin nombres, se quitan.
+   */
+  setGuides(names: string[] | null) {
+    if (this.guides) this.guides.visible = !!names;
+    if (!names) {
+      this.guideLabels?.set([]);
+      this.invalidate();
+      return;
+    }
+    // Los trópicos están a la latitud de la inclinación del eje (23° 26′) y los círculos polares
+    // a su complementaria (66° 34′).
+    const TILT = 23.436;
+    const parallels = [90 - TILT, TILT, 0, -TILT, TILT - 90];
+    if (!this.guides) {
+      const start: number[] = [];
+      const end: number[] = [];
+      for (const lat of parallels) {
+        for (let lon = -180; lon < 180; lon++) this.segment(start, end, lon, lat, lon + 1, lat);
+      }
+      for (let lat = -90; lat < 90; lat++) this.segment(start, end, 0, lat, 0, lat + 1);
+      this.guides = this.segments(start, end, this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own.guide, { transparent: true, depthWrite: false }));
+      this.disposables.push(this.guides.geometry);
+    }
+    if (!this.guideLabels && this.canvas.parentElement) this.guideLabels = new FeatureLabels(this.canvas.parentElement);
+    // El nombre se repite a lo largo de cada línea para que siempre haya uno a la vista.
+    const labels: MapFeature[] = [];
+    parallels.forEach((lat, i) => {
+      for (let lon = -135; lon < 180; lon += 90) labels.push({ kind: 'guia', rank: 0, lon, lat, text: names[i] });
+    });
+    for (const lat of [-50, -12, 12, 50]) labels.push({ kind: 'guia', rank: 0, lon: 0, lat, text: names[5] });
+    this.guideLabels?.set(labels);
+    this.invalidate();
+  }
+
+  /** Muestra u oculta la capa de corrientes oceánicas (vetas que avanzan con el agua). */
+  setCurrents(on: boolean) {
+    this.showCurrents = on;
+    this.own.ocean.uFlowShow.value = on && this.flowReady ? 1 : 0;
+    this.invalidate();
+  }
+
+  /** Pinta el mar con su profundidad real o de un solo color. */
+  setSeaDepth(on: boolean) {
+    this.showDepth = on;
+    this.own.ocean.uDepth.value = on && this.seabedReady ? this.palette.seaDepth : 0;
+    this.invalidate();
+  }
+
+  /** Muestra u oculta el sombreado del relieve. La imagen (200 KB) solo se descarga si se pide. */
+  setRelief(on: boolean) {
+    this.showRelief = on;
+    if (on && !this.own.fill.uRelief.value) this.loadRelief('/data/relief.webp');
+    this.own.fill.uReliefAmt.value = on && this.reliefReady ? this.palette.relief : 0;
+    this.invalidate();
+  }
+
+  private loadRelief(url: string) {
+    const relief = new TextureLoader().load(url, () => {
+      // la de detalle sustituye a la normal cuando ya está lista, no antes
+      const old = this.own.fill.uRelief.value;
+      if (old && old !== relief) old.dispose();
+      this.own.fill.uRelief.value = relief;
+      this.reliefReady = true;
+      this.own.fill.uReliefAmt.value = this.showRelief ? this.palette.relief : 0;
+      this.invalidate();
+    });
+    relief.colorSpace = NoColorSpace;
+    relief.wrapS = RepeatWrapping;
+    relief.anisotropy = 4;
+    this.disposables.push(relief);
+    this.own.fill.uRelief.value ??= relief;
   }
 
   /** Gira el cielo: hora sidérea de Greenwich, en grados. */
@@ -998,11 +1154,17 @@ export class MapEngine {
     const busyCamera = this.stepCamera(dt, now);
     const busyState = this.stepState(dt, now);
     this.own.ocean.uTime.value = (now / 1000) % 3600;
+    // Al acercarse, un píxel de la textura de relieve normal ocupa más de uno de pantalla: se pide
+    // la de detalle (700 KB), una sola vez y solo si la tarjeta gráfica admite ese tamaño.
+    if (this.showRelief && this.reliefReady && !this.reliefHd && this.rig.worldPerPixel < 0.0012 && this.renderer.capabilities.maxTextureSize >= 8192) {
+      this.reliefHd = true;
+      this.loadRelief('/data/relief-hd.webp');
+    }
     this.render();
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if (this.showGlint && !this.reducedMotion && !this.seaTimer) {
+    } else if ((this.showGlint || this.showCurrents) && !this.reducedMotion && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.
@@ -1142,6 +1304,8 @@ export class MapEngine {
     this.uniforms.uViewport.value.set(rig.width * dpr, rig.height * dpr);
     this.own.stars.uDpr.value = dpr;
     this.own.line.uWidth.value = LINE_WIDTH * dpr;
+    this.own.river.uWidth.value = 1.4 * dpr;
+    this.own.guide.uWidth.value = 1.6 * dpr;
     this.own.line.uEmphWidth.value = LINE_WIDTH_EMPH * dpr;
     this.own.marker.uPxPerRad.value = 1 / rig.worldPerPixel;
     this.own.marker.uMarkerPx.value = MARKER_DIAMETER * dpr;
@@ -1163,6 +1327,8 @@ export class MapEngine {
     this.renderer.render(this.scene, rig.camera);
 
     for (const item of this.tracked) this.place(item);
+    this.labels?.place(rig, ALT.marker);
+    this.guideLabels?.place(rig, ALT.marker);
     this.emit('view', {
       lon: rig.lon / DEG,
       lat: rig.lat / DEG,
@@ -1191,6 +1357,9 @@ export class MapEngine {
 
   dispose() {
     clearTimeout(this.seaTimer);
+    this.labels?.dispose();
+    this.guideLabels?.dispose();
+    this.rivers?.geometry.dispose();
     this.disposed = true;
     cancelAnimationFrame(this.raf);
     this.abort.abort();
