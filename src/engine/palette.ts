@@ -40,6 +40,8 @@ export interface Palette {
   gridAlpha: number;
   /** Fuerza del reflejo del agua (0 = mate). */
   glint: number;
+  /** Cuánto se distinguen el mar profundo y las aguas someras (0 = color plano). */
+  seaDepth: number;
   /** Brillo de las estrellas alrededor del globo (0 = sin estrellas: sobre papel no pegan). */
   stars: number;
   /** Color y fuerza del borde claro del globo. */
@@ -81,6 +83,7 @@ export const PAPER: Palette = {
   grid: '#5f8fa3',
   gridAlpha: 0.22,
   glint: 0.3,
+  seaDepth: 0.85,
   stars: 0,
   rim: '#dcecf0',
   rimAmount: 0.3,
@@ -142,6 +145,7 @@ export const NIGHT: Palette = {
   grid: '#6f9cc0',
   gridAlpha: 0.14,
   glint: 0.32,
+  seaDepth: 1.35,
   stars: 1,
   rim: '#6ea6d8',
   rimAmount: 0.42,

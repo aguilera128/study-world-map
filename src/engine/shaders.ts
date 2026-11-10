@@ -121,6 +121,9 @@ uniform vec3 uOcean;
 uniform vec3 uGrid;
 uniform float uGridAlpha;
 uniform float uGlint;     // fuerza del reflejo del agua (0 = mate)
+uniform float uTime;      // segundos, para el vaivén lento del agua
+uniform sampler2D uSeabed; // profundidad real del mar (scripts/build-depth.py)
+uniform float uDepth;     // cuánto se distinguen el mar profundo y las aguas someras (0 = color plano)
 varying vec2 vLonLat;
 varying vec3 vNormal;
 varying vec3 vToEye;
@@ -152,20 +155,32 @@ float gnoise(vec3 p) {
   );
 }
 
-// Altura del agua: seis escalas de ola fina. Cada una pesa 1/frecuencia
-// (misma pendiente en todas) y se apaga cuando sus olas son más finas que un par de píxeles, así
-// que a cualquier zoom hay detalle nítido y nada parpadea.
+// Altura del agua: varias escalas de ola, de las que solo cuentan las que en pantalla miden entre
+// unos 4 y unos 25 píxeles. Más grandes parecen olas gigantes al acercar el mapa; más finas, la
+// pendiente por píxel sale en bloques de 2×2 y se ve una cuadrícula. Cada una pesa 1/frecuencia
+// (misma pendiente en todas).
+// Giro fijo (ortonormal) entre escalas de ola.
+const mat3 TURN = mat3(0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6);
+
 float swell(vec3 p, float px) {
+  vec3 q = p;
   float h = 0.0;
-  float f = 150.0;
+  // La ola más grande mide unos 50 km: con el globo entero en pantalla queda en un grano muy fino
+  // y tenue (desde el espacio no se ven olas), y el oleaje aparece al acercarse.
+  float f = 120.0;
   float a = 1.0;
-  for (int i = 0; i < 6; i++) {
-    float visible = 1.0 - smoothstep(0.18, 0.5, px * f);
+  for (int i = 0; i < 8; i++) {
+    float visible = 1.0 - smoothstep(0.1, 0.4, px * f);
     // Las escalas van de mayor a menor: si esta ya no se ve, las siguientes tampoco. Con el mapa
     // alejado se ahorra así más de la mitad del ruido, que es lo caro en un móvil.
     if (visible <= 0.0) break;
+    // demasiado grande en pantalla (más de ~25 px por ola): se salta
+    float fine = smoothstep(0.03, 0.08, px * f);
     // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
-    h += visible * a / f * gnoise(p * f + vec3(h * f * 0.35));
+    if (fine > 0.0) h += fine * visible * a / f * gnoise(q * f + vec3(h * f * 0.35) + uTime * vec3(0.2, 0.14, 0.09));
+    // cada escala, girada respecto a la anterior: sin esto las celdas del ruido se alinean y se ve
+    // una cuadrícula
+    q = TURN * q;
     f *= 2.07;
     a *= 0.86;
   }
@@ -193,6 +208,20 @@ vec3 glint(vec3 normal, vec3 toEye, vec3 geo) {
   return vec3(1.0, 0.97, 0.9) * (((sparkle + sheen) * flat_ + fresnel) * uGlint * lit);
 }
 
+// Color del mar como se ve desde el espacio, con la profundidad real: claro y verdoso sobre las
+// plataformas continentales (menos de 200 m) y cada vez más oscuro hasta las llanuras abisales y
+// las fosas. La textura guarda el escalón de profundidad (0 = tierra, 1 = 0–200 m, 2 = 200–1000 m,
+// 3 = 1000–2000 m … 12 = más de 10 000 m) multiplicado por 21.
+vec3 sea(vec2 ll) {
+  float level = texture2D(uSeabed, vec2(ll.x / 6.283185307 + 0.5, ll.y / 3.141592654 + 0.5)).r * 255.0 / 21.0;
+  // 0 en la plataforma, 1 a partir de 6000 m
+  float deepness = clamp((level - 1.0) / 6.0, 0.0, 1.0);
+  vec3 shallow = uOcean * vec3(1.06, 1.14, 1.10) + vec3(0.0, 0.035, 0.02);
+  vec3 deep = uOcean * vec3(0.70, 0.78, 0.90);
+  // la mayor parte del cambio, en los primeros 2000 m, como se ve en las fotos de satélite
+  return mix(uOcean, mix(shallow, deep, sqrt(deepness)), uDepth);
+}
+
 void main() {
   // Retícula cada 15°, de 1 px de grosor sea cual sea el zoom.
   vec2 g = vLonLat * (180.0 / 3.141592653589793) / 15.0;
@@ -202,7 +231,7 @@ void main() {
   float meridian = (1.0 - clamp(d.x, 0.0, 1.0)) * (1.0 - smoothstep(0.15, 0.5, w.x));
   float parallel = 1.0 - clamp(d.y, 0.0, 1.0);
   float line = max(meridian, parallel);
-  vec3 c = mix(uOcean, uGrid, line * uGridAlpha);
+  vec3 c = mix(sea(vLonLat), uGrid, line * uGridAlpha);
   gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo) + glint(vNormal, vToEye, normalize(vGeo)), 1.0);
 }
 `;

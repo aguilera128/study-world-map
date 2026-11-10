@@ -14,7 +14,11 @@ import {
   WebGLRenderer,
   type BufferGeometry,
   type IUniform,
+  TextureLoader,
+  RepeatWrapping,
+  NoColorSpace,
   type Object3D,
+  type Texture,
 } from 'three';
 import type { Atlas } from '../atlas/atlas';
 import type { MeshData } from '../atlas/mesh';
@@ -183,6 +187,8 @@ export class MapEngine {
   private nightTarget = 0;
   private showGrid = true;
   private showGlint = true;
+  private seabedReady = false;
+  private seaTimer = 0;
   private showStars = true;
 
   // ── uniformes compartidos por todos los materiales ──
@@ -206,7 +212,7 @@ export class MapEngine {
     uNightDim: { value: 0.5 },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
@@ -280,6 +286,16 @@ export class MapEngine {
     this.uniforms.uState.value = this.stateTex;
     this.uniforms.uAux.value = this.auxTex;
     this.uniforms.uCount.value = n;
+    // Profundidad real del mar. Hasta que llega, el mar se pinta de un solo color.
+    const seabed = new TextureLoader().load('/data/depth.webp', () => {
+      this.seabedReady = true;
+      this.own.ocean.uDepth.value = this.palette.seaDepth;
+      this.invalidate();
+    });
+    seabed.colorSpace = NoColorSpace;
+    seabed.wrapS = RepeatWrapping;
+    this.disposables.push(seabed);
+    this.own.ocean.uSeabed.value = seabed;
 
     // ── capas, de abajo arriba ──
     const sky = { transparent: true, depthWrite: false };
@@ -416,6 +432,7 @@ export class MapEngine {
     this.own.ocean.uGrid.value.copy(vec3(p.grid));
     this.own.ocean.uGridAlpha.value = this.showGrid ? p.gridAlpha : 0;
     this.own.ocean.uGlint.value = this.showGlint ? p.glint : 0;
+    this.own.ocean.uDepth.value = this.seabedReady ? p.seaDepth : 0;
     this.own.stars.uStars.value = this.showStars ? p.stars : 0;
     this.own.wall.uWallTint.value = p.wallTint;
     this.own.halo.uColor.value.copy(vec3(p.halo));
@@ -980,10 +997,19 @@ export class MapEngine {
     const dt = this.lastFrame ? clamp((now - this.lastFrame) / 1000, 0, 0.05) : 1 / 60;
     const busyCamera = this.stepCamera(dt, now);
     const busyState = this.stepState(dt, now);
+    this.own.ocean.uTime.value = (now / 1000) % 3600;
     this.render();
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
+    } else if (this.showGlint && !this.reducedMotion && !this.seaTimer) {
+      // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
+      // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
+      // no atiende el requestAnimationFrame y esto se para solo.
+      this.seaTimer = window.setTimeout(() => {
+        this.seaTimer = 0;
+        this.invalidate();
+      }, 100);
     }
   };
 
@@ -1164,6 +1190,7 @@ export class MapEngine {
   }
 
   dispose() {
+    clearTimeout(this.seaTimer);
     this.disposed = true;
     cancelAnimationFrame(this.raf);
     this.abort.abort();
