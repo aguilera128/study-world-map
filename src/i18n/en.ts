@@ -406,6 +406,7 @@ const en: Record<string, string> = {
   'Más sobre {x} en Wikipedia': 'More about {x} on Wikipedia',
   'Plegar el panel': 'Collapse the panel',
   'Desplegar el panel': 'Expand the panel',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'Your browser is drawing without graphics acceleration, so the map will be slow. Tap the screen or press a key to load it.',
   'Reflejo del agua': 'Water reflection',
   Estrellas: 'Stars',
   'Día y noche': 'Day and night',

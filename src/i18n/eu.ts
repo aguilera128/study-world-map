@@ -407,6 +407,7 @@ const eu: Record<string, string> = {
   'Más sobre {x} en Wikipedia': '{x}(r)i buruz gehiago Wikipedian',
   'Plegar el panel': 'Tolestu panela',
   'Desplegar el panel': 'Zabaldu panela',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'Zure nabigatzaileak azelerazio grafikorik gabe marrazten du, beraz mapa motel ibiliko da. Ukitu pantaila edo sakatu tekla bat kargatzeko.',
   'Reflejo del agua': 'Uraren isla',
   Estrellas: 'Izarrak',
   'Día y noche': 'Eguna eta gaua',

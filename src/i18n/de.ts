@@ -406,6 +406,7 @@ const de: Record<string, string> = {
   'Más sobre {x} en Wikipedia': 'Mehr über {x} auf Wikipedia',
   'Plegar el panel': 'Bereich einklappen',
   'Desplegar el panel': 'Bereich ausklappen',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'Dein Browser zeichnet ohne Grafikbeschleunigung, die Karte wird daher langsam sein. Tippe auf den Bildschirm oder drücke eine Taste, um sie zu laden.',
   'Reflejo del agua': 'Wasserspiegelung',
   Estrellas: 'Sterne',
   'Día y noche': 'Tag und Nacht',

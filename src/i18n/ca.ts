@@ -407,6 +407,7 @@ const ca: Record<string, string> = {
   'Más sobre {x} en Wikipedia': 'Més sobre {x} a la Viquipèdia',
   'Plegar el panel': 'Plega el panell',
   'Desplegar el panel': 'Desplega el panell',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'El teu navegador dibuixa sense acceleració gràfica, així que el mapa anirà lent. Toca la pantalla o prem una tecla per carregar-lo.',
   'Reflejo del agua': 'Reflex de l’aigua',
   Estrellas: 'Estreles',
   'Día y noche': 'Dia i nit',

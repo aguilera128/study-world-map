@@ -406,6 +406,7 @@ const fr: Record<string, string> = {
   'Más sobre {x} en Wikipedia': 'En savoir plus sur {x} sur Wikipédia',
   'Plegar el panel': 'Replier le panneau',
   'Desplegar el panel': 'Déplier le panneau',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'Votre navigateur dessine sans accélération graphique : la carte sera lente. Touchez l’écran ou appuyez sur une touche pour la charger.',
   'Reflejo del agua': 'Reflet de l’eau',
   Estrellas: 'Étoiles',
   'Día y noche': 'Jour et nuit',

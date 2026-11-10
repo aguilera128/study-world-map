@@ -406,6 +406,7 @@ const zh: Record<string, string> = {
   'Más sobre {x} en Wikipedia': '在维基百科了解更多关于{x}的信息',
   'Plegar el panel': '收起面板',
   'Desplegar el panel': '展开面板',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': '你的浏览器没有图形加速，地图会比较慢。点击屏幕或按任意键加载。',
   'Reflejo del agua': '水面反光',
   Estrellas: '星星',
   'Día y noche': '昼夜',

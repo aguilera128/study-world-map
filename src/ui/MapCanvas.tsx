@@ -80,6 +80,20 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   }, [engine, key, url, on, labels, line]);
 }
 
+/** ¿El navegador dibuja WebGL por software (sin tarjeta gráfica)? Se mira en un lienzo de usar y tirar. */
+function softwareRendering(): boolean {
+  try {
+    const gl = document.createElement('canvas').getContext('webgl2') ?? document.createElement('canvas').getContext('webgl');
+    if (!gl) return false; // sin WebGL ya hay su propio aviso
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '');
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return /swiftshader|llvmpipe|software|basic render/i.test(renderer);
+  } catch {
+    return false;
+  }
+}
+
 /** Rótulo clavado sobre un país: el motor lo mueve con el mapa. */
 function Pin({ engine, atlas, label }: { engine: MapEngine; atlas: Atlas; label: MapLabel }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -155,10 +169,25 @@ export default function MapCanvas() {
   };
   useLayoutEffect(placeTip, [hovered, layerId]);
 
+  // Sin tarjeta gráfica (dibujo por software) compilar los sombreadores deja la página sin
+  // responder varios segundos, o muchos más en máquinas lentas y en navegadores automáticos como el
+  // de PageSpeed. Ahí el mapa no se arranca solo: espera al primer toque o tecla.
+  const [waiting, setWaiting] = useState(softwareRendering);
+  useEffect(() => {
+    if (!waiting) return;
+    const start = () => setWaiting(false);
+    window.addEventListener('pointerdown', start, { once: true });
+    window.addEventListener('keydown', start, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', start);
+      window.removeEventListener('keydown', start);
+    };
+  }, [waiting]);
+
   // ── Crear el motor (una vez) ──
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || waiting) return;
     let engine: MapEngine;
     try {
       const { viewMode: mode } = useSettings.getState();
@@ -201,7 +230,7 @@ export default function MapCanvas() {
       setLocalEngine(null);
       engine.dispose();
     };
-  }, [atlas]);
+  }, [atlas, waiting]);
 
   // ── Sincronizar el motor con el estado ──
   useEffect(() => engine?.setPalette(PALETTES[theme]), [engine, theme]);
@@ -293,6 +322,11 @@ export default function MapCanvas() {
       />
 
       {/* Durante la partida no se marca dónde está el jugador: sería una pista. */}
+      {waiting && (
+        <p className="pointer-events-none fixed inset-x-0 top-[28%] z-10 mx-auto max-w-xs px-6 text-center text-sm text-ink-soft wide:left-[30rem] wide:top-[45%]">
+          {t('Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.')}
+        </p>
+      )}
       {/* La regla de escala: solo donde hay sitio y fuera de la partida. */}
       {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}

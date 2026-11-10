@@ -406,6 +406,7 @@ const gl: Record<string, string> = {
   'Más sobre {x} en Wikipedia': 'Máis sobre {x} na Wikipedia',
   'Plegar el panel': 'Pregar o panel',
   'Desplegar el panel': 'Despregar o panel',
+  'Tu navegador dibuja sin aceleración gráfica, así que el mapa irá lento. Toca la pantalla o pulsa una tecla para cargarlo.': 'O teu navegador debuxa sen aceleración gráfica, así que o mapa irá lento. Toca a pantalla ou preme unha tecla para cargalo.',
   'Reflejo del agua': 'Reflexo da auga',
   Estrellas: 'Estrelas',
   'Día y noche': 'Día e noite',
