@@ -126,44 +126,68 @@ varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
 
-// Ruido de valor en 3D: se evalúa sobre el punto geográfico, así que el oleaje está fijo al mapa
+// Oleaje: ruido de gradiente en 3D evaluado sobre el punto geográfico, así que está fijo al mapa
 // (no se mueve ni obliga a redibujar) y es continuo en el antimeridiano y en los polos.
-float hash(vec3 p) {
-  p = fract(p * 0.3183099 + 0.1);
-  p *= 17.0;
-  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+vec3 hash3(vec3 p) {
+  p = vec3(dot(p, vec3(127.1, 311.7, 74.7)), dot(p, vec3(269.5, 183.3, 246.1)), dot(p, vec3(113.5, 271.9, 124.6)));
+  return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
-float noise(vec3 x) {
-  vec3 i = floor(x);
-  vec3 f = fract(x);
-  f = f * f * (3.0 - 2.0 * f);
+float gnoise(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
   return mix(
-    mix(mix(hash(i), hash(i + vec3(1, 0, 0)), f.x), mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
-    mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y),
-    f.z
+    mix(
+      mix(dot(hash3(i), f), dot(hash3(i + vec3(1, 0, 0)), f - vec3(1, 0, 0)), u.x),
+      mix(dot(hash3(i + vec3(0, 1, 0)), f - vec3(0, 1, 0)), dot(hash3(i + vec3(1, 1, 0)), f - vec3(1, 1, 0)), u.x),
+      u.y
+    ),
+    mix(
+      mix(dot(hash3(i + vec3(0, 0, 1)), f - vec3(0, 0, 1)), dot(hash3(i + vec3(1, 0, 1)), f - vec3(1, 0, 1)), u.x),
+      mix(dot(hash3(i + vec3(0, 1, 1)), f - vec3(0, 1, 1)), dot(hash3(i + vec3(1, 1, 1)), f - vec3(1, 1, 1)), u.x),
+      u.y
+    ),
+    u.z
   );
 }
 
-// Inclinación de la superficie por el oleaje; se apaga cuando las olas son más finas que un píxel.
-vec3 ripple(vec3 p) {
-  float visible = 1.0 - smoothstep(0.35, 1.0, length(fwidth(p)));
-  return (vec3(noise(p), noise(p + vec3(31.7, 0.0, 0.0)), noise(p + vec3(0.0, 47.3, 0.0))) - 0.5) * visible;
+// Altura del agua: seis escalas de ola fina. Cada una pesa 1/frecuencia
+// (misma pendiente en todas) y se apaga cuando sus olas son más finas que un par de píxeles, así
+// que a cualquier zoom hay detalle nítido y nada parpadea.
+float swell(vec3 p, float px) {
+  float h = 0.0;
+  float f = 150.0;
+  float a = 1.0;
+  for (int i = 0; i < 6; i++) {
+    float visible = 1.0 - smoothstep(0.18, 0.5, px * f);
+    // cada escala arrastra un poco a la siguiente: crestas alargadas en vez de manchas redondas
+    h += visible * a / f * gnoise(p * f + vec3(h * f * 0.35));
+    f *= 2.07;
+    a *= 0.86;
+  }
+  return h;
 }
 
-// Brillo del agua: reflejo de la luz (del Sol real en el modo de tiempo real) roto por el oleaje,
-// y un aclarado hacia el borde del globo (Fresnel).
+// Brillo del agua: reflejo de la luz (del Sol real en el modo de tiempo real) roto en destellos finos
+// por el oleaje, un velo ancho alrededor y un aclarado hacia el borde del globo (Fresnel).
 vec3 glint(vec3 normal, vec3 toEye, vec3 geo) {
-  vec3 q = geo * 170.0;
-  vec3 n = normalize(normalize(normal) + 0.16 * (ripple(q) + 0.5 * ripple(q * 2.7)));
+  float px = max(length(fwidth(geo)) * 0.7071, 1e-7);
+  float h = swell(geo, px);
+  // pendiente de la ola en pantalla → inclina la normal (en espacio de cámara)
+  vec2 slope = vec2(dFdx(h), dFdy(h)) / px;
+  vec3 n = normalize(normalize(normal) - 0.16 * vec3(slope, 0.0));
   vec3 v = normalize(toEye);
   float real = uNight * uMorph;
   vec3 l = normalize(mix(uLight, mat3(viewMatrix) * uSun, real));
-  float spec = pow(max(dot(n, normalize(l + v)), 0.0), 30.0) * mix(0.35, 1.0, uMorph);
+  float ndh = max(dot(n, normalize(l + v)), 0.0);
+  float flat_ = mix(0.3, 1.0, uMorph);
+  float sparkle = pow(ndh, 60.0) * 0.55;
+  float sheen = pow(ndh, 9.0) * 0.3;
   float fresnel = pow(1.0 - max(dot(n, v), 0.0), 3.0) * uMorph * 0.3;
   // De noche no hay reflejo del Sol.
   float lit = mix(1.0, smoothstep(-0.05, 0.2, dot(geo, uSun)), uNight);
-  return vec3(1.0, 0.97, 0.9) * (spec + fresnel) * uGlint * lit;
+  return vec3(1.0, 0.97, 0.9) * (((sparkle + sheen) * flat_ + fresnel) * uGlint * lit);
 }
 
 void main() {
