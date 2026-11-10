@@ -776,7 +776,7 @@ void main() {
   // Todo lo que se ve es el mapa de la NASA: el brillo de la galaxia, su polvo y el grano de las
   // estrellas débiles. Se atenúa para que quede de fondo y no compita con el globo.
   // Curva con contraste: lo tenue casi desaparece y solo las nubes más densas llegan a verse claras.
-  vec3 color = glow * glow * 0.34 + glow * 0.07;
+  vec3 color = glow * glow * 0.24 + glow * 0.045;
   float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(color / max(a, 0.001), a);
