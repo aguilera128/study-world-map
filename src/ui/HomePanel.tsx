@@ -99,10 +99,10 @@ export function HomePanel() {
     <Panel label={t('Elegir partida')}>
       {/* En pantallas anchas este rótulo va en la cabecera, junto a la marca. */}
       {/* En el móvil la hoja es corta: quien ya ha jugado no necesita el rótulo ni el titular. */}
-      <p className={`label wide:hidden ${played ? 'hidden' : ''}`} style={order(0)}>
+      <p className={`label min-[82rem]:hidden ${played ? 'hidden wide:block' : ''}`} style={order(0)}>
         {t(def.text.count, { n: atlas.quizzable.length })}
       </p>
-      <h1 className={`display mt-2.5 text-[clamp(1.45rem,7vw,2.1rem)] wide:mt-0 wide:block wide:text-[clamp(1.5rem,3.4vh,1.85rem)] ${played ? 'hidden' : ''}`} style={order(1)}>
+      <h1 className={`display mt-2.5 text-[clamp(1.45rem,7vw,2.1rem)] wide:mt-2 wide:block min-[82rem]:mt-0 wide:text-[clamp(1.5rem,3.4vh,1.85rem)] ${played ? 'hidden' : ''}`} style={order(1)}>
         <span className="block whitespace-nowrap">{def.text.headline[0]}</span>
         <em className="block whitespace-nowrap font-semibold text-accent">{def.text.headline[1]}</em>
       </h1>

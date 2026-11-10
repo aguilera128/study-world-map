@@ -30,6 +30,22 @@ Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/c
 - [Países de América](https://www.studyworldmap.com/juego/paises-de-america/)
 - [Países de Oceanía](https://www.studyworldmap.com/juego/paises-de-oceania/)
 
+### Geografía física, climas y población (solo en español)
+
+Además de los países, la aplicación enseña el temario de geografía de Primaria y ESO, con una página por tema:
+
+- [Ríos y lagos del mundo](https://www.studyworldmap.com/juego/rios-y-lagos-del-mundo/)
+- [Cordilleras y montañas del mundo](https://www.studyworldmap.com/juego/cordilleras-y-montanas-del-mundo/), con su altitud
+- [Océanos, mares y estrechos](https://www.studyworldmap.com/juego/oceanos-mares-y-estrechos/)
+- [Desiertos, penínsulas e islas](https://www.studyworldmap.com/juego/desiertos-peninsulas-e-islas/)
+- [Climas del mundo por países](https://www.studyworldmap.com/juego/climas-del-mundo/)
+- [Países más poblados](https://www.studyworldmap.com/juego/paises-mas-poblados/), con habitantes y densidad
+- [Capas de la Tierra](https://www.studyworldmap.com/capas-de-la-tierra/): corteza, manto y núcleo, discontinuidades y temperaturas
+- [Capas de la atmósfera](https://www.studyworldmap.com/capas-de-la-atmosfera/)
+- [Índice de todos los juegos](https://www.studyworldmap.com/juego/)
+
+El mapa también muestra relieve, profundidad del mar, corrientes oceánicas, placas tectónicas, husos horarios, el día y la noche en tiempo real y el cielo con la Vía Láctea.
+
 ## English
 
 The app and its pages are also available in English, with country and capital names in English:

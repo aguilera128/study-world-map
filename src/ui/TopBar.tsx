@@ -147,10 +147,10 @@ export function TopBar() {
         aria-label={t('Study World Map: volver al inicio')}
       >
         <Logo />
-        <span className={`display text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
+        <span className={`display whitespace-nowrap text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
         {/* Qué mapa es y cuánto tiene, en dos líneas junto a la marca: así no ocupa una línea del panel. */}
         {wide && !playing && tagline.length > 0 && (
-          <span className="label ml-1 border-l border-rule-strong pl-3 text-left leading-[1.35]">
+          <span className="label ml-1 hidden border-l border-rule-strong pl-3 text-left leading-[1.35] min-[82rem]:block">
             {tagline.map((line) => (
               <span key={line} className="block whitespace-nowrap">
                 {line}

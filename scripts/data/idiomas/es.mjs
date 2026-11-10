@@ -114,21 +114,21 @@ export default {
   // Textos de index.html. Cada idioma da su traducción en este mismo orden (`index`); el enlace a
   // la página de países se escribe {paises} en las traducciones.
   index: [
-    "Juego de países, capitales y banderas del mundo · Study World Map",
-    "Mapamundi interactivo en 3D y 2D para aprender los 197 países del mundo, sus capitales y sus banderas. Gratis, sin registro y en español: juega, falla, repasa y aprende geografía a tu ritmo.",
+    "Study World Map: mapa interactivo para estudiar geografía",
+    "Globo 3D y mapa interactivo para estudiar países, capitales, banderas, provincias de España, ríos, montañas y climas. Gratis, sin registro y sin anuncios.",
     "Study World Map · Aprende los países del mundo jugando",
     "Globo 3D y mapa plano interactivos para estudiar países, capitales y banderas.",
     "Globo terráqueo con los países coloreados junto al panel de retos de Study World Map",
-    "Mapamundi interactivo (globo 3D y mapa plano) para aprender los 197 países del mundo, sus continentes, capitales y banderas con cinco retos y repaso espaciado.",
+    "Mapa interactivo (globo 3D y mapa plano) para estudiar geografía: los 197 países del mundo con sus capitales y banderas, las provincias de España, ríos, montañas, mares, climas y población, con retos y repaso espaciado.",
     "Cualquiera con un navegador moderno",
     "Práctica y repaso",
     "Juego educativo",
     "[\"Geografía\", \"Países del mundo\", \"Capitales del mundo\", \"Banderas del mundo\"]",
-    "Study World Map: aprende los países del mundo jugando",
-    `Mapamundi interactivo para aprender los 197 países del mundo, sus continentes, sus capitales y sus
-          banderas. Un globo 3D que se desenrolla en un mapa plano, cinco retos con corrección inmediata y un
-          sistema de repaso que insiste en lo que todavía no te sabes. Gratis, sin anuncios, sin registro y en
-          español.`,
+    "Study World Map: aprende geografía jugando sobre el mapa",
+    `Mapa interactivo para estudiar geografía: los 197 países del mundo con sus capitales y banderas, las
+          provincias de España, los ríos, montañas y mares del temario, los climas y la población. Un globo 3D
+          que se desenrolla en un mapa plano, retos con corrección inmediata y un repaso que insiste en lo que
+          todavía no te sabes. Gratis, sin anuncios, sin registro y en español.`,
     "Retos de geografía",
     "<strong>Localizar:</strong> te damos el nombre de un país y lo buscas en el mapa.",
     "<strong>Continentes:</strong> dices en qué continente está cada país.",
