@@ -1,0 +1,11 @@
+{
+  "name": "Mapamundi · Aprende los países del mundo",
+  "short_name": "Mapamundi",
+  "description": "Globo 3D y mapa plano interactivos para estudiar países, continentes, capitales y banderas.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1eadb",
+  "theme_color": "#f1eadb",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
