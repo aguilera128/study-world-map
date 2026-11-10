@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Study World Map · Aprende los países del mundo jugando</title>
+    <title>Juego de países, capitales y banderas del mundo · Study World Map</title>
     <meta
       name="description"
-      content="Mapamundi interactivo en 3D y 2D para estudiar los países del mundo, sus capitales y sus banderas. Juega, falla, repasa y aprende geografía a tu ritmo."
+      content="Mapamundi interactivo en 3D y 2D para aprender los 197 países del mundo, sus capitales y sus banderas. Gratis, sin registro y en español: juega, falla, repasa y aprende geografía a tu ritmo."
     />
     <meta name="theme-color" content="#f1eadb" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0d1520" media="(prefers-color-scheme: dark)" />
@@ -27,6 +27,47 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- Cookies y Google Tag Manager: no se carga nada de Google sin consentimiento (public/consent.js). -->
+    <script src="/consent.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.studyworldmap.com/#website",
+            "name": "Study World Map",
+            "url": "https://www.studyworldmap.com/",
+            "inLanguage": "es"
+          },
+          {
+            "@type": "WebApplication",
+            "name": "Study World Map",
+            "url": "https://www.studyworldmap.com/",
+            "description": "Mapamundi interactivo (globo 3D y mapa plano) para aprender los 197 países del mundo, sus continentes, capitales y banderas con cinco retos y repaso espaciado.",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Cualquiera con un navegador moderno",
+            "inLanguage": "es",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+            "educationalUse": "Práctica y repaso",
+            "learningResourceType": "Juego educativo",
+            "about": ["Geografía", "Países del mundo", "Capitales del mundo", "Banderas del mundo"],
+            "image": "https://www.studyworldmap.com/og.jpg",
+            "isPartOf": { "@id": "https://www.studyworldmap.com/#website" }
+          }
+        ]
+      }
+    </script>
+    <style>
+      /* Contenido para buscadores y asistentes de IA, que no ejecutan JavaScript. React lo sustituye
+         al arrancar; solo asoma si la aplicación tarda en cargar. */
+      .static-intro { max-width: 40rem; margin: 0 auto; padding: 3rem 1.25rem; font: 1rem/1.6 system-ui, sans-serif; color: #1b2a3a; opacity: 0; animation: static-in 0.3s 2s forwards; }
+      .static-intro h1 { font: 700 2rem/1.15 Georgia, serif; }
+      .static-intro a { color: #d5462a; }
+      @keyframes static-in { to { opacity: 1; } }
+      [data-theme='night'] .static-intro { color: #efe7d6; }
+    </style>
     <script>
       // Aplica el tema guardado antes de pintar, para que no parpadee.
       try {
@@ -40,12 +81,37 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
-    <noscript>
-      <p style="padding: 2rem; font-family: sans-serif">
-        Study World Map necesita JavaScript para mostrar el mapa interactivo y los juegos de geografía.
-      </p>
-    </noscript>
+    <div id="root">
+      <main class="static-intro">
+        <h1>Study World Map: aprende los países del mundo jugando</h1>
+        <p>
+          Mapamundi interactivo para aprender los 197 países del mundo, sus continentes, sus capitales y sus
+          banderas. Un globo 3D que se desenrolla en un mapa plano, cinco retos con corrección inmediata y un
+          sistema de repaso que insiste en lo que todavía no te sabes. Gratis, sin anuncios, sin registro y en
+          español.
+        </p>
+        <h2>Retos de geografía</h2>
+        <ul>
+          <li><strong>Localizar:</strong> te damos el nombre de un país y lo buscas en el mapa.</li>
+          <li><strong>Continentes:</strong> dices en qué continente está cada país.</li>
+          <li><strong>Nombrar:</strong> señalamos un país en el mapa y dices cuál es.</li>
+          <li><strong>Capitales:</strong> unes cada país con su capital.</li>
+          <li><strong>Banderas:</strong> reconoces de qué país es cada bandera.</li>
+        </ul>
+        <h2>Cómo ayuda a aprender</h2>
+        <ul>
+          <li>Cada fallo dice qué país has pulsado y, tras varios intentos, se enseña la solución.</li>
+          <li>Lo que fallas vuelve a preguntarse tres preguntas después, y entre partidas cada país sigue un repaso espaciado (cajas de Leitner).</li>
+          <li>Se juega con el mundo entero, por continentes o con una lista de países propia que se comparte con un enlace, ideal para preparar un examen.</li>
+          <li>Funciona en el móvil, se puede instalar y, tras la primera visita, también sin conexión.</li>
+        </ul>
+        <p>
+          ¿Buscas la lista completa? Consulta los
+          <a href="/paises-y-capitales/">países del mundo y sus capitales</a>, ordenados por continente.
+        </p>
+        <noscript><p>El mapa interactivo y los juegos necesitan JavaScript.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -4,7 +4,7 @@
 //   · /assets (con hash en el nombre), banderas e iconos: la copia guardada; si no está, la red.
 // Subir VERSION borra las cachés anteriores al activarse.
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = `swm-${VERSION}`;
 const PRECACHE = ['/', '/data/atlas.json'];
 
@@ -51,14 +51,18 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// La aplicación es una sola página (con ?lista=… o sin nada): se guarda bajo '/'. Las demás páginas
+// (p. ej. /paises-y-capitales/) se guardan con su propia ruta.
 async function networkFirst(request) {
   const cache = await caches.open(CACHE);
+  const path = new URL(request.url).pathname;
+  const key = path === '/' || path === '/index.html' ? '/' : path;
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put('/', response.clone());
+    if (response.ok) cache.put(key, response.clone());
     return response;
   } catch {
-    return (await cache.match('/')) ?? Response.error();
+    return (await cache.match(key)) ?? (await cache.match('/')) ?? Response.error();
   }
 }
 

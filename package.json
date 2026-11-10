@@ -10,8 +10,8 @@
   },
   "scripts": {
     "atlas": "node scripts/build-atlas.mjs",
-    "dev": "node scripts/build-atlas.mjs && vite",
-    "build": "node scripts/build-atlas.mjs && tsc --noEmit && vite build",
+    "dev": "node scripts/build-atlas.mjs && node scripts/build-pages.mjs && vite",
+    "build": "node scripts/build-atlas.mjs && node scripts/build-pages.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

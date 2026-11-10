@@ -159,8 +159,38 @@ export function HomePanel() {
         </div>
       </button>
 
-      <p className="mt-6 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
+      <a
+        href="/donar/"
+        className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent"
+        style={order(8)}
+      >
+        <Icon name="heart" size={16} />
+        Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto
+      </a>
+
+      <p className="mt-4 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
         Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)
+        <br />
+        {[
+          ['/paises-y-capitales/', 'Países y capitales'],
+          ['/aviso-legal/', 'Aviso legal'],
+          ['/privacidad/', 'Privacidad'],
+          ['/cookies/', 'Cookies'],
+        ].map(([href, label]) => (
+          <span key={href}>
+            <a href={href} className="underline hover:text-ink">
+              {label}
+            </a>
+            {' · '}
+          </span>
+        ))}
+        <button
+          type="button"
+          onClick={() => (window as Window & { swmConsent?: { open(): void } }).swmConsent?.open()}
+          className="underline hover:text-ink"
+        >
+          Configurar cookies
+        </button>
       </p>
     </Panel>
   );

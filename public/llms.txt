@@ -1,0 +1,26 @@
+# Study World Map
+
+> Mapamundi interactivo y gratuito, en español, para aprender los 197 países del mundo, sus continentes, sus capitales y sus banderas jugando. Funciona en el navegador, sin registro ni anuncios, y también sin conexión tras la primera visita.
+
+Study World Map muestra un globo 3D que se desenrolla en un mapa plano (proyección Natural Earth). Tiene cinco retos con corrección inmediata y un sistema de repaso espaciado que pregunta más a menudo lo que el jugador falla.
+
+- **Localizar**: se da el nombre de un país y hay que pulsarlo en el mapa.
+- **Continentes**: decir en qué continente está cada país.
+- **Nombrar**: se señala un país en el mapa y hay que decir cuál es (con opciones o escribiendo).
+- **Capitales**: unir cada país con su capital.
+- **Banderas**: reconocer de qué país es cada bandera.
+
+Se puede jugar con el mundo entero, por continente o con una lista de países propia (por ejemplo, la de un examen), que se comparte con un enlace. El progreso se guarda en el propio dispositivo: no hay cuentas ni servidor.
+
+Los 197 países son los 193 miembros de la ONU, Ciudad del Vaticano, Palestina, Taiwán y Kosovo.
+
+## Páginas
+
+- [Mapa interactivo y juegos](https://www.studyworldmap.com/): la aplicación.
+- [Países del mundo y sus capitales](https://www.studyworldmap.com/paises-y-capitales/): lista completa de los 197 países por continente, con capital, bandera y superficie, y preguntas frecuentes.
+
+## Fuentes de los datos
+
+- Cartografía: Natural Earth (dominio público).
+- Códigos ISO y superficies: mledoze/countries (ODbL).
+- Banderas: flag-icons (MIT).

@@ -90,8 +90,11 @@ No necesita variables de entorno.
   transiciones de interfaz con **Motion**.
 - **three.js** para el mapa, con sombreadores propios. No hay texturas ni teselas: los países son
   geometría vectorial, nítida a cualquier zoom.
-- Tipografías autoalojadas (Besley y Atkinson Hyperlegible Next): la página no hace ninguna
-  petición a terceros.
+- Tipografías autoalojadas (Besley y Atkinson Hyperlegible Next).
+- **Analítica con consentimiento.** `public/consent.js` muestra un aviso de cookies y solo carga
+  Google Tag Manager (`GTM-TW2XCZJM`, con GA4) si la persona acepta; con modo de consentimiento,
+  solo analítica y nada de publicidad. Sin aceptar, la página no hace ninguna petición a terceros.
+  La elección se cambia desde el enlace «Cookies» del pie.
 
 ### Cómo está hecho el mapa
 
@@ -119,6 +122,9 @@ No necesita variables de entorno.
 ```
 scripts/
   build-atlas.mjs        generador del atlas
+  build-pages.mjs        páginas estáticas: países y capitales, aviso legal, privacidad, cookies, donar
+  data/sitio.mjs         datos del titular y enlace de donación (el build de Vercel falla si faltan)
+  data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)
 src/
   atlas/                 carga del atlas, búsqueda del país de un punto y triangulación
