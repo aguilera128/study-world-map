@@ -1,4 +1,4 @@
-import { modeDef, MODES, type GameConfig } from './config';
+import { modesOf, type GameConfig } from './config';
 import type { Rng } from './session';
 
 // Reto del día: las mismas diez preguntas para todo el mundo, sin servidor. La fecha (la del
@@ -15,8 +15,9 @@ const dayNumber = (key: string) => Math.round(Date.UTC(+key.slice(0, 4), +key.sl
 
 /** El reto que toca ese día: los retos se van turnando, siempre con todo el mundo y diez preguntas. */
 export function dailyConfig(key: string): GameConfig {
-  const mode = MODES[dayNumber(key) % MODES.length].id;
-  return { mode, answer: modeDef(mode).answers[0], scope: 'mundo', length: 10 };
+  const modes = modesOf('world');
+  const mode = modes[dayNumber(key) % modes.length];
+  return { map: 'world', mode: mode.id, answer: mode.answers[0], scope: 'mundo', length: 10 };
 }
 
 /** Generador pseudoaleatorio (mulberry32) sembrado con la fecha: la misma secuencia para todos. */

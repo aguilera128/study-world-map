@@ -1,7 +1,9 @@
 import { useMemo, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
-import { bestFor, useApp, useProgress, useSettings } from '../app/store';
-import { answerLabel, modeDef, MODES, resolveScope } from '../game/config';
+import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/store';
+import type { MapId } from '../atlas/types';
+import { answerLabel, modeDef, modesOf, resolveScope } from '../game/config';
+import { MAPS } from '../game/maps';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
 import { Icon } from './Icon';
@@ -46,9 +48,11 @@ function DailyCard() {
   );
 }
 
-/** Pantalla de inicio: se elige el reto, qué países entran y cuántas preguntas. */
+/** Pantalla de inicio: se elige el mapa, el reto, qué países entran y cuántas preguntas. */
 export function HomePanel() {
   const atlas = useApp((s) => s.atlas)!;
+  const def = useMapDef();
+  const setMap = useApp((s) => s.setMap);
   const start = useApp((s) => s.start);
   const go = useApp((s) => s.go);
   const config = useSettings((s) => s.config);
@@ -57,7 +61,7 @@ export function HomePanel() {
   const progress = useProgress((s) => s.progress);
   const bests = useProgress((s) => s.bests);
 
-  const mode = modeDef(config.mode);
+  const mode = modeDef(config.mode, atlas.map);
   const scope = useMemo(() => resolveScope(atlas, config.scope, lists), [atlas, config.scope, lists]);
   const summary = useMemo(
     () =>
@@ -75,22 +79,38 @@ export function HomePanel() {
   return (
     <Panel label={t('Elegir partida')}>
       <p className="label" style={order(0)}>
-        {t('Atlas interactivo · {n} países', { n: atlas.quizzable.length })}
+        {t(def.text.count, { n: atlas.quizzable.length })}
       </p>
       <h1 className="display mt-2.5 text-[clamp(1.6rem,8vw,2.1rem)] wide:text-[clamp(1.9rem,4.4vh,2.3rem)]" style={order(1)}>
-        <span className="block whitespace-nowrap">{t('Aprende el mundo,')}</span>
-        <em className="block whitespace-nowrap font-semibold text-accent">{t('país a país.')}</em>
+        <span className="block whitespace-nowrap">{def.text.headline[0]}</span>
+        <em className="block whitespace-nowrap font-semibold text-accent">{def.text.headline[1]}</em>
       </h1>
       <p className="mt-2.5 max-w-[26rem] text-ink-soft" style={order(2)}>
         {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
 
-      <DailyCard />
+      <Segmented
+        label={t('Mapa')}
+        className="mt-4"
+        value={atlas.map}
+        onChange={(map) => void setMap(map)}
+        options={(Object.keys(MAPS) as MapId[]).map((id) => ({
+          value: id,
+          label: (
+            <>
+              <Icon name={id === 'world' ? 'globe' : 'map'} size={16} />
+              {MAPS[id].title}
+            </>
+          ),
+        }))}
+      />
+
+      {def.extras && <DailyCard />}
 
       <section className="mt-5" style={order(3)}>
         <Step n={1}>{t('Reto')}</Step>
         <div role="radiogroup" aria-label={t('Reto')} className="grid grid-cols-2 gap-1.5 min-[26rem]:grid-cols-3">
-          {MODES.map((m) => (
+          {modesOf(atlas.map).map((m) => (
             <button
               key={m.id}
               type="button"
@@ -123,7 +143,7 @@ export function HomePanel() {
               label: (
                 <>
                   <Icon name={ANSWER_ICONS[a]} size={16} />
-                  {answerLabel(mode.id, a)}
+                  {answerLabel(mode.id, a, atlas.map)}
                 </>
               ),
             }))}
@@ -132,16 +152,18 @@ export function HomePanel() {
       </section>
 
       <section className="mt-4" style={order(4)}>
-        <Step n={2}>{t('Países')}</Step>
-        <ScopeChips value={config.scope} onChange={(scope) => setConfig({ scope })}>
-          <button
-            type="button"
-            onClick={() => go('lists')}
-            className="tile flex min-h-9 items-center gap-1.5 border-dashed px-3 text-sm font-semibold text-ink-soft"
-          >
-            <Icon name="pencil" size={15} />
-            {t('Elegir países')}
-          </button>
+        <Step n={2}>{def.text.units}</Step>
+        <ScopeChips value={scope.id} onChange={(scope) => setConfig({ scope })}>
+          {def.extras && (
+            <button
+              type="button"
+              onClick={() => go('lists')}
+              className="tile flex min-h-9 items-center gap-1.5 border-dashed px-3 text-sm font-semibold text-ink-soft"
+            >
+              <Icon name="pencil" size={15} />
+              {t('Elegir países')}
+            </button>
+          )}
         </ScopeChips>
       </section>
 

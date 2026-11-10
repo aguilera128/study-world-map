@@ -102,6 +102,8 @@ export default function MapCanvas() {
       setFailed(true);
       return;
     }
+    // El mapa de un país arranca encuadrado en él, no en el globo entero.
+    if (atlas.frame) engine.frame(atlas.frame, { duration: 0 });
     setEngine(engine);
     setLocalEngine(engine);
 
@@ -127,7 +129,8 @@ export default function MapCanvas() {
   useEffect(() => engine?.setMode(viewMode), [engine, viewMode]);
   useEffect(() => engine?.setReducedMotion(reducedMotion), [engine, reducedMotion]);
   useEffect(() => engine?.setPadding(pad), [engine, pad]);
-  useEffect(() => engine?.setAutoRotate(screen === 'home'), [engine, screen]);
+  // El globo gira solo en la portada del mundo: en el mapa de un país se lo llevaría de la vista.
+  useEffect(() => engine?.setAutoRotate(screen === 'home' && !atlas.frame), [engine, screen, atlas]);
   // Durante la partida la noche se atenúa: los colores de las respuestas tienen que seguir leyéndose.
   const playing = screen === 'play' || screen === 'results';
   const daylight = realTime && layers.dayNight;
@@ -196,7 +199,7 @@ export default function MapCanvas() {
       >
         {country && (
           <>
-            <Flag a2={country.a2} height={15} />
+            {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={15} />}
             <span>{country.name}</span>
             {localTime && (
               <span className="tabular flex items-center gap-1 font-normal text-ink-soft" title={t('Hora local')}>

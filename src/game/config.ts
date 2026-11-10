@@ -1,9 +1,15 @@
 import type { Atlas } from '../atlas/atlas';
-import type { Bounds, RegionKey } from '../atlas/types';
+import type { Bounds, MapId } from '../atlas/types';
+import { isMapId, MAPS, type RegionFilterDef } from './maps';
 import { t } from '../i18n';
 
-/** Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. */
-export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate';
+export type { RegionFilterDef };
+
+/**
+ * Qué se aprende: cada reto entrena una destreza distinta y lleva su propio progreso. `region` es
+ * el equivalente a `continent` en el mapa de un país: a qué comunidad autónoma pertenece una provincia.
+ */
+export type ModeId = 'locate' | 'continent' | 'name' | 'capital' | 'flag' | 'climate' | 'region';
 
 /**
  * Variante del reto: cómo se responde.
@@ -22,6 +28,8 @@ export const inputOf = (answer: AnswerKind): InputKind => (answer === 'guided' ?
 export type SessionLength = 10 | 20 | 'all';
 
 export interface GameConfig {
+  /** Qué mapa se estudia: de él dependen los retos y las zonas que se pueden elegir. */
+  map: MapId;
   mode: ModeId;
   answer: AnswerKind;
   /** Qué países entran: un filtro de región (`REGION_FILTERS`) o una lista de estudio. */
@@ -75,13 +83,26 @@ export const MODES: ModeDef[] = [
     summary: t('Di qué clima tiene cada país.'),
     answers: ['choice', 'guided'],
   },
+  {
+    // Solo en el mapa de un país; su título y su resumen los pone cada mapa (./maps.ts).
+    id: 'region',
+    title: t('Región'),
+    summary: '',
+    answers: ['choice', 'guided'],
+  },
 ];
 
-export const modeDef = (id: ModeId): ModeDef => MODES.find((m) => m.id === id)!;
+/** Un reto tal como se llama y se explica en un mapa. */
+export function modeDef(id: ModeId, map: MapId = 'world'): ModeDef {
+  return { ...MODES.find((m) => m.id === id)!, ...MAPS[map].text.modes[id] };
+}
 
-export function answerLabel(mode: ModeId, answer: AnswerKind): string {
-  if (mode === 'continent' || mode === 'climate') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
-  if (mode === 'capital' && answer === 'map') return t('Buscando el país');
+/** Los retos que ofrece un mapa, en su orden. */
+export const modesOf = (map: MapId): ModeDef[] => MAPS[map].modes.map((id) => modeDef(id, map));
+
+export function answerLabel(mode: ModeId, answer: AnswerKind, map: MapId = 'world'): string {
+  if (mode === 'continent' || mode === 'climate' || mode === 'region') return answer === 'guided' ? t('Viéndolo en el mapa') : t('Solo con el nombre');
+  if (mode === 'capital' && answer === 'map') return MAPS[map].text.findOwner;
   return { map: t('En el mapa'), choice: t('Con opciones'), guided: t('Con el mapa'), type: t('Escribiendo') }[answer];
 }
 
@@ -97,25 +118,11 @@ export function showsTarget(config: Pick<GameConfig, 'mode' | 'answer'>): boolea
 
 // ───────────────────────── Ámbito: regiones y listas de estudio ─────────────────────────
 
-export interface RegionFilterDef {
-  id: string;
-  label: string;
-  /** Regiones del atlas que agrupa; vacío = todas. */
-  keys: RegionKey[];
-  /** Encuadre de cámara; si falta se usa el de la región del atlas (o la vista general). */
-  frame?: Bounds;
-}
+/** Las zonas del mapa del mundo. Las de cada mapa están en ./maps.ts. */
+export const REGION_FILTERS: RegionFilterDef[] = MAPS.world.filters;
 
-export const REGION_FILTERS: RegionFilterDef[] = [
-  { id: 'mundo', label: t('Mundo'), keys: [] },
-  { id: 'europa', label: t('Europa'), keys: ['europa'] },
-  { id: 'asia', label: t('Asia'), keys: ['asia'] },
-  { id: 'africa', label: t('África'), keys: ['africa'] },
-  { id: 'america', label: t('América'), keys: ['am-norte', 'am-central', 'am-caribe', 'am-sur'], frame: [-125, -56, -35, 62] },
-  { id: 'america-nc', label: t('Norte y Centroamérica'), keys: ['am-norte', 'am-central', 'am-caribe'], frame: [-128, 6, -58, 58] },
-  { id: 'america-sur', label: t('Sudamérica'), keys: ['am-sur'] },
-  { id: 'oceania', label: t('Oceanía'), keys: ['oceania'] },
-];
+/** Nombre de una zona: el suyo o, si agrupa una sola región, el de esta en el atlas. */
+export const filterLabel = (atlas: Atlas, def: RegionFilterDef): string => def.label ?? atlas.regions[def.keys[0]].name;
 
 /** Lista de estudio: una selección de países (por id ISO) para preparar un examen concreto. */
 export interface StudyList {
@@ -146,27 +153,37 @@ export interface Scope {
 }
 
 export function resolveScope(atlas: Atlas, id: string, lists: StudyList[]): Scope {
-  const list = lists.find((l) => l.id === id);
+  const map = MAPS[atlas.map];
+  const list = map.extras ? lists.find((l) => l.id === id) : undefined;
   if (list) {
     const countries = list.countries.map((c) => atlas.indexOf(c)).filter((i) => i >= 0 && atlas.countries[i].kind === 'country');
     // Una lista con nombre conocido (la de ejemplo) se enseña traducida; las del usuario, tal cual.
     return { id, label: t(list.name), countries, frame: null, isList: true };
   }
-  const def = REGION_FILTERS.find((r) => r.id === id) ?? REGION_FILTERS[0];
+  const def = map.filters.find((r) => r.id === id) ?? map.filters[0];
   const countries = def.keys.length
     ? atlas.quizzable.filter((i) => atlas.countries[i].regions.some((r) => def.keys.includes(r)))
     : atlas.quizzable;
-  const frame = def.frame ?? (def.keys.length === 1 ? atlas.regions[def.keys[0]].frame : null);
-  return { id: def.id, label: def.label, countries, frame, isList: false };
+  // Sin encuadre propio: el de su región o, en el mapa de un país, el de sus regiones juntas. El
+  // mapa entero se queda con la vista general (null en el mundo; el país en el mapa de un país).
+  const union = (a: Bounds, b: Bounds): Bounds => [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])];
+  const framed = def.keys.length === 1 || (def.keys.length > 1 && atlas.frame !== null);
+  const frame = def.frame ?? (framed ? def.keys.map((k) => atlas.regions[k].frame).reduce(union) : def.keys.length ? null : atlas.frame);
+  return { id: def.id, label: filterLabel(atlas, def), countries, frame, isList: false };
 }
 
-export const DEFAULT_CONFIG: GameConfig = { mode: 'locate', answer: 'map', scope: 'europa', length: 10 };
+export const DEFAULT_CONFIG: GameConfig = { map: 'world', mode: 'locate', answer: 'map', scope: MAPS.world.scope, length: 10 };
 
-/** Corrige una configuración guardada que ya no sea válida (un reto retirado, una lista borrada…). */
+/**
+ * Corrige una configuración que no sea válida: una guardada por otra versión (un reto retirado, una
+ * lista borrada…) o la que queda al cambiar de mapa, cuyo reto o zona puede no existir en el nuevo.
+ */
 export function sanitizeConfig(config: Partial<GameConfig> | undefined, lists: StudyList[]): GameConfig {
-  const mode = MODES.find((m) => m.id === config?.mode) ?? MODES[0];
+  const map = MAPS[isMapId(config?.map) ? config.map : 'world'];
+  const modes = modesOf(map.id);
+  const mode = modes.find((m) => m.id === config?.mode) ?? modes[0];
   const answer = mode.answers.includes(config?.answer as AnswerKind) ? (config!.answer as AnswerKind) : mode.answers[0];
-  const known = REGION_FILTERS.some((r) => r.id === config?.scope) || lists.some((l) => l.id === config?.scope);
+  const known = map.filters.some((r) => r.id === config?.scope) || (map.extras && lists.some((l) => l.id === config?.scope));
   const length = config?.length === 10 || config?.length === 20 || config?.length === 'all' ? config.length : DEFAULT_CONFIG.length;
-  return { mode: mode.id, answer, scope: known ? config!.scope! : DEFAULT_CONFIG.scope, length };
+  return { map: map.id, mode: mode.id, answer, scope: known ? config!.scope! : map.scope, length };
 }

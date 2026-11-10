@@ -1,8 +1,8 @@
 import { climateText } from '../game/climate';
 import { useState, type CSSProperties } from 'react';
-import { getEngine } from '../app/engineRef';
 import { formatGrade, formatTime, plural } from '../app/format';
-import { useApp, useProgress } from '../app/store';
+import { showCountry, useApp, useProgress } from '../app/store';
+import type { Atlas } from '../atlas/atlas';
 import type { Country } from '../atlas/types';
 import { modeDef, type GameConfig } from '../game/config';
 import type { Outcome } from '../game/progress';
@@ -17,8 +17,9 @@ const order = (i: number) => ({ '--i': i }) as CSSProperties;
 const TONE: Record<Outcome, string> = { first: 'bg-ok', later: 'bg-help', failed: 'bg-bad' };
 
 /** Lo que había que saber de un país en este reto, para la lista de repaso. */
-function answerFor(country: Country, config: GameConfig, continents: Record<string, string>): string | null {
+function answerFor(country: Country, config: GameConfig, { continents, regions }: Atlas): string | null {
   if (config.mode === 'capital') return country.capital ?? null;
+  if (config.mode === 'region') return regions[country.regions[0]].name;
   if (config.mode === 'continent') return continents[country.continents[0]];
   if (config.mode === 'climate') return climateText(country.climate, 2);
   return null;
@@ -50,7 +51,7 @@ export function ResultsPanel() {
 
   const result = score(session);
   const toReview = missed(session);
-  const mode = modeDef(session.config.mode);
+  const mode = modeDef(session.config.mode, session.config.map);
   const perfect = result.first === result.total;
 
   return (
@@ -103,12 +104,12 @@ export function ResultsPanel() {
           <ul className="thin-scroll -mx-1 max-h-56 overflow-y-auto px-1">
             {toReview.map((index) => {
               const country = atlas.countries[index];
-              const extra = answerFor(country, session.config, atlas.continents);
+              const extra = answerFor(country, session.config, atlas);
               return (
                 <li key={index}>
                   <button
                     type="button"
-                    onClick={() => getEngine()?.frameCountry(index)}
+                    onClick={() => showCountry(atlas, index)}
                     className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-[rgb(var(--shadow)/0.07)]"
                     title={t('Ver en el mapa')}
                   >

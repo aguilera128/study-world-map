@@ -189,3 +189,119 @@ describe('climas', () => {
     expect(climateOf('AND')).toEqual(['montana']);
   });
 });
+
+// España por provincias (scripts/build-maps.mjs): mismo formato, otro atlas.
+describe('atlas de España', () => {
+  const rawSpain = JSON.parse(readFileSync('public/data/es/atlas.json', 'utf8')) as RawAtlas;
+  const spain = new Atlas(rawSpain, 'es');
+  const provinces = spain.quizzable.map((i) => spain.countries[i]);
+  const where = (lon: number, lat: number) => {
+    const i = spain.locate(lon, lat);
+    return i < 0 ? null : spain.countries[i].id;
+  };
+
+  it('tiene las 50 provincias, Ceuta y Melilla, cada una con capital y comunidad', () => {
+    expect(provinces).toHaveLength(52);
+    expect(provinces.map((p) => p.id)).toContain('ES-CE');
+    expect(provinces.map((p) => p.id)).toContain('ES-ML');
+    for (const p of provinces) {
+      expect(p.id, p.name).toMatch(/^ES-[A-Z]{1,2}$/);
+      expect(p.capital, p.id).toBeTruthy();
+      expect(p.regions, p.id).toHaveLength(1);
+      expect(spain.regions[p.regions[0]]?.name, p.id).toBeTruthy();
+      expect(p.polygons.length, p.id).toBeGreaterThan(0);
+    }
+    expect(new Set(provinces.map((p) => p.name)).size).toBe(52);
+    expect(new Set(provinces.map((p) => p.capital)).size).toBe(52);
+  });
+
+  it('tiene las 17 comunidades autónomas y las dos ciudades autónomas, todas con provincias', () => {
+    const keys = Object.keys(spain.regions);
+    expect(keys).toHaveLength(19);
+    const size = (key: string) => provinces.filter((p) => p.regions[0] === key).length;
+    for (const key of keys) expect(size(key), key).toBeGreaterThan(0);
+    expect(keys.filter((key) => size(key) > 1)).toHaveLength(10);
+    expect(size('ES-AN')).toBe(8);
+    expect(size('ES-CL')).toBe(9);
+    expect(size('ES-CM')).toBe(5);
+    expect(size('ES-CT')).toBe(4);
+    expect(size('ES-GA')).toBe(4);
+    expect(size('ES-PV')).toBe(3);
+    expect(spain.regions['ES-CE'].name).toBe('Ceuta');
+    expect(spain.regions['ES-ML'].name).toBe('Melilla');
+    const of = (id: string) => spain.regions[spain.byIdOrThrow(id).regions[0]].name;
+    expect(of('ES-A')).toBe('Comunidad Valenciana');
+    expect(of('ES-LE')).toBe('Castilla y León');
+    expect(of('ES-AB')).toBe('Castilla-La Mancha');
+    expect(of('ES-TF')).toBe('Canarias');
+  });
+
+  it('localiza la provincia de un punto, islas y ciudades autónomas incluidas', () => {
+    expect(where(-3.7, 40.42)).toBe('ES-M'); // Madrid
+    expect(where(-0.38, 39.47)).toBe('ES-V'); // Valencia
+    expect(where(-0.7, 38.27)).toBe('ES-A'); // Elche
+    expect(where(-5.99, 37.39)).toBe('ES-SE'); // Sevilla
+    expect(where(-2.67, 42.85)).toBe('ES-VI'); // Vitoria
+    expect(where(-2.72, 42.73)).toBe('ES-BU'); // Treviño, enclave de Burgos dentro de Álava
+    expect(where(3.0, 39.62)).toBe('ES-PM'); // Mallorca
+    expect(where(-15.6, 27.96)).toBe('ES-GC'); // Gran Canaria
+    expect(where(-16.55, 28.27)).toBe('ES-TF'); // Tenerife
+    expect(where(-5.33, 35.89)).toBe('ES-CE'); // Ceuta
+    expect(where(-2.945, 35.29)).toBe('ES-ML'); // Melilla
+    expect(where(-12, 36)).toBeNull(); // Atlántico
+  });
+
+  it('los países de alrededor son decorado: se dibujan, pero ni se preguntan ni tienen nombre que traducir', () => {
+    const context = spain.countries.filter((c) => c.kind === 'context');
+    expect(context.map((c) => c.id).sort()).toEqual(['AND', 'DZA', 'FRA', 'MAR', 'PRT', 'SAH']);
+    expect(where(-8, 39.5)).toBe('PRT');
+    expect(where(2.35, 48.86)).toBe('FRA');
+    expect(spain.countries.every((c) => c.kind === 'country' || c.kind === 'context')).toBe(true);
+    for (const p of provinces) for (const n of p.neighbors) expect(spain.countries[n].kind, p.id).toBe('country');
+    // Vecinas con frontera de verdad; las islas y las ciudades autónomas no tienen.
+    const names = (id: string) => spain.byIdOrThrow(id).neighbors.map((n) => spain.countries[n].id).sort();
+    expect(names('ES-M')).toEqual(['ES-AV', 'ES-CU', 'ES-GU', 'ES-SG', 'ES-TO']);
+    expect(names('ES-PM')).toEqual([]);
+    expect(names('ES-CE')).toEqual([]);
+  });
+
+  it('la vista general encuadra España, con Canarias', () => {
+    expect(spain.frame).not.toBeNull();
+    const [w, s, e, n] = spain.frame!;
+    expect(w).toBeLessThan(-18);
+    expect(s).toBeLessThan(27.7);
+    expect(e).toBeGreaterThan(4.3);
+    expect(n).toBeGreaterThan(43.7);
+    expect(atlas.frame).toBeNull();
+  });
+
+  it('dos provincias vecinas nunca comparten color', () => {
+    for (const p of provinces) for (const n of p.neighbors) expect(spain.countries[n].color, `${p.id}`).not.toBe(p.color);
+  });
+
+  it('cada idioma tiene nombre y capital para las 52, y nombre para las 19 comunidades', () => {
+    for (const lang of ['en', 'fr', 'de', 'it', 'pt', 'ca', 'gl', 'eu', 'zh']) {
+      const names = JSON.parse(readFileSync(`public/data/es/names.${lang}.json`, 'utf8'));
+      for (const p of provinces) {
+        expect(names.countries[p.id]?.n, `${lang} ${p.id}`).toBeTruthy();
+        expect(names.countries[p.id]?.c, `${lang} ${p.id}`).toBeTruthy();
+      }
+      for (const key of Object.keys(spain.regions)) expect(names.regions[key], `${lang} ${key}`).toBeTruthy();
+      expect(new Set(provinces.map((p) => names.countries[p.id].n)).size, lang).toBe(52);
+    }
+    const eu = JSON.parse(readFileSync('public/data/es/names.eu.json', 'utf8'));
+    expect(eu.countries['ES-BI']).toMatchObject({ n: 'Bizkaia', c: 'Bilbo' });
+    // Al escribir también vale el nombre en español.
+    expect(eu.countries['ES-BI'].a).toContain('Vizcaya');
+    const ca = JSON.parse(readFileSync('public/data/es/names.ca.json', 'utf8'));
+    expect(ca.countries['ES-A'].n).toBe('Alacant');
+    expect(ca.regions['ES-VC']).toBe('Comunitat Valenciana');
+  });
+
+  it('se triangula entero, sin provincias vacías', () => {
+    const spainMesh = buildMesh(spain);
+    const seen = new Set<number>();
+    for (let i = 2; i < spainMesh.fill.length; i += 3) seen.add(spainMesh.fill[i]);
+    expect(seen.size).toBe(spain.countries.length);
+  });
+});

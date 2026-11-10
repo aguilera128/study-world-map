@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { formatTime } from '../app/format';
-import { useApp } from '../app/store';
+import { useApp, useMapDef } from '../app/store';
 import type { Atlas } from '../atlas/atlas';
 import type { ClimateKey, ContinentKey, Country } from '../atlas/types';
 import { climateText } from '../game/climate';
@@ -24,6 +24,7 @@ const STAMP: Record<Outcome, { text: string; className: string }> = {
 
 /** Lo que se pregunta: un rótulo pequeño y, en grande, el dato que se da como pista. */
 function Prompt({ config, country, resolved }: { config: GameConfig; country: Country; resolved: boolean }) {
+  const { text } = useMapDef();
   const byMap = inputOf(config.answer) === 'map';
   let label: string;
   let main: ReactNode;
@@ -36,16 +37,20 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
       label = t('¿En qué continente está?');
       main = country.name;
       break;
+    case 'region':
+      label = text.askRegion;
+      main = country.name;
+      break;
     case 'climate':
       label = t('¿Qué clima tiene?');
       main = country.name;
       break;
     case 'name':
-      label = t('¿Qué país es el señalado?');
+      label = text.askName;
       main = resolved ? country.name : <span className="text-ink-faint">¿…?</span>;
       break;
     case 'capital':
-      label = byMap ? t('¿De qué país es la capital?') : t('¿Cuál es su capital?');
+      label = byMap ? text.askCapitalOwner : t('¿Cuál es su capital?');
       main = byMap ? country.capital : country.name;
       break;
     case 'flag':
@@ -79,8 +84,11 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
 
 /** Frase con la solución, una vez resuelta la pregunta. */
 function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig; country: Country }) {
-  const strong = (text: ReactNode) => <strong className="text-ink">{text}</strong>;
+  const { text } = useMapDef();
+  const strong = (content: ReactNode) => <strong className="text-ink">{content}</strong>;
   switch (config.mode) {
+    case 'region':
+      return <>{tx('{country}: {where}.', { country: country.name, where: strong(atlas.regions[country.regions[0]].name) })}</>;
     case 'continent':
       return (
         <>{tx('{country} está en {where}.', { country: country.name, where: strong(atlas.continents[country.continents[0]]) })}</>
@@ -101,7 +109,7 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       return <>{tx('Es la bandera de {country}.', { country: strong(country.name) })}</>;
     default:
       return (
-        <>{tx('Es {country}, en {region}.', { country: strong(country.name), region: atlas.regions[country.regions[0]].name })}</>
+        <>{tx(text.solution, { country: strong(country.name), region: atlas.regions[country.regions[0]].name })}</>
       );
   }
 }
@@ -114,7 +122,9 @@ function Options({ session, question, country }: { session: Session; question: Q
       ? country.continents.includes(id as ContinentKey)
       : session.config.mode === 'climate'
         ? country.climate.includes(id as ClimateKey)
-        : optionCountry === question.country;
+        : session.config.mode === 'region'
+          ? country.regions.includes(id)
+          : optionCountry === question.country;
   return (
     <div className={`grid gap-2 ${question.options.length > 4 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'}`}>
       {question.options.map((option, i) => {
@@ -152,6 +162,7 @@ function Options({ session, question, country }: { session: Session; question: Q
 
 function TypeAnswer({ session, country }: { session: Session; country: Country }) {
   const answer = useApp((s) => s.answer);
+  const { text: mapText } = useMapDef();
   const [text, setText] = useState('');
   const rowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -187,7 +198,7 @@ function TypeAnswer({ session, country }: { session: Session; country: Country }
           value={resolved ? expected : text}
           onChange={(e) => setText(e.target.value)}
           disabled={resolved}
-          placeholder={session.config.mode === 'capital' ? t('Escribe la capital…') : t('Escribe el país…')}
+          placeholder={session.config.mode === 'capital' ? t('Escribe la capital…') : mapText.type}
           aria-label={t('Tu respuesta')}
           autoComplete="off"
           autoCapitalize="words"
@@ -209,6 +220,7 @@ function TypeAnswer({ session, country }: { session: Session; country: Country }
 /** Marcador y controles de una partida: la pregunta arriba y la forma de responder abajo. */
 export function PlayHud() {
   const atlas = useApp((s) => s.atlas)!;
+  const { text } = useMapDef();
   const session = useLast(useApp((s) => s.session))!;
   const answer = useApp((s) => s.answer);
   const next = useApp((s) => s.next);
@@ -250,7 +262,7 @@ export function PlayHud() {
 
   if (!question) return null;
   const country = atlas.countries[question.country];
-  const mode = modeDef(session.config.mode);
+  const mode = modeDef(session.config.mode, session.config.map);
   const attempts = MAX_ATTEMPTS[input];
   const position = Math.min(session.total, session.answered + (question.review || resolved ? 0 : 1));
   const stamp = resolved && session.outcome ? STAMP[session.outcome] : null;
@@ -382,7 +394,7 @@ export function PlayHud() {
               {input === 'map' && (
                 <span className="float flex min-h-10 items-center gap-2 px-3.5 text-sm font-semibold">
                   <Icon name="pin" size={16} />
-                  {t('Toca el país en el mapa')}
+                  {text.tap}
                 </span>
               )}
               <button

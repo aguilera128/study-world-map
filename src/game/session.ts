@@ -15,10 +15,10 @@ import { t } from '../i18n';
 //   · Los países se sortean dando más peso a los que peor se saben (ver ./progress.ts).
 
 export interface Option {
-  /** Lo que se responde: id del país o clave del continente. */
+  /** Lo que se responde: id del país o clave del continente, del clima o de la región. */
   id: string;
   label: string;
-  /** País al que corresponde la opción (−1 en las opciones de continente). */
+  /** País al que corresponde la opción (−1 en las opciones de continente, clima o región). */
   country: number;
 }
 
@@ -134,6 +134,21 @@ function makeOptions(atlas: Atlas, config: GameConfig, pool: number[], country: 
     const picked = new Set([own[0], ...others]);
     // En el orden de la leyenda (de la zona cálida a la fría), no al azar: ayuda a comparar.
     return CLIMATE_KEYS.filter((key) => picked.has(key)).map((key) => ({ id: key, label: climateLabel(key), country: -1 }));
+  }
+  if (config.mode === 'region') {
+    // Su región y otras tres de las cinco más cercanas (las de las provincias vecinas, que son las
+    // que se confunden), en el orden del atlas: con diecinueve comunidades no caben todas.
+    const own = atlas.countries[country].regions[0];
+    const near = atlas.quizzable
+      .filter((i) => i !== country)
+      .map((i) => ({ i, d: distance(atlas, country, i) }))
+      .sort((a, b) => a.d - b.d)
+      .map((c) => atlas.countries[c.i].regions[0]);
+    const others = [...new Set(near)].filter((key) => key !== own).slice(0, 5);
+    const picked = new Set([own, ...shuffle(others, rng).slice(0, 3)]);
+    return Object.keys(atlas.regions)
+      .filter((key) => picked.has(key))
+      .map((key) => ({ id: key, label: atlas.regions[key].name, country: -1 }));
   }
   // Tres distractores entre los países más cercanos: son los que de verdad se confunden.
   let candidates = pool.filter((i) => i !== country);
@@ -277,7 +292,9 @@ export function submit(atlas: Atlas, session: Session, answer: Answer, now: numb
           ? target.continents.includes(option.id as ContinentKey)
           : session.config.mode === 'climate'
             ? target.climate.includes(option.id as ClimateKey)
-            : option.country === question.country;
+            : session.config.mode === 'region'
+              ? target.regions.includes(option.id)
+              : option.country === question.country;
       break;
     }
     case 'text': {

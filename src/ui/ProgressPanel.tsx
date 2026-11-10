@@ -1,7 +1,7 @@
 import { useMemo, useState, type CSSProperties } from 'react';
-import { useApp, useProgress, useSettings } from '../app/store';
+import { useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import { PALETTES, Style } from '../engine/palette';
-import { MODES, REGION_FILTERS, resolveScope } from '../game/config';
+import { modesOf, resolveScope } from '../game/config';
 import { MASTERY_LABELS, summarize } from '../game/progress';
 import { MODE_ICONS } from './modeIcons';
 import { useTheme } from './hooks';
@@ -30,6 +30,7 @@ function LevelBar({ levels, total, colors }: { levels: number[]; total: number; 
 /** Lo aprendido hasta ahora, por reto y por zona. El mapa se colorea según el dominio de cada país. */
 export function ProgressPanel() {
   const atlas = useApp((s) => s.atlas)!;
+  const def = useMapDef();
   const mode = useApp((s) => s.progressMode);
   const setMode = useApp((s) => s.setProgressMode);
   const start = useApp((s) => s.start);
@@ -44,7 +45,7 @@ export function ProgressPanel() {
   const colors = MASTERY_LABELS.map((_, level) => PALETTES[theme].styles[Style.mastery + level].color);
 
   const rows = useMemo(() => {
-    const scopes = [...REGION_FILTERS.map((r) => r.id), ...lists.map((l) => l.id)].map((id) => resolveScope(atlas, id, lists));
+    const scopes = [...def.filters.map((r) => r.id), ...(def.extras ? lists.map((l) => l.id) : [])].map((id) => resolveScope(atlas, id, lists));
     return scopes.map((scope) => ({
       scope,
       summary: summarize(
@@ -53,9 +54,9 @@ export function ProgressPanel() {
         mode,
       ),
     }));
-  }, [atlas, lists, progress, mode]);
+  }, [atlas, def, lists, progress, mode]);
   const world = rows[0].summary;
-  const hasProgress = Object.keys(progress).length > 0;
+  const hasProgress = atlas.quizzable.some((i) => progress[atlas.countries[i].id]);
 
   const practice = (scope: string) => {
     setConfig({ mode, scope, length: 20 });
@@ -69,7 +70,7 @@ export function ProgressPanel() {
       </p>
       <h1 className="display mt-3 text-[2rem] wide:text-[2.5rem]" style={order(1)}>
         {world.mastered > 0 ? (
-          tx('Dominas {n} de {total} países', { n: <span className="text-ok">{world.mastered}</span>, total: world.total })
+          tx(def.text.mastered, { n: <span className="text-ok">{world.mastered}</span>, total: world.total })
         ) : (
           t('Tu mapa de lo aprendido')
         )}
@@ -83,7 +84,7 @@ export function ProgressPanel() {
           label={t('Reto')}
           value={mode}
           onChange={setMode}
-          options={MODES.map((m) => ({
+          options={modesOf(atlas.map).map((m) => ({
             value: m.id,
             label: (
               <>
@@ -132,7 +133,7 @@ export function ProgressPanel() {
       </ul>
 
       <div className="mt-6 flex flex-wrap items-center gap-2.5" style={order(6)}>
-        <button type="button" onClick={() => practice('mundo')} className="btn btn-accent min-h-12 px-5">
+        <button type="button" onClick={() => practice(def.filters[0].id)} className="btn btn-accent min-h-12 px-5">
           {t('Practicar lo que peor llevo')}
           <Icon name="arrow" size={18} />
         </button>
@@ -149,7 +150,7 @@ export function ProgressPanel() {
               <button
                 type="button"
                 onClick={() => {
-                  reset();
+                  reset(atlas);
                   setConfirming(false);
                 }}
                 className="btn min-h-8 px-3 text-sm text-bad"

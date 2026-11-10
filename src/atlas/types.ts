@@ -1,15 +1,14 @@
 // Tipos del atlas. `Raw*` describe public/data/atlas.json tal como lo escribe
 // scripts/build-atlas.mjs; el resto es la forma ya decodificada que usa la aplicación.
 
-export type RegionKey =
-  | 'europa'
-  | 'asia'
-  | 'africa'
-  | 'am-norte'
-  | 'am-central'
-  | 'am-caribe'
-  | 'am-sur'
-  | 'oceania';
+/** Qué atlas es: el del mundo o el de las subdivisiones de un país (scripts/build-maps.mjs). */
+export type MapId = 'world' | 'es';
+
+/**
+ * Clave de una región del atlas. En el del mundo: europa · asia · africa · am-norte · am-central ·
+ * am-caribe · am-sur · oceania. En el de un país, el código ISO 3166-2 de cada comunidad (ES-AN…).
+ */
+export type RegionKey = string;
 
 /** Respuestas posibles a «¿en qué continente está?». `europa-asia`: repartido entre los dos. */
 export type ClimateKey =
@@ -26,8 +25,11 @@ export type ClimateKey =
 
 export type ContinentKey = 'europa' | 'asia' | 'africa' | 'america' | 'oceania' | 'europa-asia';
 
-/** `country`: entra en los cuestionarios · `territory`/`disputed`: solo se muestra. */
-export type CountryKind = 'country' | 'territory' | 'disputed';
+/**
+ * `country`: entra en los cuestionarios (un país o, en el mapa de un país, una provincia) ·
+ * `territory`/`disputed`: solo se muestra · `context`: decorado (los países de alrededor), ni se nombra ni se pulsa.
+ */
+export type CountryKind = 'country' | 'territory' | 'disputed' | 'context';
 
 /** [oeste, sur, este, norte] en grados. */
 export type Bounds = [west: number, south: number, east: number, north: number];
@@ -70,6 +72,8 @@ export interface RawAtlas {
   /** Unidades por grado de las coordenadas cuantizadas. */
   q: number;
   source: string;
+  /** Encuadre de la vista general cuando el mapa no es el mundo entero. */
+  frame?: Bounds;
   regions: Record<RegionKey, RegionInfo>;
   /** Nombre de cada continente, en el orden en que se ofrecen como respuesta. */
   continents: Record<ContinentKey, string>;

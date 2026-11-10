@@ -1,7 +1,7 @@
 import { climateText } from '../game/climate';
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { formatArea, plural } from '../app/format';
-import { useApp, useSettings } from '../app/store';
+import { useApp, useMapDef, useSettings } from '../app/store';
 import { clockIn, differenceLabel, localOffsetMinutes, offsetLabel, offsetMinutes } from '../app/time';
 import type { Atlas } from '../atlas/atlas';
 import type { Country } from '../atlas/types';
@@ -48,7 +48,8 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
       </button>
       <article className="cartouche mt-2 p-5">
         <div className="flex items-start gap-4">
-          <Flag a2={country.a2} height={54} className="mt-1 rounded-md" />
+          {/* Las provincias no tienen bandera en el atlas: sin hueco vacío. */}
+          {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={54} className="mt-1 rounded-md" />}
           <div className="min-w-0">
             {kind && <p className="label">{kind}</p>}
             <h2 className="display text-[1.75rem]">{country.name}</h2>
@@ -62,7 +63,8 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
             </Fact>
           )}
           {country.continents.length > 0 && <Fact label={t('Continente')}>{atlas.continents[country.continents[0]]}</Fact>}
-          {country.regions.length > 0 && country.regions[0].startsWith('am-') && (
+          {/* En el mundo, solo donde afina el continente (América); en el mapa de un país, la comunidad. */}
+          {country.regions.length > 0 && (country.regions[0].startsWith('am-') || atlas.frame) && (
             <Fact label={t('Región')}>{atlas.regions[country.regions[0]].name}</Fact>
           )}
           {time && offset !== null && (
@@ -106,6 +108,7 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
  */
 export function ExplorePanel() {
   const atlas = useApp((s) => s.atlas)!;
+  const { text } = useMapDef();
   const selected = useApp((s) => s.selected);
   const select = useApp((s) => s.select);
   const scopeId = useApp((s) => s.exploreScope);
@@ -119,7 +122,7 @@ export function ExplorePanel() {
   const q = normalize(query);
   // Con texto en el buscador se busca en todo el mapa (territorios incluidos); sin él, se ve la lista elegida.
   const rows = useMemo(() => {
-    const pool = q ? atlas.countries : scope.countries.map((i) => atlas.countries[i]);
+    const pool = q ? atlas.countries.filter((c) => c.kind !== 'context') : scope.countries.map((i) => atlas.countries[i]);
     const sorted = [...pool].sort((a, b) => a.name.localeCompare(b.name, LOCALE));
     if (!q) return sorted;
     const keys = (c: Country) => [c.name, ...c.aliases, c.capital ?? ''].map(normalize).filter(Boolean);
@@ -139,7 +142,7 @@ export function ExplorePanel() {
         {t('Explorar y estudiar')}
       </p>
       <h1 className="display mt-2.5 text-[1.75rem] wide:text-[2.1rem]" style={order(1)}>
-        {t('Estúdialos antes de jugar')}
+        {text.study}
       </h1>
 
       <form
@@ -157,8 +160,8 @@ export function ExplorePanel() {
             setQuery(e.target.value);
             if (selected >= 0) select(-1);
           }}
-          placeholder={t('Buscar país o capital…')}
-          aria-label={t('Buscar país o capital')}
+          placeholder={text.search}
+          aria-label={text.searchAria}
           autoComplete="off"
           spellCheck={false}
           className="min-h-11 w-full rounded-[10px] border border-rule-strong bg-surface pl-10 pr-4 font-semibold outline-none placeholder:font-normal placeholder:text-ink-faint focus:border-ink"
@@ -176,7 +179,7 @@ export function ExplorePanel() {
           )}
 
           <div className="mt-4 flex items-baseline justify-between gap-3" style={order(4)}>
-            <h2 className="label">{q ? `${t('Resultados')} · ${rows.length}` : plural(rows.length, t('país'), t('países'))}</h2>
+            <h2 className="label">{q ? `${t('Resultados')} · ${rows.length}` : plural(rows.length, ...text.unit)}</h2>
             {!q && (
               <button
                 type="button"
@@ -186,7 +189,7 @@ export function ExplorePanel() {
                 }}
                 className="label transition-colors hover:text-accent"
               >
-                {t('Practicar estos →')}
+                {text.practice}
               </button>
             )}
           </div>
@@ -198,18 +201,22 @@ export function ExplorePanel() {
                   onClick={() => pick(country)}
                   className="flex w-full items-center gap-3 px-1 py-2 text-left transition-colors hover:bg-[rgb(var(--shadow)/0.06)]"
                 >
-                  <Flag a2={country.a2} height={16} />
+                  {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={16} />}
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-bold leading-tight">{country.name}</span>
                     {country.capital && <span className="block truncate text-xs text-ink-soft">{country.capital}</span>}
                   </span>
                   <span className="shrink-0 text-sm font-semibold text-ink-soft">
-                    {country.continents.length ? atlas.continents[country.continents[0]] : t('Territorio')}
+                    {country.continents.length
+                      ? atlas.continents[country.continents[0]]
+                      : country.kind === 'country' && country.regions.length
+                        ? atlas.regions[country.regions[0]].name
+                        : t('Territorio')}
                   </span>
                 </button>
               </li>
             ))}
-            {rows.length === 0 && <li className="border-t border-rule py-4 text-sm text-ink-soft">{t('No hay ningún país con ese nombre.')}</li>}
+            {rows.length === 0 && <li className="border-t border-rule py-4 text-sm text-ink-soft">{text.notFound}</li>}
           </ul>
         </>
       )}

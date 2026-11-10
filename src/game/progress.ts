@@ -18,7 +18,7 @@ export interface SkillStats {
   last: number;
 }
 
-/** id del país → reto → estadísticas. */
+/** id del país (ISO3) o de la provincia (ISO 3166-2, «ES-A») → reto → estadísticas. Los dos mapas no se pisan. */
 export type Progress = Record<string, Partial<Record<ModeId, SkillStats>>>;
 
 export const MAX_BOX = 5;
@@ -44,7 +44,8 @@ export function record(progress: Progress, country: string, mode: ModeId, outcom
   return { ...progress, [country]: { ...progress[country], [mode]: stats } };
 }
 
-const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag', 'climate'];
+const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag', 'climate', 'region'];
+const ENTITY_ID = /^([A-Z]{3}|[A-Z]{2}-[A-Z0-9]{1,3})$/;
 const isCount = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
 
 /**
@@ -55,7 +56,7 @@ export function sanitizeProgress(raw: unknown): Progress {
   const out: Progress = {};
   if (!raw || typeof raw !== 'object') return out;
   for (const [country, modes] of Object.entries(raw)) {
-    if (!/^[A-Z]{3}$/.test(country) || !modes || typeof modes !== 'object') continue;
+    if (!ENTITY_ID.test(country) || !modes || typeof modes !== 'object') continue;
     const clean: Partial<Record<ModeId, SkillStats>> = {};
     for (const mode of MODE_IDS) {
       const s = (modes as Record<string, Partial<SkillStats> | undefined>)[mode];

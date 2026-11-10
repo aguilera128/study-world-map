@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
-import { REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
+import { modesOf, REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
+import { dailyConfig } from './daily';
+import { MAPS } from './maps';
 import { mastery, record, sanitizeProgress, selectionWeight, summarize, type Progress } from './progress';
 import { advance, attemptsLeft, createSession, currentQuestion, gradeLabel, missed, score, submit, type Session } from './session';
 import { editDistance, hint, matchesAnswer, normalize } from './text';
@@ -118,13 +120,16 @@ describe('ámbitos y configuración', () => {
   });
 
   it('repara configuraciones guardadas no válidas', () => {
+    // (Lo guardado por una versión anterior no dice de qué mapa es: es del mundo.)
     expect(sanitizeConfig({ mode: 'locate', answer: 'type', scope: 'nada', length: 10 }, [])).toEqual({
+      map: 'world',
       mode: 'locate',
       answer: 'map',
       scope: 'europa',
       length: 10,
     });
-    expect(sanitizeConfig({ mode: 'continent', answer: 'guided', scope: SAMPLE_LIST.id, length: 'all' }, [SAMPLE_LIST])).toEqual({
+    expect(sanitizeConfig({ map: 'world', mode: 'continent', answer: 'guided', scope: SAMPLE_LIST.id, length: 'all' }, [SAMPLE_LIST])).toEqual({
+      map: 'world',
       mode: 'continent',
       answer: 'guided',
       scope: SAMPLE_LIST.id,
@@ -205,7 +210,7 @@ describe('progreso', () => {
 });
 
 describe('partida', () => {
-  const locate: GameConfig = { mode: 'locate', answer: 'map', scope: 'europa', length: 10 };
+  const locate: GameConfig = { map: 'world', mode: 'locate', answer: 'map', scope: 'europa', length: 10 };
 
   it('prepara tantas preguntas como se piden, sin repetir país y dentro del ámbito', () => {
     const s = start(locate);
@@ -333,20 +338,20 @@ describe('partida', () => {
   });
 
   it('las opciones incluyen la respuesta y tres vecinos distintos', () => {
-    const s = start({ mode: 'name', answer: 'choice', scope: 'africa', length: 20 });
+    const s = start({ map: 'world', mode: 'name', answer: 'choice', scope: 'africa', length: 20 });
     for (const q of s.queue) {
       expect(q.options).toHaveLength(4);
       expect(new Set(q.options.map((o) => o.id)).size).toBe(4);
       expect(q.options.some((o) => o.country === q.country)).toBe(true);
       for (const o of q.options) expect(atlas.countries[o.country].regions).toContain('africa');
     }
-    const caps = start({ mode: 'capital', answer: 'choice', scope: 'europa', length: 10 });
+    const caps = start({ map: 'world', mode: 'capital', answer: 'choice', scope: 'europa', length: 10 });
     const q = caps.queue[0];
     expect(q.options.find((o) => o.country === q.country)!.label).toBe(atlas.countries[q.country].capital);
   });
 
   it('con opciones da dos intentos', () => {
-    let s = start({ mode: 'name', answer: 'choice', scope: 'africa', length: 10 });
+    let s = start({ map: 'world', mode: 'name', answer: 'choice', scope: 'africa', length: 10 });
     const q = s.queue[0];
     const wrong = q.options.filter((o) => o.country !== q.country);
     let v = submit(atlas, s, { kind: 'option', id: wrong[0].id }, NOW);
@@ -354,13 +359,13 @@ describe('partida', () => {
     v = submit(atlas, v.session, { kind: 'option', id: wrong[1].id }, NOW);
     expect(v).toMatchObject({ verdict: 'wrong', resolved: true });
     expect(v.session.outcome).toBe('failed');
-    s = start({ mode: 'name', answer: 'choice', scope: 'africa', length: 10 });
+    s = start({ map: 'world', mode: 'name', answer: 'choice', scope: 'africa', length: 10 });
     // pulsar en el mapa no vale cuando se responde con opciones
     expect(submit(atlas, s, { kind: 'country', index: q.country }, NOW).verdict).toBe('ignored');
   });
 
   it('continentes: mismas opciones siempre y reglas de los países repartidos', () => {
-    const config: GameConfig = { mode: 'continent', answer: 'choice', scope: SAMPLE_LIST.id, length: 'all' };
+    const config: GameConfig = { map: 'world', mode: 'continent', answer: 'choice', scope: SAMPLE_LIST.id, length: 'all' };
     const ask = (id: string, option: string) => {
       const s = start(config, {}, 3, [idx(id)]);
       expect(s.queue[0].options.map((o) => o.label)).toEqual(['Europa', 'Asia', 'África', 'América', 'Oceanía', 'Europa y Asia']);
@@ -383,7 +388,7 @@ describe('partida', () => {
   });
 
   it('escribiendo acepta alias y erratas, y da tres intentos', () => {
-    const config: GameConfig = { mode: 'name', answer: 'type', scope: 'mundo', length: 10 };
+    const config: GameConfig = { map: 'world', mode: 'name', answer: 'type', scope: 'mundo', length: 10 };
     const typed = (id: string, text: string) => submit(atlas, start(config, {}, 1, [idx(id)]), { kind: 'text', text }, NOW).verdict;
     expect(typed('USA', 'eeuu')).toBe('right');
     expect(typed('NLD', 'Holanda')).toBe('right');
@@ -393,7 +398,7 @@ describe('partida', () => {
     expect(typed('COD', 'RD Congo')).toBe('right');
     expect(typed('ESP', '   ')).toBe('ignored');
 
-    const capitals: GameConfig = { mode: 'capital', answer: 'type', scope: 'mundo', length: 10 };
+    const capitals: GameConfig = { map: 'world', mode: 'capital', answer: 'type', scope: 'mundo', length: 10 };
     const cap = (id: string, text: string) => submit(atlas, start(capitals, {}, 1, [idx(id)]), { kind: 'text', text }, NOW).verdict;
     expect(cap('FRA', 'paris')).toBe('right');
     expect(cap('VCT', 'Kingston')).toBe('wrong'); // es la de Jamaica
@@ -442,7 +447,7 @@ describe('respuestas escritas en otras escrituras', () => {
 
 describe('reto de climas', () => {
   it('ofrece cuatro climas, uno solo de los cuales es del país, y acepta cualquiera de los suyos', () => {
-    let session = start({ mode: 'climate', answer: 'choice', scope: 'mundo', length: 'all' });
+    let session = start({ map: 'world', mode: 'climate', answer: 'choice', scope: 'mundo', length: 'all' });
     for (let i = 0; i < 40; i++) {
       const q = currentQuestion(session)!;
       const own = atlas.countries[q.country].climate;
@@ -455,9 +460,141 @@ describe('reto de climas', () => {
   });
 
   it('un clima que el país no tiene cuenta como fallo', () => {
-    const session = start({ mode: 'climate', answer: 'choice', scope: 'europa', length: 10 });
+    const session = start({ map: 'world', mode: 'climate', answer: 'choice', scope: 'europa', length: 10 });
     const q = currentQuestion(session)!;
     const wrong = q.options.find((o) => !atlas.countries[q.country].climate.includes(o.id as never))!;
     expect(submit(atlas, session, { kind: 'option', id: wrong.id }, NOW).verdict).toBe('wrong');
+  });
+});
+
+// España por provincias: otro atlas con el mismo formato (scripts/build-maps.mjs).
+describe('mapa de España', () => {
+  const spain = new Atlas(JSON.parse(readFileSync('public/data/es/atlas.json', 'utf8')) as RawAtlas, 'es');
+  const at = (id: string) => spain.indexOf(id);
+  const play = (config: GameConfig, seed = 7) => createSession(spain, config, resolveScope(spain, config.scope, [SAMPLE_LIST]), {}, NOW, { rng: seeded(seed) });
+
+  it('ofrece localizar, comunidades, nombrar y capitales, y no banderas, continentes ni climas', () => {
+    expect(modesOf('es').map((m) => m.id)).toEqual(['locate', 'region', 'name', 'capital']);
+    expect(modesOf('world').map((m) => m.id)).not.toContain('region');
+    for (const m of modesOf('es')) expect(m.title && m.summary, m.id).toBeTruthy();
+  });
+
+  it('el reto del día sigue saliendo de los retos del mundo', () => {
+    for (let day = 1; day <= 28; day++) {
+      const config = dailyConfig(`2026-02-${String(day).padStart(2, '0')}`);
+      expect(config.map).toBe('world');
+      expect(MAPS.world.modes).toContain(config.mode);
+    }
+  });
+
+  it('las zonas agrupan las comunidades y no dejan ninguna provincia fuera', () => {
+    const count = (id: string) => resolveScope(spain, id, []).countries.length;
+    expect(count('es')).toBe(52);
+    expect(count('es-norte')).toBe(11);
+    expect(count('es-centro')).toBe(17);
+    expect(count('es-este')).toBe(12);
+    expect(count('es-sur')).toBe(12);
+    expect(count('es-an')).toBe(8);
+    expect(count('es-cl')).toBe(9);
+    expect(resolveScope(spain, 'es-an', []).label).toBe('Andalucía');
+    for (const f of MAPS.es.filters) for (const key of f.keys) expect(spain.regions[key], `${f.id}: ${key}`).toBeTruthy();
+    // Las cuatro agrupaciones cubren todas las comunidades, sin repetir.
+    const grouped = MAPS.es.filters.slice(1, 5).flatMap((f) => f.keys);
+    expect([...grouped].sort()).toEqual(Object.keys(spain.regions).sort());
+    // Todas se encuadran en su zona; el mapa entero, en España.
+    for (const f of MAPS.es.filters) expect(resolveScope(spain, f.id, []).frame, f.id).not.toBeNull();
+    expect(resolveScope(spain, 'es', []).frame).toEqual(spain.frame);
+  });
+
+  it('una zona o una lista del mundo no valen aquí, ni al revés', () => {
+    expect(resolveScope(spain, 'europa', []).id).toBe('es');
+    expect(resolveScope(spain, SAMPLE_LIST.id, [SAMPLE_LIST]).isList).toBe(false);
+    expect(resolveScope(atlas, 'es-norte', []).id).toBe('mundo');
+    expect(sanitizeConfig({ map: 'es', mode: 'flag', answer: 'map', scope: 'europa', length: 20 }, [SAMPLE_LIST])).toEqual({
+      map: 'es',
+      mode: 'locate',
+      answer: 'map',
+      scope: 'es',
+      length: 20,
+    });
+    // Al volver al mundo, el reto de comunidades y la zona de España dejan de valer.
+    expect(sanitizeConfig({ map: 'world', mode: 'region', answer: 'choice', scope: 'es-norte', length: 10 }, [])).toEqual({
+      map: 'world',
+      mode: 'locate',
+      answer: 'map',
+      scope: 'europa',
+      length: 10,
+    });
+  });
+
+  it('reto de comunidades: cuatro opciones, solo una es la suya, y se acierta con ella', () => {
+    let session = play({ map: 'es', mode: 'region', answer: 'choice', scope: 'es', length: 'all' });
+    expect(session.total).toBe(52);
+    for (let i = 0; i < 52; i++) {
+      const q = currentQuestion(session)!;
+      const own = spain.countries[q.country].regions[0];
+      expect(q.options).toHaveLength(4);
+      expect(new Set(q.options.map((o) => o.id)).size).toBe(4);
+      expect(q.options.filter((o) => o.id === own)).toHaveLength(1);
+      for (const o of q.options) expect(o.label).toBe(spain.regions[o.id].name);
+      const verdict = submit(spain, session, { kind: 'option', id: own }, NOW);
+      expect(verdict.verdict).toBe('right');
+      session = advance(verdict.session, NOW);
+    }
+    expect(session.status).toBe('finished');
+    expect(score(session).grade).toBe(10);
+  });
+
+  it('reto de comunidades: otra comunidad cuenta como fallo y a la segunda da la solución', () => {
+    const session = play({ map: 'es', mode: 'region', answer: 'guided', scope: 'es-norte', length: 10 });
+    const q = currentQuestion(session)!;
+    const [a, b] = q.options.filter((o) => o.id !== spain.countries[q.country].regions[0]);
+    const first = submit(spain, session, { kind: 'option', id: a.id }, NOW);
+    expect(first.verdict).toBe('wrong');
+    expect(first.resolved).toBe(false);
+    const second = submit(spain, first.session, { kind: 'option', id: b.id }, NOW);
+    expect(second.resolved).toBe(true);
+    expect(second.session.outcome).toBe('failed');
+    // Una comunidad que no está entre las opciones no cuenta.
+    expect(submit(spain, session, { kind: 'option', id: 'ES-XX' }, NOW).verdict).toBe('ignored');
+    expect(showsTarget({ mode: 'region', answer: 'guided' })).toBe(true);
+    expect(showsTarget({ mode: 'region', answer: 'choice' })).toBe(false);
+  });
+
+  it('localizar y capitales funcionan con provincias', () => {
+    let session = play({ map: 'es', mode: 'locate', answer: 'map', scope: 'es-sur', length: 'all' });
+    expect(session.pool).toContain(at('ES-CE'));
+    expect(session.pool).toContain(at('ES-TF'));
+    // Pulsar una provincia de otra zona (o un país de alrededor) no penaliza.
+    expect(submit(spain, session, { kind: 'country', index: at('ES-M') }, NOW).verdict).toBe('ignored');
+    expect(submit(spain, session, { kind: 'country', index: at('PRT') }, NOW).verdict).toBe('ignored');
+    session = submit(spain, session, { kind: 'country', index: currentQuestion(session)!.country }, NOW).session;
+    expect(session.outcome).toBe('first');
+
+    const capitals = play({ map: 'es', mode: 'capital', answer: 'type', scope: 'es', length: 'all' });
+    const ask = (id: string, text: string) => {
+      const s = { ...capitals, queue: [{ country: at(id), review: false, options: [] }] };
+      return submit(spain, s, { kind: 'text', text }, NOW).verdict;
+    };
+    expect(ask('ES-VI', 'Vitoria')).toBe('right');
+    expect(ask('ES-VI', 'vitoria-gasteiz')).toBe('right');
+    expect(ask('ES-O', 'Oviedo')).toBe('right');
+    expect(ask('ES-GC', 'Las Palmas de Gran Canaria')).toBe('right');
+    expect(ask('ES-L', 'Lleida')).toBe('right');
+    expect(ask('ES-O', 'Gijón')).toBe('wrong');
+    expect(ask('ES-BA', 'Cáceres')).toBe('wrong');
+  });
+
+  it('el progreso de las provincias se guarda con su propio código y no se mezcla con el de los países', () => {
+    let progress: Progress = record({}, 'ESP', 'locate', 'first', NOW);
+    progress = record(progress, 'ES-A', 'locate', 'failed', NOW);
+    progress = record(progress, 'ES-CE', 'region', 'first', NOW);
+    expect(sanitizeProgress(JSON.parse(JSON.stringify(progress)))).toEqual(progress);
+    const ids = (a: Atlas) => a.quizzable.map((i) => a.countries[i].id);
+    expect(ids(spain).filter((id) => ids(atlas).includes(id))).toEqual([]);
+    expect(summarize(progress, ids(atlas), 'locate').seen).toBe(1);
+    expect(summarize(progress, ids(spain), 'locate').seen).toBe(1);
+    expect(summarize(progress, ids(spain), 'region').mastered).toBe(0);
+    expect(summarize(progress, ids(spain), 'region').seen).toBe(1);
   });
 });

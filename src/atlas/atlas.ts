@@ -1,4 +1,4 @@
-import type { Bounds, ContinentKey, Country, Polygon, RawAtlas, RawCountry, RegionInfo, RegionKey } from './types';
+import type { Bounds, ContinentKey, Country, MapId, Polygon, RawAtlas, RawCountry, RegionInfo, RegionKey } from './types';
 
 /** Longitud máxima (grados) de un tramo de anillo: los más largos se subdividen al decodificar. */
 const MAX_SEGMENT = 1;
@@ -102,6 +102,10 @@ function polygonContains(polygon: Polygon, x: number, y: number): boolean {
 }
 
 export class Atlas {
+  /** Qué mapa es: de él dependen los retos, los filtros y los textos (src/game/maps.ts). */
+  readonly map: MapId;
+  /** Encuadre de la vista general, o null si es el mundo entero. */
+  readonly frame: Bounds | null;
   readonly countries: Country[];
   readonly regions: Record<RegionKey, RegionInfo>;
   readonly continents: Record<ContinentKey, string>;
@@ -111,7 +115,9 @@ export class Atlas {
   private readonly byId = new Map<string, number>();
   private lastHit = -1;
 
-  constructor(raw: RawAtlas) {
+  constructor(raw: RawAtlas, map: MapId = 'world') {
+    this.map = map;
+    this.frame = raw.frame ?? null;
     this.countries = raw.countries.map((c, i) => decodeCountry(c, i, raw.q));
     this.regions = raw.regions;
     this.continents = raw.continents;
@@ -167,17 +173,23 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** Carga el atlas (en español) y, si el idioma es otro, le pone encima los nombres de ese idioma. */
-export async function loadAtlas(lang = 'es'): Promise<Atlas> {
+/**
+ * Carga el atlas de un mapa (en español) y, si el idioma es otro, le pone encima los nombres de ese
+ * idioma. El del mundo está en /data/ y el de cada país en su carpeta (/data/es/).
+ */
+export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atlas> {
+  const dir = map === 'world' ? '/data' : `/data/${map}`;
   const [raw, names] = await Promise.all([
-    getJson<RawAtlas>('/data/atlas.json'),
-    lang === 'es' ? null : getJson<RawNames>(`/data/names.${lang}.json`),
+    getJson<RawAtlas>(`${dir}/atlas.json`),
+    lang === 'es' ? null : getJson<RawNames>(`${dir}/names.${lang}.json`),
   ]);
   if (names) {
     for (const key of Object.keys(raw.regions) as RegionKey[]) raw.regions[key].name = names.regions[key];
     raw.continents = names.continents;
     for (const country of raw.countries) {
       const own = names.countries[country.id];
+      // El decorado (los países de alrededor en el mapa de un país) no se nombra: no se traduce.
+      if (!own) continue;
       country.name = own.n;
       country.capital = own.c;
       country.aliases = own.a;
@@ -186,5 +198,5 @@ export async function loadAtlas(lang = 'es'): Promise<Atlas> {
       country.note = own.t;
     }
   }
-  return new Atlas(raw);
+  return new Atlas(raw, map);
 }

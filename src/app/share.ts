@@ -1,4 +1,5 @@
-import { modeDef, REGION_FILTERS, type GameConfig, type ModeId, type StudyList } from '../game/config';
+import { modeDef, type GameConfig, type ModeId, type StudyList } from '../game/config';
+import { isMapId, MAPS } from '../game/maps';
 import { t } from '../i18n';
 
 // Una lista de estudio se comparte dentro de la propia dirección de la página:
@@ -33,21 +34,28 @@ export function parseSharedList(search: string): StudyList | null {
 export const newListId = () => `lista-${Date.now().toString(36)}`;
 
 // Las páginas por continente (/juego/…) enlazan a un reto ya elegido: /?reto=capitales&zona=europa
+// Las de las provincias de un país añaden su mapa: /?mapa=es&reto=comunidades
 const RETOS: Record<string, ModeId> = {
   localizar: 'locate',
   continentes: 'continent',
+  comunidades: 'region',
   nombrar: 'name',
   capitales: 'capital',
   banderas: 'flag',
   climas: 'climate',
 };
 
-/** Reto y zona pedidos en la dirección, o null si no hay ninguno válido. */
+/** Mapa, reto y zona pedidos en la dirección, o null si no hay ninguno válido. */
 export function parsePreset(search: string): Partial<GameConfig> | null {
   const params = new URLSearchParams(search);
-  const mode = RETOS[params.get('reto') ?? ''];
+  const mapa = params.get('mapa');
+  const map = isMapId(mapa) ? mapa : undefined;
+  const def = MAPS[map ?? 'world'];
+  const reto = RETOS[params.get('reto') ?? ''];
+  const mode = def.modes.includes(reto) ? reto : undefined;
   const zona = params.get('zona');
-  const scope = REGION_FILTERS.some((r) => r.id === zona) ? zona! : undefined;
-  if (!mode && !scope) return null;
-  return { ...(mode && { mode, answer: modeDef(mode).answers[0] }), ...(scope && { scope }) };
+  const scope = def.filters.some((r) => r.id === zona) ? zona! : undefined;
+  if (!map && !mode && !scope) return null;
+  // Un enlace sin mapa es del mundo; con mapa y sin zona se empieza por el mapa entero.
+  return { map: def.id, ...(map && { scope: def.scope }), ...(mode && { mode, answer: modeDef(mode).answers[0] }), ...(scope && { scope }) };
 }

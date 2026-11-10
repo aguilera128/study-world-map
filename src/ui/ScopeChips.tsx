@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { plural } from '../app/format';
-import { useSettings } from '../app/store';
-import { REGION_FILTERS } from '../game/config';
+import { useApp, useMapDef, useSettings } from '../app/store';
+import { filterLabel } from '../game/config';
 import { Icon } from './Icon';
 import { t } from '../i18n';
 
-/** Selector de qué países entran: las regiones del mundo y las listas de estudio guardadas. */
+/** Selector de qué países (o provincias) entran: las zonas del mapa y, en el del mundo, las listas de estudio guardadas. */
 export function ScopeChips({
   value,
   onChange,
@@ -16,10 +16,13 @@ export function ScopeChips({
   /** Botones extra al final (p. ej. «Elegir países»). */
   children?: ReactNode;
 }) {
-  const lists = useSettings((s) => s.lists);
+  const atlas = useApp((s) => s.atlas)!;
+  const def = useMapDef();
+  const saved = useSettings((s) => s.lists);
+  const lists = def.extras ? saved : [];
   return (
-    <div role="radiogroup" aria-label={t('Países que entran')} className="flex flex-wrap gap-1.5">
-      {REGION_FILTERS.map((r) => (
+    <div role="radiogroup" aria-label={def.text.scopeAria} className="flex flex-wrap gap-1.5">
+      {def.filters.map((r) => (
         <button
           key={r.id}
           type="button"
@@ -28,7 +31,7 @@ export function ScopeChips({
           onClick={() => onChange(r.id)}
           className="tile min-h-9 px-3 text-sm font-semibold"
         >
-          {r.label}
+          {filterLabel(atlas, r)}
         </button>
       ))}
       {lists.map((list) => (

@@ -41,8 +41,17 @@ describe('listas compartidas', () => {
 
 describe('reto y zona en la dirección', () => {
   it('lee reto y zona válidos', () => {
-    expect(parsePreset('?reto=capitales&zona=europa')).toEqual({ mode: 'capital', answer: 'choice', scope: 'europa' });
-    expect(parsePreset('?zona=africa')).toEqual({ scope: 'africa' });
+    expect(parsePreset('?reto=capitales&zona=europa')).toEqual({ map: 'world', mode: 'capital', answer: 'choice', scope: 'europa' });
+    expect(parsePreset('?zona=africa')).toEqual({ map: 'world', scope: 'africa' });
+  });
+  it('lee el mapa de un país con sus retos y zonas', () => {
+    expect(parsePreset('?mapa=es&reto=comunidades')).toEqual({ map: 'es', mode: 'region', answer: 'choice', scope: 'es' });
+    expect(parsePreset('?mapa=es&reto=capitales&zona=es-norte')).toEqual({ map: 'es', mode: 'capital', answer: 'choice', scope: 'es-norte' });
+    expect(parsePreset('?mapa=es')).toEqual({ map: 'es', scope: 'es' });
+    // Un reto o una zona de otro mapa no valen.
+    expect(parsePreset('?mapa=es&reto=banderas&zona=europa')).toEqual({ map: 'es', scope: 'es' });
+    expect(parsePreset('?reto=comunidades')).toBeNull();
+    expect(parsePreset('?mapa=marte')).toBeNull();
   });
   it('ignora valores desconocidos', () => {
     expect(parsePreset('?reto=hack&zona=marte')).toBeNull();

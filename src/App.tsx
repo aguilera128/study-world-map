@@ -52,23 +52,25 @@ export default function App() {
   const realTime = useSettings((s) => s.realTime);
   useTheme();
 
-  useEffect(() => {
-    void load();
-  }, [load]);
-
   // Lista de estudio o reto recibidos por enlace: se guardan, se dejan elegidos y se limpia la dirección.
+  // Va antes de cargar el atlas: el enlace puede pedir otro mapa (?mapa=es).
   useEffect(() => {
     const shared = parseSharedList(window.location.search);
     const preset = parsePreset(window.location.search);
     if (!shared && !preset) return;
     const settings = useSettings.getState();
     if (shared) {
+      // Las listas son del mapa del mundo.
       settings.saveList(shared);
-      settings.setConfig({ scope: shared.id });
+      settings.setConfig({ map: 'world', scope: shared.id });
     }
     if (preset) settings.setConfig(preset);
     window.history.replaceState(null, '', window.location.pathname);
   }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   return (
     <ErrorBoundary>
@@ -77,7 +79,8 @@ export default function App() {
         <div className="backdrop" />
         {atlas && (
           <Suspense fallback={null}>
-            <MapCanvas />
+            {/* Un lienzo (y un motor) por mapa: al cambiar de atlas se monta de nuevo, sin estado del anterior. */}
+            <MapCanvas key={atlas.map} />
           </Suspense>
         )}
         <div className="grain" />

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
-import { LAYERS, useApp, useSettings, type LayerId } from '../app/store';
+import { LAYERS, showWhole, useApp, useSettings, type LayerId } from '../app/store';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -113,7 +113,7 @@ export function MapControls() {
       ? resolveScope(atlas, session.config.scope, useSettings.getState().lists).frame
       : null;
     if (frame) engine.frame(frame);
-    else engine.home();
+    else showWhole(atlas);
   };
 
   return (

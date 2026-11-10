@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { loadAtlas, type Atlas } from '../atlas/atlas';
+import type { MapId } from '../atlas/types';
 import type { Padding } from '../engine/camera';
 import type { PointerInfo, ViewMode } from '../engine/MapEngine';
 import {
@@ -17,6 +18,7 @@ import {
 import { record, sanitizeProgress, type Outcome, type Progress } from '../game/progress';
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { dailyConfig, dailyKey, dailyRng, recordDaily, type DailyRecord } from '../game/daily';
+import { isMapId, MAPS, type MapDef } from '../game/maps';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
 import { lang, t } from '../i18n';
@@ -55,6 +57,8 @@ interface SettingsState {
   realTime: boolean;
   layers: Layers;
   config: GameConfig;
+  /** Lo último elegido en los otros mapas, para recuperarlo al volver a ellos. */
+  configs: Partial<Record<MapId, GameConfig>>;
   lists: StudyList[];
   setTheme(theme: ThemeChoice): void;
   setViewMode(mode: ViewMode): void;
@@ -67,18 +71,28 @@ interface SettingsState {
 
 export const useSettings = create<SettingsState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: 'auto',
       viewMode: 'globe',
       realTime: false,
       layers: ALL_LAYERS,
       config: DEFAULT_CONFIG,
+      configs: {},
       lists: [SAMPLE_LIST],
       setTheme: (theme) => set({ theme }),
       setViewMode: (viewMode) => set({ viewMode }),
       setRealTime: (realTime) => set({ realTime }),
       setLayer: (id, on) => set((s) => ({ layers: { ...s.layers, [id]: on } })),
-      setConfig: (patch) => set({ config: sanitizeConfig({ ...get().config, ...patch }, get().lists) }),
+      setConfig: (patch) =>
+        set((s) => {
+          // Al cambiar de mapa se guarda lo elegido en el que se deja y se recupera lo del que se abre.
+          const change = patch.map !== undefined && patch.map !== s.config.map;
+          const base = change ? (s.configs[patch.map!] ?? {}) : s.config;
+          return {
+            config: sanitizeConfig({ ...base, ...patch }, s.lists),
+            configs: change ? { ...s.configs, [s.config.map]: s.config } : s.configs,
+          };
+        }),
       saveList: (list) =>
         set((s) => ({
           lists: s.lists.some((l) => l.id === list.id) ? s.lists.map((l) => (l.id === list.id ? list : l)) : [...s.lists, list],
@@ -94,7 +108,7 @@ export const useSettings = create<SettingsState>()(
       // perder lo que ya esté guardado en el navegador.
       name: 'mapamundi:ajustes',
       version: 1,
-      partialize: ({ theme, viewMode, realTime, layers, config, lists }) => ({ theme, viewMode, realTime, layers, config, lists }),
+      partialize: ({ theme, viewMode, realTime, layers, config, configs, lists }) => ({ theme, viewMode, realTime, layers, config, configs, lists }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<SettingsState>;
@@ -110,6 +124,11 @@ export const useSettings = create<SettingsState>()(
           ) as Layers,
           lists,
           config: sanitizeConfig(saved.config, lists),
+          configs: Object.fromEntries(
+            Object.entries(saved.configs ?? {})
+              .filter(([map]) => isMapId(map))
+              .map(([map, config]) => [map, sanitizeConfig({ ...config, map: map as MapId }, lists)]),
+          ),
         };
       },
     },
@@ -133,7 +152,8 @@ interface ProgressState {
   recordAnswer(country: string, mode: ModeId, outcome: Outcome): void;
   /** Guarda el resultado de una partida; devuelve true si mejora la marca anterior. */
   recordGame(config: GameConfig, grade: number, ms: number): boolean;
-  reset(): void;
+  /** Borra lo aprendido y las marcas de un mapa; lo del otro no se toca. */
+  reset(atlas: Atlas): void;
 }
 
 const bestKey = (c: GameConfig) => `${c.mode}/${c.answer}/${c.scope}/${c.length}`;
@@ -154,7 +174,19 @@ export const useProgress = create<ProgressState>()(
         // La primera partida de un reto no se anuncia como récord.
         return improved && !!best;
       },
-      reset: () => set({ progress: {}, bests: {}, daily: null }),
+      reset: (atlas) =>
+        set((s) => {
+          // Una marca es del mapa que tiene su zona; las de las listas de estudio, del mundo.
+          const mapOf = (best: string) => (Object.values(MAPS).find((m) => m.filters.some((f) => f.id === best.split('/')[2])) ?? MAPS.world).id;
+          // Solo lo que se pregunta en este mapa: los países de alrededor del mapa de España llevan
+          // el mismo código que en el mundo, y su progreso es del mundo.
+          const asked = new Set(atlas.quizzable.map((i) => atlas.countries[i].id));
+          return {
+            progress: Object.fromEntries(Object.entries(s.progress).filter(([id]) => !asked.has(id))),
+            bests: Object.fromEntries(Object.entries(s.bests).filter(([key]) => mapOf(key) !== atlas.map)),
+            daily: MAPS[atlas.map].extras ? null : s.daily,
+          };
+        }),
     }),
     {
       name: 'mapamundi:progreso',
@@ -235,6 +267,8 @@ interface AppState {
   locating: LocatingState;
 
   load(): Promise<void>;
+  /** Cambia de mapa (el mundo o un país por provincias): carga su atlas y vuelve a la portada. */
+  setMap(map: MapId): Promise<void>;
   go(screen: Screen): void;
   start(only?: number[]): void;
   /** Empieza el reto del día: las mismas preguntas para todos, sin tocar la partida elegida. */
@@ -280,6 +314,22 @@ function approximateLocation(atlas: Atlas): UserLocation | null {
   return { lon, lat, country: atlas.indexOf(id), exact: false };
 }
 
+/** Vista general: el globo o el mapa entero o, en el mapa de un país, el país. */
+export function showWhole(atlas: Atlas | null) {
+  const engine = getEngine();
+  if (atlas?.frame) engine?.frame(atlas.frame);
+  else engine?.home();
+}
+
+/**
+ * Encuadra un país con algo de contexto alrededor (`wide`: con más, para situarlo). En el mapa de un
+ * país todo es más pequeño: una provincia se enseña con su región, no con medio continente.
+ */
+export function showCountry(atlas: Atlas, index: number, wide = false) {
+  const minSpan = atlas.frame ? (wide ? 7 : 4) : wide ? 30 : 16;
+  getEngine()?.frameCountry(index, { minSpan });
+}
+
 export const useApp = create<AppState>()((set, get) => {
   /** Añade un rótulo al mapa; si `ms` está definido, desaparece solo. */
   const addLabel = (country: number, text: string, tone: Tone, ms?: number) => {
@@ -302,7 +352,7 @@ export const useApp = create<AppState>()((set, get) => {
     const question = currentQuestion(session);
     if (!atlas || !engine || !question) return;
     if (showsTarget(session.config)) {
-      engine.frameCountry(question.country);
+      showCountry(atlas, question.country);
     } else if (first) {
       const scope = resolveScope(atlas, session.config.scope, useSettings.getState().lists);
       if (scope.frame) engine.frame(scope.frame);
@@ -344,16 +394,30 @@ export const useApp = create<AppState>()((set, get) => {
 
     load: async () => {
       try {
-        const atlas = await loadAtlas(lang);
+        const atlas = await loadAtlas(lang, useSettings.getState().config.map);
         set({ atlas, error: null, location: approximateLocation(atlas) });
       } catch (e) {
         set({ error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });
       }
     },
 
+    setMap: async (map) => {
+      if (get().atlas?.map === map) return;
+      try {
+        const atlas = await loadAtlas(lang, map);
+        clearTimers();
+        // El reto y la zona del otro mapa no valen en este: la configuración se ajusta al cambiar.
+        useSettings.getState().setConfig({ map });
+        // La ubicación guardaba un índice del otro atlas: se vuelve a deducir (o se queda sin ella).
+        set({ atlas, error: null, screen: 'home', session: null, labels: [], selected: -1, draft: null, location: approximateLocation(atlas) });
+      } catch (e) {
+        // Sin el atlas nuevo (p. ej. sin conexión) no hay mapa que enseñar: «Reintentar» recarga el anterior.
+        set({ atlas: null, error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });
+      }
+    },
+
     go: (screen) => {
       clearTimers();
-      const engine = getEngine();
       set({
         screen,
         labels: [],
@@ -361,7 +425,7 @@ export const useApp = create<AppState>()((set, get) => {
         selected: screen === 'explore' ? get().selected : -1,
         draft: null,
       });
-      if (screen === 'home' || screen === 'progress' || screen === 'lists') engine?.home();
+      if (screen === 'home' || screen === 'progress' || screen === 'lists') showWhole(get().atlas);
       if (screen === 'progress') set({ progressMode: useSettings.getState().config.mode });
       // El explorador se abre con los países que se habían elegido para jugar.
       if (screen === 'explore') set({ exploreScope: useSettings.getState().config.scope });
@@ -432,7 +496,7 @@ export const useApp = create<AppState>()((set, get) => {
       // Si el país no estaba a la vista (había que recordarlo o no se ha encontrado), se enseña.
       const hidden = !showsTarget(session.config);
       if (hidden && (outcome === 'failed' || inputOf(session.config.answer) !== 'map')) {
-        engine?.frameCountry(question.country, { minSpan: 30 });
+        showCountry(atlas, question.country, true);
       }
       // Los aciertos pasan solos a la siguiente; un fallo espera a que se lea la solución.
       if (outcome !== 'failed') {
@@ -456,7 +520,8 @@ export const useApp = create<AppState>()((set, get) => {
 
     select: (index, fly = false) => {
       set({ selected: index });
-      if (index >= 0 && fly) getEngine()?.frameCountry(index);
+      const { atlas } = get();
+      if (atlas && index >= 0 && fly) showCountry(atlas, index);
     },
 
     setExploreScope: (exploreScope) => {
@@ -471,7 +536,8 @@ export const useApp = create<AppState>()((set, get) => {
     mapClick: (hit) => {
       const { screen, session, atlas, draft } = get();
       if (!atlas) return;
-      const country = hit.index >= 0 ? atlas.countries[hit.index] : null;
+      // El decorado (los países de alrededor en el mapa de un país) no responde.
+      const country = hit.index >= 0 && atlas.countries[hit.index].kind !== 'context' ? atlas.countries[hit.index] : null;
       switch (screen) {
         case 'play':
           if (country && session && inputOf(session.config.answer) === 'map') get().answer({ kind: 'country', index: hit.index });
@@ -483,7 +549,7 @@ export const useApp = create<AppState>()((set, get) => {
           }
           break;
         case 'explore':
-          get().select(hit.index);
+          get().select(country ? hit.index : -1);
           break;
         case 'lists':
           if (draft && country?.kind === 'country') get().toggleDraftCountry(country.id);
@@ -542,3 +608,6 @@ export const useApp = create<AppState>()((set, get) => {
     },
   };
 });
+
+/** El mapa que se está estudiando: sus retos, sus zonas y sus textos. */
+export const useMapDef = (): MapDef => MAPS[useApp((s) => s.atlas?.map ?? 'world')];

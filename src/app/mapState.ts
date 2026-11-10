@@ -53,6 +53,7 @@ export function computeMapState(input: MapInput): MapState {
     case 'home':
       // En la portada el mapa es sobre todo decorado: político y sin marcadores.
       for (let i = 0; i < n; i++) {
+        if (atlas.countries[i].kind === 'context') continue;
         styles[i] = political(i);
         active[i] = 1;
       }
@@ -62,8 +63,12 @@ export function computeMapState(input: MapInput): MapState {
       // Se colorean los países que se están estudiando; el resto queda apagado, pero se puede tocar.
       const scope = resolveScope(atlas, input.exploreScope, input.lists);
       const whole = scope.countries.length === atlas.quizzable.length;
-      active.fill(1);
-      if (whole) for (let i = 0; i < n; i++) styles[i] = political(i);
+      // (El decorado del mapa de un país ni se colorea ni se toca.)
+      for (let i = 0; i < n; i++) {
+        if (atlas.countries[i].kind === 'context') continue;
+        active[i] = 1;
+        if (whole) styles[i] = political(i);
+      }
       for (const i of scope.countries) {
         styles[i] = political(i);
         markers[i] = 1;
