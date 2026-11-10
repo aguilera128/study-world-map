@@ -95,6 +95,9 @@ function LayersMenu() {
               ))}
             </ul>
           )}
+          {layers.tectonics && (
+            <p className="text-xs text-ink-faint">{t('Placas: P. Bird (2003), vía H. Ahlenius. Volcanes: NOAA.')}</p>
+          )}
           {layers.population && (
             // Leyenda del mapa de densidad, con los mismos colores con los que se pinta.
             <div className="text-xs font-semibold text-ink-soft">

@@ -30,6 +30,8 @@ import { CONTINENTE_DE, CONTINENTES, PAISES, REGIONES, TERRITORIOS } from './dat
 
 /** Población por país (Banco Mundial, CC BY 4.0) y año del dato. */
 const POBLACION = JSON.parse(readFileSync(new URL('./data/poblacion.worldbank.json', import.meta.url), 'utf8'));
+/** Los dos países que no están en esa serie (Taiwán y el Vaticano), de Wikidata. */
+const POBLACION_EXTRA = JSON.parse(readFileSync(new URL('./data/poblacion.extra.json', import.meta.url), 'utf8'));
 const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const AUDIT = process.argv.includes('--audit');
@@ -409,7 +411,7 @@ const entidades = codigos.map((codigo) => {
     size: red(Math.sqrt(mayor.area), 5),
     areaKm2: Math.round(wcByIso3.get(codigo)?.area ?? 0) || undefined,
     // Banco Mundial (scripts/data/poblacion.worldbank.json); sin dato para algunos territorios.
-    population: POBLACION.values[codigo],
+    population: POBLACION.values[codigo] ?? POBLACION_EXTRA.values[codigo],
     // zona horaria de la capital y si en el país hay más de una hora
     tz: hora.zona ?? undefined,
     tzMulti: hora.variasHoras || undefined,

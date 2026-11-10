@@ -30,9 +30,19 @@ Fuentes y licencias de lo añadido al final:
   cálida o fría y dónde va su rótulo es una elección editorial, sin fuente citada.
 - Interior y atmósfera: cifras de libro de texto, sin fuente citada; revisarlas con una oficial.
 
+Revisión de datos (10-nov, última tanda):
+- Atmósfera: cifras de NASA («Earth's Atmosphere: A Multi-layered Cake»): 12, 50, 80 y 700 km.
+- Interior: contrastado con la Enciclopedia Británica y el USGS; el límite entre núcleos, 5100 km.
+- Volcanes: el código D1 («erupción desde 1964») está comprobado con casos conocidos, pero la base de
+  NOAA no está al día (no recoge el Cotopaxi de 2015).
+- Corrientes cálidas y frías: coinciden con varias fuentes didácticas; ninguna es de NOAA.
+- Júcar y Segura tienen ya trazado (Natural Earth, ríos de Europa). Entran Jutlandia, Labrador,
+  Mojave, desierto de Arabia, golfos de Cádiz y de Valencia (Wikidata) y el Cotopaxi (NOAA).
+- Población de Taiwán y del Vaticano, que el Banco Mundial no da: Wikidata.
+- Placas con nombre en los diez idiomas (Wikidata).
+
 Pendiente: mapas históricos, proyecciones, flujos migratorios y comerciales (aplazados, ver abajo),
-y la revisión nativa de las traducciones. Siguen sin fuente: Miño, Jutlandia, península del
-Labrador, meseta de Irán, desiertos de Mojave y de Arabia, golfos de Cádiz y de Valencia y Cotopaxi.
+y la revisión nativa de las traducciones. Siguen sin fuente: el río Miño y la meseta de Irán.
 
 ## Fases
 

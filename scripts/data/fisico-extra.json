@@ -1,5 +1,5 @@
 {
- "_": "Accidentes del temario que Natural Earth no trae. Posición (propiedad P625) y nombres de Wikidata (CC0), consultados el 10-nov-2026. De los ríos solo hay un punto, no el trazado.",
+ "_": "Accidentes del temario que Natural Earth no trae. Posición (propiedad P625) y nombres de Wikidata (CC0), consultados el 10-nov-2026; el Cotopaxi, de la base de volcanes de NOAA NCEI. Siguen sin fuente: el río Miño y la meseta de Irán.",
  "features": [
   {
    "kind": "cordillera",
@@ -79,46 +79,6 @@
     "fr": "Système ibérique",
     "en": "Iberian System",
     "es": "Sistema Ibérico"
-   }
-  },
-  {
-   "kind": "rio",
-   "wd": "Q14311",
-   "at": [
-    -0.29,
-    39.17
-   ],
-   "names": {
-    "zh": "胡卡爾河",
-    "eu": "Júcar",
-    "gl": "Río Xúcar",
-    "ca": "Xúquer",
-    "pt": "Rio Júcar",
-    "it": "Júcar",
-    "de": "Júcar",
-    "fr": "Júcar",
-    "en": "Júcar",
-    "es": "Júcar"
-   }
-  },
-  {
-   "kind": "rio",
-   "wd": "Q18612",
-   "at": [
-    -0.64,
-    38.11
-   ],
-   "names": {
-    "zh": "塞古拉河",
-    "eu": "Segura ibaia",
-    "gl": "Río Segura",
-    "ca": "Segura",
-    "pt": "Rio Segura",
-    "it": "Segura",
-    "de": "Río Segura",
-    "fr": "Segura",
-    "en": "Segura",
-    "es": "Segura"
    }
   },
   {
@@ -359,6 +319,138 @@
     "en": "Meseta",
     "es": "Meseta Central",
     "gl": "Meseta Central"
+   }
+  },
+  {
+   "kind": "desierto",
+   "wd": "Q208299",
+   "at": [
+    42.37,
+    18.27
+   ],
+   "names": {
+    "zh": "阿拉伯沙漠",
+    "eu": "Arabiako basamortua",
+    "gl": "Deserto de Arabia",
+    "ca": "Desert d'Aràbia",
+    "pt": "Deserto da Arábia",
+    "it": "Deserto Arabico",
+    "de": "Große Arabische Wüste",
+    "fr": "Désert d'Arabie",
+    "en": "Arabian Desert",
+    "es": "Desierto árabe"
+   }
+  },
+  {
+   "kind": "golfo",
+   "wd": "Q117157",
+   "at": [
+    -7.23,
+    36.78
+   ],
+   "names": {
+    "zh": "加的斯湾",
+    "eu": "Cádizko golkoa",
+    "gl": "Golfo de Cádiz",
+    "ca": "Golf de Cadis",
+    "pt": "Golfo de Cádiz",
+    "it": "Golfo di Cadice",
+    "de": "Golf von Cádiz",
+    "fr": "Golfe de Cadix",
+    "en": "Gulf of Cádiz",
+    "es": "Golfo de Cádiz"
+   }
+  },
+  {
+   "kind": "golfo",
+   "wd": "Q582246",
+   "at": [
+    -0.18,
+    39.45
+   ],
+   "names": {
+    "zh": "瓦倫西亞灣",
+    "eu": "Valentziako golkoa",
+    "gl": "Golfo de Valencia",
+    "ca": "Golf de València",
+    "pt": "Golfo de Valência",
+    "it": "Golfo di Valencia",
+    "de": "Golf von Valencia",
+    "fr": "Golfe de Valence",
+    "en": "Gulf of Valencia",
+    "es": "Golfo de Valencia"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q25389",
+   "at": [
+    9.2,
+    55.63
+   ],
+   "names": {
+    "zh": "日德兰半岛",
+    "eu": "Jutlandia",
+    "gl": "Xutlandia",
+    "ca": "Jutlàndia",
+    "pt": "Jutlândia",
+    "it": "Jutland",
+    "de": "Jütland",
+    "fr": "Jutland",
+    "en": "Jutland",
+    "es": "Península de Jutlandia"
+   }
+  },
+  {
+   "kind": "peninsula",
+   "wd": "Q84170",
+   "at": [
+    -69.0,
+    55.0
+   ],
+   "names": {
+    "zh": "拉布拉多半岛",
+    "eu": "Labrador penintsula",
+    "gl": "Península do Labrador",
+    "ca": "Península del Labrador",
+    "pt": "Península do Labrador",
+    "it": "Labrador",
+    "de": "Labrador-Halbinsel",
+    "fr": "Péninsule du Québec-Labrador",
+    "en": "Labrador Peninsula",
+    "es": "Península del Labrador"
+   }
+  },
+  {
+   "kind": "desierto",
+   "wd": "Q184355",
+   "at": [
+    -115.47,
+    35.01
+   ],
+   "names": {
+    "zh": "莫哈韦沙漠",
+    "eu": "Mojave",
+    "ca": "Desert de Mojave",
+    "pt": "Deserto de Mojave",
+    "it": "Deserto del Mojave",
+    "de": "Mojave-Wüste",
+    "fr": "Désert des Mojaves",
+    "en": "Mojave Desert",
+    "es": "Desierto de Mojave"
+   }
+  },
+  {
+   "kind": "pico",
+   "wd": null,
+   "at": [
+    -78.44,
+    -0.68
+   ],
+   "elev": 5911,
+   "names": {
+    "es": "Cotopaxi",
+    "en": "Cotopaxi"
    }
   }
  ]

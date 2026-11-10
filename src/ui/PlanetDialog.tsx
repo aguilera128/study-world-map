@@ -4,26 +4,28 @@ import { Icon } from './Icon';
 
 // «El planeta»: el interior de la Tierra y las capas de la atmósfera, para estudiarlas.
 //
-// Los datos son los de cualquier libro de texto: radio de la Tierra 6371 km; corteza de 5 a 70 km;
-// manto hasta 2900 km; núcleo externo hasta 5150 km; núcleo interno hasta el centro. Atmósfera:
-// troposfera hasta unos 12 km, estratosfera hasta 50, mesosfera hasta 85, termosfera hasta unos 600
-// y exosfera por encima. El interior va a escala (menos la corteza, que no se vería); la atmósfera
+// Interior: radio de la Tierra 6371 km; corteza de 5 a 70 km; manto hasta 2900 km; núcleo externo
+// hasta unos 5100 km; núcleo interno (1220 km de radio) hasta el centro. Contrastado con la
+// Enciclopedia Británica («Earth's layers») y el USGS; el límite entre los dos núcleos varía entre
+// 5100 y 5150 km según la fuente. Atmósfera, según NASA («Earth's Atmosphere: A Multi-layered
+// Cake»): troposfera hasta unos 12 km, estratosfera hasta 50, mesosfera hasta 80, termosfera hasta
+// 700 y exosfera por encima. El interior va a escala (menos la corteza, que no se vería); la atmósfera
 // no, y se dice. El movimiento del manto y del núcleo es una ilustración, no un dato.
 
 const EARTH_KM = 6371;
 /** Radio exterior de cada capa, en km desde el centro, de dentro afuera. */
 const INTERIOR = [
-  { id: 'inner', radius: 1221, color: '#ffe08a', name: t('Núcleo interno'), detail: t('Hierro y níquel sólidos · de 5150 a 6371 km') },
-  { id: 'outer', radius: 3471, color: '#f4a23a', name: t('Núcleo externo'), detail: t('Hierro y níquel líquidos · de 2900 a 5150 km') },
+  { id: 'inner', radius: 1221, color: '#ffe08a', name: t('Núcleo interno'), detail: t('Hierro y níquel sólidos · de 5100 a 6371 km') },
+  { id: 'outer', radius: 3471, color: '#f4a23a', name: t('Núcleo externo'), detail: t('Hierro y níquel líquidos · de 2900 a 5100 km') },
   { id: 'mantle', radius: 6336, color: '#d2562a', name: t('Manto'), detail: t('Roca que fluye muy despacio · hasta 2900 km de profundidad') },
   { id: 'crust', radius: EARTH_KM, color: '#8a6a48', name: t('Corteza'), detail: t('Roca sólida · de 5 a 70 km de grosor') },
 ];
 
 /** De arriba abajo. */
 const ATMOSPHERE = [
-  { id: 'exo', color: '#0f1a33', name: t('Exosfera'), detail: t('Más de 600 km · se va diluyendo en el espacio') },
-  { id: 'thermo', color: '#1d3566', name: t('Termosfera'), detail: t('De 85 a 600 km · auroras y Estación Espacial') },
-  { id: 'meso', color: '#2f5c9c', name: t('Mesosfera'), detail: t('De 50 a 85 km · aquí se desintegran los meteoros') },
+  { id: 'exo', color: '#0f1a33', name: t('Exosfera'), detail: t('Más de 700 km · se va diluyendo en el espacio') },
+  { id: 'thermo', color: '#1d3566', name: t('Termosfera'), detail: t('De 80 a 700 km · auroras y Estación Espacial') },
+  { id: 'meso', color: '#2f5c9c', name: t('Mesosfera'), detail: t('De 50 a 80 km · aquí se desintegran los meteoros') },
   { id: 'strato', color: '#5b93cf', name: t('Estratosfera'), detail: t('De 12 a 50 km · contiene la capa de ozono') },
   { id: 'tropo', color: '#a9d2f0', name: t('Troposfera'), detail: t('Hasta unos 12 km · aquí están las nubes y el tiempo') },
 ];

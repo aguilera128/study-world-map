@@ -5,7 +5,9 @@ Fuentes:
     Geochemistry Geophysics Geosystems, 2003), en la conversión a GeoJSON de Hugo Ahlenius (Nordpil),
     https://github.com/fraxen/tectonicplates · licencia Open Data Commons Attribution (ODC-By 1.0).
   · Volcanes: base de datos de volcanes de NOAA NCEI (servicio «hazel», dominio público). Entran
-    los que han tenido una erupción desde 1964 (código D1 de la base).
+    los que han tenido una erupción desde 1964 (código D1 de la base; comprobado con casos
+    conocidos: Etna D1, Vesubio D2, Fuji D4). La base no está al día: no recoge, por ejemplo, la
+    erupción del Cotopaxi de 2015.
 
 Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repositorio):
   1. descargar a una carpeta
@@ -17,7 +19,7 @@ Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repo
 El formato es el de fisico.json (ver build-physical.py): elementos con clase, importancia, posición,
 nombres y, los límites, su trazado en milésimas de grado y en diferencias. Lo único que no sale de
 los datos es dónde se rotula cada placa (PLACAS): un punto elegido a mano dentro de ella, y su nombre
-en español.
+en español e inglés. Los nombres en los demás idiomas son de Wikidata (scripts/data/placas.wikidata.json).
 """
 import glob
 import json
@@ -25,6 +27,7 @@ import os
 import sys
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'public', 'data', 'tectonica.json')
+NOMBRES = os.path.join(os.path.dirname(__file__), 'data', 'placas.wikidata.json')
 
 # Las placas principales: nombre en español, en inglés y punto donde se rotulan.
 PLACAS = [
@@ -92,8 +95,11 @@ def main(folder):
                 piece.append(b)
             lines.append(piece)
     features.append({'id': 'limites', 'kind': 'limite', 'rank': 0, 'at': [0, 0], 'names': {}, 'lines': [deltas(simplify([tuple(p[:2]) for p in line], 0.02)) for line in lines if len(line) > 1]})
+    translated = json.load(open(NOMBRES, encoding='utf8'))['names']
     for es, en, lon, lat in PLACAS:
-        features.append({'id': 'placa-' + en.lower().replace(' ', '-'), 'kind': 'placa', 'rank': 0, 'at': [lon, lat], 'names': {'es': es, 'en': en}})
+        # el español y el inglés, los de aquí; los demás idiomas, de Wikidata
+        names = {**translated.get(en, {}), 'es': es, 'en': en}
+        features.append({'id': 'placa-' + en.lower().replace(' ', '-'), 'kind': 'placa', 'rank': 0, 'at': [lon, lat], 'names': names})
 
     volcanoes = []
     for path in sorted(glob.glob(os.path.join(folder, 'volc*.json'))):

@@ -7,8 +7,9 @@ portugués y chino. Los nombres en catalán, gallego y euskera vienen de Wikidat
 que trae cada elemento (scripts/data/fisico.wikidata.json; se rellena con --wikidata).
 
 Se ejecuta a mano, solo si se quiere regenerar el fichero (que sí va en el repositorio):
-  1. descargar y descomprimir en una carpeta los cinco zip de
+  1. descargar y descomprimir en una carpeta los seis zip de
      https://naciscdn.org/naturalearth/10m/physical/ne_10m_<nombre>.zip
+     (los cinco de abajo y rivers_europe)
   2. python scripts/build-physical.py <carpeta> [--wikidata]
 
 Lo único que se decide aquí es qué entra: para rotular, los elementos más importantes de cada clase
@@ -58,6 +59,20 @@ CLASES = {
     'Alkaline Lake': ('lago', 1),
 }
 RIOS_RANK = 4
+# Nombres en español de la fuente que no son los que se usan en clase.
+NOMBRES_ES = {
+    'Cordillera de Los Andes': 'Andes',
+    'Mediterráneo': 'Mar Mediterráneo',
+    'Jaya': 'Puncak Jaya',
+    'Citlaltépetl': 'Pico de Orizaba',
+    'Cocibolca': 'Lago de Nicaragua',
+    'Lemán': 'Lago Lemán',
+    'Bravo': 'Río Bravo',
+    'Alpes escandinavos': 'Montes Escandinavos',
+    'Arabia': 'Península arábiga',
+    'Escandinavia': 'Península escandinava',
+    'Florida': 'Península de Florida',
+}
 # Brazos de delta y tramos con nombre local que Natural Earth separa del río principal.
 RIOS_FUERA = re.compile(r'Protoka|Branch|Bratul|Delta|Canal|Borcea')
 # Lo que entra en el reto de geografía física (selección editorial, ver el propio fichero).
@@ -158,6 +173,8 @@ def names(row):
         text = (row.get('name_' + lang) or (base if lang in ('es', 'en') else '')).rstrip('.').strip()
         if text:
             out[lang] = text[0].upper() + text[1:]
+    if out.get('es') in NOMBRES_ES:
+        out['es'] = NOMBRES_ES[out['es']]
     # Natural Earth escribe algunos nombres en mayúsculas (ANDES, HIMALAYAS)
     for lang, text in out.items():
         if text.isupper() and len(text) > 3:
@@ -193,7 +210,10 @@ def build(folder):
     # Ríos: Natural Earth los trae por tramos (también los que cruzan un lago); se juntan los de un
     # mismo río (mismo identificador de Wikidata o, si no lo trae, mismo nombre).
     rivers = {}
-    for row, parts in layer(folder, 'ne_10m_rivers_lake_centerlines'):
+    # El fichero de Europa trae ríos que el general no tiene (Júcar, Segura…); como su `scalerank`
+    # es bajo, solo entran los que están en el temario.
+    tramos = list(layer(folder, 'ne_10m_rivers_lake_centerlines')) + list(layer(folder, 'ne_10m_rivers_europe'))
+    for row, parts in tramos:
         if not row['name'] or RIOS_FUERA.search(row['name']):
             continue
         river = rivers.setdefault(row.get('wikidataid') or row['name'], {'row': row, 'rank': 99, 'parts': [], 'river': False})
@@ -231,7 +251,10 @@ def build(folder):
 
     # Lo que Natural Earth no trae y sí está en Wikidata (scripts/data/fisico-extra.json).
     for extra in json.load(open(EXTRA, encoding='utf8'))['features']:
-        features.append({'kind': extra['kind'], 'rank': 2, 'at': extra['at'], 'names': dict(extra['names']), 'wd': None, 'quiz': 1, '_top': -1, '_raw': set()})
+        feature = {'kind': extra['kind'], 'rank': 2, 'at': extra['at'], 'names': dict(extra['names']), 'wd': None, 'quiz': 1, '_top': -1, '_raw': set()}
+        if extra.get('elev'):
+            feature['elev'] = extra['elev']
+        features.append(feature)
 
     # Se queda lo que se rotula por importancia y todo lo del temario. Un mismo nombre no se repite
     # dentro de una clase (Natural Earth parte en dos el Atlántico y el Pacífico).
