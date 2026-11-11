@@ -537,6 +537,15 @@ const ca: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': 'Vols seguir més tard o en un altre dispositiu?',
   'Ahora no': 'Ara no',
+
+  // ── página de rankings ──
+  'Ranking': 'Rànquing',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': 'Els deu millors resultats de cada repte. Juga i publica el teu.',
+  'Todavía no hay resultados publicados en este mapa.': 'Encara no hi ha resultats publicats en este mapa.',
+  'resultado': 'resultat',
+  'resultados': 'resultats',
+  'Jugar este reto': 'Jugar a este repte',
+  'partida completa': 'partida completa',
 };
 
 export default ca;

@@ -100,6 +100,11 @@ async function main() {
     ['sin cabecera de país, sin bandera', rowOf(other, 'Prueba dos')?.country === null],
     ['leer, ordenado y con caché', read.status === 200 && /s-maxage=60/.test(read.cache) && read.body.top.findIndex((r) => r.nick === 'Prueba uno') < read.body.top.findIndex((r) => r.nick === 'Prueba dos')],
     ['como mucho diez', read.body.top.length <= 10],
+    ['resumen de todos los rankings', await (async () => {
+      const res = await ranking.fetch(new Request('http://local/api/ranking'));
+      const board = (await res.json()).boards?.find((b) => b.category === category);
+      return res.status === 200 && board?.count === 2 && board.best.nick === 'Prueba uno';
+    })()],
     ['apodo no válido', (await rank('POST', entry({ nick: 'ana@correo.es' }))).status === 422],
     ['categoría desconocida', (await rank('POST', entry({ category: 'world/locate/map/marte/10' }))).status === 400 && (await rank('GET', 'x')).status === 400],
     ['resultado imposible', (await rank('POST', entry({ ms: 2_000 }))).status === 400 && (await rank('POST', entry({ grade: 9.3 }))).status === 400],

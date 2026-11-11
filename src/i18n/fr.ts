@@ -536,6 +536,15 @@ const fr: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': 'Voulez-vous continuer plus tard ou sur un autre appareil ?',
   'Ahora no': 'Pas maintenant',
+
+  // ── página de rankings ──
+  'Ranking': 'Classement',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': 'Les dix meilleurs résultats de chaque défi. Jouez et publiez le vôtre.',
+  'Todavía no hay resultados publicados en este mapa.': 'Aucun résultat n’a encore été publié pour cette carte.',
+  'resultado': 'résultat',
+  'resultados': 'résultats',
+  'Jugar este reto': 'Jouer à ce défi',
+  'partida completa': 'partie complète',
 };
 
 export default fr;

@@ -536,6 +536,15 @@ const it: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': 'Vuoi continuare più tardi o su un altro dispositivo?',
   'Ahora no': 'Non ora',
+
+  // ── página de rankings ──
+  'Ranking': 'Classifica',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': 'I dieci migliori risultati di ogni sfida. Gioca e pubblica il tuo.',
+  'Todavía no hay resultados publicados en este mapa.': 'Non ci sono ancora risultati pubblicati per questa mappa.',
+  'resultado': 'risultato',
+  'resultados': 'risultati',
+  'Jugar este reto': 'Gioca a questa sfida',
+  'partida completa': 'partita completa',
 };
 
 export default it;

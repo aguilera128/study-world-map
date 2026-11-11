@@ -1,10 +1,11 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
-import { cleanNick, compare, isCategory, plausible, qualifies, TOP, type RankRow } from '../src/game/ranking.ts';
+import { cleanNick, compare, isCategory, plausible, qualifies, TOP, type RankBoard, type RankRow } from '../src/game/ranking.ts';
 
 // Ranking de resultados: los diez mejores de cada categoría (mapa, reto, forma de responder, zona y
 // número de preguntas), sin cuentas.
 //
 //   GET  /api/ranking?c=<categoría>                       → { top }
+//   GET  /api/ranking                                     → { boards }  (el mejor de cada ranking con resultados)
 //   POST /api/ranking  { category, nick, grade, ms, total } → { entered, top }   (201 si entra)
 //
 // Qué se guarda de cada resultado: la categoría, el apodo que escribe quien juega, el país desde el
@@ -34,11 +35,27 @@ const fail = (status: number, error: string) => json({ error }, status);
 
 type Sql = NeonQueryFunction<false, false>;
 
+const rowOf = (r: Record<string, unknown>): RankRow => ({
+  nick: String(r.nick),
+  country: r.country ? String(r.country) : null,
+  grade: Number(r.grade),
+  ms: Number(r.ms),
+  at: new Date(r.created_at as string).toISOString(),
+});
+
 async function topOf(sql: Sql, category: string): Promise<RankRow[]> {
   const rows = (await sql`
     select nick, country, grade, ms, created_at from ranking
     where category = ${category} order by grade desc, ms asc, created_at asc limit ${TOP}`) as Record<string, unknown>[];
-  return rows.map((r) => ({ nick: String(r.nick), country: r.country ? String(r.country) : null, grade: Number(r.grade), ms: Number(r.ms), at: new Date(r.created_at as string).toISOString() }));
+  return rows.map(rowOf);
+}
+
+/** Todos los rankings que tienen algún resultado: el primero de cada uno y cuántos hay. */
+async function boardsOf(sql: Sql): Promise<RankBoard[]> {
+  const rows = (await sql`
+    select distinct on (category) category, nick, country, grade, ms, created_at, count(*) over (partition by category)::int as n
+    from ranking order by category, grade desc, ms asc, created_at asc limit 2000`) as Record<string, unknown>[];
+  return rows.map((r) => ({ category: String(r.category), count: Number(r.n), best: rowOf(r) }));
 }
 
 export default {
@@ -49,9 +66,11 @@ export default {
 
     try {
       if (request.method === 'GET') {
-        const category = new URL(request.url).searchParams.get('c') ?? '';
+        const category = new URL(request.url).searchParams.get('c');
+        const cache = 'public, max-age=0, s-maxage=60';
+        if (category === null) return json({ boards: await boardsOf(sql) }, 200, cache);
         if (!isCategory(category)) return fail(400, 'categoría no válida');
-        return json({ top: await topOf(sql, category) }, 200, 'public, max-age=0, s-maxage=60');
+        return json({ top: await topOf(sql, category) }, 200, cache);
       }
 
       if (request.method === 'POST') {

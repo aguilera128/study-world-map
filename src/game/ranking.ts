@@ -80,6 +80,13 @@ export interface RankRow {
   at: string;
 }
 
+/** Un ranking que tiene resultados, en el resumen de todos: su mejor resultado y cuántos hay. */
+export interface RankBoard {
+  category: string;
+  count: number;
+  best: RankRow;
+}
+
 /**
  * ¿Puede ser el resultado de una partida de verdad? No evita las trampas (la nota la calcula el
  * navegador), pero sí lo imposible: una nota que no sale de ninguna combinación de aciertos o una

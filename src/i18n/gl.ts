@@ -536,6 +536,15 @@ const gl: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': 'Queres seguir máis tarde ou noutro dispositivo?',
   'Ahora no': 'Agora non',
+
+  // ── página de rankings ──
+  'Ranking': 'Clasificación',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': 'Os dez mellores resultados de cada reto. Xoga e publica o teu.',
+  'Todavía no hay resultados publicados en este mapa.': 'Aínda non hai resultados publicados neste mapa.',
+  'resultado': 'resultado',
+  'resultados': 'resultados',
+  'Jugar este reto': 'Xogar a este reto',
+  'partida completa': 'partida completa',
 };
 
 export default gl;

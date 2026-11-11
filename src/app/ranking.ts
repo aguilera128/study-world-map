@@ -1,5 +1,5 @@
 import { SAMPLE_LIST, type GameConfig, type StudyList } from '../game/config';
-import { categoryOf, cleanNick, dailyCategory, suggestNick, type RankResult, type RankRow } from '../game/ranking';
+import { categoryOf, cleanNick, dailyCategory, suggestNick, type RankBoard, type RankResult, type RankRow } from '../game/ranking';
 
 // Ranking de resultados (función api/ranking.ts): los diez mejores de cada categoría. Publicar es
 // siempre una decisión de quien juega: nada se envía hasta que pulsa el botón.
@@ -33,6 +33,13 @@ export async function loadTop(category: string, signal?: AbortSignal): Promise<R
   const res = await fetch(`/api/ranking?c=${encodeURIComponent(category)}`, { signal });
   if (!res.ok) throw new Error(String(res.status));
   return ((await res.json()) as { top: RankRow[] }).top;
+}
+
+/** Todos los rankings que tienen algún resultado. */
+export async function loadBoards(signal?: AbortSignal): Promise<RankBoard[]> {
+  const res = await fetch('/api/ranking', { signal });
+  if (!res.ok) throw new Error(String(res.status));
+  return ((await res.json()) as { boards: RankBoard[] }).boards;
 }
 
 export type Published = { ok: true; entered: boolean; top: RankRow[] } | { ok: false; reason: 'nick' | 'later' };

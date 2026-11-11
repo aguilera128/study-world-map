@@ -537,6 +537,15 @@ const eu: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': 'Geroago edo beste gailu batean jarraitu nahi duzu?',
   'Ahora no': 'Orain ez',
+
+  // ── página de rankings ──
+  'Ranking': 'Sailkapena',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': 'Erronka bakoitzeko hamar emaitza onenak. Jolastu eta argitaratu zurea.',
+  'Todavía no hay resultados publicados en este mapa.': 'Oraindik ez dago emaitzarik argitaratuta mapa honetan.',
+  'resultado': 'emaitza',
+  'resultados': 'emaitza',
+  'Jugar este reto': 'Erronka honetan jolastu',
+  'partida completa': 'partida osoa',
 };
 
 export default eu;

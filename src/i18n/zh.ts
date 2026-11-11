@@ -535,6 +535,15 @@ const zh: Record<string, string> = {
   // ── código al terminar la partida ──
   '¿Quieres seguir más tarde o en otro dispositivo?': '想稍后或在另一台设备上继续吗？',
   'Ahora no': '暂时不要',
+
+  // ── página de rankings ──
+  'Ranking': '排行榜',
+  'Los diez mejores resultados de cada reto. Juega y publica el tuyo.': '每个挑战的前十名成绩。来玩一局并发布你的成绩。',
+  'Todavía no hay resultados publicados en este mapa.': '这张地图还没有发布的成绩。',
+  'resultado': '个成绩',
+  'resultados': '个成绩',
+  'Jugar este reto': '玩这个挑战',
+  'partida completa': '完整一局',
 };
 
 export default zh;

@@ -280,7 +280,7 @@ export const bestFor = (bests: Record<string, Best>, config: GameConfig): Best |
 
 // ───────────────────────── Aplicación ─────────────────────────
 
-export type Screen = 'home' | 'play' | 'results' | 'explore' | 'progress' | 'lists';
+export type Screen = 'home' | 'play' | 'results' | 'explore' | 'progress' | 'lists' | 'ranking';
 export type Tone = 'ok' | 'help' | 'bad' | 'info';
 
 /** Rótulo temporal clavado sobre un país del mapa. */

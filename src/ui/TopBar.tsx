@@ -13,7 +13,7 @@ const LABELS = 'hidden min-[64rem]:inline';
 /** Quien elige idioma a mano ya sabe que hay varios: no hace falta el aviso de la portada. */
 const langChosen = () => useSettings.getState().dismissLangHint();
 
-function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName; children: string }) {
+function NavButton({ screen, icon, children, late = false }: { screen: Screen; icon: IconName; children: string; late?: boolean }) {
   const current = useApp((s) => s.screen);
   const go = useApp((s) => s.go);
   const active = current === screen;
@@ -23,10 +23,11 @@ function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName;
       onClick={() => go(active ? 'home' : screen)}
       aria-pressed={active}
       title={children}
-      className={`btn btn-ghost min-h-10! w-10 px-0! text-sm min-[64rem]:w-auto min-[64rem]:px-[1.1rem]! ${active ? 'bg-ink! text-paper!' : ''}`}
+      // «late»: el botón se queda en icono hasta que la cabecera tiene sitio de sobra para su rótulo.
+      className={`btn btn-ghost min-h-10! w-10 px-0! text-sm ${late ? 'min-[96rem]:w-auto min-[96rem]:px-[1.1rem]!' : 'min-[64rem]:w-auto min-[64rem]:px-[1.1rem]!'} ${active ? 'bg-ink! text-paper!' : ''}`}
     >
       <Icon name={icon} size={19} />
-      <span className={LABELS}>{children}</span>
+      <span className={late ? 'hidden min-[96rem]:inline' : LABELS}>{children}</span>
     </button>
   );
 }
@@ -164,8 +165,10 @@ export function TopBar() {
         <Logo />
         <span className={`display whitespace-nowrap text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
         {/* Qué mapa es y cuánto tiene, en dos líneas junto a la marca: así no ocupa una línea del panel. */}
+        {/* Solo desde 88 rem: entre 82 y 88 no cabe con los botones (la marca saltaba a dos líneas) y */}
+        {/* el panel ya no lo enseña, así que en esa franja no sale. */}
         {wide && !playing && tagline.length > 0 && (
-          <span className="label ml-1 hidden border-l border-rule-strong pl-3 text-left leading-[1.35] min-[82rem]:block">
+          <span className="label ml-1 hidden border-l border-rule-strong pl-3 text-left leading-[1.35] min-[88rem]:block">
             {tagline.map((line) => (
               <span key={line} className="block whitespace-nowrap">
                 {line}
@@ -184,6 +187,12 @@ export function TopBar() {
             <NavButton screen="progress" icon="chart">
               {t('Progreso')}
             </NavButton>
+            {/* En el móvil no cabe otro botón: el ranking va en el menú. */}
+            {wide && (
+              <NavButton screen="ranking" icon="trophy" late>
+                {t('Ranking')}
+              </NavButton>
+            )}
             {wide && <PlanetButton labels={labels} />}
           </nav>
         )}
@@ -236,6 +245,12 @@ export function TopBar() {
         ) : (
           // En el móvil no cabe todo: el planeta, el idioma y el tema van en un menú.
           <MoreMenu>
+            {!playing && (
+              <button type="button" onClick={() => go('ranking')} className="btn btn-ghost min-h-11 justify-start px-2.5 text-sm">
+                <Icon name="trophy" size={18} />
+                {t('Ranking')}
+              </button>
+            )}
             {!playing && <PlanetButton labels="" />}
             <button type="button" onClick={toggleTheme} className="btn btn-ghost min-h-11 justify-start px-2.5 text-sm">
               <Icon name={theme === 'night' ? 'sun' : 'moon'} size={18} />

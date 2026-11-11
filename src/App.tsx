@@ -10,6 +10,7 @@ import { ListsPanel } from './ui/ListsPanel';
 import { MapControls } from './ui/MapControls';
 import { PlayHud } from './ui/PlayHud';
 import { ProgressPanel } from './ui/ProgressPanel';
+import { RankingPanel } from './ui/RankingPanel';
 import { RealTimeStatus } from './ui/RealTime';
 import { ResultsPanel } from './ui/ResultsPanel';
 import { TopBar } from './ui/TopBar';
@@ -95,6 +96,7 @@ export default function App() {
               {screen === 'explore' && <ExplorePanel key="explore" />}
               {screen === 'progress' && <ProgressPanel key="progress" />}
               {screen === 'lists' && <ListsPanel key="lists" />}
+              {screen === 'ranking' && <RankingPanel key="ranking" />}
               {screen === 'results' && session && <ResultsPanel key="results" />}
               {screen === 'play' && session && <PlayHud key="play" />}
             </AnimatePresence>
