@@ -119,9 +119,9 @@ export function Panel({ children, label }: { children: ReactNode; label: string 
 }
 
 /** Título de sección numerado, como los apartados de una leyenda. */
-export function Step({ n, children }: { n: number; children: ReactNode }) {
+export function Step({ n, children, className = 'mb-2' }: { n: number; children: ReactNode; className?: string }) {
   return (
-    <div className="label mb-2 flex items-center gap-2">
+    <div className={`label flex items-center gap-2 ${className}`}>
       <span className="display grid h-5 w-5 place-items-center rounded-full border border-rule-strong text-[0.6875rem] tracking-normal text-ink">
         {n}
       </span>

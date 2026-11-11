@@ -47,35 +47,39 @@ const MODE_GROUPS: { title: string; ids: ModeId[] }[] = [
   { title: t('Cómo es'), ids: ['climate', 'population', 'inhabitants'] },
 ];
 
-/** Reto del día: el mismo para todos; enseña la racha y, si ya se ha jugado hoy, la nota. */
-function DailyCard() {
+/**
+ * Reto del día: el mismo para todos. Va en la línea del título «Reto», a la derecha, para no quitarle
+ * altura al panel: en pantallas bajas el botón de empezar tiene que caber. Enseña la racha y, si ya
+ * se ha jugado hoy, la nota; el resto se cuenta al pasar el cursor.
+ */
+function DailyChip() {
   const startDaily = useApp((s) => s.startDaily);
   const record = useProgress((s) => s.daily);
   const today = dailyKey(new Date());
   const mode = modeDef(dailyConfig(today).mode);
   const streak = currentStreak(record, today);
   const done = record?.date === today;
+  const detail = done ? t('Hecho hoy: {grade} sobre 10', { grade: formatGrade(record.grade) }) : t('Las mismas 10 preguntas para todo el mundo');
+  const label = `${t('Reto del día')} · ${mode.title}. ${detail}.${streak > 0 ? ` ${t('Racha')}: ${plural(streak, t('día'), t('días'))}.` : ''}`;
   return (
     <button
       type="button"
       onClick={startDaily}
-      className="tile mt-4 flex w-full max-w-[26rem] items-center gap-3 px-3 py-2.5 text-left"
-      style={order(3)}
+      title={label}
+      aria-label={label}
+      // El área que se pulsa es más alta que la píldora (44 px), sin que la fila crezca.
+      className="relative inline-flex min-h-7 min-w-0 items-center gap-1.5 rounded-full border border-rule-strong bg-surface px-2.5 text-xs font-bold transition-colors after:absolute after:-inset-y-2.5 after:inset-x-0 hover:border-accent hover:text-accent"
     >
-      <Icon name="flame" size={22} className="shrink-0 text-accent" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-sm font-bold leading-tight">
-          {t('Reto del día')} · {mode.title}
-        </span>
-        <span className="block text-xs text-ink-soft">
-          {done ? t('Hecho hoy: {grade} sobre 10', { grade: formatGrade(record.grade) }) : t('Las mismas 10 preguntas para todo el mundo')}
-        </span>
-      </span>
+      <Icon name="flame" size={15} className="shrink-0 text-accent" />
       {streak > 0 && (
-        <span className="shrink-0 text-xs font-bold text-ink-soft" title={t('Días seguidos jugando el reto del día')}>
-          {t('Racha')}: {plural(streak, t('día'), t('días'))}
+        <span className="tabular shrink-0" title={t('Días seguidos jugando el reto del día')}>
+          {streak}
         </span>
       )}
+      <span className="truncate">
+        {t('Reto del día')} · {done ? formatGrade(record.grade) : mode.title}
+      </span>
+      {done && <Icon name="check" size={14} className="shrink-0 text-ok" />}
     </button>
   );
 }
@@ -158,10 +162,13 @@ export function HomePanel() {
         }))}
       />
 
-      {def.extras && <DailyCard />}
-
       <section className="mt-5" style={order(3)}>
-        <Step n={1}>{t('Reto')}</Step>
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <Step n={1} className="shrink-0">
+            {t('Reto')}
+          </Step>
+          {def.extras && <DailyChip />}
+        </div>
         <div role="radiogroup" aria-label={t('Reto')} className="grid gap-2">
           {groups.map((group) => (
             <div key={group.title ?? 'all'}>
