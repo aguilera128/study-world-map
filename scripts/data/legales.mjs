@@ -49,6 +49,7 @@ ${titularBlock()}
       <li>Cartografía: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (dominio público).</li>
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
+      <li>Luces nocturnas de las ciudades: Black Marble 2016, NASA Earth Observatory (dominio público).</li>
       <li>Imagen de satélite: Blue Marble Next Generation, NASA Earth Observatory (julio de 2004, dominio público).</li>
       <li>Relieve del fondo marino: ETOPO2v2, NOAA National Geophysical Data Center (dominio público).</li>
       <li>Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público), y catálogo Hipparcos de la Agencia Espacial Europea (ESA, 1997).</li>

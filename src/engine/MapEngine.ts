@@ -303,7 +303,7 @@ export class MapEngine {
   };
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
-    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 } },
+    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
@@ -1213,6 +1213,18 @@ export class MapEngine {
   /** Intensidad del día y la noche: 0 = oculto, 1 = pleno (se funde poco a poco). */
   setDaylight(strength: number) {
     this.nightTarget = clamp(strength, 0, 1);
+    // Con la noche a la vista, las luces de las ciudades (105 KB, solo se piden entonces). Cuánto se
+    // ven en cada punto lo decide el sombreador: solo donde es de noche.
+    if (this.nightTarget > 0 && !this.own.fill.uLights.value) {
+      const lights = this.image('/data/nightlights.webp', () => {
+        this.own.fill.uLightsAmt.value = 1;
+        this.invalidate();
+      });
+      lights.colorSpace = NoColorSpace;
+      lights.wrapS = RepeatWrapping;
+      this.disposables.push(lights);
+      this.own.fill.uLights.value = lights;
+    }
     this.invalidate();
   }
 

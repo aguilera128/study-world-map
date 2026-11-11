@@ -408,6 +408,8 @@ uniform float uPhotoAmt;  // 1 = capa «Imagen de satélite» a la vista
 uniform sampler2D uPatch; // la misma foto con más detalle, solo de la zona que se está mirando
 uniform vec4 uPatchBox;   // qué zona cubre: (longitud oeste, latitud sur, longitud este, latitud norte)
 uniform float uPatchAmt;  // 0 = sin detalle; sube a 1 al llegar la imagen
+uniform sampler2D uLights; // luces de las ciudades de noche (scripts/build-nightlights.py)
+uniform float uLightsAmt;  // 0 = apagadas
 varying float vPhoto;
 varying float vTint;
 
@@ -439,7 +441,14 @@ void main() {
     base = mix(base, photo.rgb * vTint, vPhoto * photo.a * uPhotoAmt);
   }
   vec3 c = base * mix(1.0, relief, uReliefAmt);
-  gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo), 1.0);
+  vec3 lit = shade(c, vNormal, vToEye, vGeo);
+  if (uLightsAmt > 0.0) {
+    // Las ciudades se encienden solo donde es de noche, y poco a poco al cruzar el crepúsculo: la
+    // misma frontera que usa «daylight» para oscurecer el mapa. Es luz, así que se suma.
+    float night = (1.0 - smoothstep(-0.14, 0.05, dot(normalize(vGeo), uSun))) * uNight;
+    lit += vec3(1.0, 0.8, 0.52) * (texture2D(uLights, uv).r * night * uLightsAmt * vTint);
+  }
+  gl_FragColor = vec4(lit, 1.0);
 }
 `;
 
