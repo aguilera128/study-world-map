@@ -100,7 +100,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Relieve y profundidad del mar | `build-relief.py`, `build-depth.py` | Natural Earth |
 | Corrientes | `build-currents.py` | OSCAR (NOAA) |
 | Placas y volcanes | `build-tectonics.py` | Bird 2003 (vía H. Ahlenius), NOAA NCEI |
-| Estrellas | `build-stars.mjs` | Yale Bright Star Catalogue |
+| Estrellas | `build-stars.mjs`, `build-stars-faint.mjs` | Yale Bright Star Catalogue (brillantes), Hipparcos de la ESA (débiles) |
 | Vía Láctea | `exr-to-raw.mjs` + `build-milkyway.py` | NASA Deep Star Maps 2020 (Gaia DR2) |
 | Continentes de la ilustración | `build-planet-land.mjs` | Natural Earth |
 | Interior de la Tierra, atmósfera, Sol y Luna | `src/ui/planetLayers.ts`, `RealTime.tsx` | USGS, IGN, PREM, artículos citados, NASA |

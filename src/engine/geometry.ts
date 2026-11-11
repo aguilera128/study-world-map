@@ -147,19 +147,35 @@ export function quadGeometry(): BufferGeometry {
  * en 2026), que es el mismo equinoccio que usa la hora sidérea.
  */
 export function starGeometry(date: Date): BufferGeometry {
-  const n = STARS.length / 4;
+  return stars(STARS.length / 4, date, (i) => [(STARS[4 * i] / 100) * DEG, (STARS[4 * i + 1] / 100) * DEG, STARS[4 * i + 2] / 10, STARS[4 * i + 3] / 10]);
+}
+
+/**
+ * Las estrellas débiles (magnitud 6,5 a 9, catálogo Hipparcos), que se piden aparte: «data» es
+ * public/data/stars.bin, con el formato que explica scripts/build-stars-faint.mjs.
+ */
+export function faintStarGeometry(data: ArrayBuffer, date: Date): BufferGeometry {
+  const n = new DataView(data).getUint32(0, true);
+  const ra = new Uint16Array(data, 4, n);
+  const dec = new Uint16Array(data, 4 + 2 * n, n);
+  const mag = new Int8Array(data, 4 + 4 * n, n);
+  const bv = new Int8Array(data, 4 + 5 * n, n);
+  return stars(n, date, (i) => [(ra[i] / 65536) * 360 * DEG, ((dec[i] / 65535) * 180 - 90) * DEG, mag[i] / 10, bv[i] / 10]);
+}
+
+/** «star(i)» da la ascensión recta y la declinación (radianes), la magnitud y el índice B−V de cada una. */
+function stars(n: number, date: Date, star: (i: number) => [ra: number, dec: number, mag: number, bv: number]): BufferGeometry {
   const centuries = (date.getTime() - Date.UTC(2000, 0, 1, 12)) / 86_400_000 / 36525;
   const m = 1.2812 * DEG * centuries;
   const k = 0.5567 * DEG * centuries;
   const position = new Float32Array(n * 3);
   const color = new Float32Array(n);
   for (let i = 0; i < n; i++) {
-    const ra = (STARS[4 * i] / 100) * DEG;
-    const dec = (STARS[4 * i + 1] / 100) * DEG;
+    const [ra, dec, mag, bv] = star(i);
     position[3 * i] = ra + m + k * Math.sin(ra) * Math.tan(dec);
     position[3 * i + 1] = dec + k * Math.cos(ra);
-    position[3 * i + 2] = STARS[4 * i + 2] / 10;
-    color[i] = STARS[4 * i + 3] / 10;
+    position[3 * i + 2] = mag;
+    color[i] = bv;
   }
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(position, 3));

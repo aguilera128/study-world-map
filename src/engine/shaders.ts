@@ -820,11 +820,13 @@ void main() {
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
   vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
   // El cielo vacío del mapa no es negro del todo (un grano gris de estrellas muy débiles): se recorta.
-  vec3 glow = max(texture2D(uSky, uv).rgb - 0.2, 0.0) * 1.25;
+  vec3 glow = max(texture2D(uSky, uv).rgb - 0.15, 0.0) * 1.18;
   // Todo lo que se ve es el mapa de la NASA, con su color y su contraste: solo se baja la
   // exposición. La imagen viene con curva gamma, así que elevarla al cuadrado le devuelve la
   // proporción real entre las nubes brillantes y lo tenue (sin aplanar los blancos ni teñirla).
   vec3 color = glow * glow * 0.17 + glow * 0.03;
+  // Con tantas estrellas delante, la galaxia va a medio color: de fondo, sin competir con ellas.
+  color = mix(color, vec3(dot(color, vec3(0.299, 0.587, 0.114))), 0.5);
   float a = clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0) * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(color / max(a, 0.001), a);
@@ -847,8 +849,11 @@ void main() {
   gl_Position = vec4(clip.xy, clip.w, clip.w); // al fondo del todo: la Tierra las tapa
   float mag = position.z;
   // Cada magnitud es 2,5 veces menos luz: las brillantes crecen y las débiles se atenúan.
-  gl_PointSize = clamp(6.6 - 0.85 * mag, 1.8, 8.0) * uDpr;
-  vAlpha = clamp(1.3 - 0.15 * mag, 0.32, 1.0);
+  // Por debajo de lo que se ve a simple vista (magnitud 6,5) ya no hay tamaño que quitar: las
+  // estrellas débiles se quedan en un punto y pierden luz hasta casi fundirse con el fondo.
+  float faint = clamp((mag - 6.5) / 2.5, 0.0, 1.0);
+  gl_PointSize = (clamp(6.6 - 0.85 * mag, 1.8, 8.0) - 0.3 * faint) * uDpr;
+  vAlpha = clamp(1.3 - 0.15 * mag, 0.32, 1.0) * mix(1.0, 0.55, faint) * 1.6;
   // Parpadeo tenue, cada estrella a su ritmo (su fase sale de su posición). Es un guiño al cielo
   // visto desde el suelo: lo causa el aire, y desde el espacio las estrellas no titilan.
   float phase = fract(sin(position.x * 91.7 + position.y * 47.3) * 43758.5453) * 6.2831853;

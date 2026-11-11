@@ -237,5 +237,6 @@ que la lista sea coherente y avisa si no.
   climas de la ESO; porcentajes por país en `scripts/data/climas.koppen.json` (`scripts/build-climate.mjs`)
   y correcciones en `scripts/data/climas.mjs`.
 - Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público); recorte en `src/engine/stars.ts`,
-  generado con `scripts/build-stars.mjs`.
+  generado con `scripts/build-stars.mjs`. Las débiles (magnitud 6,5 a 9), del catálogo Hipparcos de la ESA (1997): `public/data/stars.bin`,
+  generado con `scripts/build-stars-faint.mjs`.
 - Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).

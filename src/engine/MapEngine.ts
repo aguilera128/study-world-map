@@ -30,7 +30,7 @@ import type { MeshData } from '../atlas/mesh';
 import type { Bounds } from '../atlas/types';
 import { takeBitmap } from './bitmaps';
 import { CameraRig, type Padding, type Pose, type ScreenPoint } from './camera';
-import { fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
+import { faintStarGeometry, fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
 import { FeatureLabels, type MapFeature } from './labels';
 import { rgb, Style, STYLE_COUNT, type Palette } from './palette';
 import { DEG, wrapLon } from './projection';
@@ -238,6 +238,7 @@ export class MapEngine {
   private reliefReady = false;
   private reliefHd = false;
   private seaTimer = 0;
+  private starMaterial!: ShaderMaterial;
   /** El océano y sus dos materiales: el liso y el completo (nulo hasta que termina de compilarse). */
   private sea!: Mesh;
   private seaLite!: ShaderMaterial;
@@ -404,7 +405,8 @@ export class MapEngine {
     const screen = new BufferGeometry();
     screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
     this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
-    this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky)), -1);
+    this.starMaterial = this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky);
+    this.add(new Points(starGeometry(new Date()), this.starMaterial), -1);
     const ocean = oceanGeometry();
     this.seaLite = this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean);
     this.sea = new Mesh(ocean, this.seaLite);
@@ -1014,6 +1016,17 @@ export class MapEngine {
     galaxy.minFilter = LinearFilter;
     this.disposables.push(galaxy);
     this.skyTexture.value = galaxy;
+    // Y las estrellas débiles (decenas de miles: 440 KB), que con las brillantes del catálogo Yale
+    // llenan el fondo. Sin tarjeta gráfica no se piden: son demasiados puntos para dibujar a mano.
+    if (this.weak) return;
+    fetch('/data/stars.bin')
+      .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject(new Error(String(res.status)))))
+      .then((data) => {
+        if (this.disposed) return;
+        this.add(new Points(faintStarGeometry(data, new Date()), this.starMaterial), -1);
+        this.invalidate();
+      })
+      .catch(() => {});
   }
 
   /** Gira el cielo: hora sidérea de Greenwich, en grados. */
