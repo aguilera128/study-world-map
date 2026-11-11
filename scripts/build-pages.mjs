@@ -126,7 +126,7 @@ ${body}
         <a href="/aviso-legal/">${T.pie.avisoLegal}</a>
         <a href="/privacidad/">${T.pie.privacidad}</a>
         <a href="/cookies/">${T.pie.cookies}</a>
-        <a href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">${T.pie.configurar}</a>
+        <a href="#cookies">${T.pie.configurar}</a>
         <a href="mailto:${TITULAR.email}?subject=${encodeURIComponent('Study World Map: error')}">${T.pie.error}</a>
       </nav>${
         others.length

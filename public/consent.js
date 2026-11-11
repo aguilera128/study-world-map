@@ -2,7 +2,7 @@
 //
 // RGPD/LSSI: no se carga nada de Google hasta que la persona acepta. Sin respuesta o si rechaza,
 // la web no hace ninguna petición a terceros. La elección se guarda en este navegador y se puede
-// cambiar con cualquier enlace que llame a `swmConsent.open()` (pie de la portada y de las páginas).
+// cambiar con el botón de la portada (`swmConsent.open()`) o con cualquier enlace a `#cookies` (pie de las páginas).
 //
 // Script clásico, sin dependencias: lo usan tanto la aplicación como las páginas estáticas.
 
@@ -211,6 +211,15 @@
   }
 
   window.swmConsent = { open: open };
+
+  // Los enlaces «Configurar cookies» de las páginas (href="#cookies") abren el aviso. Se escucha aquí
+  // y no con un «onclick» en cada enlace: la política de contenido (CSP) no deja ejecutar código en línea.
+  document.addEventListener('click', function (e) {
+    var link = e.target && e.target.closest && e.target.closest('a[href="#cookies"]');
+    if (!link) return;
+    e.preventDefault();
+    open();
+  });
 
   var saved = read();
   if (saved === 'granted') loadGtm();

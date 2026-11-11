@@ -13,7 +13,7 @@ const dato = (v) => (v.startsWith('PENDIENTE') ? `<span class="pending">${esc(v)
 const email = () =>
   TITULAR.email.startsWith('PENDIENTE') ? dato(TITULAR.email) : `<a href="mailto:${esc(TITULAR.email)}">${esc(TITULAR.email)}</a>`;
 const revision = `    <p><small>Última revisión: ${REVISION_LEGAL}.</small></p>`;
-const consentLink = `<a href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">configuración de cookies</a>`;
+const consentLink = `<a href="#cookies">configuración de cookies</a>`;
 
 const titularBlock = () => `    <ul>
       <li><strong>Titular:</strong> ${dato(TITULAR.nombre)}</li>
@@ -122,7 +122,7 @@ ${revision}`,
       description: 'Qué cookies y almacenamiento local usa Study World Map y cómo cambiar tu elección.',
       body: `    <h1>Política de cookies</h1>
     <p class="lead">Las únicas cookies son las de Google Analytics, y solo se instalan si las aceptas. Lo demás es almacenamiento local que necesita la aplicación para funcionar.</p>
-    <p><a class="cta" href="#cookies" onclick="event.preventDefault(); window.swmConsent && swmConsent.open()">Cambiar mi elección</a></p>
+    <p><a class="cta" href="#cookies">Cambiar mi elección</a></p>
 
     <h2>Cookies de analítica (requieren consentimiento)</h2>
     <div class="table-wrap"><table>

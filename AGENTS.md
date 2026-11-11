@@ -117,6 +117,14 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   y Vercel la arranca sin que nadie la llame. Los scripts van en `scripts/`, con guarda de módulo
   principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
 - Hoy hay **una** función (`api/sync.ts`). Si en *Resources* aparecen más, algo se despliega de más.
+- `vercel.json` manda una política de contenido (cabecera `Content-Security-Policy`): solo se carga
+  lo propio, el Blob de las teselas y Google Tag Manager. Consecuencias al tocar las páginas:
+  - Nada de `onclick` ni otros atributos con código: se escucha desde un `.js` (así abre el aviso de
+    cookies `public/consent.js` con los enlaces a `#cookies`).
+  - El único script en línea permitido es el del tema, en `index.html`, por su huella. Si se cambia,
+    `src/app/csp.test.ts` falla hasta que se actualice la huella en `vercel.json`.
+  - Un servicio externo nuevo hay que añadirlo a la política, además de a `legales.mjs`.
+  - No lleva `frame-ancestors` a propósito: la web se puede incrustar (aulas virtuales).
 
 ### Sincronización y datos personales
 - No hay cuentas. El progreso vive en el navegador y, solo si el usuario crea un código, también en
