@@ -1361,6 +1361,7 @@ export class MapEngine {
   }
 
   zoomBy(factor: number) {
+    this.idleUntil = performance.now() + IDLE_AFTER_TOUCH; // como con la rueda: el giro de la portada se para
     this.flyTo({ h: this.rig.h * factor }, { duration: 320 });
   }
 
@@ -1754,6 +1755,7 @@ export class MapEngine {
       if (!this.settled) return;
       this.flight = null;
       this.intent = null;
+      this.idleUntil = performance.now() + IDLE_AFTER_TOUCH;
       this.rig.zoomBy(e.key === '-' ? 1 / 0.75 : 0.75, c.x, c.y);
     } else if (e.key === 'Enter' || e.key === ' ') {
       const hit = this.pick(c.x, c.y, true);
