@@ -258,8 +258,6 @@ export function HomePanel() {
       </a>
 
       <p className="mt-4 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
-        {t('Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)')}
-        <br />
         {[
           [t('/paises-y-capitales/'), t('Países y capitales')],
           ['/aviso-legal/', t('Aviso legal')],

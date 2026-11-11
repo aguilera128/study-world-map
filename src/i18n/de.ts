@@ -85,8 +85,6 @@ const de: Record<string, string> = {
   'Dominas {n} de {total} en «{mode}»': 'Du beherrschst {n} von {total} in „{mode}“',
   'Ver progreso →': 'Fortschritt ansehen →',
   'Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto': 'Kostenlos und ohne Werbung. Hilft es dir? Unterstütze das Projekt',
-  'Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)':
-    'Kartografie: Natural Earth · Flaggen: flag-icons · Länderdaten: mledoze/countries (ODbL)',
   '/paises-y-capitales/': '/de/laender-und-hauptstaedte/',
   'Países y capitales': 'Länder und Hauptstädte',
   'Aviso legal': 'Impressum',

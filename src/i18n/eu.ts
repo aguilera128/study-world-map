@@ -86,8 +86,6 @@ const eu: Record<string, string> = {
   'Dominas {n} de {total} en «{mode}»': '«{mode}» erronkan menderatuta: {n} / {total}',
   'Ver progreso →': 'Ikusi aurrerapena →',
   'Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto': 'Doan eta iragarkirik gabe. Lagungarria zaizu? Babestu proiektua',
-  'Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)':
-    'Kartografia: Natural Earth · Banderak: flag-icons · Herrialdeen datuak: mledoze/countries (ODbL)',
   '/paises-y-capitales/': '/eu/herrialdeak-eta-hiriburuak/',
   'Países y capitales': 'Herrialdeak eta hiriburuak',
   'Aviso legal': 'Lege-oharra',

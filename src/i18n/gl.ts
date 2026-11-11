@@ -85,8 +85,6 @@ const gl: Record<string, string> = {
   'Dominas {n} de {total} en «{mode}»': 'Dominas {n} de {total} en «{mode}»',
   'Ver progreso →': 'Ver o progreso →',
   'Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto': 'De balde e sen anuncios. Axúdache? Apoia o proxecto',
-  'Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)':
-    'Cartografía: Natural Earth · Bandeiras: flag-icons · Datos dos países: mledoze/countries (ODbL)',
   '/paises-y-capitales/': '/gl/paises-e-capitais/',
   'Países y capitales': 'Países e capitais',
   'Aviso legal': 'Aviso legal',

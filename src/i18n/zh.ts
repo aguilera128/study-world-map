@@ -85,8 +85,6 @@ const zh: Record<string, string> = {
   'Dominas {n} de {total} en «{mode}»': '“{mode}”已掌握 {n} / {total}',
   'Ver progreso →': '查看进度 →',
   'Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto': '免费，没有广告。觉得有用？欢迎支持本项目',
-  'Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)':
-    '地图数据：Natural Earth · 国旗：flag-icons · 国家数据：mledoze/countries (ODbL)',
   '/paises-y-capitales/': '/zh/countries-and-capitals/',
   'Países y capitales': '国家和首都',
   'Aviso legal': '法律声明',

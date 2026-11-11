@@ -86,8 +86,6 @@ const ca: Record<string, string> = {
   'Dominas {n} de {total} en «{mode}»': 'Domines {n} de {total} en «{mode}»',
   'Ver progreso →': 'Veure el progrés →',
   'Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto': 'De franc i sense anuncis. T’ajuda? Dona suport al projecte',
-  'Cartografía: Natural Earth · Banderas: flag-icons · Datos de países: mledoze/countries (ODbL)':
-    'Cartografia: Natural Earth · Banderes: flag-icons · Dades dels països: mledoze/countries (ODbL)',
   '/paises-y-capitales/': '/ca/paisos-i-capitals/',
   'Países y capitales': 'Països i capitals',
   'Aviso legal': 'Avís legal',
