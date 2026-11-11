@@ -130,6 +130,8 @@ const SWELL_FROM = 0.0015;
 const SWELL_FULL = 0.0009;
 /** Imagen de un píxel para una textura cuya imagen de verdad aún no ha llegado. */
 const BLANK = typeof document === 'undefined' ? null : Object.assign(document.createElement('canvas'), { width: 1, height: 1 });
+/** Hasta dónde llega el resplandor de un astro desde su centro, en píxeles (con margen). */
+const SKY_REACH = 500;
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -176,6 +178,8 @@ interface Tracked {
   lat: number;
   /** Altura sobre el globo, en radios (0 = pegado al mapa). */
   alt: number;
+  /** Solo los astros: su dibujo (el elemento con data-sky) y lo que mide. Ver «placeFar». */
+  sky?: { body: HTMLElement | SVGElement; width: number; height: number };
 }
 
 interface ResolvedStyle {
@@ -1199,14 +1203,24 @@ export class MapEngine {
     const disc = this.rig.earthDisc();
     // Se recorta el dibujo del astro (marcado con data-sky), no su ficha, que debe leerse entera
     // aunque caiga sobre el globo. El dibujo va centrado en el punto, así que su esquina queda a medio tamaño.
-    const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
-    const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
-    const [x, y, r] = [disc.x - p.x + box.width / 2, disc.y - p.y + box.height / 2, disc.r];
+    // El dibujo se mide una vez y no en cada fotograma: medir obliga al navegador a recalcular los
+    // estilos de la página en ese momento, y aquí ocurría dos veces por fotograma (Sol y Luna). Se
+    // vuelve a medir si cambia el tamaño del lienzo o si React sustituye el elemento, y mientras
+    // mida cero (oculto) no se da por bueno.
+    let sky = item.sky;
+    if (!sky || !sky.body.isConnected || sky.width === 0) {
+      const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
+      const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
+      sky = item.sky = { body, width: box.width, height: box.height };
+    }
+    p.visible = !!p.ahead;
+    // Lejos de la pantalla no se ve ni su resplandor: no hace falta tocar el recorte.
+    if (p.x < -SKY_REACH || p.y < -SKY_REACH || p.x > this.rig.width + SKY_REACH || p.y > this.rig.height + SKY_REACH) return p;
+    const [x, y, r] = [disc.x - p.x + sky.width / 2, disc.y - p.y + sky.height / 2, disc.r];
     // Todo menos el círculo de la Tierra, en coordenadas del propio dibujo.
-    body.style.clipPath = p.ahead
+    sky.body.style.clipPath = p.ahead
       ? `path(evenodd, "M-3000 -3000H3000V3000H-3000Z M${(x - r).toFixed(1)} ${y.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(2 * r).toFixed(1)} 0a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(-2 * r).toFixed(1)} 0Z")`
       : '';
-    p.visible = !!p.ahead;
     return p;
   }
 
@@ -1779,6 +1793,8 @@ export class MapEngine {
     if (width === this.rig.width && height === this.rig.height) return;
     this.rig.width = width;
     this.rig.height = height;
+    // Con otro tamaño de ventana el dibujo de los astros puede medir distinto: se vuelve a medir.
+    for (const item of this.tracked) item.sky = undefined;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(width, height, false);
     // Lo que se estaba encuadrando sigue encuadrado con el nuevo tamaño.
