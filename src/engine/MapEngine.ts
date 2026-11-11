@@ -133,16 +133,17 @@ const SWELL_FULL = 0.0009;
 const BLANK = typeof document === 'undefined' ? null : Object.assign(document.createElement('canvas'), { width: 1, height: 1 });
 /** Hasta dónde llega el resplandor de un astro desde su centro, en píxeles (con margen). */
 const SKY_REACH = 500;
-// Detalle de la imagen de satélite (ver «requestPatch»). Se pide a partir de este zoom (radios por
-// píxel: ahí la foto general ya se ve ampliada al doble), con imágenes de este lado como mucho y sin
-// pasar de la resolución de la foto original (240 píxeles por grado, unos 500 m).
-const PATCH_FROM = 0.0008;
-const PATCH_SIZE = 2048;
-const PATCH_MAX_SCALE = 240 / DEG;
-/** Caché del navegador donde se guardan las zonas ya pedidas: la NASA las sirve con «no guardar». */
-const PATCH_CACHE = 'satelite-nasa'; // sin el prefijo «swm-»: esas las borra public/sw.js en cada versión
-const PATCH_URL =
-  'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=BlueMarble_NextGeneration&STYLES=&CRS=EPSG:4326&FORMAT=image/jpeg';
+// Detalle de la imagen de satélite (ver «requestPatch»): teselas de la misma foto que publica la NASA
+// (servicio GIBS, rejilla «500m» en longitud/latitud). En el nivel n cada tesela mide 512 píxeles y
+// cubre 288°/2ⁿ; el último nivel, el 7, da unos 500 m por píxel.
+// Se piden a partir de este zoom (radios por píxel: ahí la foto general ya se ve ampliada) y nunca
+// más de 4 × 4 a la vez, que caben en una textura de 2048 píxeles de lado.
+const PATCH_FROM = 0.001;
+const TILE = 512;
+const TILE_SPAN = 288;
+const TILE_LEVELS = 7;
+const TILES_ACROSS = 4;
+const TILE_URL = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_NextGeneration/default/500m';
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -245,13 +246,12 @@ export class MapEngine {
   private shadeReady = false;
   private showPhoto = false;
   private photoReady = false;
-  /** Detalle de la imagen de satélite: la zona pedida, la última vista y los turnos de espera. */
-  private patchBox: Bounds | null = null;
-  private patchScale = 0;
+  /** Detalle de la imagen de satélite: las teselas que hay puestas, la última vista y los turnos de espera. */
+  private patchKey = '';
+  private patchCanvas: HTMLCanvasElement | null = null;
   private patchId = 0;
   private patchTimer = 0;
   private patchView = '';
-  private patchFade = false;
   private flowReady = false;
   private showCurrents = false;
   private showRelief = false;
@@ -498,14 +498,14 @@ export class MapEngine {
           texture.needsUpdate = true;
           this.image(url, onLoad, texture);
         }
-        // El detalle de la imagen de satélite se vuelve a pedir cuando haga falta.
-        this.own.fill.uPatchAmt.value = 0;
-        this.patchBox = null;
-        this.patchView = '';
         this.invalidate();
       },
       { signal },
     );
+
+    // Una versión anterior guardaba las imágenes de satélite en una caché propia; ahora las guarda
+    // el navegador por su cuenta. Se retira lo que quedara.
+    if (typeof caches !== 'undefined') void caches.delete('satelite-nasa').catch(() => {});
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
@@ -1050,10 +1050,11 @@ export class MapEngine {
   }
 
   /**
-   * Con la imagen de satélite puesta y el mapa quieto y acercado, se pide a la NASA la misma foto
-   * (Blue Marble, hasta 500 m por píxel) solo de la zona que se ve, y se dibuja sobre la general,
-   * que de cerca queda borrosa (10 km por píxel). Es la única petición que la aplicación hace a un
-   * tercero: lleva la zona del mapa y nada más. Ver scripts/data/legales.mjs.
+   * Con la imagen de satélite puesta y el mapa acercado, se piden a la NASA las teselas de la misma
+   * foto (Blue Marble, hasta 500 m por píxel) que cubren lo que se ve, y se dibujan sobre la
+   * general, que de cerca queda borrosa (10 km por píxel). Son las únicas peticiones que la
+   * aplicación hace a un tercero: llevan qué trozo del mapa se pide y nada más. Ver
+   * scripts/data/legales.mjs. El navegador las guarda unos días (lo dice el propio servicio).
    */
   private requestPatch() {
     this.patchTimer = 0;
@@ -1073,58 +1074,84 @@ export class MapEngine {
         if (!p) return; // asoma el cielo: aún no está lo bastante cerca
         // longitudes respecto al centro, para no partir la zona en el antimeridiano
         const lon = center.lon + Math.atan2(Math.sin(p.lon - center.lon), Math.cos(p.lon - center.lon));
-        west = Math.min(west, lon);
-        east = Math.max(east, lon);
-        south = Math.min(south, p.lat);
-        north = Math.max(north, p.lat);
+        west = Math.min(west, lon / DEG);
+        east = Math.max(east, lon / DEG);
+        south = Math.min(south, p.lat / DEG);
+        north = Math.max(north, p.lat / DEG);
       }
     }
-    // Lo que la vista pide de resolución, en píxeles de imagen por radián (hasta la de la foto).
-    const scale = Math.min(this.renderer.getPixelRatio() / rig.worldPerPixel, PATCH_MAX_SCALE);
-    // Si la zona que ya hay cubre esta vista con detalle suficiente, vale.
-    const have = this.patchBox;
-    if (have && west >= have[0] && south >= have[1] && east <= have[2] && north <= have[3] && this.patchScale >= scale * 0.7) return;
-    // Se pide con margen, para poder mover un poco el mapa sin volver a pedir, y en una rejilla de
-    // medio grado, para que zonas parecidas den la misma dirección y salgan de la caché.
-    const [dx, dy] = [(east - west) * 0.15, (north - south) * 0.15];
-    const snap = (rad: number, up: boolean) => (up ? Math.ceil : Math.floor)(rad / DEG / 0.5) * 0.5;
-    const box = [snap(west - dx, false), Math.max(snap(south - dy, false), -90), snap(east + dx, true), Math.min(snap(north + dy, true), 90)];
-    // El servicio no da zonas que crucen el antimeridiano ni tiene sentido pedir medio planeta.
-    if (box[0] < -180 || box[2] > 180 || box[2] - box[0] > 90) return;
-    const fit = Math.min(1, PATCH_SIZE / ((box[2] - box[0]) * DEG * scale), PATCH_SIZE / ((box[3] - box[1]) * DEG * scale));
-    const width = Math.max(64, Math.round((box[2] - box[0]) * DEG * scale * fit));
-    const height = Math.max(64, Math.round((box[3] - box[1]) * DEG * scale * fit));
-    const url = `${PATCH_URL}&BBOX=${box[1]},${box[0]},${box[3]},${box[2]}&WIDTH=${width}&HEIGHT=${height}`;
+    // La rejilla no da la vuelta al antimeridiano: las zonas que lo cruzan se quedan sin detalle.
+    if (west < -180 || east > 180) return;
+    // El nivel cuya resolución alcanza la de la pantalla; si hacen falta demasiadas teselas para
+    // cubrir la vista, uno menos fino.
+    const wanted = this.renderer.getPixelRatio() / (rig.worldPerPixel / DEG); // píxeles por grado
+    let level = clamp(Math.ceil(Math.log2((wanted * 0.75 * TILE_SPAN) / TILE)), 0, TILE_LEVELS);
+    let span = 0;
+    let [c0, c1, r0, r1] = [0, 0, 0, 0];
+    for (; ; level--) {
+      span = TILE_SPAN / 2 ** level;
+      c0 = Math.floor((west + 180) / span);
+      c1 = Math.floor((east + 180) / span);
+      r0 = Math.max(0, Math.floor((90 - north) / span));
+      r1 = Math.floor((90 - south) / span);
+      if (level === 0 || (c1 - c0 < TILES_ACROSS && r1 - r0 < TILES_ACROSS)) break;
+    }
+    const key = `${level}/${r0}-${r1}/${c0}-${c1}`;
+    if (key === this.patchKey) return;
+    this.patchKey = key;
     const id = ++this.patchId;
-    takeBitmap(url, PATCH_CACHE).then(
-      (bitmap) => {
-        if (this.disposed || id !== this.patchId) return bitmap.close();
-        let texture = this.own.fill.uPatch.value;
-        if (!texture) {
-          texture = new Texture();
-          texture.colorSpace = NoColorSpace;
-          texture.generateMipmaps = false;
-          texture.minFilter = LinearFilter;
-          this.disposables.push(texture);
-          this.own.fill.uPatch.value = texture;
-        }
-        texture.dispose(); // la zona anterior medía otra cosa: three no cambia el tamaño de una textura
-        texture.flipY = false;
-        texture.image = bitmap;
-        texture.onUpdate = () => {
-          texture.onUpdate = null;
-          bitmap.close();
-        };
-        texture.needsUpdate = true;
-        this.patchBox = [box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG];
-        this.patchScale = scale * fit;
-        this.own.fill.uPatchBox.value.set(...this.patchBox);
-        this.own.fill.uPatchAmt.value = 0;
-        this.patchFade = true;
-        this.invalidate();
-      },
-      () => {}, // sin conexión o sin servicio: se queda la imagen general
-    );
+
+    // Zona que cubren esas teselas, en grados, y el lienzo donde se van pegando.
+    const box: Bounds = [c0 * span - 180, 90 - (r1 + 1) * span, (c1 + 1) * span - 180, 90 - r0 * span];
+    const canvas = document.createElement('canvas');
+    canvas.width = (c1 - c0 + 1) * TILE;
+    canvas.height = (r1 - r0 + 1) * TILE;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    // Mientras llegan, lo que ya había de esa zona (del nivel que fuera), para que no se vea volver
+    // a lo borroso; lo que no había queda en negro, que el sombreador toma por mar y deja pasar la
+    // foto general.
+    const old = this.patchCanvas;
+    const was = this.own.fill.uPatchBox.value;
+    if (old && this.own.fill.uPatchAmt.value > 0) {
+      const sx = canvas.width / (box[2] - box[0]);
+      const sy = canvas.height / (box[3] - box[1]);
+      ctx.drawImage(old, (was.x / DEG - box[0]) * sx, (box[3] - was.w / DEG) * sy, ((was.z - was.x) / DEG) * sx, ((was.w - was.y) / DEG) * sy);
+    }
+    let texture = this.own.fill.uPatch.value;
+    if (!texture) {
+      texture = new Texture();
+      texture.colorSpace = NoColorSpace;
+      texture.generateMipmaps = false;
+      texture.minFilter = LinearFilter;
+      this.disposables.push(texture);
+      this.own.fill.uPatch.value = texture;
+    }
+    const shown = texture;
+    shown.dispose(); // el lienzo anterior medía otra cosa: three no cambia el tamaño de una textura
+    shown.image = canvas;
+    shown.needsUpdate = true;
+    this.patchCanvas = canvas;
+    this.own.fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
+    this.own.fill.uPatchAmt.value = 1;
+    this.invalidate();
+
+    for (let r = r0; r <= r1; r++) {
+      for (let c = c0; c <= c1; c++) {
+        fetch(`${TILE_URL}/${level}/${r}/${c}.jpeg`)
+          .then((res) => (res.ok ? res.blob() : Promise.reject(new Error(String(res.status)))))
+          .then((blob) => createImageBitmap(blob))
+          .then((tile) => {
+            if (!this.disposed && id === this.patchId) {
+              ctx.drawImage(tile, (c - c0) * TILE, (r - r0) * TILE);
+              shown.needsUpdate = true;
+              this.invalidate();
+            }
+            tile.close();
+          })
+          .catch(() => {}); // sin conexión o sin servicio: ahí se queda la foto general
+      }
+    }
   }
 
   /** Muestra u oculta el sombreado del relieve. La imagen (200 KB) solo se descarga si se pide. */
@@ -1750,15 +1777,11 @@ export class MapEngine {
       if (view !== this.patchView) {
         this.patchView = view;
         clearTimeout(this.patchTimer);
-        this.patchTimer = window.setTimeout(() => this.requestPatch(), 450);
+        this.patchTimer = window.setTimeout(() => this.requestPatch(), 120);
       }
     }
-    if (this.patchFade) {
-      this.own.fill.uPatchAmt.value = Math.min(1, this.own.fill.uPatchAmt.value + dt / 0.35);
-      this.patchFade = this.own.fill.uPatchAmt.value < 1;
-    }
     this.render();
-    if (busyCamera || busyState || this.patchFade) {
+    if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
     } else if ((this.wavy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
