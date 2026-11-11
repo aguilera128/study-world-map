@@ -85,7 +85,8 @@ const MOON_ALT = 384_400 / 6371 - 1;
 
 const percent = (lit: number) => `${Math.round(lit * 100)} %`;
 const num = (value: number) => value.toLocaleString(LOCALE);
-const km = (value: number) => `${num(value)} km`;
+// En chino las distancias van en «千米» como en el resto de los textos, y a partir de diez mil se cuentan en 万.
+const km = (value: number) => (lang === 'zh' && value >= 10_000 ? `${num(value / 10_000)} 万千米` : t('{n} km', { n: num(value) }));
 // En chino no se cuenta en millones sino en 万 (diez mil) y 亿 (cien millones): el número lleva la unidad.
 const millions = (value: number) => (lang !== 'zh' ? num(value) : value >= 100 ? `${num(value / 100)} 亿` : `${num(Math.round(value * 100))} 万`);
 const millionsKm = (value: number) => t('{n} millones de km', { n: millions(value) });

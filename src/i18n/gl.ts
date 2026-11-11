@@ -386,6 +386,7 @@ const gl: Record<string, string> = {
   '{n} días': '{n} días',
   'Qué es': 'Que é',
   'una estrella': 'unha estrela',
+  '{n} km': '{n} km',
   '{n} millones de km': '{n} millóns de km',
   'Su luz tarda': 'A súa luz tarda',
   'unos 8 minutos': 'uns 8 minutos',

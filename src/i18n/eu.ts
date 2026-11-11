@@ -387,6 +387,7 @@ const eu: Record<string, string> = {
   '{n} días': '{n} egun',
   'Qué es': 'Zer da',
   'una estrella': 'izar bat',
+  '{n} km': '{n} km',
   '{n} millones de km': '{n} milioi km',
   'Su luz tarda': 'Haren argiak behar du',
   'unos 8 minutos': '8 minutu inguru',

@@ -386,6 +386,7 @@ const zh: Record<string, string> = {
   '{n} días': '{n} 天',
   'Qué es': '类型',
   'una estrella': '恒星',
+  '{n} km': '{n} 千米',
   '{n} millones de km': '{n}千米',
   'Su luz tarda': '光到达地球需要',
   'unos 8 minutos': '约 8 分钟',

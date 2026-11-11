@@ -387,6 +387,7 @@ const ca: Record<string, string> = {
   '{n} días': '{n} dies',
   'Qué es': 'Què és',
   'una estrella': 'una estrella',
+  '{n} km': '{n} km',
   '{n} millones de km': '{n} milions de km',
   'Su luz tarda': 'La seua llum tarda',
   'unos 8 minutos': 'uns 8 minuts',
