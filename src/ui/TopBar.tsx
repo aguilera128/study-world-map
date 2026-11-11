@@ -6,9 +6,15 @@ import { useTheme, useWide } from './hooks';
 import { Icon, Logo, type IconName } from './Icon';
 import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
 
-// Los rótulos de los botones aparecen algo más tarde que el resto del diseño ancho: con la marca
-// delante no caben en una línea hasta los 64rem.
+// Los rótulos de los botones aparecen algo más tarde que el resto del diseño ancho, y no todos a la
+// vez: con la marca delante no cabe ninguno hasta los 64rem, y todos juntos, hasta los 80. Entran por
+// orden de falta que hacen: primero los de las secciones, luego «Tiempo real» y al final los de la
+// vista (el globo y el mapa se entienden solos). Las medidas están tomadas con el idioma más largo.
 const LABELS = 'hidden min-[64rem]:inline';
+const WHEN = {
+  realTime: ['hidden min-[72rem]:inline', 'min-[72rem]:w-auto min-[72rem]:px-[1.1rem]!'],
+  view: ['hidden min-[80rem]:inline', 'min-[80rem]:w-auto min-[80rem]:px-2.5'],
+} as const;
 
 /** Quien elige idioma a mano ya sabe que hay varios: no hace falta el aviso de la portada. */
 const langChosen = () => useSettings.getState().dismissLangHint();
@@ -24,10 +30,10 @@ function NavButton({ screen, icon, children, late = false }: { screen: Screen; i
       aria-pressed={active}
       title={children}
       // «late»: el botón se queda en icono hasta que la cabecera tiene sitio de sobra para su rótulo.
-      className={`btn btn-ghost min-h-10! w-10 px-0! text-sm ${late ? 'min-[96rem]:w-auto min-[96rem]:px-[1.1rem]!' : 'min-[64rem]:w-auto min-[64rem]:px-[1.1rem]!'} ${active ? 'bg-ink! text-paper!' : ''}`}
+      className={`btn btn-ghost min-h-10! w-10 px-0! text-sm ${late ? 'min-[100rem]:w-auto min-[100rem]:px-[1.1rem]!' : 'min-[64rem]:w-auto min-[64rem]:px-[1.1rem]!'} ${active ? 'bg-ink! text-paper!' : ''}`}
     >
       <Icon name={icon} size={19} />
-      <span className={late ? 'hidden min-[96rem]:inline' : LABELS}>{children}</span>
+      <span className={late ? 'hidden min-[100rem]:inline' : LABELS}>{children}</span>
     </button>
   );
 }
@@ -159,16 +165,17 @@ export function TopBar() {
         type="button"
         disabled={playing}
         onClick={() => go('home')}
-        className="pointer-events-auto flex items-center gap-2.5 rounded-lg pr-2 text-ink"
+        className="pointer-events-auto flex shrink-0 items-center gap-2.5 rounded-lg pr-2 text-ink"
         aria-label={t('Study World Map: volver al inicio')}
       >
         <Logo />
-        <span className={`display whitespace-nowrap text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
+        {/* Con prioridad: «display» reparte el texto en líneas parejas y deshacía el «no partir». */}
+        <span className={`display whitespace-nowrap! text-[1.35rem] ${playing ? 'hidden wide:inline' : 'hidden sm:inline'}`}>Study World Map</span>
         {/* Qué mapa es y cuánto tiene, en dos líneas junto a la marca: así no ocupa una línea del panel. */}
-        {/* Solo desde 88 rem: entre 82 y 88 no cabe con los botones (la marca saltaba a dos líneas) y */}
+        {/* Solo desde 92 rem: antes no cabe con los botones en los idiomas de rótulos largos (euskera, alemán) y */}
         {/* el panel ya no lo enseña, así que en esa franja no sale. */}
         {wide && !playing && tagline.length > 0 && (
-          <span className="label ml-1 hidden border-l border-rule-strong pl-3 text-left leading-[1.35] min-[88rem]:block">
+          <span className="label ml-1 hidden border-l border-rule-strong pl-3 text-left leading-[1.35] min-[92rem]:block">
             {tagline.map((line) => (
               <span key={line} className="block whitespace-nowrap">
                 {line}
@@ -203,10 +210,10 @@ export function TopBar() {
           aria-pressed={realTime}
           title={t('Tiempo real: dónde es de día y dónde de noche ahora mismo')}
           aria-label={t('Tiempo real')}
-          className={`btn btn-ghost min-h-10! w-10 px-0! text-sm min-[64rem]:w-auto min-[64rem]:px-[1.1rem]! ${realTime ? 'bg-ink! text-paper!' : ''}`}
+          className={`btn btn-ghost min-h-10! w-10 px-0! text-sm ${WHEN.realTime[1]} ${realTime ? 'bg-ink! text-paper!' : ''}`}
         >
           <Icon name="daynight" size={19} />
-          <span className={labels}>{t('Tiempo real')}</span>
+          <span className={playing ? 'sr-only' : WHEN.realTime[0]}>{t('Tiempo real')}</span>
         </button>
 
         <div role="radiogroup" aria-label={t('Vista del mapa')} className="float flex p-0.5">
@@ -227,12 +234,12 @@ export function TopBar() {
                 getEngine()?.invalidate();
                 if (mode === 'globe') countGlobeClick();
               }}
-              className={`flex h-9 w-9 items-center justify-center gap-1.5 rounded-[9px] text-sm font-bold transition-colors min-[64rem]:w-auto min-[64rem]:px-2.5 ${
+              className={`flex h-9 w-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] text-sm font-bold transition-colors ${WHEN.view[1]} ${
                 viewMode === mode ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'
               }`}
             >
               <Icon name={icon} size={19} />
-              <span className={labels}>{label}</span>
+              <span className={playing ? 'sr-only' : WHEN.view[0]}>{label}</span>
             </button>
           ))}
         </div>
