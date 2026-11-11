@@ -237,6 +237,8 @@ const fr: Record<string, string> = {
   'Meridianos y paralelos': 'Méridiens et parallèles',
   'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
     'Image : Blue Marble (NASA). En zoomant, le détail de la zone est demandé aux serveurs de la NASA.',
+  'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
+    'Pendant la partie, certains calques sont mis de côté pour que la carte soit plus lisible. Ils reviennent à la fin.',
   'Imagen de satélite': 'Image satellite',
   'Restablecer capas': 'Réinitialiser les calques',
   'Relieve': 'Relief',

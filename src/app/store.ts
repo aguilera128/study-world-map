@@ -59,6 +59,15 @@ export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
 const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', 'satellite'];
+/**
+ * Capas que se apartan durante una partida, las tenga puestas o no quien juega: tapan el mapa mudo
+ * (la foto de satélite), lo llenan de líneas y rótulos (ríos, placas, corrientes, líneas
+ * imaginarias, husos) o son colores de otro tema (climas, densidad). Al salir vuelven como estaban.
+ */
+export const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population'];
+/** Las capas con las que se juega: las de quien juega, sin las que estorban. */
+export const gameLayers = (layers: Layers): Layers => ({ ...layers, ...Object.fromEntries(OFF_IN_GAME.map((id) => [id, false])) });
+
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {

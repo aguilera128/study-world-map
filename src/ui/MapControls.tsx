@@ -2,7 +2,7 @@ import { DENSITY_LABELS } from '../game/population';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
-import { LAYERS, showWhole, useApp, useSettings, type LayerId } from '../app/store';
+import { LAYERS, OFF_IN_GAME, showWhole, useApp, useSettings, type LayerId } from '../app/store';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -43,6 +43,9 @@ function LayersMenu() {
   const layers = useSettings((s) => s.layers);
   const setLayer = useSettings((s) => s.setLayer);
   const resetLayers = useSettings((s) => s.resetLayers);
+  // Durante una partida hay capas que se apartan: su interruptor se ve apagado y no se puede tocar.
+  const playing = useApp((s) => s.screen === 'play' || s.screen === 'results');
+  const parked = (id: LayerId) => playing && OFF_IN_GAME.includes(id);
   const realTime = useSettings((s) => s.realTime);
   const theme = useTheme();
 
@@ -65,9 +68,9 @@ function LayersMenu() {
       {ids.map((id) => (
         // Interruptor: toda la fila se pulsa y mide 44 px de alto, para el dedo. Sigue siendo una
         // casilla nativa (con teclado y lector de pantalla), solo que dibujada como interruptor.
-        <label key={id} className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-sm">
+        <label key={id} className={`flex min-h-11 items-center justify-between gap-3 text-sm ${parked(id) ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}>
           {LAYERS[id]}
-          <input type="checkbox" role="switch" checked={layers[id]} onChange={(e) => setLayer(id, e.target.checked)} className="peer sr-only" />
+          <input type="checkbox" role="switch" checked={layers[id] && !parked(id)} disabled={parked(id)} onChange={(e) => setLayer(id, e.target.checked)} className="peer sr-only" />
           <span
             aria-hidden="true"
             className="relative h-6 w-10 shrink-0 rounded-full border border-rule-strong bg-paper transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-[1.125rem] after:w-[1.125rem] after:rounded-full after:bg-ink-faint after:transition-transform peer-checked:border-transparent peer-checked:bg-(--accent) peer-checked:after:translate-x-4 peer-checked:after:bg-(--on-accent) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--accent)"
@@ -111,6 +114,7 @@ function LayersMenu() {
   );
   const content = (
     <>
+      {playing && <p className="text-xs text-ink-faint">{t('Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.')}</p>}
       {LAYER_GROUPS.map((g) => (
         <div key={g.title}>{group(g.title, g.ids)}</div>
       ))}

@@ -3,7 +3,7 @@ import { setEngine } from '../app/engineRef';
 import { formatCompact, formatCoords } from '../app/format';
 import { climateText } from '../game/climate';
 import { computeMapState } from '../app/mapState';
-import { useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
+import { gameLayers, useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
 import { clockIn } from '../app/time';
 import type { Atlas } from '../atlas/atlas';
 import { takeMesh } from '../atlas/meshAsync';
@@ -143,7 +143,10 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     const now = useNow(20_000);
     const sun = useMemo(() => subsolarPoint(now), [now]);
     const moon = useMemo(() => sublunarPoint(now), [now]);
-    const layers = useSettings((s) => s.layers);
+    const chosenLayers = useSettings((s) => s.layers);
+    // Jugando, el mapa lleva las capas del juego y no las que hubiera puestas: ver «gameLayers».
+    const inGame = screen === 'play' || screen === 'results';
+    const layers = useMemo(() => (inGame ? gameLayers(chosenLayers) : chosenLayers), [chosenLayers, inGame]);
     const theme = useTheme();
     const reducedMotion = useReducedMotion();
 

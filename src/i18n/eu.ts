@@ -238,6 +238,8 @@ const eu: Record<string, string> = {
   'Meridianos y paralelos': 'Meridianoak eta paraleloak',
   'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
     'Irudia: Blue Marble (NASA). Hurbiltzean, eremuaren xehetasuna NASAren zerbitzariei eskatzen zaie.',
+  'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
+    'Partidan zehar geruza batzuk alde batera uzten dira, mapa hobeto irakur dadin. Amaitzean lehen bezala itzultzen dira.',
   'Imagen de satélite': 'Satelite-irudia',
   'Restablecer capas': 'Berrezarri geruzak',
   'Relieve': 'Erliebea',

@@ -237,6 +237,8 @@ const gl: Record<string, string> = {
   'Meridianos y paralelos': 'Meridianos e paralelos',
   'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
     'Imaxe: Blue Marble (NASA). Ao achegar, o detalle da zona pídese aos servidores da NASA.',
+  'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
+    'Durante a partida algunhas capas apártanse para que o mapa se lea mellor. Ao rematar volven como estaban.',
   'Imagen de satélite': 'Imaxe de satélite',
   'Restablecer capas': 'Restablecer as capas',
   'Relieve': 'Relevo',

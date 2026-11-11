@@ -237,6 +237,8 @@ const de: Record<string, string> = {
   'Meridianos y paralelos': 'Längen- und Breitenkreise',
   'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
     'Bild: Blue Marble (NASA). Beim Heranzoomen wird das Detail des Ausschnitts von den NASA-Servern abgerufen.',
+  'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
+    'Während des Spiels werden einige Ebenen ausgeblendet, damit die Karte besser lesbar ist. Danach sind sie wieder da.',
   'Imagen de satélite': 'Satellitenbild',
   'Restablecer capas': 'Ebenen zurücksetzen',
   'Relieve': 'Relief',
