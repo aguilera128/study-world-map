@@ -58,7 +58,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', 'satellite'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population'];
 /**
  * Capas que se apartan durante una partida, las tenga puestas o no quien juega: tapan el mapa mudo
  * (la foto de satélite), lo llenan de líneas y rótulos (ríos, placas, corrientes, líneas
@@ -136,7 +136,15 @@ export const useSettings = create<SettingsState>()(
       // Las claves de almacenamiento conservan el nombre anterior del proyecto (Mapamundi) para no
       // perder lo que ya esté guardado en el navegador.
       name: 'mapamundi:ajustes',
-      version: 1,
+      version: 2,
+      // Versión 2: la imagen de satélite pasa a verse de entrada. Quien ya tenía ajustes guardados la
+      // tenía apagada porque así venía, no porque la quitara: se le enciende una vez y después manda
+      // lo que elija.
+      migrate: (persisted, version) => {
+        const saved = (persisted ?? {}) as Partial<SettingsState>;
+        // «merge» valida después lo que salga de aquí.
+        return (version < 2 ? { ...saved, layers: { ...saved.layers, satellite: true } } : saved) as SettingsState;
+      },
       partialize: ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
