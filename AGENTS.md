@@ -77,6 +77,11 @@ docs/                  planes y propuestas con fecha
   interior del planeta) redibuja a unos 10 fotogramas por segundo.
 - Para probar algo del motor en el navegador de desarrollo:
   `(await import('/src/app/engineRef.ts')).getEngine()`. No importar así `store.ts`: crea otra copia.
+- La malla de los países se construye en un hilo aparte (`src/atlas/meshAsync.ts`) y las imágenes de
+  las texturas se decodifican fuera del hilo principal (`src/engine/bitmaps.ts`); las dos cosas se
+  piden en cuanto llega el atlas (`load` en `store.ts`), antes de que exista el motor. Una textura
+  de imagen nueva se crea con `image()` en `MapEngine.ts`, no con `TextureLoader`: decodificar en
+  el hilo principal bloquea la página hasta un segundo en un móvil.
 - En desarrollo, tras editar un módulo puede salir en consola
   «Cannot read properties of null (reading 'countries')»: es de la recarga en caliente, no un fallo.
 

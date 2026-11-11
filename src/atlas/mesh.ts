@@ -1,5 +1,4 @@
 import earcut from 'earcut';
-import type { Atlas } from './atlas';
 import type { Polygon } from './types';
 
 /**
@@ -176,8 +175,13 @@ class Builder {
   }
 }
 
+/** Lo que hace falta de un atlas para construir su malla (un «Atlas» lo cumple). */
+export interface MeshInput {
+  countries: readonly { index: number; polygons: readonly Polygon[] }[];
+}
+
 /** Convierte todos los polígonos del atlas en los búferes que dibuja el motor del mapa. */
-export function buildMesh(atlas: Atlas): MeshData {
+export function buildMesh(atlas: MeshInput): MeshData {
   const builder = new Builder();
   for (const country of atlas.countries) {
     for (const polygon of country.polygons) builder.add(polygon, country.index);

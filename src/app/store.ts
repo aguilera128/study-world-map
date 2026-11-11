@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { loadAtlas, type Atlas } from '../atlas/atlas';
+import { warmMesh } from '../atlas/meshAsync';
+import { warmBitmap } from '../engine/bitmaps';
 import type { MapId } from '../atlas/types';
 import type { Padding } from '../engine/camera';
 import type { PointerInfo, ViewMode } from '../engine/MapEngine';
@@ -424,6 +426,14 @@ export const useApp = create<AppState>()((set, get) => {
     load: async () => {
       try {
         const atlas = await loadAtlas(lang, useSettings.getState().config.map);
+        // Mientras se monta la interfaz y se carga el motor, se adelanta lo que este va a necesitar:
+        // la malla (en un hilo aparte) y las imágenes del mapa (descarga y decodificación).
+        void warmMesh(atlas);
+        const { layers } = useSettings.getState();
+        const images = ['/data/depth.webp', '/data/currents.png'];
+        if (layers.relief) images.push('/data/relief.webp');
+        if (layers.stars && document.documentElement.dataset.theme === 'night') images.push('/data/milkyway.webp');
+        for (const url of images) void warmBitmap(url).catch(() => {});
         set({ atlas, error: null, location: approximateLocation(atlas) });
       } catch (e) {
         set({ error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });
@@ -434,6 +444,7 @@ export const useApp = create<AppState>()((set, get) => {
       if (get().atlas?.map === map) return;
       try {
         const atlas = await loadAtlas(lang, map);
+        void warmMesh(atlas);
         clearTimers();
         // El reto y la zona del otro mapa no valen en este: la configuración se ajusta al cambiar.
         useSettings.getState().setConfig({ map });

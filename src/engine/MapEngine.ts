@@ -19,15 +19,16 @@ import {
   Vector3,
   WebGLRenderer,
   type IUniform,
-  TextureLoader,
+  ImageLoader,
+  Texture,
   RepeatWrapping,
   NoColorSpace,
   type Object3D,
-  type Texture,
 } from 'three';
 import type { Atlas } from '../atlas/atlas';
 import type { MeshData } from '../atlas/mesh';
 import type { Bounds } from '../atlas/types';
+import { takeBitmap } from './bitmaps';
 import { CameraRig, type Padding, type Pose, type ScreenPoint } from './camera';
 import { fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
 import { FeatureLabels, type MapFeature } from './labels';
@@ -127,6 +128,8 @@ export interface EngineOptions {
 // SWELL_FULL. Con el globo entero en un monitor, un píxel son unos 0,002 radios.
 const SWELL_FROM = 0.0015;
 const SWELL_FULL = 0.0009;
+/** Imagen de un píxel para una textura cuya imagen de verdad aún no ha llegado. */
+const BLANK = typeof document === 'undefined' ? null : Object.assign(document.createElement('canvas'), { width: 1, height: 1 });
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -303,6 +306,8 @@ export class MapEngine {
   private readonly sheetShadow: Mesh;
   private readonly frameLine: LineLoop;
   private readonly disposables: { dispose(): void }[] = [];
+  /** De dónde sale cada textura de imagen, para volver a pedirla si se pierde el contexto WebGL. */
+  private readonly sources = new Map<Texture, { url: string; onLoad: () => void }>();
 
   // ── cámara e interacción ──
   private flight: Flight | null = null;
@@ -365,13 +370,13 @@ export class MapEngine {
     this.uniforms.uAux.value = this.auxTex;
     this.uniforms.uCount.value = n;
     // Profundidad real del mar. Hasta que llega, el mar se pinta de un solo color.
-    const seabed = new TextureLoader().load('/data/depth.webp', () => {
+    const seabed = this.image('/data/depth.webp', () => {
       this.seabedReady = true;
       this.own.ocean.uDepth.value = this.showDepth ? this.palette.seaDepth : 0;
       this.invalidate();
     });
     // Corrientes medias reales: con ellas el oleaje avanza hacia donde va el agua.
-    const flow = new TextureLoader().load('/data/currents.png', () => {
+    const flow = this.image('/data/currents.png', () => {
       this.flowReady = true;
       this.own.ocean.uFlowAmt.value = 1;
       this.own.ocean.uFlowShow.value = this.showCurrents ? 1 : 0;
@@ -445,7 +450,21 @@ export class MapEngine {
     canvas.addEventListener('contextmenu', (e) => e.preventDefault(), { signal });
     // En móvil el sistema puede retirar el contexto WebGL (otra app, poca memoria). three.js vuelve a
     // subir mallas y texturas al recuperarlo, pero el motor solo pinta si algo cambia: hay que pedirlo.
-    canvas.addEventListener('webglcontextrestored', () => this.invalidate(), { signal });
+    canvas.addEventListener(
+      'webglcontextrestored',
+      () => {
+        // Las imágenes decodificadas se soltaron al subirlas (ver «image»): hay que pedirlas otra vez.
+        // Mientras llegan, un píxel vacío: three no puede subir una imagen que ya se soltó.
+        for (const [texture, { url, onLoad }] of this.sources) {
+          if (texture.image instanceof HTMLImageElement) continue;
+          texture.image = BLANK;
+          texture.needsUpdate = true;
+          this.image(url, onLoad, texture);
+        }
+        this.invalidate();
+      },
+      { signal },
+    );
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
@@ -472,6 +491,39 @@ export class MapEngine {
     tex.needsUpdate = true;
     this.disposables.push(tex);
     return tex;
+  }
+
+  /**
+   * Textura de una imagen. Se decodifica fuera del hilo principal (ver ./bitmaps.ts) y, una vez en
+   * la tarjeta gráfica, la copia decodificada se suelta: son hasta 32 MB por imagen. Si el navegador
+   * no puede hacerlo así, se carga como una imagen normal.
+   */
+  private image(url: string, onLoad: () => void, texture = new Texture()): Texture {
+    this.sources.set(texture, { url, onLoad });
+    takeBitmap(url).then(
+      (bitmap) => {
+        if (this.disposed || !this.sources.has(texture)) return bitmap.close();
+        // Si la textura ya tenía otra imagen en la tarjeta gráfica (el píxel vacío de después de
+        // perder el contexto), se libera: three no cambia el tamaño de una textura ya creada.
+        texture.dispose();
+        texture.flipY = false; // ya viene volteada
+        texture.image = bitmap;
+        texture.onUpdate = () => {
+          texture.onUpdate = null;
+          bitmap.close();
+        };
+        texture.needsUpdate = true;
+        onLoad();
+      },
+      () =>
+        new ImageLoader().load(url, (img) => {
+          if (this.disposed) return;
+          texture.image = img;
+          texture.needsUpdate = true;
+          onLoad();
+        }),
+    );
+    return texture;
   }
 
   private material(
@@ -918,10 +970,13 @@ export class MapEngine {
   }
 
   private loadRelief(url: string) {
-    const relief = new TextureLoader().load(url, () => {
+    const relief = this.image(url, () => {
       // la de detalle sustituye a la normal cuando ya está lista, no antes
       const old = this.own.fill.uRelief.value;
-      if (old && old !== relief) old.dispose();
+      if (old && old !== relief) {
+        this.sources.delete(old);
+        old.dispose();
+      }
       this.own.fill.uRelief.value = relief;
       this.reliefReady = true;
       this.own.fill.uReliefAmt.value = this.showRelief ? this.palette.relief : 0;
@@ -937,7 +992,7 @@ export class MapEngine {
   /** Pide la textura de la Vía Láctea la primera vez que el cielo está a la vista (tema de noche, estrellas activas). */
   private loadSky() {
     if (this.skyTexture.value || !this.showStars || this.palette.stars <= 0) return;
-    const galaxy = new TextureLoader().load('/data/milkyway.webp', () => this.invalidate());
+    const galaxy = this.image('/data/milkyway.webp', () => this.invalidate());
     galaxy.wrapS = RepeatWrapping;
     galaxy.generateMipmaps = false;
     galaxy.minFilter = LinearFilter;

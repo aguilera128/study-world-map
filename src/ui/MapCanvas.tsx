@@ -6,7 +6,7 @@ import { computeMapState } from '../app/mapState';
 import { useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
 import { clockIn } from '../app/time';
 import type { Atlas } from '../atlas/atlas';
-import { buildMesh } from '../atlas/mesh';
+import { takeMesh } from '../atlas/meshAsync';
 import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
 import { PALETTES } from '../engine/palette';
 import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
@@ -62,169 +62,177 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       .then((res) => res.json())
       .then((data: { features: RawFeature[] }) => {
         if (cancelled) return;
-        engine.setOverlay(
-          key,
-          data.features.map((f) => {
-            const name = f.names[lang] ?? (SPANISH_FIRST.has(lang) ? (f.names.es ?? f.names.en) : (f.names.en ?? f.names.es)) ?? '';
-            const text = !labels || !name ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name;
-            return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text };
-          }),
-          line,
-        );
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-      engine.setOverlay(key, []);
-    };
-  }, [engine, key, url, on, labels, line]);
-}
-
-/** ¿El navegador dibuja WebGL por software (sin tarjeta gráfica)? Se mira en un lienzo de usar y tirar. */
-function softwareRendering(): boolean {
-  try {
-    const gl = document.createElement('canvas').getContext('webgl2') ?? document.createElement('canvas').getContext('webgl');
-    if (!gl) return false; // sin WebGL ya hay su propio aviso
-    const info = gl.getExtension('WEBGL_debug_renderer_info');
-    const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '');
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
-    return /swiftshader|llvmpipe|software|basic render/i.test(renderer);
-  } catch {
-    return false;
+          engine.setOverlay(
+            key,
+            data.features.map((f) => {
+              const name = f.names[lang] ?? (SPANISH_FIRST.has(lang) ? (f.names.es ?? f.names.en) : (f.names.en ?? f.names.es)) ?? '';
+              const text = !labels || !name ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name;
+              return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text };
+            }),
+            line,
+          );
+        })
+        .catch(() => {});
+      return () => {
+        cancelled = true;
+        engine.setOverlay(key, []);
+      };
+    }, [engine, key, url, on, labels, line]);
   }
-}
 
-/** Rótulo clavado sobre un país: el motor lo mueve con el mapa. */
-function Pin({ engine, atlas, label }: { engine: MapEngine; atlas: Atlas; label: MapLabel }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const [lon, lat] = atlas.countries[label.country].anchor;
-    return engine.track(ref.current, lon, lat);
-  }, [engine, atlas, label.country]);
-  return (
-    <div ref={ref} className="map-pin">
-      <div>
-        <div
-          className={`stamp-in relative whitespace-nowrap rounded-lg px-2.5 py-1 text-sm font-bold shadow-[0_8px_18px_-8px_rgb(var(--shadow)/0.7)] ${TONE_CLASS[label.tone]}`}
-          style={{ '--tilt': '0deg' } as CSSProperties}
-        >
-          {label.text}
-          <span className={`absolute left-1/2 top-full h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 ${TONE_CLASS[label.tone]}`} />
+  /** ¿El navegador dibuja WebGL por software (sin tarjeta gráfica)? Se mira en un lienzo de usar y tirar. */
+  function softwareRendering(): boolean {
+    try {
+      const gl = document.createElement('canvas').getContext('webgl2') ?? document.createElement('canvas').getContext('webgl');
+      if (!gl) return false; // sin WebGL ya hay su propio aviso
+      const info = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '');
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      return /swiftshader|llvmpipe|software|basic render/i.test(renderer);
+    } catch {
+      return false;
+    }
+  }
+
+  /** Rótulo clavado sobre un país: el motor lo mueve con el mapa. */
+  function Pin({ engine, atlas, label }: { engine: MapEngine; atlas: Atlas; label: MapLabel }) {
+    const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+      if (!ref.current) return;
+      const [lon, lat] = atlas.countries[label.country].anchor;
+      return engine.track(ref.current, lon, lat);
+    }, [engine, atlas, label.country]);
+    return (
+      <div ref={ref} className="map-pin">
+        <div>
+          <div
+            className={`stamp-in relative whitespace-nowrap rounded-lg px-2.5 py-1 text-sm font-bold shadow-[0_8px_18px_-8px_rgb(var(--shadow)/0.7)] ${TONE_CLASS[label.tone]}`}
+            style={{ '--tilt': '0deg' } as CSSProperties}
+          >
+            {label.text}
+            <span className={`absolute left-1/2 top-full h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 ${TONE_CLASS[label.tone]}`} />
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-/** Pantallas en las que pasar el cursor por un país dice cuál es. (Jugando sería hacer trampa.) */
-const TOOLTIP_SCREENS = new Set(['home', 'explore', 'results', 'progress', 'lists']);
+  /** Pantallas en las que pasar el cursor por un país dice cuál es. (Jugando sería hacer trampa.) */
+  const TOOLTIP_SCREENS = new Set(['home', 'explore', 'results', 'progress', 'lists']);
 
-/**
- * Lienzo del mapa. Crea el motor, lo mantiene sincronizado con el estado de la aplicación (tema,
- * vista, estilo de cada país, márgenes) y dibuja lo que va pegado al mapa: rótulos y descripción
- * emergente.
- */
-export default function MapCanvas() {
-  const atlas = useApp((s) => s.atlas)!;
-  const screen = useApp((s) => s.screen);
-  const session = useApp((s) => s.session);
-  const selected = useApp((s) => s.selected);
-  const exploreScope = useApp((s) => s.exploreScope);
-  const lists = useSettings((s) => s.lists);
-  const progressMode = useApp((s) => s.progressMode);
-  const draft = useApp((s) => s.draft);
-  const labels = useApp((s) => s.labels);
-  const pad = useApp((s) => s.pad);
-  const progress = useProgress((s) => s.progress);
-  const viewMode = useSettings((s) => s.viewMode);
-  const realTime = useSettings((s) => s.realTime);
-  // Marca el paso del tiempo: mueve el Sol y pone en hora el reloj de la descripción emergente.
-  const now = useNow(20_000);
-  const sun = useMemo(() => subsolarPoint(now), [now]);
-  const moon = useMemo(() => sublunarPoint(now), [now]);
-  const layers = useSettings((s) => s.layers);
-  const theme = useTheme();
-  const reducedMotion = useReducedMotion();
+  /**
+   * Lienzo del mapa. Crea el motor, lo mantiene sincronizado con el estado de la aplicación (tema,
+   * vista, estilo de cada país, márgenes) y dibuja lo que va pegado al mapa: rótulos y descripción
+   * emergente.
+   */
+  export default function MapCanvas() {
+    const atlas = useApp((s) => s.atlas)!;
+    const screen = useApp((s) => s.screen);
+    const session = useApp((s) => s.session);
+    const selected = useApp((s) => s.selected);
+    const exploreScope = useApp((s) => s.exploreScope);
+    const lists = useSettings((s) => s.lists);
+    const progressMode = useApp((s) => s.progressMode);
+    const draft = useApp((s) => s.draft);
+    const labels = useApp((s) => s.labels);
+    const pad = useApp((s) => s.pad);
+    const progress = useProgress((s) => s.progress);
+    const viewMode = useSettings((s) => s.viewMode);
+    const realTime = useSettings((s) => s.realTime);
+    // Marca el paso del tiempo: mueve el Sol y pone en hora el reloj de la descripción emergente.
+    const now = useNow(20_000);
+    const sun = useMemo(() => subsolarPoint(now), [now]);
+    const moon = useMemo(() => sublunarPoint(now), [now]);
+    const layers = useSettings((s) => s.layers);
+    const theme = useTheme();
+    const reducedMotion = useReducedMotion();
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const tipRef = useRef<HTMLDivElement>(null);
-  const coordsRef = useRef<HTMLSpanElement>(null);
-  // El motor vive en el estado: si se vuelve a crear, todas las sincronizaciones se repiten con el nuevo.
-  const [engine, setLocalEngine] = useState<MapEngine | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [hovered, setHovered] = useState(-1);
-  // Con el interior del planeta a la vista, la capa bajo el cursor en vez de un país.
-  const [layerId, setLayerId] = useState<PlanetLayer | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const tipRef = useRef<HTMLDivElement>(null);
+    const coordsRef = useRef<HTMLSpanElement>(null);
+    // El motor vive en el estado: si se vuelve a crear, todas las sincronizaciones se repiten con el nuevo.
+    const [engine, setLocalEngine] = useState<MapEngine | null>(null);
+    const [failed, setFailed] = useState(false);
+    const [hovered, setHovered] = useState(-1);
+    // Con el interior del planeta a la vista, la capa bajo el cursor en vez de un país.
+    const [layerId, setLayerId] = useState<PlanetLayer | null>(null);
 
-  // El aviso va a la derecha del cursor; si no cabe en la pantalla, a su izquierda. Se recoloca
-  // también cuando cambia su texto, porque cambia su ancho.
-  const pointerAt = useRef<{ x: number; y: number } | null>(null);
-  const placeTip = () => {
-    const [tip, at] = [tipRef.current, pointerAt.current];
-    if (!tip || !at) return;
-    const width = tip.offsetWidth;
-    const x = at.x + 16 + width > window.innerWidth - 8 ? Math.max(8, at.x - 16 - width) : at.x + 16;
-    tip.style.transform = `translate3d(${x}px, ${at.y + 18}px, 0)`;
-  };
-  useLayoutEffect(placeTip, [hovered, layerId]);
-
-  // Sin tarjeta gráfica (dibujo por software) compilar los sombreadores deja la página sin
-  // responder varios segundos, o muchos más en máquinas lentas y en navegadores automáticos como el
-  // de PageSpeed. Ahí el mapa no se arranca solo: espera al primer toque o tecla.
-  const [waiting, setWaiting] = useState(softwareRendering);
-  useEffect(() => {
-    if (!waiting) return;
-    const start = () => setWaiting(false);
-    window.addEventListener('pointerdown', start, { once: true });
-    window.addEventListener('keydown', start, { once: true });
-    return () => {
-      window.removeEventListener('pointerdown', start);
-      window.removeEventListener('keydown', start);
+    // El aviso va a la derecha del cursor; si no cabe en la pantalla, a su izquierda. Se recoloca
+    // también cuando cambia su texto, porque cambia su ancho.
+    const pointerAt = useRef<{ x: number; y: number } | null>(null);
+    const placeTip = () => {
+      const [tip, at] = [tipRef.current, pointerAt.current];
+      if (!tip || !at) return;
+      const width = tip.offsetWidth;
+      const x = at.x + 16 + width > window.innerWidth - 8 ? Math.max(8, at.x - 16 - width) : at.x + 16;
+      tip.style.transform = `translate3d(${x}px, ${at.y + 18}px, 0)`;
     };
-  }, [waiting]);
+    useLayoutEffect(placeTip, [hovered, layerId]);
 
-  // ── Crear el motor (una vez) ──
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || waiting) return;
-    let engine: MapEngine;
-    try {
-      const { viewMode: mode } = useSettings.getState();
-      engine = new MapEngine(canvas, atlas, buildMesh(atlas), {
-        palette: PALETTES[document.documentElement.dataset.theme === 'night' ? 'night' : 'paper'],
-        mode,
-        reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-      });
-    } catch (error) {
-      console.error(error);
-      setFailed(true);
-      return;
-    }
-    // El mapa de un país arranca encuadrado en él, no en el globo entero.
-    if (atlas.frame) engine.frame(atlas.frame, { duration: 0 });
-    setEngine(engine);
-    setLocalEngine(engine);
+    // Sin tarjeta gráfica (dibujo por software) compilar los sombreadores deja la página sin
+    // responder varios segundos, o muchos más en máquinas lentas y en navegadores automáticos como el
+    // de PageSpeed. Ahí el mapa no se arranca solo: espera al primer toque o tecla.
+    const [waiting, setWaiting] = useState(softwareRendering);
+    useEffect(() => {
+      if (!waiting) return;
+      const start = () => setWaiting(false);
+      window.addEventListener('pointerdown', start, { once: true });
+      window.addEventListener('keydown', start, { once: true });
+      return () => {
+        window.removeEventListener('pointerdown', start);
+        window.removeEventListener('keydown', start);
+      };
+    }, [waiting]);
 
-    const offs = [
-      engine.on('click', (hit) => {
-        // En pantallas táctiles no hay cursor: con el planeta abierto, tocar una capa enseña su ficha.
-        if (hit.layer !== undefined) {
-          setLayerId(hit.layer);
-          pointerAt.current = hit;
-          return;
-        }
-        useApp.getState().mapClick(hit);
-      }),
-      engine.on('pointer', (info) => {
-        setHovered(info ? info.index : -1);
-        setLayerId(info?.layer ?? null);
-        if (info) pointerAt.current = info;
-        placeTip();
-        if (coordsRef.current) coordsRef.current.textContent = info && info.layer === undefined ? formatCoords(info.lon, info.lat) : '';
-      }),
-    ];
+    // ── Crear el motor (una vez) ──
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas || waiting) return;
+      let engine: MapEngine | undefined;
+      let cancelled = false;
+      let offs: (() => void)[] = [];
+      // La malla se construye en un hilo aparte (y suele estar ya hecha: se pide al llegar el atlas).
+      void takeMesh(atlas).then((mesh) => {
+        if (cancelled) return;
+      try {
+        const { viewMode: mode } = useSettings.getState();
+        engine = new MapEngine(canvas, atlas, mesh, {
+          palette: PALETTES[document.documentElement.dataset.theme === 'night' ? 'night' : 'paper'],
+          mode,
+          reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        });
+      } catch (error) {
+        console.error(error);
+        setFailed(true);
+        return;
+      }
+      // El mapa de un país arranca encuadrado en él, no en el globo entero.
+      if (atlas.frame) engine.frame(atlas.frame, { duration: 0 });
+      setEngine(engine);
+      setLocalEngine(engine);
+
+      offs = [
+        engine.on('click', (hit) => {
+          // En pantallas táctiles no hay cursor: con el planeta abierto, tocar una capa enseña su ficha.
+          if (hit.layer !== undefined) {
+            setLayerId(hit.layer);
+            pointerAt.current = hit;
+            return;
+          }
+          useApp.getState().mapClick(hit);
+        }),
+        engine.on('pointer', (info) => {
+          setHovered(info ? info.index : -1);
+          setLayerId(info?.layer ?? null);
+          if (info) pointerAt.current = info;
+          placeTip();
+          if (coordsRef.current) coordsRef.current.textContent = info && info.layer === undefined ? formatCoords(info.lon, info.lat) : '';
+        }),
+      ];
+    });
     return () => {
+      cancelled = true;
+      if (!engine) return;
       offs.forEach((off) => off());
       setEngine(null);
       setLocalEngine(null);
