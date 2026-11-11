@@ -47,6 +47,8 @@ export const MIN_HEIGHT = 0.09;
 const MAX_LAT = 84 * DEG;
 /** Fracción del hueco disponible que ocupa lo encuadrado. */
 const FIT = 0.84;
+/** Cuánto más lejos que la vista general puede irse la cámara del globo (en distancia al centro). */
+const GLOBE_FAR = 1.25;
 
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
 const smoothstep = (a: number, b: number, x: number) => {
@@ -99,9 +101,20 @@ export class CameraRig {
     return Math.max(FLAT_HALF_HEIGHT / (this.ky * 0.9), FLAT_HALF_WIDTH / (this.kx * 0.94));
   }
 
-  maxHeight(morph = this.morph): number {
+  /** Altura de la vista general: desde donde cabe entero el globo o el mapa plano. */
+  fitHeight(morph = this.morph): number {
     const flat = this.flatMaxHeight();
     return flat + (this.globeMaxHeight() - flat) * morph;
+  }
+
+  /**
+   * Lo más lejos que se puede ir. El mapa plano, hasta verlo entero; el globo, un poco más allá
+   * (se ve un cuarto más pequeño que en la vista general), para verlo suelto en el cielo.
+   */
+  maxHeight(morph = this.morph): number {
+    const flat = this.flatMaxHeight();
+    const globe = (1 + this.globeMaxHeight()) * GLOBE_FAR - 1;
+    return flat + (globe - flat) * morph;
   }
 
   /** Unidades de mundo (radios) que ocupa un píxel CSS sobre la superficie enfocada. */

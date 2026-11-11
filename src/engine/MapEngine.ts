@@ -1684,7 +1684,7 @@ export class MapEngine {
       rig.lon = f.from.lon + f.dLon * e;
       rig.lat = f.from.lat + (f.to.lat - f.from.lat) * e;
       const h = Math.exp(Math.log(f.from.h) + (Math.log(f.to.h) - Math.log(f.from.h)) * e);
-      rig.h = Math.min(h * (1 + f.hop * Math.sin(Math.PI * e)), Math.max(h, rig.maxHeight()));
+      rig.h = Math.min(h * (1 + f.hop * Math.sin(Math.PI * e)), Math.max(h, rig.fitHeight()));
       if (t >= 1) {
         rig.morph = f.morphTo;
         rig.lon = f.morphTo === 1 ? wrapLon(f.to.lon) : f.to.lon;
