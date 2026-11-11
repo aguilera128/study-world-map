@@ -123,6 +123,10 @@ export interface EngineOptions {
 }
 
 /** Elevación máxima de un país, en radios del globo. */
+// Oleaje según el zoom, en radios por píxel de pantalla: nada hasta SWELL_FROM, entero desde
+// SWELL_FULL. Con el globo entero en un monitor, un píxel son unos 0,002 radios.
+const SWELL_FROM = 0.0015;
+const SWELL_FULL = 0.0009;
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -227,6 +231,12 @@ export class MapEngine {
   private reliefReady = false;
   private reliefHd = false;
   private seaTimer = 0;
+  /** El océano y sus dos materiales: el liso y el completo (nulo hasta que termina de compilarse). */
+  private sea!: Mesh;
+  private seaLite!: ShaderMaterial;
+  private seaFull: ShaderMaterial | null = null;
+  /** El agua se mueve: hay oleaje a la vista o está la capa de corrientes. */
+  private wavy = false;
   private readonly overlays = new Map<string, { labels: FeatureLabels | null; mesh: Mesh | null; material: ShaderMaterial | null }>();
   private guides: Mesh | null = null;
   private graticule: Mesh | null = null;
@@ -263,7 +273,7 @@ export class MapEngine {
     uCutLon: { value: new Vector2(-20 * DEG, 70 * DEG) },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
@@ -387,8 +397,9 @@ export class MapEngine {
     this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
     this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky)), -1);
     const ocean = oceanGeometry();
-    const sea = new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean));
-    this.add(sea, 0);
+    this.seaLite = this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean);
+    this.sea = new Mesh(ocean, this.seaLite);
+    this.add(this.sea, 0);
     this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, this.own.fill)), 1);
     this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, { ...this.own.wall, ...this.own.fill })), 2);
 
@@ -446,7 +457,7 @@ export class MapEngine {
     const ready = () => {
       this.compiled = true;
       this.invalidate();
-      this.fullOcean(sea);
+      this.fullOcean();
     };
     this.rig.apply();
     this.renderer.compileAsync(this.scene, this.rig.camera).then(ready, ready);
@@ -484,17 +495,17 @@ export class MapEngine {
   /**
    * El mapa arranca con el mar liso, que se compila enseguida. El oleaje y las vetas de las
    * corrientes son más de la mitad del tiempo de compilación de todo el mapa: se compilan aparte,
-   * con el mapa ya a la vista, y entran cuando están listos.
+   * con el mapa ya a la vista, para que estén listos cuando hagan falta (ver «tick»).
    */
-  private fullOcean(sea: Mesh) {
+  private fullOcean() {
     const full = this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean);
     full.defines = { WAVES: '' };
-    const swap = () => {
+    const done = () => {
       if (this.disposed) return;
-      sea.material = full;
+      this.seaFull = full;
       this.invalidate();
     };
-    this.renderer.compileAsync(new Mesh(sea.geometry, full), this.rig.camera, this.scene).then(swap, swap);
+    this.renderer.compileAsync(new Mesh(this.sea.geometry, full), this.rig.camera, this.scene).then(done, done);
   }
 
   private add(object: Object3D & { geometry: BufferGeometry }, renderOrder: number, ownsGeometry = true) {
@@ -1480,6 +1491,12 @@ export class MapEngine {
     const busyCamera = this.stepCamera(dt, now);
     const busyState = this.stepState(dt, now);
     this.own.ocean.uTime.value = (now / 1000) % 3600;
+    // De lejos no se ven olas: el oleaje entra poco a poco al acercarse y, mientras no lo hay, el mar
+    // se dibuja con el sombreador liso, que cuesta mucho menos por fotograma y no hay que animar.
+    const swell = this.showGlint ? clamp((SWELL_FROM - this.rig.worldPerPixel) / (SWELL_FROM - SWELL_FULL), 0, 1) : 0;
+    this.own.ocean.uSwell.value = swell;
+    this.wavy = swell > 0 || this.showCurrents;
+    if (this.seaFull) this.sea.material = this.wavy ? this.seaFull : this.seaLite;
     // Al acercarse, un píxel de la textura de relieve normal ocupa más de uno de pantalla: se pide
     // la de detalle (700 KB), una sola vez y solo si la tarjeta gráfica admite ese tamaño.
     if (this.showRelief && this.reliefReady && !this.reliefHd && this.rig.worldPerPixel < 0.0012 && this.renderer.capabilities.maxTextureSize >= 8192) {
@@ -1490,7 +1507,7 @@ export class MapEngine {
     if (busyCamera || busyState) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.showGlint || this.showCurrents || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
+    } else if ((this.wavy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.

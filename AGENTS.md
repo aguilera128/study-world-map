@@ -66,8 +66,8 @@ docs/                  planes y propuestas con fecha
   en el fichero.
 - La proyección de la cámara está descentrada para apartar el globo de los paneles: cualquier
   cálculo de pantalla ↔ dirección tiene que contar `projectionMatrix[2][0]` y `[2][1]`.
-- El océano se compila dos veces: sin «WAVES» (mar liso, con el que arranca el mapa) y con «WAVES»
-  (oleaje y vetas de las corrientes, que entra después). Lo que tenga ruido va dentro de `#ifdef WAVES`:
+- El océano se compila dos veces: sin «WAVES» (mar liso, con el que arranca el mapa y se dibuja de lejos) y con «WAVES»
+  (oleaje y vetas de las corrientes, que entra al acercarse o con la capa de corrientes). Lo que tenga ruido va dentro de `#ifdef WAVES`:
   cada uso del ruido alarga la compilación, que es lo que retrasa el primer fotograma.
 - Los radios de las capas del interior están en dos sitios que deben coincidir: `SHELL_RADIUS` en
   `MapEngine.ts` y los números de `CUT_FRAG`.

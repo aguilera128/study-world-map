@@ -132,6 +132,7 @@ uniform vec3 uOcean;
 uniform vec3 uGrid;
 uniform float uGridAlpha;
 uniform float uGlint;     // fuerza del reflejo del agua (0 = mate)
+uniform float uSwell;     // cuánto oleaje hay: 0 con el mapa lejos, 1 de cerca (lo fija el motor)
 uniform float uTime;      // segundos, para el vaivén lento del agua
 uniform sampler2D uFlow;  // corrientes medias reales (scripts/build-currents.py)
 uniform float uFlowAmt;   // 1 = el agua se mueve con la corriente
@@ -146,8 +147,9 @@ varying vec3 vGeo;
 
 // El oleaje y las vetas de las corrientes son casi todo lo que tarda en compilarse este sombreador
 // (el ruido se copia entero en cada sitio donde se usa). Por eso hay dos versiones: sin «WAVES», el
-// mar liso con el que el mapa aparece cuanto antes; con «WAVES», la completa, que el motor compila
-// después y pone en su lugar (ver «fullOcean» en MapEngine).
+// mar liso, con el que el mapa aparece cuanto antes y que se usa mientras se ve de lejos; con
+// «WAVES», la completa, que el motor compila después y pone al acercarse o con la capa de corrientes
+// (ver «fullOcean» y «tick» en MapEngine).
 #ifdef WAVES
 // Oleaje: ruido de gradiente en 3D evaluado sobre el punto geográfico, así que está fijo al mapa
 // (no se mueve ni obliga a redibujar) y es continuo en el antimeridiano y en los polos.
@@ -236,7 +238,7 @@ vec3 glint(vec3 normal, vec3 toEye, vec3 geo, vec4 flow) {
   // La dirección es la real; la velocidad se comprime (raíz cuadrada) para que también se note
   // dónde la corriente es débil. Una corriente de 1 m/s arrastra el oleaje 5 olas por ciclo.
 #ifdef WAVES
-  float h = swell(geo, px, flow.xyz * sqrt(flow.w) * 5.0 * uFlowAmt);
+  float h = uSwell * swell(geo, px, flow.xyz * sqrt(flow.w) * 5.0 * uFlowAmt);
 #else
   float h = 0.0;
 #endif
