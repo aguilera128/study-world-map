@@ -2,7 +2,8 @@ import { levelLabel, levelOf } from '../game/population';
 import { climateText } from '../game/climate';
 import { useState, type CSSProperties } from 'react';
 import { formatGrade, formatTime, plural } from '../app/format';
-import { showCountry, useApp, useProgress } from '../app/store';
+import { rankingOf } from '../app/ranking';
+import { showCountry, useApp, useProgress, useSettings } from '../app/store';
 import { useSync } from '../app/sync';
 import type { Atlas } from '../atlas/atlas';
 import type { Country } from '../atlas/types';
@@ -12,6 +13,7 @@ import { gradeLabel, missed, score } from '../game/session';
 import { useLast } from './hooks';
 import { Icon } from './Icon';
 import { Flag, Panel } from './primitives';
+import { Ranking } from './Ranking';
 import { t, LOCALE } from '../i18n';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
@@ -61,6 +63,8 @@ export function ResultsPanel() {
   const toReview = missed(session);
   const mode = modeDef(session.config.mode, session.config.map);
   const perfect = result.first === result.total;
+  const lists = useSettings((s) => s.lists);
+  const ranking = rankingOf(session.config, { daily, review: reviewOnly, lists });
 
   return (
     <Panel label={t('Resultado')}>
@@ -103,6 +107,12 @@ export function ResultsPanel() {
         <Tile value={formatTime(result.ms)} label={t('Tiempo')} />
         <Tile value={result.bestStreak} label={t('Mejor racha')} />
       </div>
+
+      {ranking && (
+        <div className="mt-5" style={order(4)}>
+          <Ranking category={ranking} result={{ grade: result.grade, ms: result.ms, total: result.total }} />
+        </div>
+      )}
 
       {toReview.length > 0 && (
         <section className="mt-6" style={order(4)}>

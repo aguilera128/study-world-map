@@ -1,5 +1,6 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
+import { rankingOf } from '../app/ranking';
 import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import type { MapId } from '../atlas/types';
 import { answerLabel, modeDef, modesOf, resolveScope, type ModeId } from '../game/config';
@@ -10,6 +11,7 @@ import { Icon } from './Icon';
 import { homeOf, lang, preferredLang, VIEW_IN } from '../i18n';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
 import { Panel, Segmented, Step } from './primitives';
+import { Ranking } from './Ranking';
 import { ScopeChips } from './ScopeChips';
 import { t } from '../i18n';
 import { tx } from '../i18n/tx';
@@ -103,6 +105,9 @@ export function HomePanel() {
     [progress, scope, atlas, config.mode],
   );
   const total = scope.countries.length;
+  // El ranking de lo que está elegido; no se pide hasta que se abre.
+  const ranking = rankingOf(config, { daily: null, review: false, lists });
+  const [rankingOpen, setRankingOpen] = useState(false);
   // Los retos del mapa del mundo, que son muchos, se agrupan por lo que preguntan.
   const groups = useMemo(() => {
     const modes = modesOf(atlas.map);
@@ -271,6 +276,17 @@ export function HomePanel() {
           <div className="bg-ok transition-[width] duration-700" style={{ width: `${summary.ratio * 100}%` }} />
         </div>
       </button>
+
+      {ranking && (
+        <details className="mt-4 max-w-[26rem]" style={order(8)} onToggle={(e) => setRankingOpen(e.currentTarget.open)}>
+          <summary className="label cursor-pointer transition-colors hover:text-accent">{t('Ranking de este reto')}</summary>
+          {rankingOpen && (
+            <div className="mt-2">
+              <Ranking category={ranking} />
+            </div>
+          )}
+        </details>
+      )}
 
       {/* En pantallas anchas este enlace va abajo a la derecha, bajo los controles del mapa (MapControls). */}
       <a

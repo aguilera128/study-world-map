@@ -512,6 +512,26 @@ const en: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'We highlight a province on the map and you say which one it is.',
   'Une cada provincia con su capital.': 'Match each province with its capital.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Leaderboard · top 10',
+  'No se ha podido cargar el ranking.': 'The leaderboard could not be loaded.',
+  'Cargando el ranking…': 'Loading the leaderboard…',
+  'Todavía no hay resultados.': 'No results yet.',
+  'El primero puede ser el tuyo.': 'The first one could be yours.',
+  '¡Tu resultado entra en el ranking!': 'Your result makes the leaderboard!',
+  'Tu apodo': 'Your nickname',
+  'Sugerir otro apodo': 'Suggest another nickname',
+  'Publicando…': 'Publishing…',
+  'Publicar': 'Publish',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'Don’t use your name, surname or any other personal details. It will be published with your score, your time and the flag of the country you are connecting from.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'That nickname won’t work. Use 2 to 16 letters or digits, with no personal details.',
+  'No se ha podido publicar. Prueba más tarde.': 'It could not be published. Try again later.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'That nickname already has a better result on this leaderboard.',
+  'Publicado. ¡Enhorabuena!': 'Published. Congratulations!',
+  'Tu resultado no entra entre los diez mejores.': 'Your result is not among the top ten.',
+  'Avisar de un apodo inadecuado': 'Report an inappropriate nickname',
+  'Ranking de este reto': 'Leaderboard for this challenge',
 };
 
 export default en;

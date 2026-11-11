@@ -513,6 +513,26 @@ const eu: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Probintzia bat markatzen dugu mapan, eta zein den esaten duzu.',
   'Une cada provincia con su capital.': 'Lotu probintzia bakoitza bere hiriburuarekin.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Sailkapena · 10 onenak',
+  'No se ha podido cargar el ranking.': 'Ezin izan da sailkapena kargatu.',
+  'Cargando el ranking…': 'Sailkapena kargatzen…',
+  'Todavía no hay resultados.': 'Oraindik ez dago emaitzarik.',
+  'El primero puede ser el tuyo.': 'Lehenengoa zurea izan daiteke.',
+  '¡Tu resultado entra en el ranking!': 'Zure emaitza sailkapenean sartzen da!',
+  'Tu apodo': 'Zure ezizena',
+  'Sugerir otro apodo': 'Beste ezizen bat proposatu',
+  'Publicando…': 'Argitaratzen…',
+  'Publicar': 'Argitaratu',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'Ez jarri zure izena, abizenak edo beste datu pertsonalik. Zure notarekin, zure denborarekin eta konektatzen zaren herrialdeko banderarekin argitaratuko da.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Ezizen horrek ez du balio. Erabili 2 eta 16 letra edo zenbaki artean, datu pertsonalik gabe.',
+  'No se ha podido publicar. Prueba más tarde.': 'Ezin izan da argitaratu. Saiatu geroago.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Ezizen horrek emaitza hobea du dagoeneko sailkapen honetan.',
+  'Publicado. ¡Enhorabuena!': 'Argitaratuta. Zorionak!',
+  'Tu resultado no entra entre los diez mejores.': 'Zure emaitza ez da hamar onenen artean sartzen.',
+  'Avisar de un apodo inadecuado': 'Ezizen desegoki baten berri eman',
+  'Ranking de este reto': 'Erronka honen sailkapena',
 };
 
 export default eu;

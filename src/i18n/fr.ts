@@ -512,6 +512,26 @@ const fr: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Nous indiquons une province sur la carte et vous dites laquelle c’est.',
   'Une cada provincia con su capital.': 'Associez chaque province à sa capitale.',
   '{country}: {where}.': '{country} : {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Classement · les 10 meilleurs',
+  'No se ha podido cargar el ranking.': 'Le classement n’a pas pu être chargé.',
+  'Cargando el ranking…': 'Chargement du classement…',
+  'Todavía no hay resultados.': 'Pas encore de résultats.',
+  'El primero puede ser el tuyo.': 'Le premier peut être le vôtre.',
+  '¡Tu resultado entra en el ranking!': 'Votre résultat entre dans le classement !',
+  'Tu apodo': 'Votre pseudo',
+  'Sugerir otro apodo': 'Proposer un autre pseudo',
+  'Publicando…': 'Publication…',
+  'Publicar': 'Publier',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'N’indiquez ni votre nom, ni votre prénom, ni d’autres données personnelles. Il sera publié avec votre note, votre temps et le drapeau du pays depuis lequel vous vous connectez.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Ce pseudo ne convient pas. Utilisez de 2 à 16 lettres ou chiffres, sans données personnelles.',
+  'No se ha podido publicar. Prueba más tarde.': 'La publication a échoué. Réessayez plus tard.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Ce pseudo a déjà un meilleur résultat dans ce classement.',
+  'Publicado. ¡Enhorabuena!': 'Publié. Félicitations !',
+  'Tu resultado no entra entre los diez mejores.': 'Votre résultat n’entre pas dans les dix meilleurs.',
+  'Avisar de un apodo inadecuado': 'Signaler un pseudo inapproprié',
+  'Ranking de este reto': 'Classement de ce défi',
 };
 
 export default fr;

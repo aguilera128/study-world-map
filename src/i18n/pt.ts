@@ -512,6 +512,26 @@ const pt: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Indicamos uma província no mapa e você diz qual é.',
   'Une cada provincia con su capital.': 'Ligue cada província à sua capital.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Ranking · os 10 melhores',
+  'No se ha podido cargar el ranking.': 'Não foi possível carregar o ranking.',
+  'Cargando el ranking…': 'Carregando o ranking…',
+  'Todavía no hay resultados.': 'Ainda não há resultados.',
+  'El primero puede ser el tuyo.': 'O primeiro pode ser o seu.',
+  '¡Tu resultado entra en el ranking!': 'Seu resultado entra no ranking!',
+  'Tu apodo': 'Seu apelido',
+  'Sugerir otro apodo': 'Sugerir outro apelido',
+  'Publicando…': 'Publicando…',
+  'Publicar': 'Publicar',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'Não coloque seu nome, sobrenome nem outros dados pessoais. Ele será publicado com sua nota, seu tempo e a bandeira do país de onde você se conecta.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Esse apelido não vale. Use de 2 a 16 letras ou números, sem dados pessoais.',
+  'No se ha podido publicar. Prueba más tarde.': 'Não foi possível publicar. Tente mais tarde.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Esse apelido já tem um resultado melhor neste ranking.',
+  'Publicado. ¡Enhorabuena!': 'Publicado. Parabéns!',
+  'Tu resultado no entra entre los diez mejores.': 'Seu resultado não entra entre os dez melhores.',
+  'Avisar de un apodo inadecuado': 'Avisar sobre um apelido inadequado',
+  'Ranking de este reto': 'Ranking deste desafio',
 };
 
 export default pt;

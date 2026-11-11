@@ -2,8 +2,9 @@
 //
 // Lo que se afirma sobre la aplicación está comprobado en el código (src/app/store.ts y
 // public/consent.js, src/app/sync.ts y api/sync.ts): progreso y ajustes en el navegador y, solo si
-// se crea un código, también en la base de datos; ubicación solo en memoria; y nada de Google sin
-// consentimiento. Si eso cambia, hay que cambiar también estos textos.
+// se crea un código, también en la base de datos; ubicación solo en memoria; nada de Google sin
+// consentimiento; y en el ranking (src/app/ranking.ts y api/ranking.ts) solo lo que se publica a
+// propósito: apodo, nota, tiempo, fecha y país. Si eso cambia, hay que cambiar también estos textos.
 
 import { DONAR_URL, REVISION_LEGAL, SITE, TITULAR } from './sitio.mjs';
 
@@ -87,6 +88,11 @@ ${titularBlock()}
     <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra durante un tiempo limitado datos técnicos de cada petición, entre ellos la dirección IP y la dirección solicitada. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Si abres un enlace que lleva el código (el del código QR), ese código forma parte de la dirección de esa visita.</p>
     <p>Puedes borrar lo guardado en cualquier momento con «Borrar lo guardado con este código». «Dejar de sincronizar» solo desconecta el dispositivo en el que lo pulsas: lo guardado sigue ahí para tus otros dispositivos. Lo que lleve más de un año sin usarse se borra.</p>
 
+    <h3>Ranking de resultados (opcional)</h3>
+    <p>Al terminar una partida puedes publicar tu resultado en el ranking de ese reto. No se envía nada si no pulsas «Publicar». Se guardan en la base de datos, y los ve cualquiera que consulte ese ranking, el apodo que escribas, tu nota, tu tiempo, la fecha y el país desde el que te conectas (solo sus dos letras, para enseñar la bandera). El país lo indica el alojamiento a partir de tu dirección IP en el momento de publicar; la dirección IP no se guarda en la base de datos.</p>
+    <p>El apodo no debe contener tu nombre, tus apellidos ni otros datos personales: la aplicación te propone uno y te lo recuerda al escribirlo. No está asociado a ninguna cuenta ni a ninguna persona, y cualquiera puede usar el mismo. Solo se conservan los diez mejores resultados de cada ranking: los demás se borran al ser superados, y los del reto del día, a los 45 días. Si quieres que se borre un resultado que has publicado, o ves un apodo que no debería estar, escribe a ${email()} indicando el apodo y el reto.</p>
+    <p><strong>Base legal:</strong> tu consentimiento, que das al pulsar «Publicar» (art. 6.1.a del RGPD).</p>
+
     <h3>Ubicación</h3>
     <p>La función «Tiempo real» sitúa tu posición en el mapa a partir de la zona horaria de tu dispositivo, sin pedirte nada. Si pulsas el botón de ubicación exacta, tu navegador te pedirá permiso y la aplicación usará tu posición redondeada (unos 1 km). En ambos casos la ubicación solo se usa en la pantalla: no se guarda ni se envía a ningún sitio.</p>
 
@@ -109,7 +115,7 @@ ${titularBlock()}
     <p>El sitio se aloja en Vercel Inc. Como cualquier servidor web, registra datos técnicos de cada visita (como la dirección IP) durante un tiempo limitado, para servir la web y protegerla de abusos. Vercel actúa como encargado del tratamiento, con las garantías del RGPD para las transferencias internacionales.</p>
 
     <h2>Menores de edad</h2>
-    <p>Study World Map está pensado para estudiantes. No pide datos personales para usarse. Si tienes menos de 14 años, pide a tu madre, a tu padre o a la persona que te cuide que decida si se aceptan las cookies de analítica (art. 7 de la Ley Orgánica 3/2018).</p>
+    <p>Study World Map está pensado para estudiantes. No pide datos personales para usarse. Si tienes menos de 14 años, pide a tu madre, a tu padre o a la persona que te cuide que decida si se aceptan las cookies de analítica y si puedes publicar tus resultados en el ranking (art. 7 de la Ley Orgánica 3/2018).</p>
 
     <h2>Tus derechos</h2>
     <p>Puedes pedir el acceso, la rectificación o la supresión de tus datos, la limitación de su tratamiento, oponerte a él o pedir su portabilidad, escribiendo a ${email()}. Como no sabemos de quién es cada código de sincronización, para atender una petición sobre un progreso guardado necesitamos que nos indiques el código. Si crees que no se han respetado tus derechos, puedes reclamar ante la <a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a>.</p>
@@ -135,13 +141,14 @@ ${revision}`,
     <p>Son cookies propias del dominio, pero las gestiona Google. Más información en la <a href="/privacidad/">política de privacidad</a> y en la <a href="https://policies.google.com/technologies/cookies?hl=es">explicación de Google</a>.</p>
 
     <h2>Almacenamiento técnico (no requiere consentimiento)</h2>
-    <p>No son cookies: se guardan solo en tu navegador, no se envían a ningún servidor (salvo el progreso, si creas un código para llevarlo a otro dispositivo) y son necesarios para que la aplicación funcione como pides.</p>
+    <p>No son cookies: se guardan solo en tu navegador, no se envían a ningún servidor (salvo el progreso, si creas un código para llevarlo a otro dispositivo, y el apodo, si publicas un resultado en el ranking) y son necesarios para que la aplicación funcione como pides.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Nombre</th><th scope="col">Para qué sirve</th><th scope="col">Duración</th></tr></thead>
       <tbody>
         <tr><td><code>mapamundi:ajustes</code></td><td>Tema, vista, reto elegido, listas de estudio y si has cerrado el aviso de idioma.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>mapamundi:progreso</code></td><td>Lo que ya te sabes y tus mejores notas.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>Tu código para seguir en otro dispositivo, si lo has creado.</td><td>Hasta que dejes de sincronizar</td></tr>
+        <tr><td><code>swm:apodo</code></td><td>El último apodo con el que publicaste en el ranking, para proponértelo la próxima vez.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>swm:consent</code></td><td>Recordar si aceptaste o rechazaste las cookies.</td><td>Hasta que la borres</td></tr>
         <tr><td>Caché <code>swm-*</code></td><td>Copia de la aplicación para usarla sin conexión.</td><td>Hasta la siguiente versión</td></tr>
       </tbody>

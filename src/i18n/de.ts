@@ -512,6 +512,26 @@ const de: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Wir markieren eine Provinz auf der Karte und du sagst, welche es ist.',
   'Une cada provincia con su capital.': 'Ordne jeder Provinz ihre Hauptstadt zu.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Rangliste · die 10 Besten',
+  'No se ha podido cargar el ranking.': 'Die Rangliste konnte nicht geladen werden.',
+  'Cargando el ranking…': 'Rangliste wird geladen…',
+  'Todavía no hay resultados.': 'Noch keine Ergebnisse.',
+  'El primero puede ser el tuyo.': 'Das erste könnte deins sein.',
+  '¡Tu resultado entra en el ranking!': 'Dein Ergebnis kommt in die Rangliste!',
+  'Tu apodo': 'Dein Spitzname',
+  'Sugerir otro apodo': 'Anderen Spitznamen vorschlagen',
+  'Publicando…': 'Wird veröffentlicht…',
+  'Publicar': 'Veröffentlichen',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'Gib nicht deinen Namen, Nachnamen oder andere persönliche Daten an. Veröffentlicht wird er mit deiner Note, deiner Zeit und der Flagge des Landes, aus dem du dich verbindest.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Dieser Spitzname geht nicht. Nimm 2 bis 16 Buchstaben oder Ziffern, ohne persönliche Daten.',
+  'No se ha podido publicar. Prueba más tarde.': 'Das Veröffentlichen hat nicht geklappt. Versuch es später noch einmal.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Dieser Spitzname hat in dieser Rangliste schon ein besseres Ergebnis.',
+  'Publicado. ¡Enhorabuena!': 'Veröffentlicht. Glückwunsch!',
+  'Tu resultado no entra entre los diez mejores.': 'Dein Ergebnis ist nicht unter den zehn besten.',
+  'Avisar de un apodo inadecuado': 'Unpassenden Spitznamen melden',
+  'Ranking de este reto': 'Rangliste dieser Aufgabe',
 };
 
 export default de;

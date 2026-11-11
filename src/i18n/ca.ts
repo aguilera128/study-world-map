@@ -513,6 +513,26 @@ const ca: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Assenyalem una província en el mapa i dius quina és.',
   'Une cada provincia con su capital.': 'Uneix cada província amb la seua capital.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Rànquing · els 10 millors',
+  'No se ha podido cargar el ranking.': 'No s’ha pogut carregar el rànquing.',
+  'Cargando el ranking…': 'Carregant el rànquing…',
+  'Todavía no hay resultados.': 'Encara no hi ha resultats.',
+  'El primero puede ser el tuyo.': 'El primer pot ser el teu.',
+  '¡Tu resultado entra en el ranking!': 'El teu resultat entra en el rànquing!',
+  'Tu apodo': 'El teu malnom',
+  'Sugerir otro apodo': 'Suggerir un altre malnom',
+  'Publicando…': 'Publicant…',
+  'Publicar': 'Publicar',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'No poses el teu nom, cognoms ni altres dades personals. Es publicarà amb la teua nota, el teu temps i la bandera del país des d’on et connectes.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Eixe malnom no val. Usa de 2 a 16 lletres o xifres, sense dades personals.',
+  'No se ha podido publicar. Prueba más tarde.': 'No s’ha pogut publicar. Prova-ho més tard.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Eixe malnom ja té un resultat millor en este rànquing.',
+  'Publicado. ¡Enhorabuena!': 'Publicat. Enhorabona!',
+  'Tu resultado no entra entre los diez mejores.': 'El teu resultat no entra entre els deu millors.',
+  'Avisar de un apodo inadecuado': 'Avisar d’un malnom inadequat',
+  'Ranking de este reto': 'Rànquing d’este repte',
 };
 
 export default ca;

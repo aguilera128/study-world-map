@@ -512,6 +512,26 @@ const gl: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': 'Sinalamos unha provincia no mapa e dis cal é.',
   'Une cada provincia con su capital.': 'Une cada provincia coa súa capital.',
   '{country}: {where}.': '{country}: {where}.',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': 'Clasificación · os 10 mellores',
+  'No se ha podido cargar el ranking.': 'Non se puido cargar a clasificación.',
+  'Cargando el ranking…': 'Cargando a clasificación…',
+  'Todavía no hay resultados.': 'Aínda non hai resultados.',
+  'El primero puede ser el tuyo.': 'O primeiro pode ser o teu.',
+  '¡Tu resultado entra en el ranking!': 'O teu resultado entra na clasificación!',
+  'Tu apodo': 'O teu alcume',
+  'Sugerir otro apodo': 'Suxerir outro alcume',
+  'Publicando…': 'Publicando…',
+  'Publicar': 'Publicar',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': 'Non poñas o teu nome, apelidos nin outros datos persoais. Publicarase coa túa nota, o teu tempo e a bandeira do país desde o que te conectas.',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': 'Ese alcume non vale. Usa de 2 a 16 letras ou cifras, sen datos persoais.',
+  'No se ha podido publicar. Prueba más tarde.': 'Non se puido publicar. Proba máis tarde.',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': 'Ese alcume xa ten un resultado mellor nesta clasificación.',
+  'Publicado. ¡Enhorabuena!': 'Publicado. Parabéns!',
+  'Tu resultado no entra entre los diez mejores.': 'O teu resultado non entra entre os dez mellores.',
+  'Avisar de un apodo inadecuado': 'Avisar dun alcume inadecuado',
+  'Ranking de este reto': 'Clasificación deste reto',
 };
 
 export default gl;

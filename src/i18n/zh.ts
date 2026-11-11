@@ -511,6 +511,26 @@ const zh: Record<string, string> = {
   'Señalamos una provincia en el mapa y dices cuál es.': '我们在地图上标出一个省，你说出它是哪个省。',
   'Une cada provincia con su capital.': '把每个省和它的首府配对。',
   '{country}: {where}.': '{country}：{where}。',
+
+  // ── ranking ──
+  'Ranking · los 10 mejores': '排行榜 · 前 10 名',
+  'No se ha podido cargar el ranking.': '排行榜加载失败。',
+  'Cargando el ranking…': '正在加载排行榜…',
+  'Todavía no hay resultados.': '还没有成绩。',
+  'El primero puede ser el tuyo.': '第一个可以是你的。',
+  '¡Tu resultado entra en el ranking!': '你的成绩进入排行榜了！',
+  'Tu apodo': '你的昵称',
+  'Sugerir otro apodo': '换一个昵称',
+  'Publicando…': '正在发布…',
+  'Publicar': '发布',
+  'No pongas tu nombre, apellidos ni otros datos personales. Se publicará con tu nota, tu tiempo y la bandera del país desde el que te conectas.': '不要填写你的姓名或其他个人信息。发布时会显示你的成绩、用时和你所在国家或地区的旗帜。',
+  'Ese apodo no vale. Usa de 2 a 16 letras o cifras, sin datos personales.': '这个昵称不能用。请使用 2 到 16 个字母或数字，不要包含个人信息。',
+  'No se ha podido publicar. Prueba más tarde.': '发布失败，请稍后再试。',
+  'Ese apodo ya tiene un resultado mejor en este ranking.': '这个昵称在本排行榜里已经有更好的成绩。',
+  'Publicado. ¡Enhorabuena!': '已发布，恭喜！',
+  'Tu resultado no entra entre los diez mejores.': '你的成绩没有进入前十名。',
+  'Avisar de un apodo inadecuado': '举报不合适的昵称',
+  'Ranking de este reto': '本挑战的排行榜',
 };
 
 export default zh;

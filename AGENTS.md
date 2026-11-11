@@ -30,7 +30,8 @@ pnpm atlas      # solo regenera public/data (atlas del mundo, de España y de ge
 ## Estructura
 
 ```
-api/sync.ts            única función de Vercel: sincronización del progreso por código (Neon)
+api/sync.ts            función de Vercel: sincronización del progreso por código (Neon)
+api/ranking.ts         función de Vercel: los diez mejores resultados de cada reto (Neon)
 scripts/               generadores de datos y de páginas estáticas (se ejecutan a mano o en el build)
 scripts/data/          fuentes editables: países, idiomas, legales, temario físico, correcciones
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
@@ -116,7 +117,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - Bajo `api/` solo puede haber rutas reales: todo `.ts`/`.js` que haya ahí se despliega como función
   y Vercel la arranca sin que nadie la llame. Los scripts van en `scripts/`, con guarda de módulo
   principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
-- Hoy hay **una** función (`api/sync.ts`). Si en *Resources* aparecen más, algo se despliega de más.
+- Hoy hay **dos** funciones (`api/sync.ts` y `api/ranking.ts`). Si en *Resources* aparecen más, algo
+  se despliega de más.
 - `vercel.json` manda una política de contenido (cabecera `Content-Security-Policy`): solo se carga
   lo propio, el Blob de las teselas y Google Tag Manager. Consecuencias al tocar las páginas:
   - Nada de `onclick` ni otros atributos con código: se escucha desde un `.js` (así abre el aviso de
@@ -132,8 +134,17 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - La cadena de conexión está en `.env.local` (ignorado por git) y en Vercel como variable *Sensitive*.
   **No se imprime ni se copia nunca**: solo se revisan nombres y forma.
 - El código de sincronización viaja en la cabecera `X-Sync-Code`, no en la dirección.
-- `node scripts/db-init.mjs --probar` pasa la función por un ciclo completo contra la base real y
-  borra la fila de prueba.
+- **Ranking:** tabla `ranking(id, category, nick, country, grade, ms, created_at)`, con los diez
+  mejores de cada categoría (mapa/reto/respuesta/zona/preguntas, o `dia/<fecha>`). Solo se publica si
+  quien juega pulsa «Publicar»; el apodo es texto libre con aviso y filtro (`cleanNick`), y el país
+  sale de la cabecera `x-vercel-ip-country`: la IP no se guarda. La nota la calcula el navegador, así
+  que no hay garantía contra trampas. Lo que comparten la aplicación y la función está en
+  `src/game/ranking.ts`, que **no puede importar nada que se ejecute** (lo carga el servidor): la
+  función lo importa con su extensión `.ts`.
+- `node scripts/ranking.mjs` enseña lo publicado y borra una entrada (`--borrar <id>`): es la
+  moderación de apodos.
+- `node scripts/db-init.mjs --probar` pasa las dos funciones por un ciclo completo contra la base
+  real y borra las filas de prueba.
 - **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
   fecha de revisión de `scripts/data/sitio.mjs`.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
