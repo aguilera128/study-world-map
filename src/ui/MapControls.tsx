@@ -9,6 +9,7 @@ import { resolveScope } from '../game/config';
 import { useTheme, useWide } from './hooks';
 import { ExportMenu } from './ExportMenu';
 import { Icon, type IconName } from './Icon';
+import { LayerIcon } from './LayerIcon';
 import { t } from '../i18n';
 
 function Control({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
@@ -68,8 +69,10 @@ function LayersMenu() {
       {ids.map((id) => (
         // Interruptor: toda la fila se pulsa y mide 44 px de alto, para el dedo. Sigue siendo una
         // casilla nativa (con teclado y lector de pantalla), solo que dibujada como interruptor.
-        <label key={id} className={`flex min-h-11 items-center justify-between gap-3 text-sm ${parked(id) ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}>
-          {LAYERS[id]}
+        <label key={id} className={`flex min-h-11 items-center gap-2.5 text-sm ${parked(id) ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}>
+          {/* El icono se entinta al encender la capa; el estado lo sigue diciendo el interruptor. */}
+          <LayerIcon id={id} className={`shrink-0 transition-colors ${layers[id] && !parked(id) ? 'text-ink' : 'text-ink-faint'}`} />
+          <span className="flex-1">{LAYERS[id]}</span>
           <input type="checkbox" role="switch" checked={layers[id] && !parked(id)} disabled={parked(id)} onChange={(e) => setLayer(id, e.target.checked)} className="peer sr-only" />
           <span
             aria-hidden="true"
@@ -146,7 +149,7 @@ function LayersMenu() {
       {open && wide && (
         // La tarjeta no se desplaza: lo hace una caja interior, separada del borde. Así la barra de
         // desplazamiento no pisa el borde ni las esquinas redondeadas.
-        <div className="float absolute bottom-0 right-12 w-60 bg-surface! py-2 pr-1" role="group" aria-label={t('Capas del mapa')}>
+        <div className="float absolute bottom-0 right-12 w-[17rem] bg-surface! py-2 pr-1" role="group" aria-label={t('Capas del mapa')}>
           <div
             // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
             className={`thin-scroll flex flex-col gap-3 overflow-y-auto py-1 pl-3.5 pr-2.5 ${realTime ? 'max-h-[calc(100dvh-21.5rem)]' : 'max-h-[calc(100dvh-10rem)]'}`}
