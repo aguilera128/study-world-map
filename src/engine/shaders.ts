@@ -138,6 +138,7 @@ uniform sampler2D uFlow;  // corrientes medias reales (scripts/build-currents.py
 uniform float uFlowAmt;   // 1 = el agua se mueve con la corriente
 uniform float uZones;     // 1 = franjas de los husos horarios teóricos (15° cada uno)
 uniform float uFlowShow;  // 1 = capa «Corrientes oceánicas» a la vista
+uniform float uStreak;    // tamaño de las vetas de las corrientes: cuántas caben en un radio (lo fija el motor según el zoom)
 uniform sampler2D uSeabed; // profundidad real del mar (scripts/build-depth.py)
 uniform float uDepth;     // cuánto se distinguen el mar profundo y las aguas someras (0 = color plano)
 uniform sampler2D uShade; // relieve del fondo del mar, sombreado (scripts/build-seabed.py)
@@ -319,10 +320,11 @@ void main() {
   // Capa de corrientes: vetas claras que avanzan con el agua, más visibles cuanto más rápida va.
   if (uFlowShow > 0.0) {
     // Vetas de unos pocos píxeles sea cual sea el zoom: con el globo entero, anchas; de cerca, finas.
-    float px = max(length(fwidth(geo)) * 0.7071, 1e-7);
-    float scale = clamp(0.035 / px, 14.0, 160.0);
+    // El tamaño es el mismo en toda la pantalla (lo da el motor). Si se midiera aquí, píxel a píxel,
+    // cambiaría un poco de una celda de la malla del océano a la siguiente y el dibujo se partiría
+    // en cuadros por sus bordes.
     vec3 pull = flow.xyz * sqrt(flow.w);
-    float streak = carried(geo * scale, pull * 3.0) + 0.5 * carried(geo * scale * 2.1, pull * 6.0);
+    float streak = carried(geo * uStreak, pull * 3.0) + 0.5 * carried(geo * uStreak * 2.1, pull * 6.0);
     water += uFlowShow * smoothstep(0.02, 0.4, flow.w) * (0.3 + 1.2 * smoothstep(-0.15, 0.45, streak)) * vec3(0.48, 0.66, 0.70);
   }
 #endif

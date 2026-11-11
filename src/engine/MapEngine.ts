@@ -306,7 +306,7 @@ export class MapEngine {
     uCutLon: { value: new Vector2(-20 * DEG, 70 * DEG) },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uStreak: { value: 60 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
@@ -1798,6 +1798,8 @@ export class MapEngine {
     const swell = this.showGlint ? clamp((SWELL_FROM - this.rig.worldPerPixel) / (SWELL_FROM - SWELL_FULL), 0, 1) : 0;
     this.own.ocean.uSwell.value = swell;
     this.wavy = swell > 0 || this.showCurrents;
+    // Las vetas de las corrientes, de unos 30 píxeles de pantalla sea cual sea el zoom.
+    this.own.ocean.uStreak.value = clamp((0.035 * this.renderer.getPixelRatio()) / this.rig.worldPerPixel, 14, 160);
     if (this.seaFull) this.sea.material = this.wavy ? this.seaFull : this.seaLite;
     // Al acercarse, un píxel de la textura de relieve normal ocupa más de uno de pantalla: se pide
     // la de detalle (700 KB), una sola vez y solo si la tarjeta gráfica admite ese tamaño.
