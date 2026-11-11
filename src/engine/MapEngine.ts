@@ -134,8 +134,8 @@ const BLANK = typeof document === 'undefined' ? null : Object.assign(document.cr
 /** Hasta dónde llega el resplandor de un astro desde su centro, en píxeles (con margen). */
 const SKY_REACH = 500;
 // Detalle de la imagen de satélite y de las luces nocturnas (ver «requestPatch»): teselas de las
-// mismas imágenes de la NASA, que guardamos en nuestro propio almacén (Blob de Vercel; las suben
-// scripts/download-tiles.mjs y upload-tiles.mjs). Rejilla en longitud/latitud: en el nivel n cada
+// mismas imágenes de la NASA, que guardamos en WebP en nuestro propio almacén (Blob de Vercel; las
+// preparan scripts/download-tiles.mjs, convert-tiles.py y upload-tiles.mjs). Rejilla en longitud/latitud: en el nivel n cada
 // tesela mide 512 píxeles y cubre 288°/2ⁿ; el último nivel, el 7, da unos 500 m por píxel.
 // Se piden a partir de este zoom (radios por píxel: ahí la imagen general ya se ve ampliada) y nunca
 // más de 4 × 4 a la vez, que caben en una textura de 2048 píxeles de lado.
@@ -1116,7 +1116,7 @@ export class MapEngine {
     const box: Bounds = [c0 * span - 180, 90 - (r1 + 1) * span, (c1 + 1) * span - 180, 90 - r0 * span];
     const was = this.own.fill.uPatchBox.value.clone();
     // Un lienzo con las teselas de una capa, que se van pegando según llegan, y su textura.
-    const layer = (uniform: { value: Texture | null }, old: HTMLCanvasElement | null, url: string, ext: string, opaque: boolean) => {
+    const layer = (uniform: { value: Texture | null }, old: HTMLCanvasElement | null, url: string, opaque: boolean) => {
       const canvas = document.createElement('canvas');
       canvas.width = (c1 - c0 + 1) * TILE;
       canvas.height = (r1 - r0 + 1) * TILE;
@@ -1145,7 +1145,7 @@ export class MapEngine {
       ctx.fillStyle = '#000';
       for (let r = r0; r <= r1; r++) {
         for (let c = c0; c <= c1; c++) {
-          fetch(`${url}/${level}/${r}/${c}.${ext}`)
+          fetch(`${url}/${level}/${r}/${c}.webp`)
             .then((res) => (res.ok ? res.blob() : Promise.reject(new Error(String(res.status)))))
             .then((blob) => createImageBitmap(blob))
             .then((tile) => {
@@ -1165,9 +1165,9 @@ export class MapEngine {
       return canvas;
     };
     const fill = this.own.fill;
-    this.patchCanvas = photo ? layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, 'jpeg', false) : null;
+    this.patchCanvas = photo ? layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, false) : null;
     // Las luces, solo si en lo que se ve es de noche en algún punto.
-    this.lightsCanvas = dark ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, 'png', true) : null;
+    this.lightsCanvas = dark ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, true) : null;
     fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
     fill.uPatchAmt.value = this.patchCanvas ? 1 : 0;
     fill.uLightsPatchAmt.value = this.lightsCanvas ? 1 : 0;

@@ -1,7 +1,7 @@
 // Descarga las teselas de detalle del mapa (la foto de satélite y las luces nocturnas) del servicio
-// GIBS de la NASA a la carpeta teselas/ del proyecto, que NO va al repositorio (.gitignore): es la
-// copia de la que se suben al Blob de Vercel (scripts/upload-tiles.mjs) y se guarda por si hace
-// falta volver a subirlas.
+// GIBS de la NASA a la carpeta teselas/ del proyecto, que NO va al repositorio (.gitignore): son los
+// originales, que scripts/convert-tiles.py pasa a WebP y scripts/upload-tiles.mjs sube al Blob de
+// Vercel, y se guardan por si hace falta volver a convertirlos.
 //
 // Fuentes (dominio público):
 //   foto   Blue Marble Next Generation (NASA Earth Observatory), capa «BlueMarble_NextGeneration»

@@ -132,7 +132,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
   detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
   nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`
-  las baja a `teselas/` (fuera del repositorio) y `scripts/upload-tiles.mjs` las sube. Si se añade
+  las baja a `teselas/` (fuera del repositorio), `scripts/convert-tiles.py` las pasa a WebP (la foto
+  con pérdida, las luces sin ella) y `scripts/upload-tiles.mjs` sube los `.webp`. Si se añade
   un servicio externo, va a `legales.mjs`.
 
 ## Pendiente conocido
