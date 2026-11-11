@@ -71,6 +71,8 @@
       }
     </script>
     <style>
+      /* Sin margen desde el primer momento: si no, la página baja 8 px y vuelve a subir al llegar la hoja de estilos. */
+      body { margin: 0; }
       /* Contenido para buscadores y asistentes de IA, que no ejecutan JavaScript. React lo sustituye
          al arrancar; solo asoma si la aplicación tarda en cargar. */
       .static-intro { max-width: 40rem; margin: 0 auto; padding: 3rem 1.25rem; font: 1rem/1.6 system-ui, sans-serif; color: #1b2a3a; opacity: 0; animation: static-in 0.3s 2s forwards; }

@@ -183,9 +183,17 @@ export function MapControls() {
     else showWhole(atlas);
   };
 
+  // Los botones suben con suavidad cuando un panel les quita sitio, pero no al aparecer: en el
+  // móvil nacían pegados abajo y subían 250 px hasta su sitio delante del usuario.
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setSettled(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
-      className="float fixed right-3 z-30 flex flex-col divide-y divide-rule transition-[bottom] duration-300 wide:right-8"
+      className={`float fixed right-3 z-30 flex flex-col divide-y divide-rule wide:right-8 ${settled ? 'transition-[bottom] duration-300' : ''}`}
       style={{ bottom: Math.max(16, pad.bottom + 12) }}
     >
       {/* En pantallas táctiles el zoom se hace pellizcando: solo queda la vuelta a la vista general. */}
