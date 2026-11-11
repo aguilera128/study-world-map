@@ -130,7 +130,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
 - La capa «Imagen de satélite», con el mapa acercado, pide la zona visible al servicio GIBS de la
   NASA (`requestPatch` en `MapEngine.ts`): es la única petición que la aplicación hace a un tercero.
-  Solo lleva qué teselas del mapa se piden; el navegador las guarda tres días por su cuenta.
+  Solo lleva qué teselas del mapa se piden (de la foto y, si allí es de noche, de las luces); las de
+  la foto las guarda el navegador tres días por su cuenta.
   Si se añade otro servicio externo, va también a `legales.mjs`.
 
 ## Pendiente conocido

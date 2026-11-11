@@ -144,6 +144,8 @@ const TILE_SPAN = 288;
 const TILE_LEVELS = 7;
 const TILES_ACROSS = 4;
 const TILE_URL = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_NextGeneration/default/500m';
+// Las luces nocturnas, en la misma rejilla: solo la luz, en grises (Black Marble 2016).
+const LIGHT_TILE_URL = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_Night_Lights/default/2016-01-01/500m';
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -249,6 +251,7 @@ export class MapEngine {
   /** Detalle de la imagen de satélite: las teselas que hay puestas, la última vista y los turnos de espera. */
   private patchKey = '';
   private patchCanvas: HTMLCanvasElement | null = null;
+  private lightsCanvas: HTMLCanvasElement | null = null;
   private patchId = 0;
   private patchTimer = 0;
   private patchView = '';
@@ -303,7 +306,7 @@ export class MapEngine {
   };
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
-    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 } },
+    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
@@ -1064,6 +1067,8 @@ export class MapEngine {
     // Qué se ve: el punto del mapa bajo el centro, las esquinas y los lados de la parte de la
     // pantalla que los paneles dejan libre.
     let [west, south, east, north] = [Infinity, Infinity, -Infinity, -Infinity];
+    let dark = false; // ¿es de noche en algún punto de lo que se ve?
+    const sun = this.uniforms.uSun.value;
     const { left, right, top, bottom } = rig.pad;
     const [x0, y0, w, h] = [left, top, Math.max(1, rig.width - left - right), Math.max(1, rig.height - top - bottom)];
     const center = rig.screenToGeo(x0 + w / 2, y0 + h / 2);
@@ -1078,8 +1083,11 @@ export class MapEngine {
         east = Math.max(east, lon / DEG);
         south = Math.min(south, p.lat / DEG);
         north = Math.max(north, p.lat / DEG);
+        const cos = Math.cos(p.lat);
+        if (cos * Math.sin(p.lon) * sun.x + Math.sin(p.lat) * sun.y + cos * Math.cos(p.lon) * sun.z < 0.05) dark = true;
       }
     }
+    dark &&= this.nightTarget > 0 && this.own.fill.uLightsAmt.value > 0;
     // La rejilla no da la vuelta al antimeridiano: las zonas que lo cruzan se quedan sin detalle.
     if (west < -180 || east > 180) return;
     // El nivel cuya resolución alcanza la de la pantalla; si hacen falta demasiadas teselas para
@@ -1096,62 +1104,71 @@ export class MapEngine {
       r1 = Math.floor((90 - south) / span);
       if (level === 0 || (c1 - c0 < TILES_ACROSS && r1 - r0 < TILES_ACROSS)) break;
     }
-    const key = `${level}/${r0}-${r1}/${c0}-${c1}`;
+    const key = `${level}/${r0}-${r1}/${c0}-${c1}${dark ? '/noche' : ''}`;
     if (key === this.patchKey) return;
     this.patchKey = key;
     const id = ++this.patchId;
 
     // Zona que cubren esas teselas, en grados, y el lienzo donde se van pegando.
     const box: Bounds = [c0 * span - 180, 90 - (r1 + 1) * span, (c1 + 1) * span - 180, 90 - r0 * span];
-    const canvas = document.createElement('canvas');
-    canvas.width = (c1 - c0 + 1) * TILE;
-    canvas.height = (r1 - r0 + 1) * TILE;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    // Mientras llegan, lo que ya había de esa zona (del nivel que fuera), para que no se vea volver
-    // a lo borroso; lo que no había queda en negro, que el sombreador toma por mar y deja pasar la
-    // foto general.
-    const old = this.patchCanvas;
-    const was = this.own.fill.uPatchBox.value;
-    if (old && this.own.fill.uPatchAmt.value > 0) {
-      const sx = canvas.width / (box[2] - box[0]);
-      const sy = canvas.height / (box[3] - box[1]);
-      ctx.drawImage(old, (was.x / DEG - box[0]) * sx, (box[3] - was.w / DEG) * sy, ((was.z - was.x) / DEG) * sx, ((was.w - was.y) / DEG) * sy);
-    }
-    let texture = this.own.fill.uPatch.value;
-    if (!texture) {
-      texture = new Texture();
-      texture.colorSpace = NoColorSpace;
-      texture.generateMipmaps = false;
-      texture.minFilter = LinearFilter;
-      this.disposables.push(texture);
-      this.own.fill.uPatch.value = texture;
-    }
-    const shown = texture;
-    shown.dispose(); // el lienzo anterior medía otra cosa: three no cambia el tamaño de una textura
-    shown.image = canvas;
-    shown.needsUpdate = true;
-    this.patchCanvas = canvas;
-    this.own.fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
-    this.own.fill.uPatchAmt.value = 1;
-    this.invalidate();
-
-    for (let r = r0; r <= r1; r++) {
-      for (let c = c0; c <= c1; c++) {
-        fetch(`${TILE_URL}/${level}/${r}/${c}.jpeg`)
-          .then((res) => (res.ok ? res.blob() : Promise.reject(new Error(String(res.status)))))
-          .then((blob) => createImageBitmap(blob))
-          .then((tile) => {
-            if (!this.disposed && id === this.patchId) {
-              ctx.drawImage(tile, (c - c0) * TILE, (r - r0) * TILE);
-              shown.needsUpdate = true;
-              this.invalidate();
-            }
-            tile.close();
-          })
-          .catch(() => {}); // sin conexión o sin servicio: ahí se queda la foto general
+    const was = this.own.fill.uPatchBox.value.clone();
+    // Un lienzo con las teselas de una capa, que se van pegando según llegan, y su textura.
+    const layer = (uniform: { value: Texture | null }, old: HTMLCanvasElement | null, url: string, ext: string, opaque: boolean) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = (c1 - c0 + 1) * TILE;
+      canvas.height = (r1 - r0 + 1) * TILE;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      // Mientras llegan, lo que ya había de esa zona (del nivel que fuera), para que no se vea
+      // volver a lo borroso. Lo que no había queda vacío y el sombreador deja pasar la imagen general.
+      if (old) {
+        const sx = canvas.width / (box[2] - box[0]);
+        const sy = canvas.height / (box[3] - box[1]);
+        ctx.drawImage(old, (was.x / DEG - box[0]) * sx, (box[3] - was.w / DEG) * sy, ((was.z - was.x) / DEG) * sx, ((was.w - was.y) / DEG) * sy);
       }
-    }
+      let texture = uniform.value;
+      if (!texture) {
+        texture = new Texture();
+        texture.colorSpace = NoColorSpace;
+        texture.generateMipmaps = false;
+        texture.minFilter = LinearFilter;
+        this.disposables.push(texture);
+        uniform.value = texture;
+      }
+      const shown = texture;
+      shown.dispose(); // el lienzo anterior medía otra cosa: three no cambia el tamaño de una textura
+      shown.image = canvas;
+      shown.needsUpdate = true;
+      ctx.fillStyle = '#000';
+      for (let r = r0; r <= r1; r++) {
+        for (let c = c0; c <= c1; c++) {
+          fetch(`${url}/${level}/${r}/${c}.${ext}`)
+            .then((res) => (res.ok ? res.blob() : Promise.reject(new Error(String(res.status)))))
+            .then((blob) => createImageBitmap(blob))
+            .then((tile) => {
+              if (!this.disposed && id === this.patchId) {
+                // Las teselas de luces son transparentes donde no hay luz: se pintan sobre negro,
+                // para que «opaco» signifique «esta tesela ya ha llegado».
+                if (opaque) ctx.fillRect((c - c0) * TILE, (r - r0) * TILE, TILE, TILE);
+                ctx.drawImage(tile, (c - c0) * TILE, (r - r0) * TILE);
+                shown.needsUpdate = true;
+                this.invalidate();
+              }
+              tile.close();
+            })
+            .catch(() => {}); // sin conexión o sin servicio: ahí se queda la imagen general
+        }
+      }
+      return canvas;
+    };
+    const fill = this.own.fill;
+    this.patchCanvas = layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, 'jpeg', false);
+    // Las luces, solo si en lo que se ve es de noche en algún punto.
+    this.lightsCanvas = dark ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, 'png', true) : null;
+    fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
+    fill.uPatchAmt.value = this.patchCanvas ? 1 : 0;
+    fill.uLightsPatchAmt.value = this.lightsCanvas ? 1 : 0;
+    this.invalidate();
   }
 
   /** Muestra u oculta el sombreado del relieve. La imagen (200 KB) solo se descarga si se pide. */

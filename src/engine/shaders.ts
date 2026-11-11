@@ -410,6 +410,8 @@ uniform vec4 uPatchBox;   // qué zona cubre: (longitud oeste, latitud sur, long
 uniform float uPatchAmt;  // 0 = sin detalle; sube a 1 al llegar la imagen
 uniform sampler2D uLights; // luces de las ciudades de noche (scripts/build-nightlights.py)
 uniform float uLightsAmt;  // 0 = apagadas
+uniform sampler2D uLightsPatch; // las mismas luces con más detalle, de la zona que se está mirando
+uniform float uLightsPatchAmt;  // 0 = sin detalle
 varying float vPhoto;
 varying float vTint;
 
@@ -418,6 +420,11 @@ void main() {
   vec2 uv = vec2(vLonLat.x / 6.283185307 + 0.5, vLonLat.y / 3.141592654 + 0.5);
   // En la textura, 206/255 es terreno llano: más oscuro, ladera en sombra; más claro, al sol.
   float relief = texture2D(uRelief, uv).r / 0.808;
+  // Dónde cae este punto dentro de la zona con detalle (de la foto y de las luces), y cuánto pesa
+  // ese detalle: entero dentro y fundido hacia el borde, para que no se vea el corte.
+  vec2 q = (vLonLat - uPatchBox.xy) / max(uPatchBox.zw - uPatchBox.xy, vec2(1e-6));
+  vec2 edge = min(q, 1.0 - q);
+  float inside = clamp(min(edge.x, edge.y) / 0.03, 0.0, 1.0);
   vec3 base = vColor;
   if (uPhotoAmt > 0.0) {
     // La foto sustituye al color del país en la medida que diga su estado (entera en el mapa
@@ -425,11 +432,7 @@ void main() {
     // la foto tiene tierra: en una isla que en ella es mar se queda el color del país.
     vec4 photo = texture2D(uPhoto, uv);
     if (uPatchAmt > 0.0) {
-      vec2 q = (vLonLat - uPatchBox.xy) / (uPatchBox.zw - uPatchBox.xy);
       vec3 fine = texture2D(uPatch, clamp(q, 0.0, 1.0)).rgb;
-      // Dentro de la zona, fundida hacia el borde para que no se vea el corte.
-      vec2 edge = min(q, 1.0 - q);
-      float inside = clamp(min(edge.x, edge.y) / 0.03, 0.0, 1.0);
       // En la foto de detalle el mar es un azul casi negro; la costa del mapa no coincide con ella
       // al píxel, y donde cae mar se deja la foto general, que ahí tiene color de tierra.
       float sea = step(fine.r, fine.b) * step(fine.g, fine.b + 0.02) * (1.0 - smoothstep(0.22, 0.36, fine.b));
@@ -446,7 +449,13 @@ void main() {
     // Las ciudades se encienden solo donde es de noche, y poco a poco al cruzar el crepúsculo: la
     // misma frontera que usa «daylight» para oscurecer el mapa. Es luz, así que se suma.
     float night = (1.0 - smoothstep(-0.14, 0.05, dot(normalize(vGeo), uSun))) * uNight;
-    lit += vec3(1.0, 0.8, 0.52) * (texture2D(uLights, uv).r * night * uLightsAmt * vTint);
+    float glow = texture2D(uLights, uv).r;
+    if (uLightsPatchAmt > 0.0) {
+      // El detalle solo cuenta donde su tesela ya ha llegado (opaca); donde no, sigue la general.
+      vec4 fine = texture2D(uLightsPatch, clamp(q, 0.0, 1.0));
+      glow = mix(glow, fine.r, inside * fine.a * uLightsPatchAmt);
+    }
+    lit += vec3(1.0, 0.8, 0.52) * (glow * night * uLightsAmt * vTint);
   }
   gl_FragColor = vec4(lit, 1.0);
 }
