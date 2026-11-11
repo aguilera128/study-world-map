@@ -98,6 +98,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |
 | Población | `scripts/data/poblacion.worldbank.json` | Banco Mundial SP.POP.TOTL |
 | Relieve y profundidad del mar | `build-relief.py`, `build-depth.py` | Natural Earth |
+| Relieve del fondo marino | `build-seabed.py` | ETOPO2v2 (NOAA) |
 | Corrientes | `build-currents.py` | OSCAR (NOAA) |
 | Placas y volcanes | `build-tectonics.py` | Bird 2003 (vía H. Ahlenius), NOAA NCEI |
 | Estrellas | `build-stars.mjs`, `build-stars-faint.mjs` | Yale Bright Star Catalogue (brillantes), Hipparcos de la ESA (débiles) |

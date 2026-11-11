@@ -231,6 +231,7 @@ export class MapEngine {
   private showGrid = true;
   private showGlint = true;
   private seabedReady = false;
+  private shadeReady = false;
   private flowReady = false;
   private showCurrents = false;
   private showRelief = false;
@@ -281,7 +282,7 @@ export class MapEngine {
     uCutLon: { value: new Vector2(-20 * DEG, 70 * DEG) },
   };
   private readonly own = {
-    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 } },
+    ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
@@ -397,6 +398,16 @@ export class MapEngine {
     seabed.wrapS = RepeatWrapping;
     this.disposables.push(seabed);
     this.own.ocean.uSeabed.value = seabed;
+    // Relieve del fondo del mar: da volumen a ese color. Hasta que llega, el fondo es liso.
+    const shade = this.image('/data/seabed.webp', () => {
+      this.shadeReady = true;
+      this.own.ocean.uShadeAmt.value = this.showDepth ? this.palette.seaRelief : 0;
+      this.invalidate();
+    });
+    shade.colorSpace = NoColorSpace;
+    shade.wrapS = RepeatWrapping;
+    this.disposables.push(shade);
+    this.own.ocean.uShade.value = shade;
 
     // ── capas, de abajo arriba ──
     const sky = { transparent: true, depthWrite: false };
@@ -621,6 +632,7 @@ export class MapEngine {
     this.own.ocean.uGridAlpha.value = this.showGrid ? p.gridAlpha : 0;
     this.own.ocean.uGlint.value = this.showGlint ? p.glint : 0;
     this.own.ocean.uDepth.value = this.showDepth && this.seabedReady ? p.seaDepth : 0;
+    this.own.ocean.uShadeAmt.value = this.showDepth && this.shadeReady ? p.seaRelief : 0;
     this.own.fill.uReliefAmt.value = this.showRelief && this.reliefReady ? p.relief : 0;
     this.own.stars.uStars.value = this.showStars ? p.stars : 0;
     this.loadSky();
@@ -976,6 +988,7 @@ export class MapEngine {
   setSeaDepth(on: boolean) {
     this.showDepth = on;
     this.own.ocean.uDepth.value = on && this.seabedReady ? this.palette.seaDepth : 0;
+    this.own.ocean.uShadeAmt.value = on && this.shadeReady ? this.palette.seaRelief : 0;
     this.invalidate();
   }
 

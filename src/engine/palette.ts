@@ -46,6 +46,8 @@ export interface Palette {
   glint: number;
   /** Cuánto se distinguen el mar profundo y las aguas someras (0 = color plano). */
   seaDepth: number;
+  /** Cuánto se nota el relieve del fondo del mar (0 = liso). Va con la capa «Profundidad del mar». */
+  seaRelief: number;
   /** Fuerza del sombreado del relieve sobre la tierra (0 = plano). */
   relief: number;
   /** Brillo de las estrellas alrededor del globo (0 = sin estrellas: sobre papel no pegan). */
@@ -101,6 +103,7 @@ export const PAPER: Palette = {
   gridAlpha: 0.22,
   glint: 0.3,
   seaDepth: 0.85,
+  seaRelief: 0.55,
   relief: 0.9,
   stars: 0,
   rim: '#dcecf0',
@@ -174,6 +177,7 @@ export const NIGHT: Palette = {
   gridAlpha: 0.14,
   glint: 0.32,
   seaDepth: 1.35,
+  seaRelief: 0.9,
   relief: 1,
   stars: 1,
   rim: '#6ea6d8',

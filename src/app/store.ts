@@ -436,7 +436,7 @@ export const useApp = create<AppState>()((set, get) => {
         // la malla (en un hilo aparte) y las imágenes del mapa (descarga y decodificación).
         void warmMesh(atlas);
         const { layers } = useSettings.getState();
-        const images = ['/data/depth.webp', '/data/currents.png'];
+        const images = ['/data/depth.webp', '/data/seabed.webp', '/data/currents.png'];
         if (layers.relief) images.push('/data/relief.webp');
         if (layers.stars && document.documentElement.dataset.theme === 'night') images.push('/data/milkyway.webp');
         for (const url of images) void warmBitmap(url).catch(() => {});

@@ -140,6 +140,8 @@ uniform float uZones;     // 1 = franjas de los husos horarios teóricos (15° c
 uniform float uFlowShow;  // 1 = capa «Corrientes oceánicas» a la vista
 uniform sampler2D uSeabed; // profundidad real del mar (scripts/build-depth.py)
 uniform float uDepth;     // cuánto se distinguen el mar profundo y las aguas someras (0 = color plano)
+uniform sampler2D uShade; // relieve del fondo del mar, sombreado (scripts/build-seabed.py)
+uniform float uShadeAmt;  // cuánto se nota ese relieve (0 = fondo liso)
 varying vec2 vLonLat;
 varying vec3 vNormal;
 varying vec3 vToEye;
@@ -269,7 +271,11 @@ vec3 sea(vec2 ll) {
   vec3 shallow = uOcean * vec3(1.06, 1.14, 1.10) + vec3(0.0, 0.035, 0.02);
   vec3 deep = uOcean * vec3(0.70, 0.78, 0.90);
   // la mayor parte del cambio, en los primeros 2000 m, como se ve en las fotos de satélite
-  return mix(uOcean, mix(shallow, deep, sqrt(deepness)), uDepth);
+  vec3 water = mix(uOcean, mix(shallow, deep, sqrt(deepness)), uDepth);
+  // Relieve del fondo (dorsales, fosas, taludes): 0,5 es fondo llano; más claro, ladera iluminada.
+  // Aclara u oscurece el agua, sin cambiarle el tono.
+  float relief = texture2D(uShade, vec2(ll.x / 6.283185307 + 0.5, ll.y / 3.141592654 + 0.5)).r - 0.5;
+  return water * (1.0 + relief * uShadeAmt);
 }
 
 void main() {
