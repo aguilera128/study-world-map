@@ -17,8 +17,6 @@ import { Celebration } from './Celebration';
 // El huevo de pascua solo se descarga si alguien lo encuentra.
 const ToonSky = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonSky })));
 const ToonSaucer = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonSaucer })));
-const ToonClouds = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonClouds })));
-const ToonBodies = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonBodies })));
 import { useNow, useReducedMotion, useTheme, useWide } from './hooks';
 import { Icon } from './Icon';
 import { DISCONTINUITIES, INTERIOR } from './planetLayers';
@@ -415,9 +413,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
       {toon && (
         <Suspense fallback={null}>
-          {engine && viewMode !== 'flat' && <ToonBodies engine={engine} animated={!reducedMotion} />}
-          {engine && <ToonClouds engine={engine} />}
-          <ToonSaucer animated={!reducedMotion} />
+          {viewMode === 'flat' && <ToonSaucer animated={!reducedMotion} />}
         </Suspense>
       )}
       {/* Un 10 (todo a la primera, en una partida entera) se celebra con fuegos artificiales. */}

@@ -546,6 +546,9 @@ const eu: Record<string, string> = {
   'resultados': 'emaitza',
   'Jugar este reto': 'Erronka honetan jolastu',
   'partida completa': 'partida osoa',
+
+  // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
+  'Planeta de dibujos': 'Marrazki bizidunen planeta',
 };
 
 export default eu;

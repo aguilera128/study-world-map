@@ -545,6 +545,9 @@ const it: Record<string, string> = {
   'resultados': 'risultati',
   'Jugar este reto': 'Gioca a questa sfida',
   'partida completa': 'partita completa',
+
+  // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
+  'Planeta de dibujos': 'Pianeta a cartoni',
 };
 
 export default it;

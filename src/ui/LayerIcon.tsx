@@ -181,6 +181,26 @@ const ICONS: Record<LayerId, ReactNode> = {
   ),
 };
 
+/**
+ * El remolino verde del planeta de dibujos (el huevo de pascua). Es el único icono con color propio:
+ * no es una capa del atlas, es una broma, y tiene que notarse.
+ */
+export function PortalIcon({ size = 22, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>
+      <path
+        d="M20.6 12Q22.5 16.4 18.1 18.1 16.4 22.5 12 20.6 7.6 22.5 5.9 18.1 1.5 16.4 3.4 12 1.500 7.600 5.900 5.900 7.600 1.500 12 3.400 16.400 1.500 18.100 5.900 22.500 7.600 20.600 12Z"
+        fill="#58c92a"
+        stroke="#1d5e12"
+        strokeWidth={1.4}
+      />
+      <circle cx="12" cy="12" r="5.6" fill="#a5ee4c" />
+      <path d="M12 12.200c.200-1.300 2-1.500 2.700-.300 1 1.700-.300 3.900-2.400 4.200-2.900.400-5-2.100-4.600-4.800.500-3.300 3.900-5 6.900-3.900" stroke="#1d5e12" strokeWidth={1.5} />
+      <circle cx="12" cy="12.100" r="1.100" fill="#f1ffc4" />
+    </svg>
+  );
+}
+
 export function LayerIcon({ id, size = 22, className }: { id: LayerId; size?: number; className?: string }) {
   return (
     <svg

@@ -544,6 +544,9 @@ const zh: Record<string, string> = {
   'resultados': '个成绩',
   'Jugar este reto': '玩这个挑战',
   'partida completa': '完整一局',
+
+  // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
+  'Planeta de dibujos': '卡通星球',
 };
 
 export default zh;

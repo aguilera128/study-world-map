@@ -58,6 +58,7 @@ import {
   SHEET_VERT,
   WALL_VERT,
 } from './shaders';
+import type { ToonScene } from './toonScene';
 
 export type ViewMode = 'globe' | 'flat';
 
@@ -157,6 +158,8 @@ const MARKER_DIAMETER = 13;
 const LINE_WIDTH = 1.15;
 const LINE_WIDTH_PLAY = 1.4;
 const LINE_WIDTH_TOON = 2.4;
+/** Lo que sobresale del globo su línea negra en el huevo de pascua, en píxeles (CSS). */
+const TOON_OUTLINE = 6;
 const LINE_WIDTH_EMPH = 2.8;
 const LINE_CASING = 1.2;
 
@@ -198,12 +201,6 @@ interface Tracked {
   alt: number;
   /** Solo los astros: su dibujo (el elemento con data-sky) y lo que mide. Ver «placeFar». */
   sky?: { body: HTMLElement | SVGElement; width: number; height: number };
-  /**
-   * Un cuerpo que flota cerca de la Tierra (los planetas del huevo de pascua): su radio, en radios
-   * terrestres. Se dibuja con ese tamaño según lo lejos que quede y solo cuando está más allá de la
-   * Tierra, asomando por su borde o pasando por detrás: de este lado taparía el mapa.
-   */
-  size?: number;
 }
 
 interface ResolvedStyle {
@@ -292,6 +289,9 @@ export class MapEngine {
   private toonSky: { value: Texture | null } = { value: null };
   private skyToon = { value: 0 };
   private toonSkyReady = false;
+  /** La nave, las nubes y los astros del huevo de pascua: se cargan la primera vez que hacen falta. */
+  private toonShip: ToonScene | null = null;
+  private toonShipAsked = false;
   private cutFaces: Mesh | null = null;
   private heightBefore = 0;
   private core: Mesh | null = null;
@@ -837,6 +837,25 @@ export class MapEngine {
       this.toonSky.value = sky;
     }
     this.skyToon.value = on && this.toonSkyReady ? 1 : 0;
+    // La nave que da vueltas al planeta, las nubes y los astros: su código y sus ilustraciones solo
+    // se piden al encenderlo.
+    if (on && !this.toonShipAsked) {
+      this.toonShipAsked = true;
+      const picture = (name: string) => {
+        const texture = this.image(`/toon/${name}.webp`, () => this.invalidate());
+        this.disposables.push(texture);
+        return texture;
+      };
+      const art = { cloud: picture('nube'), ring: picture('anillo'), portal: picture('portal'), green: picture('verde'), red: picture('luna') };
+      void import('./toonScene').then(({ createToonScene }) => {
+        if (this.disposed) return;
+        this.toonShip = createToonScene(art);
+        this.toonShip.object.visible = this.toon;
+        this.scene.add(this.toonShip.object);
+        this.invalidate();
+      });
+    }
+    if (this.toonShip) this.toonShip.object.visible = on;
     this.invalidate();
   }
 
@@ -1486,8 +1505,8 @@ export class MapEngine {
    * su posición y el atributo `data-hidden` si queda en la cara oculta. Con `alt` flota sobre el
    * globo, a esa altura en radios. Devuelve cómo soltarlo.
    */
-  track(el: HTMLElement, lon: number, lat: number, alt = 0, size?: number): () => void {
-    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG, alt, size };
+  track(el: HTMLElement, lon: number, lat: number, alt = 0): () => void {
+    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG, alt };
     this.tracked.add(item);
     this.place(item);
     return () => this.tracked.delete(item);
@@ -1507,21 +1526,16 @@ export class MapEngine {
     // vuelve a medir si cambia el tamaño del lienzo o si React sustituye el elemento, y mientras
     // mida cero (oculto) no se da por bueno.
     let sky = item.sky;
-    if (item.size) {
-      // Su tamaño no se mide: se le pone, según la distancia. La proporción la trae el elemento.
-      const body = sky?.body.isConnected ? sky.body : (item.el.querySelector<HTMLElement>('[data-sky]') ?? item.el);
-      const width = 2 * item.size * this.rig.pixelsPerRadius(Math.max(p.depth ?? 1, 0.5));
-      sky = item.sky = { body, width, height: width * (Number((body as HTMLElement).dataset.aspect) || 1) };
-      body.style.width = `${width.toFixed(1)}px`;
-    } else if (!sky || !sky.body.isConnected || sky.width === 0 || sky.height === 0) {
+    if (!sky || !sky.body.isConnected || sky.width === 0 || sky.height === 0) {
       const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
       const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
       sky = item.sky = { body, width: box.width, height: box.height };
     }
-    p.visible = !!p.ahead && (!item.size || !!p.behind);
+    p.visible = !!p.ahead;
     // Lejos de la pantalla no se ve ni su resplandor: no hace falta tocar el recorte.
     if (p.x < -SKY_REACH || p.y < -SKY_REACH || p.x > this.rig.width + SKY_REACH || p.y > this.rig.height + SKY_REACH) return p;
-    const [x, y, r] = [disc.x - p.x + sky.width / 2, disc.y - p.y + sky.height / 2, disc.r];
+    // En el globo de dibujos la línea negra del contorno queda por fuera del disco: también tapa.
+    const [x, y, r] = [disc.x - p.x + sky.width / 2, disc.y - p.y + sky.height / 2, disc.r + (this.toon ? TOON_OUTLINE : 0)];
     // Todo menos el círculo de la Tierra, en coordenadas del propio dibujo.
     sky.body.style.clipPath = p.ahead
       ? `path(evenodd, "M-3000 -3000H3000V3000H-3000Z M${(x - r).toFixed(1)} ${y.toFixed(1)}a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(2 * r).toFixed(1)} 0a${r.toFixed(1)} ${r.toFixed(1)} 0 1 0 ${(-2 * r).toFixed(1)} 0Z")`
@@ -1537,7 +1551,7 @@ export class MapEngine {
     // Los astros (la Luna a 60 radios, el Sol a 23 500) van a su distancia real con el globo formado:
     // casi siempre quedan fuera de la pantalla o detrás de la Tierra, como de verdad.
     const p =
-      (item.alt > 10 || item.size) && rig.morph > 0.999
+      item.alt > 10 && rig.morph > 0.999
         ? this.placeFar(item)
         : rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
     // Con el planeta abierto, lo que cae sobre el gajo quitado no tiene dónde apoyarse.
@@ -1546,8 +1560,6 @@ export class MapEngine {
       const lon = Math.atan2(Math.sin(item.lon), Math.cos(item.lon));
       if (lon > x && lon < y) p.visible = false;
     }
-    // Los cuerpos que flotan alrededor del globo no tienen sitio en el mapa plano.
-    if (item.size && rig.morph <= 0.999) p.visible = false;
     // En el mapa plano los astros vuelven a su punto del mapa, sin recorte.
     if (item.alt > 10 && rig.morph <= 0.999) item.el.querySelector<HTMLElement | SVGElement>('[data-sky]')?.style.removeProperty('clip-path');
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
@@ -1891,7 +1903,9 @@ export class MapEngine {
       }
     }
     this.render();
-    if (busyCamera || busyState) {
+    // Con la nave del huevo de pascua a la vista se dibuja cada fotograma: está siempre en marcha.
+    const flying = this.toon && !!this.toonShip?.object.visible && this.rig.morph > 0.999 && !this.reducedMotion && !this.weak;
+    if (busyCamera || busyState || flying) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
     } else if ((this.wavy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
@@ -2082,6 +2096,12 @@ export class MapEngine {
     this.own.frame.uAlpha.value = 0.9 * (1 - smoothstep(0, 0.5, morph));
     this.frameLine.visible = this.own.frame.uAlpha.value > 0.003;
 
+    if (this.toonShip && this.toon) {
+      // Solo en el globo: en el mapa plano no hay «alrededor».
+      const scene = this.toonShip.object;
+      scene.visible = morph > 0.999;
+      if (scene.visible) this.toonShip.update(this.reducedMotion ? 2 : performance.now() / 1000, rig.camera);
+    }
     this.renderer.render(this.scene, rig.camera);
 
     for (const item of this.tracked) this.place(item);

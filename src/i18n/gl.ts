@@ -545,6 +545,9 @@ const gl: Record<string, string> = {
   'resultados': 'resultados',
   'Jugar este reto': 'Xogar a este reto',
   'partida completa': 'partida completa',
+
+  // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
+  'Planeta de dibujos': 'Planeta de debuxos',
 };
 
 export default gl;

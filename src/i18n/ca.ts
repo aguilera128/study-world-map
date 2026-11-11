@@ -546,6 +546,9 @@ const ca: Record<string, string> = {
   'resultados': 'resultats',
   'Jugar este reto': 'Jugar a este repte',
   'partida completa': 'partida completa',
+
+  // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
+  'Planeta de dibujos': 'Planeta de dibuixos',
 };
 
 export default ca;

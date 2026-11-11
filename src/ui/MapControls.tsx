@@ -1,5 +1,5 @@
 import { DENSITY_LABELS } from '../game/population';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
@@ -9,7 +9,7 @@ import { resolveScope } from '../game/config';
 import { useTheme, useWide } from './hooks';
 import { ExportMenu } from './ExportMenu';
 import { Icon, type IconName } from './Icon';
-import { LayerIcon } from './LayerIcon';
+import { LayerIcon, PortalIcon } from './LayerIcon';
 import { t } from '../i18n';
 
 function Control({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
@@ -50,6 +50,8 @@ function LayersMenu() {
   const parked = (id: LayerId) => playing && offInGame(map).includes(id);
   const realTime = useSettings((s) => s.realTime);
   const theme = useTheme();
+  const toon = useApp((s) => s.toon);
+  const toggleToon = useApp((s) => s.toggleToon);
 
   // Se cierra con Escape o al pulsar fuera.
   useEffect(() => {
@@ -64,25 +66,32 @@ function LayersMenu() {
     };
   }, [open]);
 
-  const group = (title: string, ids: LayerId[]) => (
-    <fieldset>
-      <legend className="label mb-1">{title}</legend>
-      {ids.map((id) => (
-        // Interruptor: toda la fila se pulsa y mide 44 px de alto, para el dedo. Sigue siendo una
-        // casilla nativa (con teclado y lector de pantalla), solo que dibujada como interruptor.
-        <label key={id} className={`flex min-h-11 items-center gap-2.5 text-sm ${parked(id) ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}>
-          {/* El icono se entinta al encender la capa; el estado lo sigue diciendo el interruptor. */}
-          <LayerIcon id={id} className={`shrink-0 transition-colors ${layers[id] && !parked(id) ? 'text-ink' : 'text-ink-faint'}`} />
-          <span className="flex-1">{LAYERS[id]}</span>
-          <input type="checkbox" role="switch" checked={layers[id] && !parked(id)} disabled={parked(id)} onChange={(e) => setLayer(id, e.target.checked)} className="peer sr-only" />
+  // Interruptor: toda la fila se pulsa y mide 44 px de alto, para el dedo. Sigue siendo una casilla
+  // nativa (con teclado y lector de pantalla), solo que dibujada como interruptor.
+  const row = (key: string, icon: ReactNode, label: string, on: boolean, change: (on: boolean) => void, off = false) => (
+        <label key={key} className={`flex min-h-11 items-center gap-2.5 text-sm ${off ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}>
+          {icon}
+          <span className="flex-1">{label}</span>
+          <input type="checkbox" role="switch" checked={on} disabled={off} onChange={(e) => change(e.target.checked)} className="peer sr-only" />
           <span
             aria-hidden="true"
             className="relative h-6 w-10 shrink-0 rounded-full border border-rule-strong bg-paper transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-[1.125rem] after:w-[1.125rem] after:rounded-full after:bg-ink-faint after:transition-transform peer-checked:border-transparent peer-checked:bg-(--accent) peer-checked:after:translate-x-4 peer-checked:after:bg-(--on-accent) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--accent)"
           />
         </label>
-      ))}
+  );
+  const group = (title: string, ids: LayerId[], extra?: ReactNode) => (
+    <fieldset>
+      <legend className="label mb-1">{title}</legend>
+      {ids.map((id) =>
+        // El icono se entinta al encender la capa; el estado lo sigue diciendo el interruptor.
+        row(id, <LayerIcon id={id} className={`shrink-0 transition-colors ${layers[id] && !parked(id) ? 'text-ink' : 'text-ink-faint'}`} />, LAYERS[id], layers[id] && !parked(id), (on) => setLayer(id, on), parked(id)),
+      )}
+      {extra}
     </fieldset>
   );
+  // El planeta de dibujos (el huevo de pascua, que también sale con cinco toques en «Globo 3D») no es
+  // una capa: cambia el aspecto de todo el mapa y no se guarda. Va con las de aspecto.
+  const toonRow = row('toon', <PortalIcon className={`shrink-0 transition-[filter,opacity] ${toon ? '' : 'opacity-70 saturate-50'}`} />, t('Planeta de dibujos'), toon, (on) => on !== toon && toggleToon());
 
   const legends = (
     <>
@@ -119,8 +128,8 @@ function LayersMenu() {
   const content = (
     <>
       {playing && <p className="text-xs text-ink-faint">{t('Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.')}</p>}
-      {LAYER_GROUPS.map((g) => (
-        <div key={g.title}>{group(g.title, g.ids)}</div>
+      {LAYER_GROUPS.map((g, i) => (
+        <div key={g.title}>{group(g.title, g.ids, i === LAYER_GROUPS.length - 1 ? toonRow : undefined)}</div>
       ))}
       {legends}
       {realTime ? (
