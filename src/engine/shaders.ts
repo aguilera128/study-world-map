@@ -478,9 +478,11 @@ uniform float uEmphWidth; // grosor de un contorno enfatizado
 uniform vec3 uLine;
 uniform vec3 uLineEmph;
 uniform float uFlat; // 1 = línea que no es una frontera (un río, el ecuador): no se enfatiza
+uniform float uCasing; // ribete oscuro a cada lado de un contorno enfatizado, en píxeles (0 = sin él)
 varying vec3 vColor;
 varying float vDist; // distancia al eje del tramo, en píxeles
 varying float vHalf;
+varying float vCore; // media anchura de la parte de color; lo que sobra hasta «vHalf» es el ribete
 varying vec3 vGeoLine;
 
 void main() {
@@ -499,7 +501,8 @@ void main() {
   float len = length(d);
   vec2 dir = len > 1e-4 ? d / len : vec2(1.0, 0.0);
   vec2 nrm = vec2(-dir.y, dir.x);
-  float halfWidth = 0.5 * mix(uWidth, uEmphWidth, emph);
+  float casing = uCasing * emph;
+  float halfWidth = 0.5 * mix(uWidth, uEmphWidth, emph) + casing;
   float reach = halfWidth + 1.0; // 1 px más para suavizar el borde
   vec4 c = position.x < 0.5 ? ca : cb;
   // se alarga medio grosor por cada extremo para tapar las juntas entre tramos
@@ -508,6 +511,7 @@ void main() {
   gl_Position = c;
   vDist = position.y * reach;
   vHalf = halfWidth;
+  vCore = halfWidth - casing;
   vColor = mix(uLine, uLineEmph, emph);
 }
 `;
@@ -519,6 +523,7 @@ uniform vec2 uCutLon;
 varying vec3 vColor;
 varying float vDist;
 varying float vHalf;
+varying float vCore;
 varying vec3 vGeoLine;
 
 void main() {
@@ -529,7 +534,9 @@ void main() {
   }
   float a = clamp(vHalf + 0.5 - abs(vDist), 0.0, 1.0) * uOpacity;
   if (a <= 0.003) discard;
-  gl_FragColor = vec4(vColor, a);
+  // El ribete oscuro separa el contorno de lo que tenga debajo (arena, nieve) cuando va sobre la foto.
+  float core = vCore < vHalf ? clamp(vCore + 0.5 - abs(vDist), 0.0, 1.0) : 1.0;
+  gl_FragColor = vec4(mix(vec3(0.04, 0.07, 0.1), vColor, core), a);
 }
 `;
 

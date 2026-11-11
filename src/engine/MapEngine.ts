@@ -156,6 +156,7 @@ const MARKER_THRESHOLD = 8;
 const MARKER_DIAMETER = 13;
 const LINE_WIDTH = 1.15;
 const LINE_WIDTH_EMPH = 2.8;
+const LINE_CASING = 1.2;
 
 /** Velocidad máxima de la inercia tras soltar un arrastre, en píxeles por segundo. */
 const MAX_FLING = 1300;
@@ -249,6 +250,7 @@ export class MapEngine {
   private shadeReady = false;
   private showPhoto = false;
   private photoReady = false;
+  private photoOutline = false;
   /** Detalle de la imagen de satélite: las teselas que hay puestas, la última vista y los turnos de espera. */
   private patchKey = '';
   private patchCanvas: HTMLCanvasElement | null = null;
@@ -310,11 +312,14 @@ export class MapEngine {
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
-    graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
-    guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
-    plate: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
-    river: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
-    line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 } },
+    graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    plate: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    river: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.9 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
+    // Todas las líneas comparten programa: un uniforme que le falte a un material se queda con el
+    // valor de la última línea dibujada. Sin «uFlat» aquí, las fronteras heredaban el 1 de los ríos,
+    // las placas o las líneas imaginarias y dejaban de resaltar el país señalado.
+    line: { uWidth: { value: 1 }, uEmphWidth: { value: 2 }, uOpacity: { value: 1 }, uFlat: { value: 0 }, uCasing: { value: 0 } },
     marker: { uPxPerRad: { value: 1 }, uThreshold: { value: MARKER_THRESHOLD }, uMarkerPx: { value: 16 } },
     halo: {
       uExtent: { value: 2 },
@@ -644,7 +649,7 @@ export class MapEngine {
     u.uRimAmount.value = p.rimAmount;
     u.uRimPower.value = p.rimPower;
     u.uLine.value.copy(vec3(p.line));
-    u.uLineEmph.value.copy(vec3(p.lineEmph));
+    this.syncEmph();
     this.own.river.uLine.value.copy(vec3(p.river));
     this.own.river.uLineEmph.value.copy(vec3(p.river));
     this.own.plate.uLine.value.copy(vec3(p.plate));
@@ -1033,6 +1038,16 @@ export class MapEngine {
     this.invalidate();
   }
 
+  /**
+   * Contorno del país señalado. Sobre la imagen de satélite el país no se puede teñir (se taparía la
+   * foto), así que el amarillo de «señalado» pasa al contorno, con un ribete oscuro que lo separa de
+   * la arena y de la nieve. Sin la foto, el contorno es el del tema (crema o tinta), sin ribete.
+   */
+  private syncEmph() {
+    this.photoOutline = this.showPhoto && this.photoReady;
+    this.uniforms.uLineEmph.value.copy(vec3(this.photoOutline ? this.palette.hover : this.palette.lineEmph));
+  }
+
   /** Pinta la tierra con la imagen de satélite. La imagen (480 KB) solo se descarga si se pide. */
   setSatellite(on: boolean) {
     this.showPhoto = on;
@@ -1040,6 +1055,7 @@ export class MapEngine {
       const photo = this.image('/data/satellite.webp', () => {
         this.photoReady = true;
         this.own.fill.uPhotoAmt.value = this.showPhoto ? 1 : 0;
+        this.syncEmph();
         this.invalidate();
       });
       photo.colorSpace = NoColorSpace;
@@ -1049,6 +1065,7 @@ export class MapEngine {
       this.own.fill.uPhoto.value = photo;
     }
     this.own.fill.uPhotoAmt.value = on && this.photoReady ? 1 : 0;
+    this.syncEmph();
     this.patchView = ''; // que se vuelva a mirar si hace falta detalle
     this.invalidate();
   }
@@ -1982,6 +1999,7 @@ export class MapEngine {
     this.own.guide.uWidth.value = 1.6 * dpr;
     this.own.graticule.uWidth.value = dpr;
     this.own.line.uEmphWidth.value = LINE_WIDTH_EMPH * dpr;
+    this.own.line.uCasing.value = this.photoOutline ? LINE_CASING * dpr : 0;
     this.own.marker.uPxPerRad.value = 1 / rig.worldPerPixel;
     this.own.marker.uMarkerPx.value = MARKER_DIAMETER * dpr;
 
