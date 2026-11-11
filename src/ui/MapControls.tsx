@@ -149,7 +149,7 @@ function LayersMenu() {
         <div className="float absolute bottom-0 right-12 w-60 bg-surface! py-2 pr-1" role="group" aria-label={t('Capas del mapa')}>
           <div
             // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
-            className={`thin-scroll flex flex-col gap-3 overflow-y-auto py-1 pl-3.5 pr-2.5 ${realTime ? 'max-h-[calc(100dvh-19.5rem)]' : 'max-h-[calc(100dvh-8rem)]'}`}
+            className={`thin-scroll flex flex-col gap-3 overflow-y-auto py-1 pl-3.5 pr-2.5 ${realTime ? 'max-h-[calc(100dvh-21.5rem)]' : 'max-h-[calc(100dvh-10rem)]'}`}
           >
             {content}
           </div>
@@ -210,7 +210,8 @@ export function MapControls() {
   return (
     <>
       <div
-        className={`float fixed right-3 z-30 flex flex-col divide-y divide-rule wide:right-8 ${settled ? 'transition-[bottom] duration-300' : ''}`}
+        // Por encima de la tarjeta de la hora (z-30): si el menú de capas llega hasta ella, la tapa él.
+        className={`float fixed right-3 z-[31] flex flex-col divide-y divide-rule wide:right-8 ${settled ? 'transition-[bottom] duration-300' : ''}`}
         style={{ bottom: Math.max(donate ? 44 : 16, pad.bottom + 12) }}
       >
         {/* En pantallas táctiles el zoom se hace pellizcando: solo queda la vuelta a la vista general. */}

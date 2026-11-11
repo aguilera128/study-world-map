@@ -42,13 +42,34 @@ function decodeLine(deltas: number[]): number[] {
 }
 
 interface RawFeature {
+  id?: string;
   kind: string;
   rank: number;
   at: [number, number];
   elev?: number;
   names: Record<string, string>;
   lines?: number[][];
+  /** Solo las corrientes: velocidad media (m/s) y rumbo en octavos de vuelta desde el norte. */
+  speed?: number;
+  dir?: number;
 }
+
+/** Rumbos de la ficha de una corriente, en octavos de vuelta desde el norte y en el sentido del reloj. */
+const COMPASS = [
+  t('hacia el norte'),
+  t('hacia el noreste'),
+  t('hacia el este'),
+  t('hacia el sureste'),
+  t('hacia el sur'),
+  t('hacia el suroeste'),
+  t('hacia el oeste'),
+  t('hacia el noroeste'),
+];
+/** Centro de una tarjeta de 16 rem que no se salga de la pantalla por los lados. */
+const clampX = (x: number) => Math.min(Math.max(x, 140), window.innerWidth - 140);
+
+/** Las corrientes cargadas, por identificador: de aquí sale la ficha al señalar su rótulo. */
+const CURRENTS = new Map<string, RawFeature & { name: string }>();
 
 /** Idiomas que, si falta un nombre, prefieren el español al inglés. */
 const SPANISH_FIRST = new Set(['es', 'ca', 'gl', 'eu']);
@@ -67,7 +88,10 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
             data.features.map((f) => {
               const name = f.names[lang] ?? (SPANISH_FIRST.has(lang) ? (f.names.es ?? f.names.en) : (f.names.en ?? f.names.es)) ?? '';
               const text = !labels || !name ? '' : f.elev ? `▲ ${name} · ${f.elev.toLocaleString(LOCALE)} m` : name;
-              return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text };
+              // Las corrientes llevan ficha: su rótulo se puede señalar.
+              const id = f.speed !== undefined && f.id ? f.id : undefined;
+              if (id) CURRENTS.set(id, { ...f, name });
+              return { kind: f.kind, rank: f.rank, lon: f.at[0], lat: f.at[1], lines: f.lines?.map(decodeLine), text, id };
             }),
             line,
           );
@@ -243,6 +267,28 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     };
   }, [atlas, waiting]);
 
+  // ── Ficha de una corriente, al señalar su rótulo (o tocarlo) ──
+  const [current, setCurrent] = useState<{ id: string; x: number; y: number } | null>(null);
+  useEffect(() => {
+    const host = canvasRef.current?.parentElement;
+    if (!host) return;
+    const labelOf = (e: Event) => (e.target instanceof Element ? e.target.closest<HTMLElement>('.feature-label[data-id]') : null);
+    const show = (e: Event) => {
+      const el = labelOf(e);
+      if (!el?.dataset.id) return;
+      const box = el.getBoundingClientRect();
+      setCurrent({ id: el.dataset.id, x: box.left + box.width / 2, y: box.bottom });
+    };
+    const hide = (e: Event) => labelOf(e) && setCurrent(null);
+    host.addEventListener('pointerover', show);
+    host.addEventListener('pointerout', hide);
+    return () => {
+      host.removeEventListener('pointerover', show);
+      host.removeEventListener('pointerout', hide);
+    };
+  }, []);
+  const currentInfo = current && layers.currents ? CURRENTS.get(current.id) : undefined;
+
   // ── Sincronizar el motor con el estado ──
   useEffect(() => engine?.setPalette(PALETTES[theme]), [engine, theme]);
   useEffect(() => engine?.setMode(viewMode), [engine, viewMode]);
@@ -343,6 +389,40 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
+
+      {current && currentInfo && (
+        <div
+          role="tooltip"
+          className="float pointer-events-none fixed z-40 w-64 bg-surface! px-3 py-2.5 text-sm"
+          style={{ left: clampX(current.x), top: current.y + 8, transform: 'translateX(-50%)' }}
+        >
+          <p className="display text-base leading-tight">{currentInfo.name}</p>
+          <p className="mt-1 flex items-start gap-2 text-ink-soft">
+            <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${currentInfo.kind === 'corriente-calida' ? 'bg-[#e0452a]' : 'bg-[#2f7fd0]'}`} />
+            {currentInfo.kind === 'corriente-calida'
+              ? t('Corriente cálida: su agua está más caliente que la que la rodea.')
+              : t('Corriente fría: su agua está más fría que la que la rodea.')}
+          </p>
+          <dl className="mt-2 space-y-1.5">
+            <div>
+              <dt className="text-xs text-ink-soft">{t('Dirección')}</dt>
+              <dd className="font-semibold">
+                <span className="mr-1.5 inline-block" style={{ transform: `rotate(${(currentInfo.dir ?? 0) * 45}deg)` }} aria-hidden="true">
+                  ↑
+                </span>
+                {COMPASS[currentInfo.dir ?? 0]}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-ink-soft">{t('Velocidad media en superficie')}</dt>
+              <dd className="tabular font-semibold">
+                {(currentInfo.speed ?? 0).toLocaleString(LOCALE, { maximumFractionDigits: 2 })} m/s · {((currentInfo.speed ?? 0) * 3.6).toLocaleString(LOCALE, { maximumFractionDigits: 1 })} km/h
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-2 text-xs text-ink-faint">{t('Medida por satélite: media de 2011 a 2014 (OSCAR).')}</p>
+        </div>
+      )}
 
       <div
         ref={tipRef}

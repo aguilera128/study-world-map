@@ -10,6 +10,8 @@ export interface MapFeature {
   text: string;
   /** Trazado de un río: tramos [lon0, lat0, lon1, lat1, …] en grados. */
   lines?: number[][];
+  /** Si lo lleva, el rótulo se puede señalar (sale con «data-id») para enseñar su ficha. */
+  id?: string;
 }
 
 const DEG = Math.PI / 180;
@@ -40,6 +42,7 @@ export class FeatureLabels {
         const el = document.createElement('span');
         el.className = `feature-label ${WATER.has(feature.kind) ? 'water' : 'land'} ${feature.kind}`;
         el.textContent = feature.text;
+        if (feature.id) el.dataset.id = feature.id;
         el.hidden = true;
         this.root.appendChild(el);
         return { feature, el, width: 0, shown: false };

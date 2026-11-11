@@ -920,8 +920,15 @@ p {
 /* Corrientes oceánicas: en rojo las cálidas y en azul las frías. */
 .feature-label.corriente-calida,
 .feature-label.corriente-fria {
+  font-size: 0.8125rem;
   font-style: italic;
   font-weight: 700;
+}
+
+/* Un rótulo con ficha (las corrientes) se puede señalar; los demás dejan pasar el cursor al mapa. */
+.feature-label[data-id] {
+  pointer-events: auto;
+  cursor: help;
 }
 
 .feature-label.corriente-calida {

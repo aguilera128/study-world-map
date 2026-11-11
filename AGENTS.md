@@ -102,6 +102,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Luces nocturnas de las ciudades | `build-nightlights.py` | Black Marble 2016 (NASA) |
 | Imagen de satélite | `build-satellite.py` | Blue Marble Next Generation (NASA), con ETOPO2v2 como máscara de tierra |
 | Corrientes | `build-currents.py` | OSCAR (NOAA) |
+| Ficha de cada corriente | `build-current-info.py` | OSCAR (velocidad), Wikipedia en inglés (rumbo general) |
 | Placas y volcanes | `build-tectonics.py` | Bird 2003 (vía H. Ahlenius), NOAA NCEI |
 | Estrellas | `build-stars.mjs`, `build-stars-faint.mjs` | Yale Bright Star Catalogue (brillantes), Hipparcos de la ESA (débiles) |
 | Vía Láctea | `exr-to-raw.mjs` + `build-milkyway.py` | NASA Deep Star Maps 2020 (Gaia DR2) |
