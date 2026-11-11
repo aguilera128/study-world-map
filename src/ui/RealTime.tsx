@@ -150,7 +150,8 @@ export function RealTimeMarkers({
   showUser: boolean;
 }) {
   const location = useApp((s) => s.location);
-  // Con el huevo de pascua, el Sol es el de dibujos: el mismo sitio, otro aspecto.
+  // Con el huevo de pascua, el Sol es el de dibujos: el mismo sitio, otro aspecto. Lleva alto y ancho
+  // fijos: el mapa lo mide para recortarlo con el borde de la Tierra, y no puede esperar a que cargue.
   const toon = useApp((s) => s.toon);
   const phase = moonPhase(sun, moon);
   return (
@@ -176,7 +177,7 @@ export function RealTimeMarkers({
       {layers.sun && (
         <Tracked engine={engine} lon={sun.lon} lat={sun.lat} alt={SUN_ALT}>
           <SkyMarker label={t('Aquí es mediodía: el Sol está en lo más alto')}>
-            {toon ? <img src="/toon/sol.webp" alt="" data-sky draggable={false} className="block w-[11vmin] max-w-none select-none" /> : <span className="sun-marker" data-sky />}
+            {toon ? <img src="/toon/sol.webp" alt="" data-sky draggable={false} className="block h-[11vmin] w-[11vmin] max-w-none select-none object-contain" /> : <span className="sun-marker" data-sky />}
             <SkyCard
               title={t('Sol · debajo de él es mediodía')}
               rows={[

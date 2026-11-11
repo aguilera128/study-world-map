@@ -1513,7 +1513,7 @@ export class MapEngine {
       const width = 2 * item.size * this.rig.pixelsPerRadius(Math.max(p.depth ?? 1, 0.5));
       sky = item.sky = { body, width, height: width * (Number((body as HTMLElement).dataset.aspect) || 1) };
       body.style.width = `${width.toFixed(1)}px`;
-    } else if (!sky || !sky.body.isConnected || sky.width === 0) {
+    } else if (!sky || !sky.body.isConnected || sky.width === 0 || sky.height === 0) {
       const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
       const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
       sky = item.sky = { body, width: box.width, height: box.height };
