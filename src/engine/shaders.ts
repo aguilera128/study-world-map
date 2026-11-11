@@ -190,9 +190,33 @@ const mat3 TURN = mat3(0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6);
 // Corriente en un punto: xyz = hacia dónde va el agua (vector sobre la esfera, sin unidades de
 // distancia) y w = velocidad en m/s. En la textura, rojo y verde son la velocidad hacia el este y
 // hacia el norte de −1 a 1 m/s, y azul vale 1 donde hay dato.
+//
+// La rejilla de corrientes es gruesa (540 × 270, dos tercios de grado) y al acercarse cada celda
+// ocupa decenas de píxeles. Si se deja que la tarjeta gráfica interpole (o no interpole, que también
+// pasa), el arrastre cambia de golpe o en esquina de una celda a otra y el dibujo se parte en
+// cuadrados. Por eso se interpola aquí, con suavidad, entre los nueve puntos de alrededor
+// (B-spline cuadrática), leyendo cada uno en el centro de su celda.
+vec2 flowAt(vec2 ll) {
+  const vec2 size = vec2(540.0, 270.0);
+  vec2 st = vec2(ll.x / 6.283185307 + 0.5, ll.y / 3.141592654 + 0.5) * size;
+  vec2 center = floor(st) + 0.5;
+  vec2 f = st - center; // de −0,5 a 0,5: dónde cae el punto dentro de su celda
+  vec2 w0 = 0.5 * (0.5 - f) * (0.5 - f);
+  vec2 w1 = 0.75 - f * f;
+  vec2 w2 = 0.5 * (0.5 + f) * (0.5 + f);
+  vec2 sum = vec2(0.0);
+  for (int j = -1; j <= 1; j++) {
+    for (int i = -1; i <= 1; i++) {
+      vec3 t = texture2D(uFlow, (center + vec2(float(i), float(j))) / size).rgb;
+      float w = (i < 0 ? w0.x : (i > 0 ? w2.x : w1.x)) * (j < 0 ? w0.y : (j > 0 ? w2.y : w1.y));
+      sum += w * (t.rg * 255.0 - 128.0) / 127.0 * t.b;
+    }
+  }
+  return sum;
+}
+
 vec4 current(vec2 ll) {
-  vec3 t = texture2D(uFlow, vec2(ll.x / 6.283185307 + 0.5, ll.y / 3.141592654 + 0.5)).rgb;
-  vec2 uv = (t.rg * 255.0 - 128.0) / 127.0 * t.b;
+  vec2 uv = flowAt(ll);
   vec3 east = vec3(cos(ll.x), 0.0, -sin(ll.x));
   vec3 north = vec3(-sin(ll.y) * sin(ll.x), cos(ll.y), -sin(ll.y) * cos(ll.x));
   float speed = length(uv);
