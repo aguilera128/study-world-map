@@ -71,6 +71,21 @@ let running = false;
 let again = false;
 /** Tras borrar el progreso, lo de este dispositivo sustituye a lo guardado en vez de mezclarse. */
 let replaceRemote = false;
+/**
+ * Mezclar lo bajado cambia el progreso de este dispositivo, pero no es un cambio que haya que subir
+ * después: lo sube la misma sincronización que lo ha bajado. Sin esta marca, cada sincronización
+ * programaba la siguiente y no paraba nunca.
+ */
+let absorbing = false;
+
+function absorb(data: unknown) {
+  absorbing = true;
+  try {
+    useProgress.getState().absorb(data);
+  } finally {
+    absorbing = false;
+  }
+}
 
 /** Baja lo guardado, lo mezcla con lo de este dispositivo y sube el resultado. */
 export async function syncNow(): Promise<void> {
@@ -91,7 +106,7 @@ export async function syncNow(): Promise<void> {
         return;
       }
       if (remote.status !== 200) throw new Error('lectura');
-      useProgress.getState().absorb(remote.body.data);
+      absorb(remote.body.data);
     }
     const saved = await request('PUT', { code, data: local() });
     if (saved.status !== 200) throw new Error('escritura');
@@ -131,7 +146,7 @@ export async function joinCode(raw: string): Promise<string | null> {
     if (remote.status === 404) return t('No hay ningún progreso guardado con ese código.');
     if (remote.status !== 200) return t('No se ha podido leer ese código. Comprueba la conexión.');
     saveCode(code);
-    useProgress.getState().absorb(remote.body.data);
+    absorb(remote.body.data);
     await syncNow();
     return null;
   } catch {
@@ -186,6 +201,7 @@ export function initSync() {
     const now = Object.keys(state.progress).length;
     if (now < size) replaceRemote = true;
     size = now;
+    if (absorbing) return;
     clearTimeout(timer);
     timer = setTimeout(() => void syncNow(), PUSH_DELAY);
   });

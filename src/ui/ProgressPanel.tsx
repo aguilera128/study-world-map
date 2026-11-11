@@ -92,10 +92,12 @@ function SyncCard() {
               <p className="mt-1 text-sm text-ink-soft">{t('Escanéalo con la cámara del móvil o escribe el código.')}</p>
             </div>
           </div>
-          <p className="mt-1 text-sm text-ink-soft">
+          {/* Una vez sincronizado, el texto no cambia cada vez que se vuelve a sincronizar (parpadeaba y
+              movía los botones); y ocupa siempre dos líneas, que es lo que mide el más largo. */}
+          <p className="mt-1 min-h-10 text-sm text-ink-soft">
             {status === 'offline'
               ? t('Sin conexión: se sincronizará cuando vuelva.')
-              : status === 'syncing' || !at
+              : !at
                 ? t('Sincronizando…')
                 : t('Sincronizado. Escribe este código en el otro dispositivo o abre allí el enlace.')}
           </p>
