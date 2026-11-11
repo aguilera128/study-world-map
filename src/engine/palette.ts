@@ -80,9 +80,14 @@ export interface Palette {
   guide: string;
   /** Oscurecimiento de las paredes de un país levantado. */
   wallTint: number;
-  /** Color al pasar el cursor: se mezcla con el del país. */
+  /** Color al pasar el cursor sobre un país del mapa mudo (en blanco o ya resuelto): se mezcla con el suyo. */
   hover: string;
   hoverMix: number;
+  /**
+   * Al pasar el cursor sobre un país del mapa político no se tiñe: se aclara su mismo color, en esta
+   * proporción. En los mapas de datos (dominio, climas, densidad) el color no cambia.
+   */
+  hoverOwn: number;
   /** El país señalado late entre `target` y este color. */
   pulse: string;
   styles: StyleDef[];
@@ -120,6 +125,7 @@ export const PAPER: Palette = {
   wallTint: 0.7,
   hover: '#ffd95a',
   hoverMix: 0.62,
+  hoverOwn: 0.5,
   pulse: '#4f7fb5',
   styles: [
     s('#fbf7ec'), // blank
@@ -192,6 +198,7 @@ export const NIGHT: Palette = {
   wallTint: 0.6,
   hover: '#ffd866',
   hoverMix: 0.5,
+  hoverOwn: 0.38,
   pulse: '#ffd866',
   styles: [
     s('#3b5169'), // blank

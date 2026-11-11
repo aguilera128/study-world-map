@@ -664,12 +664,24 @@ export class MapEngine {
     const style = this.styles[this.styleOf[i]];
     let { r, g, b, lift, emph } = style;
     if (i === this.hovered && this.active[i]) {
-      // Un país ya resuelto conserva su color: el cursor solo lo aclara un poco.
-      const resolved = this.styleOf[i] >= Style.ok && this.styleOf[i] <= Style.target;
-      const k = this.palette.hoverMix * (resolved ? 0.3 : 1);
-      r += (this.hoverColor[0] - r) * k;
-      g += (this.hoverColor[1] - g) * k;
-      b += (this.hoverColor[2] - b) * k;
+      if (this.styleOf[i] >= Style.mastery) {
+        // En los mapas de datos (dominio, climas, densidad) el color es el dato: no se toca. El país
+        // se distingue por la elevación y el contorno.
+      } else if (this.styleOf[i] >= Style.political) {
+        // En el mapa político se aclara su mismo color: teñirlo lo confundía con los vecinos que ya
+        // son de ese tono.
+        const k = this.palette.hoverOwn;
+        r += (1 - r) * k;
+        g += (1 - g) * k;
+        b += (1 - b) * k;
+      } else {
+        // Un país ya resuelto conserva su color: el cursor solo lo aclara un poco.
+        const resolved = this.styleOf[i] >= Style.ok && this.styleOf[i] <= Style.target;
+        const k = this.palette.hoverMix * (resolved ? 0.3 : 1);
+        r += (this.hoverColor[0] - r) * k;
+        g += (this.hoverColor[1] - g) * k;
+        b += (this.hoverColor[2] - b) * k;
+      }
       lift += HOVER_LIFT;
       emph = 1;
     }
