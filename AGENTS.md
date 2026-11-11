@@ -128,11 +128,11 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
   fecha de revisión de `scripts/data/sitio.mjs`.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
-- La capa «Imagen de satélite», con el mapa acercado, pide la zona visible al servicio GIBS de la
-  NASA (`requestPatch` en `MapEngine.ts`): es la única petición que la aplicación hace a un tercero.
-  Solo lleva qué teselas del mapa se piden (de la foto y, si allí es de noche, de las luces); las de
-  la foto las guarda el navegador tres días por su cuenta.
-  Si se añade otro servicio externo, va también a `legales.mjs`.
+- La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
+  detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
+  nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`
+  las baja a `teselas/` (fuera del repositorio) y `scripts/upload-tiles.mjs` las sube. Si se añade
+  un servicio externo, va a `legales.mjs`.
 
 ## Pendiente conocido
 

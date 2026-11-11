@@ -235,8 +235,7 @@ const en: Record<string, string> = {
   Alejar: 'Zoom out',
   'Vista general': 'Overview',
   'Meridianos y paralelos': 'Meridians and parallels',
-  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
-    'Image: Blue Marble (NASA). When you zoom in, the detail for that area is requested from NASA’s servers.',
+  'Imagen: Blue Marble (NASA).': 'Image: Blue Marble (NASA).',
   'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
     'During a game some layers are set aside so the map is easier to read. They come back when you finish.',
   'Imagen de satélite': 'Satellite image',

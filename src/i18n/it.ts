@@ -235,8 +235,7 @@ const it: Record<string, string> = {
   Alejar: 'Riduci',
   'Vista general': 'Vista d’insieme',
   'Meridianos y paralelos': 'Meridiani e paralleli',
-  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
-    'Immagine: Blue Marble (NASA). Avvicinando, il dettaglio della zona viene richiesto ai server della NASA.',
+  'Imagen: Blue Marble (NASA).': 'Immagine: Blue Marble (NASA).',
   'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
     'Durante la partita alcuni livelli vengono messi da parte perché la mappa si legga meglio. Alla fine tornano come prima.',
   'Imagen de satélite': 'Immagine satellitare',

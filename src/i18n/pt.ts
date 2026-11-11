@@ -235,8 +235,7 @@ const pt: Record<string, string> = {
   Alejar: 'Afastar',
   'Vista general': 'Visão geral',
   'Meridianos y paralelos': 'Meridianos e paralelos',
-  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
-    'Imagem: Blue Marble (NASA). Ao aproximar, o detalhe da área é solicitado aos servidores da NASA.',
+  'Imagen: Blue Marble (NASA).': 'Imagem: Blue Marble (NASA).',
   'Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.':
     'Durante a partida, algumas camadas ficam de lado para o mapa ficar mais legível. No fim, voltam como estavam.',
   'Imagen de satélite': 'Imagem de satélite',

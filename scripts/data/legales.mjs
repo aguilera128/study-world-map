@@ -90,9 +90,6 @@ ${titularBlock()}
     <h3>Ubicación</h3>
     <p>La función «Tiempo real» sitúa tu posición en el mapa a partir de la zona horaria de tu dispositivo, sin pedirte nada. Si pulsas el botón de ubicación exacta, tu navegador te pedirá permiso y la aplicación usará tu posición redondeada (unos 1 km). En ambos casos la ubicación solo se usa en la pantalla: no se guarda ni se envía a ningún sitio.</p>
 
-    <h3>Imagen de satélite de cerca (opcional)</h3>
-    <p>La capa «Imagen de satélite» está apagada de entrada. Si la activas y acercas el mapa, tu navegador pide directamente a los servidores de la NASA (servicio GIBS, en Estados Unidos) la fotografía de la zona que estás mirando y, si allí es de noche, la de sus luces. La NASA recibe, como cualquier servidor web, tu dirección IP y qué zona del mapa se pide; la aplicación no le envía nada más y el titular no interviene en esa petición ni recibe esos datos. Tu navegador conserva esas imágenes unos días, como hace con cualquier otra, para no pedirlas de nuevo. Si no activas esa capa, no se hace ninguna petición a la NASA.</p>
-
     <h3>Analítica (solo con tu consentimiento)</h3>
     <p>Si aceptas las cookies de analítica, se carga Google Tag Manager y Google Analytics 4 para contar las visitas y saber qué partes de la web se usan, con el único fin de mejorarla. Se tratan datos técnicos y de uso: identificadores de cookie, páginas vistas, tipo de dispositivo y navegador, idioma, y país o ciudad aproximados. No se usan para publicidad ni para crear perfiles comerciales.</p>
     <ul>

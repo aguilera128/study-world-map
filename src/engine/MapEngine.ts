@@ -133,19 +133,20 @@ const SWELL_FULL = 0.0009;
 const BLANK = typeof document === 'undefined' ? null : Object.assign(document.createElement('canvas'), { width: 1, height: 1 });
 /** Hasta dónde llega el resplandor de un astro desde su centro, en píxeles (con margen). */
 const SKY_REACH = 500;
-// Detalle de la imagen de satélite (ver «requestPatch»): teselas de la misma foto que publica la NASA
-// (servicio GIBS, rejilla «500m» en longitud/latitud). En el nivel n cada tesela mide 512 píxeles y
-// cubre 288°/2ⁿ; el último nivel, el 7, da unos 500 m por píxel.
-// Se piden a partir de este zoom (radios por píxel: ahí la foto general ya se ve ampliada) y nunca
+// Detalle de la imagen de satélite y de las luces nocturnas (ver «requestPatch»): teselas de las
+// mismas imágenes de la NASA, que guardamos en nuestro propio almacén (Blob de Vercel; las suben
+// scripts/download-tiles.mjs y upload-tiles.mjs). Rejilla en longitud/latitud: en el nivel n cada
+// tesela mide 512 píxeles y cubre 288°/2ⁿ; el último nivel, el 7, da unos 500 m por píxel.
+// Se piden a partir de este zoom (radios por píxel: ahí la imagen general ya se ve ampliada) y nunca
 // más de 4 × 4 a la vez, que caben en una textura de 2048 píxeles de lado.
 const PATCH_FROM = 0.001;
 const TILE = 512;
 const TILE_SPAN = 288;
 const TILE_LEVELS = 7;
 const TILES_ACROSS = 4;
-const TILE_URL = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_NextGeneration/default/500m';
-// Las luces nocturnas, en la misma rejilla: solo la luz, en grises (Black Marble 2016).
-const LIGHT_TILE_URL = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_Night_Lights/default/2016-01-01/500m';
+const TILE_STORE = 'https://c8oqmmuapex66kvv.public.blob.vercel-storage.com';
+const TILE_URL = `${TILE_STORE}/foto`; // Blue Marble Next Generation
+const LIGHT_TILE_URL = `${TILE_STORE}/luces`; // Black Marble 2016: solo la luz, en grises
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
 const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
@@ -1053,16 +1054,17 @@ export class MapEngine {
   }
 
   /**
-   * Con la imagen de satélite puesta y el mapa acercado, se piden a la NASA las teselas de la misma
-   * foto (Blue Marble, hasta 500 m por píxel) que cubren lo que se ve, y se dibujan sobre la
-   * general, que de cerca queda borrosa (10 km por píxel). Son las únicas peticiones que la
-   * aplicación hace a un tercero: llevan qué trozo del mapa se pide y nada más. Ver
-   * scripts/data/legales.mjs. El navegador las guarda unos días (lo dice el propio servicio).
+   * Con el mapa acercado se piden las teselas de detalle que cubren lo que se ve y se dibujan sobre
+   * la imagen general, que de cerca queda borrosa (10 km por píxel): las de la foto, si la capa
+   * «Imagen de satélite» está puesta, y las de las luces, si en lo que se ve es de noche. Salen de
+   * nuestro propio almacén, no de un tercero, y el navegador las guarda un año.
    */
   private requestPatch() {
     this.patchTimer = 0;
     const rig = this.rig;
-    if (this.disposed || !this.showPhoto || !this.photoReady || rig.worldPerPixel > PATCH_FROM) return;
+    const photo = this.showPhoto && this.photoReady;
+    const lights = this.nightTarget > 0 && this.own.fill.uLightsAmt.value > 0;
+    if (this.disposed || (!photo && !lights) || rig.worldPerPixel > PATCH_FROM) return;
     if (rig.morph > 0.001 && rig.morph < 0.999) return;
     // Qué se ve: el punto del mapa bajo el centro, las esquinas y los lados de la parte de la
     // pantalla que los paneles dejan libre.
@@ -1087,7 +1089,8 @@ export class MapEngine {
         if (cos * Math.sin(p.lon) * sun.x + Math.sin(p.lat) * sun.y + cos * Math.cos(p.lon) * sun.z < 0.05) dark = true;
       }
     }
-    dark &&= this.nightTarget > 0 && this.own.fill.uLightsAmt.value > 0;
+    dark &&= lights;
+    if (!photo && !dark) return;
     // La rejilla no da la vuelta al antimeridiano: las zonas que lo cruzan se quedan sin detalle.
     if (west < -180 || east > 180) return;
     // El nivel cuya resolución alcanza la de la pantalla; si hacen falta demasiadas teselas para
@@ -1104,7 +1107,7 @@ export class MapEngine {
       r1 = Math.floor((90 - south) / span);
       if (level === 0 || (c1 - c0 < TILES_ACROSS && r1 - r0 < TILES_ACROSS)) break;
     }
-    const key = `${level}/${r0}-${r1}/${c0}-${c1}${dark ? '/noche' : ''}`;
+    const key = `${level}/${r0}-${r1}/${c0}-${c1}${photo ? '/foto' : ''}${dark ? '/noche' : ''}`;
     if (key === this.patchKey) return;
     this.patchKey = key;
     const id = ++this.patchId;
@@ -1162,7 +1165,7 @@ export class MapEngine {
       return canvas;
     };
     const fill = this.own.fill;
-    this.patchCanvas = layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, 'jpeg', false);
+    this.patchCanvas = photo ? layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, 'jpeg', false) : null;
     // Las luces, solo si en lo que se ve es de noche en algún punto.
     this.lightsCanvas = dark ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, 'png', true) : null;
     fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
@@ -1242,6 +1245,7 @@ export class MapEngine {
       this.disposables.push(lights);
       this.own.fill.uLights.value = lights;
     }
+    this.patchView = ''; // que se vuelva a mirar si hace falta el detalle de las luces
     this.invalidate();
   }
 
@@ -1801,7 +1805,7 @@ export class MapEngine {
       this.reliefHd = true;
       this.loadRelief('/data/relief-hd.webp');
     }
-    if (this.showPhoto) {
+    if (this.showPhoto || this.nightTarget > 0) {
       const view = `${this.rig.lon.toFixed(5)},${this.rig.lat.toFixed(5)},${this.rig.h.toFixed(5)},${this.rig.morph.toFixed(3)},${this.rig.width},${this.rig.height}`;
       if (view !== this.patchView) {
         this.patchView = view;
