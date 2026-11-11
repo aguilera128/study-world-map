@@ -178,7 +178,7 @@ float gnoise(vec3 p) {
 }
 
 // Altura del agua: varias escalas de ola, de las que solo cuentan las que en pantalla miden entre
-// unos 4 y unos 25 píxeles. Más grandes parecen olas gigantes al acercar el mapa; más finas, la
+// unos 3 y unos 12 píxeles. Más grandes parecen olas gigantes al acercar el mapa; más finas, la
 // pendiente por píxel sale en bloques de 2×2 y se ve una cuadrícula. Cada una pesa algo menos que
 // la anterior, con la misma pendiente.
 // Giro fijo (ortonormal) entre escalas de ola.
@@ -212,12 +212,12 @@ float swell(vec3 p, float px, vec3 drift) {
   // en esa ventana de tamaños en pantalla, empezando por la más gruesa que entra: con el globo
   // entero queda un grano tenue (desde el espacio no se ven olas) y el oleaje aparece al acercarse.
   // Calcular solo esas, en vez de recorrerlas todas, abarata mucho el sombreador (y su compilación).
-  float first = max(ceil(log(0.03 / (px * 120.0)) / log(2.07)), 0.0);
+  float first = max(ceil(log(0.07 / (px * 120.0)) / log(2.07)), 0.0);
   for (int j = 0; j < 4; j++) {
     float k = first + float(j);
     float f = 120.0 * pow(2.07, k);
     float visible = 1.0 - smoothstep(0.1, 0.4, px * f);
-    float fine = smoothstep(0.03, 0.08, px * f);
+    float fine = smoothstep(0.07, 0.16, px * f);
     // cada escala, girada respecto a las vecinas: sin esto las celdas del ruido se alinean y se ve
     // una cuadrícula
     float turn = mod(k, 3.0);
