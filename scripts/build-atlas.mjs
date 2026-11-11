@@ -8,6 +8,8 @@
 // unos pocos ajustes para que el mapa coincida con el que se estudia en España:
 //   · Crimea se dibuja como parte de Ucrania (Natural Earth la asigna a Rusia).
 //   · Somalilandia se une a Somalia y el norte de Chipre a Chipre.
+//   · El Sáhara Occidental se dibuja entero, hasta su frontera con Marruecos (el paralelo 27° 40′ N).
+//     Natural Earth solo llama así a la franja al este del muro y da el resto a Marruecos.
 //   · Tuvalu no existe a esta escala: se añade como un pequeño polígono sintético.
 //
 // La geometría de `world-atlas` es esférica (polígonos "cosidos" en el antimeridiano). Aquí
@@ -190,15 +192,45 @@ function poligonoSintetico({ lon, lat, radio }) {
   return [[anillo]];
 }
 
+/**
+ * Marruecos y el Sáhara Occidental se reparten por la frontera reconocida, el paralelo 27° 40′ N:
+ * de la unión de los dos, lo que queda al norte es Marruecos y lo que queda al sur, el Sáhara.
+ */
+const PARALELO_SAHARA = 27 + 40 / 60;
+const REPARTO = { MAR: { de: ['MAR', 'ESH'], norte: true }, ESH: { de: ['MAR', 'ESH'], norte: false } };
+
+/** Parte de un anillo de d3 (cerrado, y = −latitud) que queda a un lado de un paralelo. */
+function recortar(anillo, latitud, norte) {
+  const y0 = -latitud;
+  const dentro = ([, y]) => (norte ? y <= y0 : y >= y0);
+  const out = [];
+  for (let i = 0; i < anillo.length - 1; i++) {
+    const a = anillo[i];
+    const b = anillo[i + 1];
+    if (dentro(a)) out.push(a);
+    if (dentro(a) !== dentro(b)) out.push([a[0] + ((y0 - a[1]) / (b[1] - a[1])) * (b[0] - a[0]), y0]);
+  }
+  if (out.length) out.push(out[0]);
+  return out;
+}
+
 /** → lista de polígonos; cada polígono es [exterior, ...huecos] con anillos cuantizados. */
 function geometriaPlana(codigo) {
-  const partes = grupos.get(codigo);
+  const reparto = REPARTO[codigo];
+  const partes = reparto ? reparto.de.flatMap((c) => grupos.get(c)) : grupos.get(codigo);
   if (!partes) return poligonoSintetico(SINTETICOS[codigo]);
   const arcos = partes.length === 1 ? partes[0] : topojson.mergeArcs(topo, partes);
   const { geometry } = topojson.feature(topo, arcos);
   const plana = geoProject(geometry, proyeccion);
   if (!plana) throw new Error(`Geometría vacía tras proyectar: ${codigo}`);
-  const poligonos = plana.type === 'Polygon' ? [plana.coordinates] : plana.coordinates;
+  let poligonos = plana.type === 'Polygon' ? [plana.coordinates] : plana.coordinates;
+  if (reparto) {
+    // El corte recto solo vale si el paralelo cruza el contorno dos veces (la costa y la frontera
+    // del este): si la fuente cambia y lo cruza más, saldrían trozos sueltos unidos por una línea.
+    const cruces = poligonos.flat().reduce((n, anillo) => n + anillo.slice(1).filter((p, i) => p[1] <= -PARALELO_SAHARA !== anillo[i][1] <= -PARALELO_SAHARA).length, 0);
+    if (poligonos.some((pol) => pol.length > 1) || cruces !== 2) throw new Error(`El paralelo del Sáhara cruza ${cruces} veces el contorno de Marruecos; revisa la fuente.`);
+    poligonos = poligonos.map(([exterior]) => [recortar(exterior, PARALELO_SAHARA, reparto.norte)]).filter(([exterior]) => exterior.length > 3);
+  }
   const out = [];
   const valido = (a) => a.length >= 6 && areaAnillo(a) !== 0;
   for (const pol of poligonos) {

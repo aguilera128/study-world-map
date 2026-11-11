@@ -205,7 +205,9 @@ Los textos legales solo están en español.
   Kosovo). El resto de territorios (Groenlandia, Puerto Rico, Sáhara Occidental, la Antártida…) se
   ven en el mapa y en el explorador, pero no se preguntan.
 - **Fronteras**: Crimea se dibuja como parte de Ucrania, Somalilandia dentro de Somalia y el norte
-  de Chipre dentro de Chipre. Tuvalu no existe en la cartografía a esta escala y se añade a mano.
+  de Chipre dentro de Chipre. El Sáhara Occidental se dibuja entero, hasta el paralelo 27° 40′ N
+  (la fuente solo llama así a la franja al este del muro). Tuvalu no existe en la cartografía a esta
+  escala y se añade a mano.
 - **Continentes**: Rusia y Turquía cuentan como «Europa y Asia». En los países del Cáucaso,
   Kazajistán y Chipre se aceptan varias respuestas.
 - **Capitales** con matices (Bolivia, Sudáfrica, Países Bajos, Sri Lanka…) llevan una nota en la
