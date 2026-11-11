@@ -532,6 +532,10 @@ const fr: Record<string, string> = {
   'Tu resultado no entra entre los diez mejores.': 'Votre résultat n’entre pas dans les dix meilleurs.',
   'Avisar de un apodo inadecuado': 'Signaler un pseudo inapproprié',
   'Ranking de este reto': 'Classement de ce défi',
+
+  // ── código al terminar la partida ──
+  '¿Quieres seguir más tarde o en otro dispositivo?': 'Voulez-vous continuer plus tard ou sur un autre appareil ?',
+  'Ahora no': 'Pas maintenant',
 };
 
 export default fr;

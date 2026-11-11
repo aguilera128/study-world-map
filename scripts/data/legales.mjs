@@ -149,6 +149,7 @@ ${revision}`,
         <tr><td><code>mapamundi:progreso</code></td><td>Lo que ya te sabes y tus mejores notas.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>Tu código para seguir en otro dispositivo, si lo has creado.</td><td>Hasta que dejes de sincronizar</td></tr>
         <tr><td><code>swm:apodo</code></td><td>El último apodo con el que publicaste en el ranking, para proponértelo la próxima vez.</td><td>Hasta que la borres</td></tr>
+        <tr><td><code>swm:sin-oferta</code></td><td>Recordar que has dicho «Ahora no» cuando se te ofrece crear un código al terminar una partida.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>swm:consent</code></td><td>Recordar si aceptaste o rechazaste las cookies.</td><td>Hasta que la borres</td></tr>
         <tr><td>Caché <code>swm-*</code></td><td>Copia de la aplicación para usarla sin conexión.</td><td>Hasta la siguiente versión</td></tr>
       </tbody>

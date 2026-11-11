@@ -532,6 +532,10 @@ const gl: Record<string, string> = {
   'Tu resultado no entra entre los diez mejores.': 'O teu resultado non entra entre os dez mellores.',
   'Avisar de un apodo inadecuado': 'Avisar dun alcume inadecuado',
   'Ranking de este reto': 'Clasificación deste reto',
+
+  // ── código al terminar la partida ──
+  '¿Quieres seguir más tarde o en otro dispositivo?': 'Queres seguir máis tarde ou noutro dispositivo?',
+  'Ahora no': 'Agora non',
 };
 
 export default gl;

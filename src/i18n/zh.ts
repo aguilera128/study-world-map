@@ -531,6 +531,10 @@ const zh: Record<string, string> = {
   'Tu resultado no entra entre los diez mejores.': '你的成绩没有进入前十名。',
   'Avisar de un apodo inadecuado': '举报不合适的昵称',
   'Ranking de este reto': '本挑战的排行榜',
+
+  // ── código al terminar la partida ──
+  '¿Quieres seguir más tarde o en otro dispositivo?': '想稍后或在另一台设备上继续吗？',
+  'Ahora no': '暂时不要',
 };
 
 export default zh;

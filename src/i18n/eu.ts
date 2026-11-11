@@ -533,6 +533,10 @@ const eu: Record<string, string> = {
   'Tu resultado no entra entre los diez mejores.': 'Zure emaitza ez da hamar onenen artean sartzen.',
   'Avisar de un apodo inadecuado': 'Ezizen desegoki baten berri eman',
   'Ranking de este reto': 'Erronka honen sailkapena',
+
+  // ── código al terminar la partida ──
+  '¿Quieres seguir más tarde o en otro dispositivo?': 'Geroago edo beste gailu batean jarraitu nahi duzu?',
+  'Ahora no': 'Orain ez',
 };
 
 export default eu;

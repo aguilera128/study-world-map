@@ -533,6 +533,10 @@ const ca: Record<string, string> = {
   'Tu resultado no entra entre los diez mejores.': 'El teu resultat no entra entre els deu millors.',
   'Avisar de un apodo inadecuado': 'Avisar d’un malnom inadequat',
   'Ranking de este reto': 'Rànquing d’este repte',
+
+  // ── código al terminar la partida ──
+  '¿Quieres seguir más tarde o en otro dispositivo?': 'Vols seguir més tard o en un altre dispositiu?',
+  'Ahora no': 'Ara no',
 };
 
 export default ca;
