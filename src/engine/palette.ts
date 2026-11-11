@@ -262,26 +262,27 @@ export function rgb(hex: string): [number, number, number] {
 
 /**
  * Huevo de pascua: el planeta de unos dibujos animados. Parte de la paleta de noche (las respuestas,
- * el progreso y los mapas de datos no cambian) y sube el color del mapa: mar turquesa, países en
- * tonos chillones, contornos casi negros y un resplandor verde alrededor.
+ * el progreso y los mapas de datos no cambian) y sube el color del mapa: mar azul vivo, tierra en
+ * verdes y ocres, contornos casi negros y un resplandor verde alrededor.
  */
 const TOON_STYLES: Record<number, string> = {
-  [Style.blank]: '#8fe36f',
-  [Style.muted]: '#57b58a',
-  [Style.political]: '#7be26b',
-  [Style.political + 1]: '#ffd84d',
-  [Style.political + 2]: '#ff8a5c',
-  [Style.political + 3]: '#ff6fb1',
-  [Style.political + 4]: '#b58cff',
-  [Style.political + 5]: '#59e0c0',
-  [Style.ice]: '#eaffff',
-  [Style.land]: '#8fe36f',
+  [Style.blank]: '#9ccb5e',
+  [Style.muted]: '#6fa565',
+  // Tierra de dibujos: verdes y ocres, no los colores de un mapa político.
+  [Style.political]: '#8fc45a',
+  [Style.political + 1]: '#c4d273',
+  [Style.political + 2]: '#dcc27a',
+  [Style.political + 3]: '#74ab4f',
+  [Style.political + 4]: '#c9a567',
+  [Style.political + 5]: '#a8c95f',
+  [Style.ice]: '#f1ffff',
+  [Style.land]: '#9ccb5e',
 };
 
 export const TOON: Palette = {
   ...NIGHT,
-  ocean: '#2fc4e8',
-  grid: '#0e6f9c',
+  ocean: '#35a9e6',
+  grid: '#0e5a9c',
   gridAlpha: 0.22,
   glint: 0.12,
   seaDepth: 0,
