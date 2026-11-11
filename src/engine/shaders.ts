@@ -905,6 +905,8 @@ void main() {
 
 export const SKY_FRAG = glsl`
 uniform sampler2D uSky;
+uniform sampler2D uToonSky; // fondo de nebulosas del huevo de pascua
+uniform float uSkyToon;     // 1 = ese fondo en lugar de la Vía Láctea
 uniform float uSidereal;
 uniform float uMorph;
 uniform float uStars;
@@ -917,6 +919,15 @@ void main() {
   float ra = atan(sky.x, sky.z);
   // En la imagen la ascensión recta 0 está en el centro y crece hacia la izquierda.
   vec2 uv = vec2(fract(0.5 - ra / 6.2831853), 0.5 + asin(clamp(sky.y, -1.0, 1.0)) / 3.14159265);
+  if (uSkyToon > 0.5) {
+    // La imagen no es un mapa del cielo: se repite en espejo, cuatro veces a lo ancho y cuatro a lo
+    // alto, para que case consigo misma al dar la vuelta. Hacia los polos, donde se apelmaza, se
+    // funde con el color del fondo. Va con el cielo fijo, como las estrellas: gira con ellas.
+    vec2 tile = 1.0 - abs(1.0 - mod(uv * 4.0, 2.0));
+    vec3 toon = mix(texture2D(uToonSky, tile).rgb, vec3(0.045, 0.04, 0.14), smoothstep(0.8, 0.98, abs(sky.y)));
+    gl_FragColor = vec4(toon, smoothstep(0.7, 1.0, uMorph));
+    return;
+  }
   // El cielo vacío del mapa no es negro del todo (un grano gris de estrellas muy débiles): se recorta.
   vec3 glow = max(texture2D(uSky, uv).rgb - 0.15, 0.0) * 1.18;
   // Todo lo que se ve es el mapa de la NASA, con su color y su contraste: solo se baja la

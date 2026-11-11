@@ -17,7 +17,11 @@ import type { MapEngine } from '../engine/MapEngine';
 const ART = '/toon';
 const img = 'pointer-events-none absolute select-none';
 
-/** El cielo: va detrás del mapa, que es transparente fuera del globo. Sustituye a la Vía Láctea; las estrellas las sigue pintando el mapa. */
+/**
+ * El cielo del mapa plano, detrás de él. En el globo, las nebulosas las pinta el propio mapa en el
+ * sitio de la Vía Láctea, para que giren con las estrellas (MapEngine.setToon): esta capa queda
+ * debajo y solo se ve mientras llega la imagen o durante el paso de una vista a otra.
+ */
 export function ToonSky({ animated, flat }: { animated: boolean; flat: boolean }) {
   const portal = useRef<HTMLImageElement>(null);
 

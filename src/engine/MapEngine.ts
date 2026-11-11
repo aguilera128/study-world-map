@@ -288,8 +288,10 @@ export class MapEngine {
   private graticuleLabels: FeatureLabels | null = null;
   private zoneLabels: FeatureLabels | null = null;
   private skyTexture: { value: Texture | null } = { value: null };
-  /** La Vía Láctea: se quita en el huevo de pascua, que trae su propio fondo. */
-  private galaxy: Mesh | null = null;
+  /** El fondo de nebulosas del huevo de pascua, que ocupa el sitio de la Vía Láctea mientras está encendido. */
+  private toonSky: { value: Texture | null } = { value: null };
+  private skyToon = { value: 0 };
+  private toonSkyReady = false;
   private cutFaces: Mesh | null = null;
   private heightBefore = 0;
   private core: Mesh | null = null;
@@ -458,8 +460,7 @@ export class MapEngine {
     // 1 MB) no se pide hasta que el cielo se ve: ver loadSky.
     const screen = new BufferGeometry();
     screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
-    this.galaxy = new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky));
-    this.add(this.galaxy, -2);
+    this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture, uToonSky: this.toonSky, uSkyToon: this.skyToon }, sky)), -2);
     this.starMaterial = this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky);
     this.add(new Points(starGeometry(new Date()), this.starMaterial), -1);
     const ocean = oceanGeometry();
@@ -822,8 +823,20 @@ export class MapEngine {
     this.toon = on;
     this.uniforms.uToon.value = on ? 1 : 0;
     this.own.halo.uOutlineWidth.value = on ? 3.2 : 1;
-    // El fondo de dibujos sustituye a la Vía Láctea; las estrellas del catálogo se quedan.
-    if (this.galaxy) this.galaxy.visible = !on;
+    // El fondo de dibujos sustituye a la Vía Láctea y gira como ella; las estrellas del catálogo se
+    // quedan. Su imagen solo se pide la primera vez que se enciende.
+    if (on && !this.toonSky.value) {
+      const sky = this.image('/toon/fondo.webp', () => {
+        this.toonSkyReady = true;
+        this.skyToon.value = this.toon ? 1 : 0;
+        this.invalidate();
+      });
+      sky.generateMipmaps = false;
+      sky.minFilter = LinearFilter;
+      this.disposables.push(sky);
+      this.toonSky.value = sky;
+    }
+    this.skyToon.value = on && this.toonSkyReady ? 1 : 0;
     this.invalidate();
   }
 
