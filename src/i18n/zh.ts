@@ -235,6 +235,8 @@ const zh: Record<string, string> = {
   Alejar: '缩小',
   'Vista general': '全图',
   'Meridianos y paralelos': '经线和纬线',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    '影像：Blue Marble（NASA）。放大时，会向 NASA 的服务器请求该区域的细节。',
   'Imagen de satélite': '卫星影像',
   'Restablecer capas': '重置图层',
   'Relieve': '地形',

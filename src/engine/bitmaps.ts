@@ -31,15 +31,38 @@ function canFlip(): Promise<boolean> {
   })());
 }
 
+/** Cuántas imágenes se guardan como mucho en una caché propia (cada una, unos cientos de KB). */
+const KEEP = 40;
+
+/**
+ * Pide una imagen. Con «keep», primero se mira en esa caché del navegador y, si hay que descargarla,
+ * se guarda en ella: es para imágenes de otro servidor que llegan marcadas como «no guardar». Las
+ * más antiguas se van borrando.
+ */
+async function download(url: string, keep?: string): Promise<Blob> {
+  const cache = keep && typeof caches !== 'undefined' ? await caches.open(keep).catch(() => null) : null;
+  const saved = await cache?.match(url).catch(() => undefined);
+  if (saved) return saved.blob();
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`No se pudo cargar ${url} (${res.status})`);
+  if (cache) {
+    // Guardar es un extra: si falla (sin espacio, modo privado), la imagen se usa igual.
+    void cache
+      .put(url, res.clone())
+      .then(() => cache.keys())
+      .then((keys) => Promise.all(keys.slice(0, Math.max(0, keys.length - KEEP)).map((key) => cache.delete(key))))
+      .catch(() => {});
+  }
+  return res.blob();
+}
+
 /** Empieza a descargar y decodificar una imagen. Falla si el navegador no puede hacerlo así. */
-export function warmBitmap(url: string): Promise<ImageBitmap> {
+export function warmBitmap(url: string, keep?: string): Promise<ImageBitmap> {
   let image = pending.get(url);
   if (!image) {
     image = canFlip().then(async (ok) => {
       if (!ok) throw new Error('createImageBitmap no voltea la imagen');
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`No se pudo cargar ${url} (${res.status})`);
-      return createImageBitmap(await res.blob(), OPTIONS);
+      return createImageBitmap(await download(url, keep), OPTIONS);
     });
     // Quien la pidió por adelantado no espera el resultado: que un fallo no quede sin atender.
     image.catch(() => pending.delete(url));
@@ -49,8 +72,8 @@ export function warmBitmap(url: string): Promise<ImageBitmap> {
 }
 
 /** La imagen, para quien la va a usar: no se guarda copia (decodificada ocupa decenas de megas). */
-export function takeBitmap(url: string): Promise<ImageBitmap> {
-  const image = warmBitmap(url);
+export function takeBitmap(url: string, keep?: string): Promise<ImageBitmap> {
+  const image = warmBitmap(url, keep);
   pending.delete(url);
   return image;
 }

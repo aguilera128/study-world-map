@@ -235,6 +235,8 @@ const pt: Record<string, string> = {
   Alejar: 'Afastar',
   'Vista general': 'Visão geral',
   'Meridianos y paralelos': 'Meridianos e paralelos',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Imagem: Blue Marble (NASA). Ao aproximar, o detalhe da área é solicitado aos servidores da NASA.',
   'Imagen de satélite': 'Imagem de satélite',
   'Restablecer capas': 'Restaurar camadas',
   'Relieve': 'Relevo',

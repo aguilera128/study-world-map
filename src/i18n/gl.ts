@@ -235,6 +235,8 @@ const gl: Record<string, string> = {
   Alejar: 'Afastar',
   'Vista general': 'Vista xeral',
   'Meridianos y paralelos': 'Meridianos e paralelos',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Imaxe: Blue Marble (NASA). Ao achegar, o detalle da zona pídese aos servidores da NASA.',
   'Imagen de satélite': 'Imaxe de satélite',
   'Restablecer capas': 'Restablecer as capas',
   'Relieve': 'Relevo',

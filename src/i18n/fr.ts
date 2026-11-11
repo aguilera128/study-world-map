@@ -235,6 +235,8 @@ const fr: Record<string, string> = {
   Alejar: 'Zoom arrière',
   'Vista general': 'Vue d’ensemble',
   'Meridianos y paralelos': 'Méridiens et parallèles',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Image : Blue Marble (NASA). En zoomant, le détail de la zone est demandé aux serveurs de la NASA.',
   'Imagen de satélite': 'Image satellite',
   'Restablecer capas': 'Réinitialiser les calques',
   'Relieve': 'Relief',

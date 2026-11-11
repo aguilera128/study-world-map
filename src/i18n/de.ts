@@ -235,6 +235,8 @@ const de: Record<string, string> = {
   Alejar: 'Verkleinern',
   'Vista general': 'Gesamtansicht',
   'Meridianos y paralelos': 'Längen- und Breitenkreise',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Bild: Blue Marble (NASA). Beim Heranzoomen wird das Detail des Ausschnitts von den NASA-Servern abgerufen.',
   'Imagen de satélite': 'Satellitenbild',
   'Restablecer capas': 'Ebenen zurücksetzen',
   'Relieve': 'Relief',

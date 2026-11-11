@@ -405,6 +405,9 @@ uniform sampler2D uRelief; // sombreado real del relieve (scripts/build-relief.p
 uniform float uReliefAmt; // 0 = sin relieve
 uniform sampler2D uPhoto; // imagen de satélite (scripts/build-satellite.py); transparente en el mar
 uniform float uPhotoAmt;  // 1 = capa «Imagen de satélite» a la vista
+uniform sampler2D uPatch; // la misma foto con más detalle, solo de la zona que se está mirando
+uniform vec4 uPatchBox;   // qué zona cubre: (longitud oeste, latitud sur, longitud este, latitud norte)
+uniform float uPatchAmt;  // 0 = sin detalle; sube a 1 al llegar la imagen
 varying float vPhoto;
 varying float vTint;
 
@@ -419,6 +422,20 @@ void main() {
     // político, a medias bajo el color de una respuesta, nada en los mapas de datos) y solo donde
     // la foto tiene tierra: en una isla que en ella es mar se queda el color del país.
     vec4 photo = texture2D(uPhoto, uv);
+    if (uPatchAmt > 0.0) {
+      vec2 q = (vLonLat - uPatchBox.xy) / (uPatchBox.zw - uPatchBox.xy);
+      vec3 fine = texture2D(uPatch, clamp(q, 0.0, 1.0)).rgb;
+      // Dentro de la zona, fundida hacia el borde para que no se vea el corte.
+      vec2 edge = min(q, 1.0 - q);
+      float inside = clamp(min(edge.x, edge.y) / 0.03, 0.0, 1.0);
+      // En la foto de detalle el mar es un azul casi negro; la costa del mapa no coincide con ella
+      // al píxel, y donde cae mar se deja la foto general, que ahí tiene color de tierra.
+      float sea = step(fine.r, fine.b) * step(fine.g, fine.b + 0.02) * (1.0 - smoothstep(0.22, 0.36, fine.b));
+      float cover = inside * (1.0 - sea) * uPatchAmt;
+      photo.rgb = mix(photo.rgb, fine, cover);
+      // Una isla que en la foto general era mar sí sale en la de detalle.
+      photo.a = max(photo.a, cover);
+    }
     base = mix(base, photo.rgb * vTint, vPhoto * photo.a * uPhotoAmt);
   }
   vec3 c = base * mix(1.0, relief, uReliefAmt);

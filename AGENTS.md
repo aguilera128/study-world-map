@@ -127,6 +127,10 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
   fecha de revisión de `scripts/data/sitio.mjs`.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
+- La capa «Imagen de satélite», con el mapa acercado, pide la zona visible al servicio GIBS de la
+  NASA (`requestPatch` en `MapEngine.ts`): es la única petición que la aplicación hace a un tercero.
+  Solo lleva la zona del mapa. Las imágenes se guardan en la caché `satelite-nasa` del navegador.
+  Si se añade otro servicio externo, va también a `legales.mjs`.
 
 ## Pendiente conocido
 

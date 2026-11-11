@@ -236,6 +236,8 @@ const ca: Record<string, string> = {
   Alejar: 'Allunyar',
   'Vista general': 'Vista general',
   'Meridianos y paralelos': 'Meridians i paral·lels',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Imatge: Blue Marble (NASA). En acostar-te, el detall de la zona es demana als servidors de la NASA.',
   'Imagen de satélite': 'Imatge de satèl·lit',
   'Restablecer capas': 'Restableix les capes',
   'Relieve': 'Relleu',

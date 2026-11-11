@@ -236,6 +236,8 @@ const eu: Record<string, string> = {
   Alejar: 'Urrundu',
   'Vista general': 'Ikuspegi orokorra',
   'Meridianos y paralelos': 'Meridianoak eta paraleloak',
+  'Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.':
+    'Irudia: Blue Marble (NASA). Hurbiltzean, eremuaren xehetasuna NASAren zerbitzariei eskatzen zaie.',
   'Imagen de satélite': 'Satelite-irudia',
   'Restablecer capas': 'Berrezarri geruzak',
   'Relieve': 'Erliebea',

@@ -106,6 +106,7 @@ function LayersMenu() {
         </div>
       )}
       {layers.tectonics && <p className="text-xs text-ink-faint">{t('Placas: P. Bird (2003), vía H. Ahlenius. Volcanes: NOAA.')}</p>}
+      {layers.satellite && <p className="text-xs text-ink-faint">{t('Imagen: Blue Marble (NASA). Al acercar, el detalle de la zona se pide a los servidores de la NASA.')}</p>}
     </>
   );
   const content = (
