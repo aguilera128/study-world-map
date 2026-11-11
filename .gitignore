@@ -28,3 +28,9 @@ public/capas-de-la-tierra/
 public/capas-de-la-atmosfera/
 public/404.html
 public/sitemap.xml
+
+.vercel
+.env*
+
+# teselas de detalle descargadas de la NASA (scripts/download-tiles.mjs): van al Blob, no al repositorio
+/teselas/

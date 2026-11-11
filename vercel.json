@@ -3,6 +3,7 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "regions": ["fra1"],
   "headers": [
     {
       "source": "/assets/(.*)",
