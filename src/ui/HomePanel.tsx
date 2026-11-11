@@ -7,6 +7,7 @@ import { MAPS } from '../game/maps';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
 import { Icon } from './Icon';
+import { homeOf, lang, preferredLang, VIEW_IN } from '../i18n';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
 import { Panel, Segmented, Step } from './primitives';
 import { ScopeChips } from './ScopeChips';
@@ -14,6 +15,28 @@ import { t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 const order = (i: number) => ({ '--i': i }) as CSSProperties;
+
+/**
+ * Quien llega a una versión que no es la del idioma de su navegador puede no saber que hay otras:
+ * se le ofrece la suya, en su idioma, una sola vez. No redirige sola: la dirección manda.
+ */
+function LangHint() {
+  const seen = useSettings((s) => s.langHintSeen);
+  const dismiss = useSettings((s) => s.dismissLangHint);
+  const other = typeof navigator === 'undefined' ? null : preferredLang(navigator.languages?.length ? navigator.languages : [navigator.language]);
+  if (seen || !other || other === lang) return null;
+  return (
+    <p className="mb-3 flex max-w-[26rem] items-center gap-2 text-sm" style={order(0)}>
+      <Icon name="globe" size={16} className="shrink-0 text-ink-soft" />
+      <a href={homeOf(other)} hrefLang={other} lang={other} onClick={dismiss} className="font-semibold underline hover:text-accent">
+        {VIEW_IN[other]}
+      </a>
+      <button type="button" onClick={dismiss} aria-label={t('Cerrar')} className="btn btn-ghost ml-auto min-h-8 px-1.5 text-ink-soft">
+        <Icon name="close" size={14} />
+      </button>
+    </p>
+  );
+}
 
 /** Qué pregunta cada reto: sirve para agruparlos en la portada. */
 const MODE_GROUPS: { title: string; ids: ModeId[] }[] = [
@@ -97,6 +120,7 @@ export function HomePanel() {
 
   return (
     <Panel label={t('Elegir partida')}>
+      <LangHint />
       {/* En pantallas anchas este rótulo va en la cabecera, junto a la marca. */}
       {/* En el móvil la hoja es corta: quien ya ha jugado no necesita el rótulo ni el titular. */}
       <p className={`label min-[82rem]:hidden ${played ? 'hidden wide:block' : ''}`} style={order(0)}>

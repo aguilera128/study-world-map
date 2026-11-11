@@ -70,6 +70,9 @@ interface SettingsState {
   /** Lo último elegido en los otros mapas, para recuperarlo al volver a ellos. */
   configs: Partial<Record<MapId, GameConfig>>;
   lists: StudyList[];
+  /** Ya se ha cerrado (o usado) el aviso «Ver en…» de la portada, o se ha elegido idioma a mano. */
+  langHintSeen: boolean;
+  dismissLangHint(): void;
   setTheme(theme: ThemeChoice): void;
   setViewMode(mode: ViewMode): void;
   setRealTime(on: boolean): void;
@@ -90,6 +93,8 @@ export const useSettings = create<SettingsState>()(
       config: DEFAULT_CONFIG,
       configs: {},
       lists: [SAMPLE_LIST],
+      langHintSeen: false,
+      dismissLangHint: () => set({ langHintSeen: true }),
       setTheme: (theme) => set({ theme }),
       setViewMode: (viewMode) => set({ viewMode }),
       setRealTime: (realTime) => set({ realTime }),
@@ -119,7 +124,7 @@ export const useSettings = create<SettingsState>()(
       // perder lo que ya esté guardado en el navegador.
       name: 'mapamundi:ajustes',
       version: 1,
-      partialize: ({ theme, viewMode, realTime, layers, config, configs, lists }) => ({ theme, viewMode, realTime, layers, config, configs, lists }),
+      partialize: ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<SettingsState>;
@@ -129,6 +134,7 @@ export const useSettings = create<SettingsState>()(
           theme: saved.theme === 'paper' || saved.theme === 'night' ? saved.theme : 'auto',
           viewMode: saved.viewMode === 'flat' ? 'flat' : 'globe',
           realTime: saved.realTime !== false,
+          langHintSeen: saved.langHintSeen === true,
           // Cada capa conserva lo guardado; las nuevas toman su valor inicial.
           layers: Object.fromEntries(
             Object.keys(LAYERS).map((id) => [id, typeof saved.layers?.[id as LayerId] === 'boolean' ? saved.layers[id as LayerId] : ALL_LAYERS[id as LayerId]]),

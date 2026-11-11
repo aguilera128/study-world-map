@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { LANGS, pathLang, t } from './index';
+import { LANGS, pathLang, preferredLang, t, VIEW_IN } from './index';
 
 /** Todos los textos que el código pasa a `t()` o `tx()` (los literales entre comillas simples). */
 function sourceTexts(): Set<string> {
@@ -37,6 +37,15 @@ describe('idiomas', () => {
     expect(pathLang('/en/')).toBe('en');
     expect(pathLang('/en/countries-and-capitals/')).toBe('en');
     expect(pathLang('/juego/paises-de-europa/')).toBe('es');
+  });
+
+  it('el aviso de idioma propone el primero del navegador que haya, o el inglés', () => {
+    expect(preferredLang(['ca-ES', 'es-ES'])).toBe('ca');
+    expect(preferredLang(['nl', 'pt-BR', 'en'])).toBe('pt');
+    expect(preferredLang(['zh-Hant-TW'])).toBe('zh');
+    expect(preferredLang(['ja'])).toBe('en');
+    expect(preferredLang([])).toBe(null);
+    expect(Object.keys(VIEW_IN).sort()).toEqual(Object.keys(LANGS).sort());
   });
 
   it('sin diccionario, t() devuelve el texto en español con sus variables', () => {

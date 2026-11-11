@@ -10,6 +10,9 @@ import { homeOf, lang, LANGS, t, type Lang } from '../i18n';
 // delante no caben en una línea hasta los 64rem.
 const LABELS = 'hidden min-[64rem]:inline';
 
+/** Quien elige idioma a mano ya sabe que hay varios: no hace falta el aviso de la portada. */
+const langChosen = () => useSettings.getState().dismissLangHint();
+
 function NavButton({ screen, icon, children }: { screen: Screen; icon: IconName; children: string }) {
   const current = useApp((s) => s.screen);
   const go = useApp((s) => s.go);
@@ -64,6 +67,7 @@ function LangMenu() {
             <a
               key={id}
               href={homeOf(id)}
+              onClick={langChosen}
               hrefLang={id}
               lang={id}
               aria-current={id === lang ? 'true' : undefined}
@@ -231,6 +235,7 @@ export function TopBar() {
                   <a
                     key={id}
                     href={homeOf(id)}
+                    onClick={langChosen}
                     hrefLang={id}
                     lang={id}
                     title={LANGS[id]}

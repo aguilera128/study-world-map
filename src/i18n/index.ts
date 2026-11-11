@@ -37,6 +37,35 @@ export const LOCALE = LOCALES[lang];
 /** Dirección de la aplicación en un idioma. */
 export const homeOf = (l: Lang) => (l === 'es' ? '/' : `/${l}/`);
 
+/**
+ * «Ver en …», dicho en cada idioma. No pasa por `t()`: lo lee quien ha llegado a una versión que no
+ * es la de su navegador, así que tiene que estar en su idioma y no en el de la página.
+ */
+export const VIEW_IN: Record<Lang, string> = {
+  es: 'Ver en español',
+  en: 'View in English',
+  fr: 'Voir en français',
+  de: 'Auf Deutsch ansehen',
+  it: 'Vedi in italiano',
+  pt: 'Ver em português',
+  ca: 'Veure-ho en valencià / català',
+  gl: 'Ver en galego',
+  eu: 'Euskaraz ikusi',
+  zh: '查看中文版',
+};
+
+/**
+ * Idioma que prefiere el navegador entre los disponibles: el primero de su lista que haya. Si no hay
+ * ninguno se propone el inglés, que es el que más probablemente entienda quien no lee los otros.
+ */
+export function preferredLang(languages: readonly string[]): Lang | null {
+  for (const tag of languages) {
+    const base = tag.toLowerCase().split('-')[0];
+    if (base in LANGS) return base as Lang;
+  }
+  return languages.length ? 'en' : null;
+}
+
 let dict: Record<string, string> = {};
 
 const loaders = import.meta.glob<{ default: Record<string, string> }>('./[a-z][a-z].ts');
