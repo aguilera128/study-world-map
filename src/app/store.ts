@@ -64,9 +64,15 @@ const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 
  * (la foto de satélite), lo llenan de líneas y rótulos (ríos, placas, corrientes, líneas
  * imaginarias, husos) o son colores de otro tema (climas, densidad). Al salir vuelven como estaban.
  */
-export const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population'];
+const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population'];
+/**
+ * Las capas que se apartan jugando en un mapa. En los de países también el relieve: su sombreado
+ * compite con las fronteras, que es lo que hay que leer. En el de geografía física se queda, porque
+ * allí las montañas son la pregunta.
+ */
+export const offInGame = (map: MapId): readonly LayerId[] => (map === 'fisico' ? OFF_IN_GAME : [...OFF_IN_GAME, 'relief']);
 /** Las capas con las que se juega: las de quien juega, sin las que estorban. */
-export const gameLayers = (layers: Layers): Layers => ({ ...layers, ...Object.fromEntries(OFF_IN_GAME.map((id) => [id, false])) });
+export const gameLayers = (layers: Layers, map: MapId): Layers => ({ ...layers, ...Object.fromEntries(offInGame(map).map((id) => [id, false])) });
 
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 

@@ -85,8 +85,9 @@ Numeración de pasos (`Step`) en los paneles: 1 Reto, 2 Países, 3 Preguntas.
 
 - **Países** en seis tonos apagados que nunca coinciden entre vecinos; se levantan al señalarlos.
 - **Imagen de satélite** sobre la tierra de entrada (es una capa: se puede quitar). Con ella el país
-  señalado no se tiñe, se marca con un contorno amarillo con ribete oscuro. En las partidas la foto
-  se aparta y queda el mapa mudo de tonos apagados.
+  señalado no se tiñe, se marca con un contorno amarillo con ribete oscuro.
+- **En las partidas**, mapa mudo de tonos apagados: sin foto y, en los mapas de países, sin relieve,
+  con las fronteras más contrastadas y algo más gruesas, que es lo que hay que leer.
 - **Océano** con profundidad real; reflejo del Sol y oleaje solo al acercarse.
 - **Día y noche** con la posición real del Sol; el lado nocturno se atenúa, no se apaga.
 - **Atmósfera:** halo que depende de dónde viene la luz (anillo fino a contraluz, ocaso en el

@@ -155,6 +155,7 @@ const HOVER_LIFT = 0.34;
 const MARKER_THRESHOLD = 8;
 const MARKER_DIAMETER = 13;
 const LINE_WIDTH = 1.15;
+const LINE_WIDTH_PLAY = 1.4;
 const LINE_WIDTH_EMPH = 2.8;
 const LINE_CASING = 1.2;
 
@@ -251,6 +252,7 @@ export class MapEngine {
   private showPhoto = false;
   private photoReady = false;
   private photoOutline = false;
+  private playLines = false;
   /** Detalle de la imagen de satélite: las teselas que hay puestas, la última vista y los turnos de espera. */
   private patchKey = '';
   private patchCanvas: HTMLCanvasElement | null = null;
@@ -648,7 +650,7 @@ export class MapEngine {
     u.uRim.value.copy(vec3(p.rim));
     u.uRimAmount.value = p.rimAmount;
     u.uRimPower.value = p.rimPower;
-    u.uLine.value.copy(vec3(p.line));
+    u.uLine.value.copy(vec3(this.playLines ? p.linePlay : p.line));
     this.syncEmph();
     this.own.river.uLine.value.copy(vec3(p.river));
     this.own.river.uLineEmph.value.copy(vec3(p.river));
@@ -796,6 +798,13 @@ export class MapEngine {
     if (this.pulseIndex >= 0) this.animating.add(this.pulseIndex);
     this.pulseIndex = index;
     this.pulseStart = performance.now();
+    this.invalidate();
+  }
+
+  /** Fronteras de partida: más contrastadas y algo más gruesas que las del mapa de consulta. */
+  setPlayLines(on: boolean) {
+    this.playLines = on;
+    this.uniforms.uLine.value.copy(vec3(on ? this.palette.linePlay : this.palette.line));
     this.invalidate();
   }
 
@@ -1993,7 +2002,7 @@ export class MapEngine {
     this.uniforms.uMorph.value = morph;
     this.uniforms.uViewport.value.set(rig.width * dpr, rig.height * dpr);
     this.own.stars.uDpr.value = dpr;
-    this.own.line.uWidth.value = LINE_WIDTH * dpr;
+    this.own.line.uWidth.value = (this.playLines ? LINE_WIDTH_PLAY : LINE_WIDTH) * dpr;
     this.own.river.uWidth.value = 1.4 * dpr;
     this.own.plate.uWidth.value = 2 * dpr;
     this.own.guide.uWidth.value = 1.6 * dpr;

@@ -2,7 +2,7 @@ import { DENSITY_LABELS } from '../game/population';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
-import { LAYERS, OFF_IN_GAME, showWhole, useApp, useSettings, type LayerId } from '../app/store';
+import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -46,7 +46,8 @@ function LayersMenu() {
   const resetLayers = useSettings((s) => s.resetLayers);
   // Durante una partida hay capas que se apartan: su interruptor se ve apagado y no se puede tocar.
   const playing = useApp((s) => s.screen === 'play' || s.screen === 'results');
-  const parked = (id: LayerId) => playing && OFF_IN_GAME.includes(id);
+  const map = useApp((s) => s.atlas?.map ?? 'world');
+  const parked = (id: LayerId) => playing && offInGame(map).includes(id);
   const realTime = useSettings((s) => s.realTime);
   const theme = useTheme();
 

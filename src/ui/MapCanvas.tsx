@@ -170,7 +170,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     const chosenLayers = useSettings((s) => s.layers);
     // Jugando, el mapa lleva las capas del juego y no las que hubiera puestas: ver «gameLayers».
     const inGame = screen === 'play' || screen === 'results';
-    const layers = useMemo(() => (inGame ? gameLayers(chosenLayers) : chosenLayers), [chosenLayers, inGame]);
+    const layers = useMemo(() => (inGame ? gameLayers(chosenLayers, atlas.map) : chosenLayers), [chosenLayers, inGame, atlas.map]);
     const theme = useTheme();
     const reducedMotion = useReducedMotion();
 
@@ -303,6 +303,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   const daylight = live && layers.dayNight;
   useEffect(() => engine?.setDaylight(daylight ? 1 : 0), [engine, daylight]);
   useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
+  useEffect(() => engine?.setPlayLines(playing), [engine, playing]);
   useEffect(() => engine?.setSatellite(layers.satellite), [engine, layers.satellite]);
   useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
   useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);

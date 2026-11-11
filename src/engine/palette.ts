@@ -73,6 +73,8 @@ export interface Palette {
   sheetShadow: string;
   sheetShadowAlpha: number;
   line: string;
+  /** Fronteras durante una partida: en el mapa mudo son lo único que separa un país de otro. */
+  linePlay: string;
   lineEmph: string;
   /** Color de los ríos. */
   river: string;
@@ -121,6 +123,7 @@ export const PAPER: Palette = {
   sheetShadow: '#1b2a3a',
   sheetShadowAlpha: 0.16,
   line: '#8f897a',
+  linePlay: '#6f6a5e',
   lineEmph: '#1b2a3a',
   river: '#4f86ab',
   guide: '#b4492f',
@@ -195,6 +198,7 @@ export const NIGHT: Palette = {
   sheetShadow: '#000000',
   sheetShadowAlpha: 0.4,
   line: '#364250',
+  linePlay: '#93a3b8',
   lineEmph: '#f3ead7',
   river: '#5f9cc4',
   guide: '#f0a070',
