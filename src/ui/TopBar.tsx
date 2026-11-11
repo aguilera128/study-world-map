@@ -118,6 +118,17 @@ export function TopBar() {
   const setTheme = useSettings((s) => s.setTheme);
   const realTime = useSettings((s) => s.realTime);
   const toggleRealTime = useApp((s) => s.toggleRealTime);
+  // Huevo de pascua: cinco clics seguidos en «Globo 3D» cambian el planeta y el espacio (ToonSky).
+  const toggleToon = useApp((s) => s.toggleToon);
+  const globeClicks = useRef<number[]>([]);
+  const countGlobeClick = () => {
+    const now = performance.now();
+    globeClicks.current = [...globeClicks.current.filter((at) => now - at < 2500), now];
+    if (globeClicks.current.length >= 5) {
+      globeClicks.current = [];
+      toggleToon();
+    }
+  };
   const theme = useTheme();
   const playing = screen === 'play';
   // Durante la partida los botones se quedan en solo icono para dejar sitio al marcador.
@@ -205,6 +216,7 @@ export function TopBar() {
               onClick={() => {
                 setViewMode(mode);
                 getEngine()?.invalidate();
+                if (mode === 'globe') countGlobeClick();
               }}
               className={`flex h-9 w-9 items-center justify-center gap-1.5 rounded-[9px] text-sm font-bold transition-colors min-[64rem]:w-auto min-[64rem]:px-2.5 ${
                 viewMode === mode ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'

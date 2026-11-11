@@ -74,6 +74,7 @@ uniform float uRimPower;
 // Día y noche en tiempo real: la cara que no mira al Sol se oscurece y se tiñe, con una franja
 // de crepúsculo. Depende solo del punto geográfico, así que sirve igual en el globo y en el plano.
 uniform vec3 uSun;        // dirección del Sol en coordenadas geográficas (unitario)
+uniform float uToon;      // 1 = planeta de dibujos animados: la luz va a saltos, como pintada con tres tintas
 uniform float uNight;     // 0 = sin efecto, 1 = día y noche visibles
 uniform vec3 uNightTint;
 uniform float uNightDim;
@@ -99,6 +100,7 @@ vec3 shade(vec3 color, vec3 normal, vec3 toEye, vec3 geo) {
   vec3 n = normalize(normal);
   vec3 v = normalize(toEye);
   float lambert = smoothstep(0.0, 1.0, 0.5 + 0.5 * dot(n, uLight));
+  lambert = mix(lambert, floor(lambert * 3.0 + 0.5) / 3.0, uToon);
   float light = mix(1.0, mix(uShadow, 1.0, lambert), uMorph);
   float rim = pow(1.0 - clamp(dot(n, v), 0.0, 1.0), uRimPower) * uMorph;
   return mix(daylight(color, geo) * light, uRim, rim * uRimAmount);

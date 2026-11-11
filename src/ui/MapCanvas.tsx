@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { setEngine } from '../app/engineRef';
 import { formatCompact, formatCoords } from '../app/format';
 import { climateText } from '../game/climate';
@@ -8,9 +8,15 @@ import { clockIn } from '../app/time';
 import type { Atlas } from '../atlas/atlas';
 import { takeMesh } from '../atlas/meshAsync';
 import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
-import { PALETTES } from '../engine/palette';
+import { PALETTES, TOON } from '../engine/palette';
 import { siderealAngle, sublunarPoint, subsolarPoint } from '../engine/sun';
 import { MASTERY_LABELS, mastery } from '../game/progress';
+import { score } from '../game/session';
+import { Celebration } from './Celebration';
+
+// El huevo de pascua solo se descarga si alguien lo encuentra.
+const ToonSky = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonSky })));
+const ToonSaucer = lazy(() => import('./ToonSky').then((m) => ({ default: m.ToonSaucer })));
 import { useNow, useReducedMotion, useTheme, useWide } from './hooks';
 import { Icon } from './Icon';
 import { DISCONTINUITIES, INTERIOR } from './planetLayers';
@@ -170,7 +176,12 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     const chosenLayers = useSettings((s) => s.layers);
     // Jugando, el mapa lleva las capas del juego y no las que hubiera puestas: ver «gameLayers».
     const inGame = screen === 'play' || screen === 'results';
-    const layers = useMemo(() => (inGame ? gameLayers(chosenLayers, atlas.map) : chosenLayers), [chosenLayers, inGame, atlas.map]);
+    // Huevo de pascua (cinco clics en «Globo 3D»): planeta y espacio de dibujos, sin foto ni relieve.
+    const toon = useApp((s) => s.toon);
+    const layers = useMemo(() => {
+      const base = inGame ? gameLayers(chosenLayers, atlas.map) : chosenLayers;
+      return toon ? { ...base, satellite: false, relief: false, depth: false } : base;
+    }, [chosenLayers, inGame, atlas.map, toon]);
     const theme = useTheme();
     const reducedMotion = useReducedMotion();
 
@@ -290,17 +301,22 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   const currentInfo = current && layers.currents ? CURRENTS.get(current.id) : undefined;
 
   // ── Sincronizar el motor con el estado ──
-  useEffect(() => engine?.setPalette(PALETTES[theme]), [engine, theme]);
+  useEffect(() => {
+    engine?.setPalette(toon ? TOON : PALETTES[theme]);
+    engine?.setToon(toon);
+  }, [engine, theme, toon]);
   useEffect(() => engine?.setMode(viewMode), [engine, viewMode]);
   useEffect(() => engine?.setReducedMotion(reducedMotion), [engine, reducedMotion]);
   useEffect(() => engine?.setPadding(pad), [engine, pad]);
   // El globo gira solo en la portada del mundo: en el mapa de un país se lo llevaría de la vista.
   useEffect(() => engine?.setAutoRotate(screen === 'home' && !atlas.frame), [engine, screen, atlas]);
   const playing = screen === 'play' || screen === 'results';
+  const reviewOnly = useApp((s) => s.reviewOnly);
+  const perfect = screen === 'results' && !!session && !reviewOnly && score(session).first === session.total;
   const wideScreen = useWide();
   // Durante la partida el tiempo real se aparta: el día y la noche oscurecerían medio mapa.
   const live = realTime && !playing;
-  const daylight = live && layers.dayNight;
+  const daylight = live && layers.dayNight && !toon;
   useEffect(() => engine?.setDaylight(daylight ? 1 : 0), [engine, daylight]);
   useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
   useEffect(() => engine?.setPlayLines(playing), [engine, playing]);
@@ -361,6 +377,11 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
 
   return (
     <>
+      {toon && (
+        <Suspense fallback={null}>
+          <ToonSky animated={!reducedMotion} />
+        </Suspense>
+      )}
       <canvas
         ref={canvasRef}
         className="map-canvas transition-opacity duration-700"
@@ -390,6 +411,13 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
+      {toon && (
+        <Suspense fallback={null}>
+          <ToonSaucer animated={!reducedMotion} />
+        </Suspense>
+      )}
+      {/* Un 10 (todo a la primera, en una partida entera) se celebra con fuegos artificiales. */}
+      {engine && perfect && !reducedMotion && <Celebration key={session.startedAt} engine={engine} atlas={atlas} countries={session.results.map((r) => r.country)} />}
 
       {current && currentInfo && (
         <div

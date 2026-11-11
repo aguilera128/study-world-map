@@ -156,6 +156,7 @@ const MARKER_THRESHOLD = 8;
 const MARKER_DIAMETER = 13;
 const LINE_WIDTH = 1.15;
 const LINE_WIDTH_PLAY = 1.4;
+const LINE_WIDTH_TOON = 2.4;
 const LINE_WIDTH_EMPH = 2.8;
 const LINE_CASING = 1.2;
 
@@ -253,6 +254,7 @@ export class MapEngine {
   private photoReady = false;
   private photoOutline = false;
   private playLines = false;
+  private toon = false;
   /** Detalle de la imagen de satélite: las teselas que hay puestas, la última vista y los turnos de espera. */
   private patchKey = '';
   private patchCanvas: HTMLCanvasElement | null = null;
@@ -304,6 +306,7 @@ export class MapEngine {
     uLineEmph: { value: new Vector3() },
     uSun: { value: new Vector3(0, 0, 1) },
     uNight: { value: 0 },
+    uToon: { value: 0 },
     uNightTint: { value: new Vector3() },
     uNightDim: { value: 0.5 },
     uCut: { value: 0 },
@@ -798,6 +801,16 @@ export class MapEngine {
     if (this.pulseIndex >= 0) this.animating.add(this.pulseIndex);
     this.pulseIndex = index;
     this.pulseStart = performance.now();
+    this.invalidate();
+  }
+
+  /**
+   * Huevo de pascua: el planeta como en unos dibujos animados, con la luz a saltos y los contornos
+   * gruesos. Los colores los pone la paleta «TOON», que quien lo enciende pasa con «setPalette».
+   */
+  setToon(on: boolean) {
+    this.toon = on;
+    this.uniforms.uToon.value = on ? 1 : 0;
     this.invalidate();
   }
 
@@ -2002,7 +2015,7 @@ export class MapEngine {
     this.uniforms.uMorph.value = morph;
     this.uniforms.uViewport.value.set(rig.width * dpr, rig.height * dpr);
     this.own.stars.uDpr.value = dpr;
-    this.own.line.uWidth.value = (this.playLines ? LINE_WIDTH_PLAY : LINE_WIDTH) * dpr;
+    this.own.line.uWidth.value = (this.toon ? LINE_WIDTH_TOON : this.playLines ? LINE_WIDTH_PLAY : LINE_WIDTH) * dpr;
     this.own.river.uWidth.value = 1.4 * dpr;
     this.own.plate.uWidth.value = 2 * dpr;
     this.own.guide.uWidth.value = 1.6 * dpr;

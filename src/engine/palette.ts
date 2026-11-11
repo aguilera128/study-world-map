@@ -259,3 +259,47 @@ export function rgb(hex: string): [number, number, number] {
   const v = parseInt(hex.slice(1), 16);
   return [((v >> 16) & 255) / 255, ((v >> 8) & 255) / 255, (v & 255) / 255];
 }
+
+/**
+ * Huevo de pascua: el planeta de unos dibujos animados. Parte de la paleta de noche (las respuestas,
+ * el progreso y los mapas de datos no cambian) y sube el color del mapa: mar turquesa, países en
+ * tonos chillones, contornos casi negros y un resplandor verde alrededor.
+ */
+const TOON_STYLES: Record<number, string> = {
+  [Style.blank]: '#8fe36f',
+  [Style.muted]: '#57b58a',
+  [Style.political]: '#7be26b',
+  [Style.political + 1]: '#ffd84d',
+  [Style.political + 2]: '#ff8a5c',
+  [Style.political + 3]: '#ff6fb1',
+  [Style.political + 4]: '#b58cff',
+  [Style.political + 5]: '#59e0c0',
+  [Style.ice]: '#eaffff',
+  [Style.land]: '#8fe36f',
+};
+
+export const TOON: Palette = {
+  ...NIGHT,
+  ocean: '#2fc4e8',
+  grid: '#0e6f9c',
+  gridAlpha: 0.22,
+  glint: 0.12,
+  seaDepth: 0,
+  seaRelief: 0,
+  relief: 0,
+  stars: 0.5,
+  rim: '#c8ff7a',
+  rimAmount: 0.5,
+  rimPower: 2.1,
+  shadow: 0.5,
+  halo: '#7dff6a',
+  haloAlpha: 0.55,
+  haloFalloff: 6,
+  outline: '#160d22',
+  outlineAlpha: 1,
+  line: '#160d22',
+  linePlay: '#160d22',
+  lineEmph: '#fff36b',
+  hover: '#fff36b',
+  styles: NIGHT.styles.map((style, i) => (TOON_STYLES[i] ? { ...style, color: TOON_STYLES[i] } : style)),
+};

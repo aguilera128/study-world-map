@@ -347,6 +347,9 @@ interface AppState {
   toggleDraftCountry(id: string): void;
   setPad(side: keyof Padding, value: number): void;
   toggleRealTime(): void;
+  /** Huevo de pascua: el planeta y el espacio, de dibujos animados. No se guarda. */
+  toon: boolean;
+  toggleToon(): void;
   /** Pide al navegador la ubicación precisa (muestra su aviso de permiso). */
   locateExact(): void;
 }
@@ -648,6 +651,9 @@ export const useApp = create<AppState>()((set, get) => {
 
     setPad: (side, value) =>
       set((s) => (Math.abs(s.pad[side] - value) < 1 ? s : { pad: { ...s.pad, [side]: value } })),
+
+    toon: false,
+    toggleToon: () => set((s) => ({ toon: !s.toon })),
 
     toggleRealTime: () => {
       const settings = useSettings.getState();

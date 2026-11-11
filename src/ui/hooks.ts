@@ -27,7 +27,9 @@ export const useReducedMotion = () => useMedia('(prefers-reduced-motion: reduce)
  */
 export function useTheme(): ThemeName {
   const choice = useSettings((s) => s.theme);
-  const theme: ThemeName = choice === 'auto' ? 'night' : choice;
+  // Con el huevo de pascua encendido el fondo es el espacio: la interfaz va en oscuro, elija lo que elija.
+  const toon = useApp((s) => s.toon);
+  const theme: ThemeName = toon || choice === 'auto' ? 'night' : choice;
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
     // la barra del navegador, del color del papel de cada tema
