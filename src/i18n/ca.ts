@@ -236,6 +236,8 @@ const ca: Record<string, string> = {
   Alejar: 'Allunyar',
   'Vista general': 'Vista general',
   'Meridianos y paralelos': 'Meridians i paral·lels',
+  'Imagen de satélite': 'Imatge de satèl·lit',
+  'Restablecer capas': 'Restableix les capes',
   'Relieve': 'Relleu',
   'Profundidad del mar': 'Profunditat del mar',
   'Montañas, ríos y mares': 'Muntanyes, rius i mars',

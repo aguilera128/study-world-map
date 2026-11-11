@@ -236,6 +236,8 @@ const eu: Record<string, string> = {
   Alejar: 'Urrundu',
   'Vista general': 'Ikuspegi orokorra',
   'Meridianos y paralelos': 'Meridianoak eta paraleloak',
+  'Imagen de satélite': 'Satelite-irudia',
+  'Restablecer capas': 'Berrezarri geruzak',
   'Relieve': 'Erliebea',
   'Profundidad del mar': 'Itsasoaren sakonera',
   'Montañas, ríos y mares': 'Mendiak, ibaiak eta itsasoak',

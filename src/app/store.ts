@@ -45,6 +45,7 @@ export const LAYERS = {
   currents: t('Corrientes oceánicas'),
   tectonics: t('Placas y volcanes'),
   features: t('Montañas, ríos y mares'),
+  satellite: t('Imagen de satélite'),
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
   stars: t('Estrellas'),
@@ -57,7 +58,7 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population'];
+const OFF_BY_DEFAULT: LayerId[] = ['climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', 'satellite'];
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
 
 interface SettingsState {
@@ -77,6 +78,8 @@ interface SettingsState {
   setViewMode(mode: ViewMode): void;
   setRealTime(on: boolean): void;
   setLayer(id: LayerId, on: boolean): void;
+  /** Deja las capas como vienen de entrada. */
+  resetLayers(): void;
   setConfig(patch: Partial<GameConfig>): void;
   saveList(list: StudyList): void;
   deleteList(id: string): void;
@@ -99,6 +102,7 @@ export const useSettings = create<SettingsState>()(
       setViewMode: (viewMode) => set({ viewMode }),
       setRealTime: (realTime) => set({ realTime }),
       setLayer: (id, on) => set((s) => ({ layers: { ...s.layers, [id]: on } })),
+      resetLayers: () => set({ layers: ALL_LAYERS }),
       setConfig: (patch) =>
         set((s) => {
           // Al cambiar de mapa se guarda lo elegido en el que se deja y se recupera lo del que se abre.

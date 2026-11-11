@@ -321,6 +321,8 @@ varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
 varying vec2 vLonLat;
+varying float vPhoto; // cuánto de la imagen de satélite deja ver este país (0–1)
+varying float vTint;
 
 void main() {
   vGeo = geoVector(position.xy);
@@ -330,6 +332,8 @@ void main() {
   vec3 p = surface(position.xy, uBaseAlt + state.a * uLift, n);
   vec4 mv = viewMatrix * vec4(p, 1.0);
   vColor = state.rgb;
+  vPhoto = auxOf(position.z).b;
+  vTint = 1.0;
   vNormal = mat3(viewMatrix) * n;
   vToEye = -mv.xyz;
   gl_Position = projectionMatrix * mv;
@@ -347,6 +351,8 @@ varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
 varying vec2 vLonLat;
+varying float vPhoto;
+varying float vTint;
 
 void main() {
   vGeo = geoVector(position.xy);
@@ -356,6 +362,8 @@ void main() {
   vec3 p = surface(position.xy, uBaseAlt + state.a * uLift * aTop, n);
   vec4 mv = viewMatrix * vec4(p, 1.0);
   vColor = state.rgb * uWallTint;
+  vPhoto = auxOf(position.z).b;
+  vTint = uWallTint;
   vNormal = mat3(viewMatrix) * n;
   vToEye = -mv.xyz;
   gl_Position = projectionMatrix * mv;
@@ -371,12 +379,25 @@ varying vec3 vGeo;
 varying vec2 vLonLat;
 uniform sampler2D uRelief; // sombreado real del relieve (scripts/build-relief.py)
 uniform float uReliefAmt; // 0 = sin relieve
+uniform sampler2D uPhoto; // imagen de satélite (scripts/build-satellite.py); transparente en el mar
+uniform float uPhotoAmt;  // 1 = capa «Imagen de satélite» a la vista
+varying float vPhoto;
+varying float vTint;
 
 void main() {
   if (inCut(normalize(vGeo))) discard;
+  vec2 uv = vec2(vLonLat.x / 6.283185307 + 0.5, vLonLat.y / 3.141592654 + 0.5);
   // En la textura, 206/255 es terreno llano: más oscuro, ladera en sombra; más claro, al sol.
-  float relief = texture2D(uRelief, vec2(vLonLat.x / 6.283185307 + 0.5, vLonLat.y / 3.141592654 + 0.5)).r / 0.808;
-  vec3 c = vColor * mix(1.0, relief, uReliefAmt);
+  float relief = texture2D(uRelief, uv).r / 0.808;
+  vec3 base = vColor;
+  if (uPhotoAmt > 0.0) {
+    // La foto sustituye al color del país en la medida que diga su estado (entera en el mapa
+    // político, a medias bajo el color de una respuesta, nada en los mapas de datos) y solo donde
+    // la foto tiene tierra: en una isla que en ella es mar se queda el color del país.
+    vec4 photo = texture2D(uPhoto, uv);
+    base = mix(base, photo.rgb * vTint, vPhoto * photo.a * uPhotoAmt);
+  }
+  vec3 c = base * mix(1.0, relief, uReliefAmt);
   gl_FragColor = vec4(shade(c, vNormal, vToEye, vGeo), 1.0);
 }
 `;

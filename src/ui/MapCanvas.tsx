@@ -254,6 +254,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   const daylight = live && layers.dayNight;
   useEffect(() => engine?.setDaylight(daylight ? 1 : 0), [engine, daylight]);
   useEffect(() => engine?.setRelief(layers.relief), [engine, layers.relief]);
+  useEffect(() => engine?.setSatellite(layers.satellite), [engine, layers.satellite]);
   useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
   useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);
   useEffect(() => {

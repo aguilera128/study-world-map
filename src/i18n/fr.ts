@@ -235,6 +235,8 @@ const fr: Record<string, string> = {
   Alejar: 'Zoom arrière',
   'Vista general': 'Vue d’ensemble',
   'Meridianos y paralelos': 'Méridiens et parallèles',
+  'Imagen de satélite': 'Image satellite',
+  'Restablecer capas': 'Réinitialiser les calques',
   'Relieve': 'Relief',
   'Profundidad del mar': 'Profondeur de la mer',
   'Montañas, ríos y mares': 'Montagnes, fleuves et mers',

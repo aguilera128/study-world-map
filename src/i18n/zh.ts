@@ -235,6 +235,8 @@ const zh: Record<string, string> = {
   Alejar: '缩小',
   'Vista general': '全图',
   'Meridianos y paralelos': '经线和纬线',
+  'Imagen de satélite': '卫星影像',
+  'Restablecer capas': '重置图层',
   'Relieve': '地形',
   'Profundidad del mar': '海洋深度',
   'Montañas, ríos y mares': '山脉、河流和海洋',

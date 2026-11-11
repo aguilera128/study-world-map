@@ -235,6 +235,8 @@ const pt: Record<string, string> = {
   Alejar: 'Afastar',
   'Vista general': 'Visão geral',
   'Meridianos y paralelos': 'Meridianos e paralelos',
+  'Imagen de satélite': 'Imagem de satélite',
+  'Restablecer capas': 'Restaurar camadas',
   'Relieve': 'Relevo',
   'Profundidad del mar': 'Profundidade do mar',
   'Montañas, ríos y mares': 'Montanhas, rios e mares',

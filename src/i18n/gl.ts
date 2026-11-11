@@ -235,6 +235,8 @@ const gl: Record<string, string> = {
   Alejar: 'Afastar',
   'Vista general': 'Vista xeral',
   'Meridianos y paralelos': 'Meridianos e paralelos',
+  'Imagen de satélite': 'Imaxe de satélite',
+  'Restablecer capas': 'Restablecer as capas',
   'Relieve': 'Relevo',
   'Profundidad del mar': 'Profundidade do mar',
   'Montañas, ríos y mares': 'Montañas, ríos e mares',

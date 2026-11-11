@@ -232,6 +232,8 @@ export class MapEngine {
   private showGlint = true;
   private seabedReady = false;
   private shadeReady = false;
+  private showPhoto = false;
+  private photoReady = false;
   private flowReady = false;
   private showCurrents = false;
   private showRelief = false;
@@ -283,7 +285,7 @@ export class MapEngine {
   };
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
-    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 } },
+    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
@@ -719,8 +721,21 @@ export class MapEngine {
     this.stateData[p + 3] = clamp(c[o + 3], 0, 1) * 255 + 0.5;
     this.auxData[p] = clamp(c[o + 4], 0, 1) * 255 + 0.5;
     this.auxData[p + 1] = this.marked[i] ? 255 : 0;
+    this.auxData[p + 2] = this.photoShare(i) * 255;
     this.stateTex.needsUpdate = true;
     this.auxTex.needsUpdate = true;
+  }
+
+  /**
+   * Cuánto de la imagen de satélite deja ver un país cuando esa capa está puesta: entera en el mapa
+   * político y en el mudo, un tercio bajo el color de una respuesta (que tiene que seguir leyéndose)
+   * y nada en los mapas de datos (dominio, climas, densidad), donde el color es el dato.
+   */
+  private photoShare(i: number): number {
+    const style = this.styleOf[i];
+    if (style >= Style.ok && style <= Style.target) return 0.35;
+    if (style >= Style.mastery && style !== Style.ice && style !== Style.land) return 0;
+    return 1;
   }
 
   /** Destello de color que se desvanece hacia el estilo del país (p. ej. al fallar). */
@@ -989,6 +1004,25 @@ export class MapEngine {
     this.showDepth = on;
     this.own.ocean.uDepth.value = on && this.seabedReady ? this.palette.seaDepth : 0;
     this.own.ocean.uShadeAmt.value = on && this.shadeReady ? this.palette.seaRelief : 0;
+    this.invalidate();
+  }
+
+  /** Pinta la tierra con la imagen de satélite. La imagen (480 KB) solo se descarga si se pide. */
+  setSatellite(on: boolean) {
+    this.showPhoto = on;
+    if (on && !this.own.fill.uPhoto.value) {
+      const photo = this.image('/data/satellite.webp', () => {
+        this.photoReady = true;
+        this.own.fill.uPhotoAmt.value = this.showPhoto ? 1 : 0;
+        this.invalidate();
+      });
+      photo.colorSpace = NoColorSpace;
+      photo.wrapS = RepeatWrapping;
+      photo.anisotropy = 4;
+      this.disposables.push(photo);
+      this.own.fill.uPhoto.value = photo;
+    }
+    this.own.fill.uPhotoAmt.value = on && this.photoReady ? 1 : 0;
     this.invalidate();
   }
 

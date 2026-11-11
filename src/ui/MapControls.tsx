@@ -30,7 +30,7 @@ const LAYER_GROUPS: { title: string; ids: LayerId[] }[] = [
   { title: t('Relieve y mar'), ids: ['relief', 'features', 'depth', 'currents', 'tectonics'] },
   { title: t('Datos por país'), ids: ['climate', 'population', 'timezones'] },
   { title: t('Líneas'), ids: ['grid', 'guides'] },
-  { title: t('Aspecto'), ids: ['glint', 'stars'] },
+  { title: t('Aspecto'), ids: ['satellite', 'glint', 'stars'] },
 ];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
 
@@ -42,6 +42,7 @@ function LayersMenu() {
   const wide = useWide();
   const layers = useSettings((s) => s.layers);
   const setLayer = useSettings((s) => s.setLayer);
+  const resetLayers = useSettings((s) => s.resetLayers);
   const realTime = useSettings((s) => s.realTime);
   const theme = useTheme();
 
@@ -118,6 +119,10 @@ function LayersMenu() {
       ) : (
         <p className="text-xs text-ink-faint">{t('Activa «Tiempo real» para ver el día y la noche, el Sol y la Luna.')}</p>
       )}
+      <button type="button" onClick={resetLayers} className="btn btn-ghost min-h-10 justify-center gap-1.5 text-sm">
+        <Icon name="replay" size={15} />
+        {t('Restablecer capas')}
+      </button>
     </>
   );
 
@@ -136,7 +141,7 @@ function LayersMenu() {
       {open && wide && (
         <div
           // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
-          className={`float absolute bottom-0 right-12 flex w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3 ${realTime ? 'max-h-[calc(100dvh-18.5rem)]' : 'max-h-[calc(100dvh-7rem)]'}`}
+          className={`float absolute bottom-0 right-12 thin-scroll flex w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3 ${realTime ? 'max-h-[calc(100dvh-18.5rem)]' : 'max-h-[calc(100dvh-7rem)]'}`}
           role="group"
           aria-label={t('Capas del mapa')}
         >
@@ -150,7 +155,7 @@ function LayersMenu() {
         createPortal(
           <div ref={sheetRef} className="fixed inset-0 z-50 flex flex-col justify-end">
             <button type="button" aria-label={t('Cerrar')} onClick={() => setOpen(false)} className="absolute inset-0 bg-[rgb(var(--shadow)/0.45)]" />
-            <div className="relative max-h-[78dvh] overflow-y-auto overscroll-contain rounded-t-[20px] border-t border-rule-strong bg-surface px-5 pb-6 pt-3" role="dialog" aria-label={t('Capas del mapa')}>
+            <div className="thin-scroll relative max-h-[78dvh] overflow-y-auto overscroll-contain rounded-t-[20px] border-t border-rule-strong bg-surface px-5 pb-6 pt-3" role="dialog" aria-label={t('Capas del mapa')}>
               <div className="sticky top-0 z-10 -mx-5 mb-2 flex items-center justify-between bg-surface px-5 py-2">
                 <h2 className="display text-xl">{t('Capas del mapa')}</h2>
                 <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost min-h-10 px-3 text-sm">

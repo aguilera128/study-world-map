@@ -235,6 +235,8 @@ const it: Record<string, string> = {
   Alejar: 'Riduci',
   'Vista general': 'Vista d’insieme',
   'Meridianos y paralelos': 'Meridiani e paralleli',
+  'Imagen de satélite': 'Immagine satellitare',
+  'Restablecer capas': 'Ripristina i livelli',
   'Relieve': 'Rilievo',
   'Profundidad del mar': 'Profondità del mare',
   'Montañas, ríos y mares': 'Montagne, fiumi e mari',
