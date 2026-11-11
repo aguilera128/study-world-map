@@ -144,13 +144,15 @@ function LayersMenu() {
         <Icon name="layers" size={19} />
       </button>
       {open && wide && (
-        <div
-          // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
-          className={`float absolute bottom-0 right-12 thin-scroll flex w-60 flex-col gap-3 overflow-y-auto bg-surface! px-3.5 py-3 ${realTime ? 'max-h-[calc(100dvh-18.5rem)]' : 'max-h-[calc(100dvh-7rem)]'}`}
-          role="group"
-          aria-label={t('Capas del mapa')}
-        >
-          {content}
+        // La tarjeta no se desplaza: lo hace una caja interior, separada del borde. Así la barra de
+        // desplazamiento no pisa el borde ni las esquinas redondeadas.
+        <div className="float absolute bottom-0 right-12 w-60 bg-surface! py-2 pr-1" role="group" aria-label={t('Capas del mapa')}>
+          <div
+            // Con el tiempo real encendido, su tarjeta ocupa la esquina de arriba: el menú acaba antes de llegar a ella.
+            className={`thin-scroll flex flex-col gap-3 overflow-y-auto py-1 pl-3.5 pr-2.5 ${realTime ? 'max-h-[calc(100dvh-19.5rem)]' : 'max-h-[calc(100dvh-8rem)]'}`}
+          >
+            {content}
+          </div>
         </div>
       )}
       {open &&
