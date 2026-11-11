@@ -272,9 +272,10 @@ export function HomePanel() {
         </div>
       </button>
 
+      {/* En pantallas anchas este enlace va abajo a la derecha, bajo los controles del mapa (MapControls). */}
       <a
         href="/donar/"
-        className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent"
+        className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent wide:hidden"
         style={order(8)}
       >
         <Icon name="heart" size={16} />

@@ -203,19 +203,31 @@ export function MapControls() {
     return () => clearTimeout(timer);
   }, []);
 
+  // En la portada y con pantalla ancha, el enlace para apoyar el proyecto va en la esquina, bajo los
+  // controles (en el móvil esa esquina es de la hoja inferior y el enlace se queda en el panel).
+  const donate = useWide() && screen === 'home';
+
   return (
-    <div
-      className={`float fixed right-3 z-30 flex flex-col divide-y divide-rule wide:right-8 ${settled ? 'transition-[bottom] duration-300' : ''}`}
-      style={{ bottom: Math.max(16, pad.bottom + 12) }}
-    >
-      {/* En pantallas táctiles el zoom se hace pellizcando: solo queda la vuelta a la vista general. */}
-      <span className="flex flex-col divide-y divide-rule pointer-coarse:hidden">
-        <Control icon="plus" label={t('Acercar')} onClick={() => getEngine()?.zoomBy(0.6)} />
-        <Control icon="minus" label={t('Alejar')} onClick={() => getEngine()?.zoomBy(1 / 0.6)} />
-      </span>
-      <Control icon="target" label={t('Vista general')} onClick={reset} />
-      <LayersMenu />
-      <ExportMenu />
-    </div>
+    <>
+      <div
+        className={`float fixed right-3 z-30 flex flex-col divide-y divide-rule wide:right-8 ${settled ? 'transition-[bottom] duration-300' : ''}`}
+        style={{ bottom: Math.max(donate ? 44 : 16, pad.bottom + 12) }}
+      >
+        {/* En pantallas táctiles el zoom se hace pellizcando: solo queda la vuelta a la vista general. */}
+        <span className="flex flex-col divide-y divide-rule pointer-coarse:hidden">
+          <Control icon="plus" label={t('Acercar')} onClick={() => getEngine()?.zoomBy(0.6)} />
+          <Control icon="minus" label={t('Alejar')} onClick={() => getEngine()?.zoomBy(1 / 0.6)} />
+        </span>
+        <Control icon="target" label={t('Vista general')} onClick={reset} />
+        <LayersMenu />
+        <ExportMenu />
+      </div>
+      {donate && (
+        <a href="/donar/" className="fixed bottom-3 right-8 z-30 inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-ink-soft transition-colors hover:text-accent">
+          <Icon name="heart" size={15} />
+          {t('Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto')}
+        </a>
+      )}
+    </>
   );
 }
