@@ -108,6 +108,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Estrellas | `build-stars.mjs`, `build-stars-faint.mjs` | Yale Bright Star Catalogue (brillantes), Hipparcos de la ESA (débiles) |
 | Vía Láctea | `exr-to-raw.mjs` + `build-milkyway.py` | NASA Deep Star Maps 2020 (Gaia DR2) |
 | Continentes de la ilustración | `build-planet-land.mjs` | Natural Earth |
+| Ilustraciones del huevo de pascua (`public/toon/`) | a mano, sin generador | diseños originales generados con IA (imágenes de Codex) a partir de una descripción propia; no son de ninguna serie |
 | Interior de la Tierra, atmósfera, Sol y Luna | `src/ui/planetLayers.ts`, `RealTime.tsx` | USGS, IGN, PREM, artículos citados, NASA |
 
 Los ficheros grandes de origen (Natural Earth, EXR de la NASA, rejilla de Köppen) **no** van al

@@ -288,7 +288,7 @@ export const TOON: Palette = {
   seaDepth: 0,
   seaRelief: 0,
   relief: 0,
-  stars: 0.5,
+  stars: 1,
   rim: '#c8ff7a',
   rimAmount: 0.5,
   rimPower: 2.1,

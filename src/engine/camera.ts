@@ -39,6 +39,10 @@ export interface ScreenPoint {
   visible: boolean;
   /** Solo en projectFar: el astro está delante de la cámara (aunque lo tape la Tierra). */
   ahead?: boolean;
+  /** Solo en projectFar: el astro queda más allá de la Tierra, así que ella puede taparlo. */
+  behind?: boolean;
+  /** Solo en projectFar: distancia a la cámara a lo largo de la mirada, en radios. */
+  depth?: number;
 }
 
 const FOV = 28;
@@ -314,7 +318,15 @@ export class CameraRig {
     out.y = (1 - (m[5] * v.y + m[9] * v.z) / -v.z) * 0.5 * this.height;
     out.visible = ahead && clear;
     out.ahead = ahead;
+    // Si el punto de la recta más cercano al centro de la Tierra es el propio astro, está de este lado.
+    out.behind = t < 1;
+    out.depth = -v.z;
     return out;
+  }
+
+  /** Píxeles (CSS) que mide en pantalla un radio terrestre a esa distancia de la cámara. */
+  pixelsPerRadius(depth: number): number {
+    return this.height / (2 * depth * TAN_HALF);
   }
 
   /** El disco de la Tierra en pantalla (centro y radio en píxeles CSS), con el globo formado. */

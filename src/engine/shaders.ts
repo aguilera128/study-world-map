@@ -624,6 +624,7 @@ uniform float uFalloff;
 uniform vec2 uOffset;      // desplazamiento del resplandor (sombra proyectada sobre el papel)
 uniform vec3 uOutline;     // contorno fino pegado al globo
 uniform float uOutlineAlpha;
+uniform float uOutlineWidth; // grosor del contorno: 1 = fino; más, para el globo de dibujos animados
 uniform float uSilhouette; // radio aparente del globo en el plano del cuadrado
 uniform float uShells;     // 1 = capas de la atmósfera en vez del resplandor
 uniform vec3 uSunView;     // dirección del Sol vista desde la cámara (x derecha, y arriba, z hacia quien mira)
@@ -693,7 +694,7 @@ void main() {
   air = mix(air, vec3(0.86, 0.93, 1.0), forward * lit * 0.5 * uSunLit);
   float r = length(vPos) / uSilhouette;
   float px = fwidth(r);
-  float ring = uOutlineAlpha * (1.0 - smoothstep(1.2 * px, 2.4 * px, r - 1.0));
+  float ring = uOutlineAlpha * (1.0 - smoothstep(1.2 * px * uOutlineWidth, (1.2 * uOutlineWidth + 1.2) * px, r - 1.0));
   float a = ring + glow * (1.0 - ring);
   if (a <= 0.003) discard;
   gl_FragColor = vec4((uOutline * ring + air * glow * (1.0 - ring)) / a, a);

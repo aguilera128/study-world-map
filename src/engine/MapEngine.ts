@@ -198,6 +198,12 @@ interface Tracked {
   alt: number;
   /** Solo los astros: su dibujo (el elemento con data-sky) y lo que mide. Ver «placeFar». */
   sky?: { body: HTMLElement | SVGElement; width: number; height: number };
+  /**
+   * Un cuerpo que flota cerca de la Tierra (los planetas del huevo de pascua): su radio, en radios
+   * terrestres. Se dibuja con ese tamaño según lo lejos que quede y solo cuando está más allá de la
+   * Tierra, asomando por su borde o pasando por detrás: de este lado taparía el mapa.
+   */
+  size?: number;
 }
 
 interface ResolvedStyle {
@@ -282,6 +288,8 @@ export class MapEngine {
   private graticuleLabels: FeatureLabels | null = null;
   private zoneLabels: FeatureLabels | null = null;
   private skyTexture: { value: Texture | null } = { value: null };
+  /** La Vía Láctea: se quita en el huevo de pascua, que trae su propio fondo. */
+  private galaxy: Mesh | null = null;
   private cutFaces: Mesh | null = null;
   private heightBefore = 0;
   private core: Mesh | null = null;
@@ -333,6 +341,7 @@ export class MapEngine {
       uAlpha: { value: 0 },
       uFalloff: { value: 8 },
       uOutline: { value: new Vector3() },
+      uOutlineWidth: { value: 1 },
       uOutlineAlpha: { value: 0 },
       uSilhouette: { value: 1 },
       uShells: { value: 0 },
@@ -449,7 +458,8 @@ export class MapEngine {
     // 1 MB) no se pide hasta que el cielo se ve: ver loadSky.
     const screen = new BufferGeometry();
     screen.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
-    this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
+    this.galaxy = new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky));
+    this.add(this.galaxy, -2);
     this.starMaterial = this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky);
     this.add(new Points(starGeometry(new Date()), this.starMaterial), -1);
     const ocean = oceanGeometry();
@@ -811,6 +821,9 @@ export class MapEngine {
   setToon(on: boolean) {
     this.toon = on;
     this.uniforms.uToon.value = on ? 1 : 0;
+    this.own.halo.uOutlineWidth.value = on ? 3.2 : 1;
+    // El fondo de dibujos sustituye a la Vía Láctea; las estrellas del catálogo se quedan.
+    if (this.galaxy) this.galaxy.visible = !on;
     this.invalidate();
   }
 
@@ -1460,8 +1473,8 @@ export class MapEngine {
    * su posición y el atributo `data-hidden` si queda en la cara oculta. Con `alt` flota sobre el
    * globo, a esa altura en radios. Devuelve cómo soltarlo.
    */
-  track(el: HTMLElement, lon: number, lat: number, alt = 0): () => void {
-    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG, alt };
+  track(el: HTMLElement, lon: number, lat: number, alt = 0, size?: number): () => void {
+    const item: Tracked = { el, lon: lon * DEG, lat: lat * DEG, alt, size };
     this.tracked.add(item);
     this.place(item);
     return () => this.tracked.delete(item);
@@ -1481,12 +1494,18 @@ export class MapEngine {
     // vuelve a medir si cambia el tamaño del lienzo o si React sustituye el elemento, y mientras
     // mida cero (oculto) no se da por bueno.
     let sky = item.sky;
-    if (!sky || !sky.body.isConnected || sky.width === 0) {
+    if (item.size) {
+      // Su tamaño no se mide: se le pone, según la distancia. La proporción la trae el elemento.
+      const body = sky?.body.isConnected ? sky.body : (item.el.querySelector<HTMLElement>('[data-sky]') ?? item.el);
+      const width = 2 * item.size * this.rig.pixelsPerRadius(Math.max(p.depth ?? 1, 0.5));
+      sky = item.sky = { body, width, height: width * (Number((body as HTMLElement).dataset.aspect) || 1) };
+      body.style.width = `${width.toFixed(1)}px`;
+    } else if (!sky || !sky.body.isConnected || sky.width === 0) {
       const body = item.el.querySelector<HTMLElement | SVGElement>('[data-sky]') ?? item.el;
       const box = body === item.el ? { width: 0, height: 0 } : body.getBoundingClientRect();
       sky = item.sky = { body, width: box.width, height: box.height };
     }
-    p.visible = !!p.ahead;
+    p.visible = !!p.ahead && (!item.size || !!p.behind);
     // Lejos de la pantalla no se ve ni su resplandor: no hace falta tocar el recorte.
     if (p.x < -SKY_REACH || p.y < -SKY_REACH || p.x > this.rig.width + SKY_REACH || p.y > this.rig.height + SKY_REACH) return p;
     const [x, y, r] = [disc.x - p.x + sky.width / 2, disc.y - p.y + sky.height / 2, disc.r];
@@ -1505,7 +1524,7 @@ export class MapEngine {
     // Los astros (la Luna a 60 radios, el Sol a 23 500) van a su distancia real con el globo formado:
     // casi siempre quedan fuera de la pantalla o detrás de la Tierra, como de verdad.
     const p =
-      item.alt > 10 && rig.morph > 0.999
+      (item.alt > 10 || item.size) && rig.morph > 0.999
         ? this.placeFar(item)
         : rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
     // Con el planeta abierto, lo que cae sobre el gajo quitado no tiene dónde apoyarse.
@@ -1514,6 +1533,8 @@ export class MapEngine {
       const lon = Math.atan2(Math.sin(item.lon), Math.cos(item.lon));
       if (lon > x && lon < y) p.visible = false;
     }
+    // Los cuerpos que flotan alrededor del globo no tienen sitio en el mapa plano.
+    if (item.size && rig.morph <= 0.999) p.visible = false;
     // En el mapa plano los astros vuelven a su punto del mapa, sin recorte.
     if (item.alt > 10 && rig.morph <= 0.999) item.el.querySelector<HTMLElement | SVGElement>('[data-sky]')?.style.removeProperty('clip-path');
     item.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0)`;
