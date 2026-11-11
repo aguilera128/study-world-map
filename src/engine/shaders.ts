@@ -144,6 +144,11 @@ varying vec3 vNormal;
 varying vec3 vToEye;
 varying vec3 vGeo;
 
+// El oleaje y las vetas de las corrientes son casi todo lo que tarda en compilarse este sombreador
+// (el ruido se copia entero en cada sitio donde se usa). Por eso hay dos versiones: sin «WAVES», el
+// mar liso con el que el mapa aparece cuanto antes; con «WAVES», la completa, que el motor compila
+// después y pone en su lugar (ver «fullOcean» en MapEngine).
+#ifdef WAVES
 // Oleaje: ruido de gradiente en 3D evaluado sobre el punto geográfico, así que está fijo al mapa
 // (no se mueve ni obliga a redibujar) y es continuo en el antimeridiano y en los polos.
 vec3 hash3(vec3 p) {
@@ -176,6 +181,7 @@ float gnoise(vec3 p) {
 // la anterior, con la misma pendiente.
 // Giro fijo (ortonormal) entre escalas de ola.
 const mat3 TURN = mat3(0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6);
+#endif
 
 // Corriente en un punto: xyz = hacia dónde va el agua (vector sobre la esfera, sin unidades de
 // distancia) y w = velocidad en m/s. En la textura, rojo y verde son la velocidad hacia el este y
@@ -189,6 +195,7 @@ vec4 current(vec2 ll) {
   return vec4(speed > 1e-4 ? (east * uv.x + north * uv.y) / speed : vec3(0.0), speed);
 }
 
+#ifdef WAVES
 // Ruido que la corriente arrastra. El dibujo se desplaza en la dirección «drift» y, para que no se
 // estire sin fin, se alternan dos copias desfasadas medio ciclo que se funden una en otra.
 float carried(vec3 p, vec3 drift) {
@@ -220,6 +227,7 @@ float swell(vec3 p, float px, vec3 drift) {
   }
   return h;
 }
+#endif
 
 // Brillo del agua: reflejo de la luz (del Sol real en el modo de tiempo real) roto en destellos finos
 // por el oleaje, un velo ancho alrededor y un aclarado hacia el borde del globo (Fresnel).
@@ -227,7 +235,11 @@ vec3 glint(vec3 normal, vec3 toEye, vec3 geo, vec4 flow) {
   float px = max(length(fwidth(geo)) * 0.7071, 1e-7);
   // La dirección es la real; la velocidad se comprime (raíz cuadrada) para que también se note
   // dónde la corriente es débil. Una corriente de 1 m/s arrastra el oleaje 5 olas por ciclo.
+#ifdef WAVES
   float h = swell(geo, px, flow.xyz * sqrt(flow.w) * 5.0 * uFlowAmt);
+#else
+  float h = 0.0;
+#endif
   // pendiente de la ola en pantalla → inclina la normal (en espacio de cámara)
   vec2 slope = vec2(dFdx(h), dFdy(h)) / px;
   vec3 n = normalize(normalize(normal) - 0.16 * vec3(slope, 0.0));
@@ -271,6 +283,7 @@ void main() {
   if (inCut(geo)) discard;
   vec4 flow = uFlowAmt + uFlowShow > 0.0 ? current(vLonLat) : vec4(0.0);
   vec3 water = sea(vLonLat);
+#ifdef WAVES
   // Capa de corrientes: vetas claras que avanzan con el agua, más visibles cuanto más rápida va.
   if (uFlowShow > 0.0) {
     // Vetas de unos pocos píxeles sea cual sea el zoom: con el globo entero, anchas; de cerca, finas.
@@ -280,6 +293,7 @@ void main() {
     float streak = carried(geo * scale, pull * 3.0) + 0.5 * carried(geo * scale * 2.1, pull * 6.0);
     water += uFlowShow * smoothstep(0.02, 0.4, flow.w) * (0.3 + 1.2 * smoothstep(-0.15, 0.45, streak)) * vec3(0.48, 0.66, 0.70);
   }
+#endif
   // Husos teóricos: una franja de 15° por hora, centrada en su meridiano (el de Greenwich, la del 0).
   if (uZones > 0.0) {
     float band = floor((vLonLat.x * 57.29578 + 7.5) / 15.0);

@@ -387,7 +387,8 @@ export class MapEngine {
     this.add(new Mesh(screen, this.material(SKY_VERT, SKY_FRAG, 0, { ...this.own.stars, uSky: this.skyTexture }, sky)), -2);
     this.add(new Points(starGeometry(new Date()), this.material(STAR_VERT, STAR_FRAG, 0, { ...this.own.stars, uTime: this.own.ocean.uTime }, sky)), -1);
     const ocean = oceanGeometry();
-    this.add(new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean)), 0);
+    const sea = new Mesh(ocean, this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean));
+    this.add(sea, 0);
     this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, this.own.fill)), 1);
     this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, { ...this.own.wall, ...this.own.fill })), 2);
 
@@ -445,6 +446,7 @@ export class MapEngine {
     const ready = () => {
       this.compiled = true;
       this.invalidate();
+      this.fullOcean(sea);
     };
     this.rig.apply();
     this.renderer.compileAsync(this.scene, this.rig.camera).then(ready, ready);
@@ -477,6 +479,22 @@ export class MapEngine {
     });
     this.disposables.push(material);
     return material;
+  }
+
+  /**
+   * El mapa arranca con el mar liso, que se compila enseguida. El oleaje y las vetas de las
+   * corrientes son más de la mitad del tiempo de compilación de todo el mapa: se compilan aparte,
+   * con el mapa ya a la vista, y entran cuando están listos.
+   */
+  private fullOcean(sea: Mesh) {
+    const full = this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean);
+    full.defines = { WAVES: '' };
+    const swap = () => {
+      if (this.disposed) return;
+      sea.material = full;
+      this.invalidate();
+    };
+    this.renderer.compileAsync(new Mesh(sea.geometry, full), this.rig.camera, this.scene).then(swap, swap);
   }
 
   private add(object: Object3D & { geometry: BufferGeometry }, renderOrder: number, ownsGeometry = true) {
