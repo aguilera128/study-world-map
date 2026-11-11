@@ -110,6 +110,31 @@ function SkyCard({ title, rows }: { title: string; rows: [string, string][] }) {
   );
 }
 
+/**
+ * Un astro sobre el mapa, con su ficha al pasar el cursor. La ficha sale debajo y centrada; si el
+ * astro está junto a un borde de la pantalla, se pone encima o se corre a un lado para verse entera.
+ */
+function SkyMarker({ label, children }: { label: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const place = () => {
+    const marker = ref.current;
+    const card = marker?.querySelector<HTMLElement>('.sky-tip');
+    if (!marker || !card) return;
+    const box = marker.getBoundingClientRect();
+    const [width, height, margin] = [card.offsetWidth, card.offsetHeight, 8];
+    const center = box.left + box.width / 2;
+    const up = box.bottom + 6 + height + margin > window.innerHeight && box.top - 6 - height > margin;
+    const shift = Math.max(margin + width / 2 - center, Math.min(0, window.innerWidth - margin - width / 2 - center));
+    marker.toggleAttribute('data-up', up);
+    marker.style.setProperty('--shift', `${Math.round(shift)}px`);
+  };
+  return (
+    <div ref={ref} className="sky-marker" role="img" aria-label={label} onPointerEnter={place}>
+      {children}
+    </div>
+  );
+}
+
 /** Lo que el modo de tiempo real pinta sobre el mapa: el Sol y la Luna en su cénit y dónde está el usuario. */
 export function RealTimeMarkers({
   engine,
@@ -130,7 +155,7 @@ export function RealTimeMarkers({
     <>
       {layers.moon && (
         <Tracked engine={engine} lon={moon.lon} lat={moon.lat} alt={MOON_ALT}>
-          <div className="sky-marker" role="img" aria-label={t('Aquí la Luna está en lo más alto. {phase}, {lit} iluminada', { phase: t(phase.name), lit: percent(phase.lit) })}>
+          <SkyMarker label={t('Aquí la Luna está en lo más alto. {phase}, {lit} iluminada', { phase: t(phase.name), lit: percent(phase.lit) })}>
             <MoonDisc phase={phase} size={28} />
             <SkyCard
               title={`${t(phase.name)} · ${percent(phase.lit)}`}
@@ -143,12 +168,12 @@ export function RealTimeMarkers({
                 [t('Gravedad'), t('un sexto de la terrestre')],
               ]}
             />
-          </div>
+          </SkyMarker>
         </Tracked>
       )}
       {layers.sun && (
         <Tracked engine={engine} lon={sun.lon} lat={sun.lat} alt={SUN_ALT}>
-          <div className="sky-marker" role="img" aria-label={t('Aquí es mediodía: el Sol está en lo más alto')}>
+          <SkyMarker label={t('Aquí es mediodía: el Sol está en lo más alto')}>
             <span className="sun-marker" data-sky />
             <SkyCard
               title={t('Sol · debajo de él es mediodía')}
@@ -162,7 +187,7 @@ export function RealTimeMarkers({
                 [t('Edad'), t('unos {n} millones de años', { n: millions(4600) })],
               ]}
             />
-          </div>
+          </SkyMarker>
         </Tracked>
       )}
       {location && showUser && layers.you && (

@@ -742,7 +742,8 @@ p {
   position: absolute;
   top: calc(100% + 6px);
   left: 50%;
-  translate: -50% 0;
+  /* «--shift» lo pone SkyMarker cuando la ficha se saldría por un lado de la pantalla */
+  translate: calc(-50% + var(--shift, 0px)) 0;
   padding: 3px 8px;
   border-radius: 6px;
   background: var(--ink);
@@ -788,6 +789,12 @@ p {
 
 .sky-marker:hover .sky-tip {
   opacity: 1;
+}
+
+/* Junto al borde de abajo, la ficha sale encima del astro. */
+.sky-marker[data-up] .sky-tip {
+  top: auto;
+  bottom: calc(100% + 6px);
 }
 
 .you-marker {
