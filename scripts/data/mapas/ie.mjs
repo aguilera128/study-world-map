@@ -88,7 +88,4 @@ export default {
     // En chino, la ficha de Roscommon en Wikidata lleva por error el nombre de otra cosa (una batalla).
     zh: { provincias: { 'IE-RN': { nombre: '罗斯康芒', capital: '罗斯康芒' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

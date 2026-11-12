@@ -27,7 +27,4 @@ export default {
   ],
 
   correcciones: {},
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

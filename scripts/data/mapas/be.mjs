@@ -52,7 +52,4 @@ export default {
     eu: { comunidades: { 'BE-VLG': 'Flandria', 'BE-WAL': 'Valonia' } },
     zh: { comunidades: { 'BE-VLG': '弗拉芒大区', 'BE-WAL': '瓦隆大区' } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

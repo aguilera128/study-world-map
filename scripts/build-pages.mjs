@@ -19,13 +19,42 @@ import { CLIMAS } from './data/climas.mjs';
 import { legalPages } from './data/legales.mjs';
 import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
 import { MAPAS } from './data/mapas/index.mjs';
-
-/** Los mapas de un país que tienen páginas estáticas escritas (un país recién añadido aún no). */
-const MAPAS_CON_PAGINAS = Object.values(MAPAS).filter((mapa) => mapa.paginas.length);
+import { textosDe } from './data/mapas/plantillas.mjs';
 import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
+import { COUNTRY_MAPS } from '../src/game/countryMaps.ts';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
 const LANGS = Object.keys(PAGINAS);
+
+/** Los diccionarios de la aplicación (src/i18n/<idioma>.ts), de donde salen algunos textos de las páginas. */
+const DICCIONARIOS = Object.fromEntries(
+  await Promise.all(LANGS.filter((lang) => lang !== 'es').map(async (lang) => [lang, (await import(`../src/i18n/${lang}.ts`)).default])),
+);
+
+// Todos los mapas de un país tienen páginas. El que no trae sus textos escritos a mano (todos menos
+// España) los toma de las plantillas: sus unidades, sus capitales y, si las agrupa en algo, eso.
+const MAPAS_CON_PAGINAS = Object.values(MAPAS);
+for (const mapa of MAPAS_CON_PAGINAS) {
+  if (mapa.textos) continue;
+  const { unit, group } = COUNTRY_MAPS[mapa.id];
+  const n = JSON.parse(readFileSync(`public/data/${mapa.id}/atlas.json`, 'utf8')).countries.filter((c) => c.kind === 'country').length;
+  mapa.plantilla = true;
+  mapa.paginas = [{ id: 'provincias', reto: 'localizar' }, { id: 'capitales', reto: 'capitales' }, ...(group ? [{ id: 'comunidades', reto: 'comunidades' }] : [])];
+  mapa.textos = Object.fromEntries(LANGS.map((lang) => [lang, textosDe(mapa.id, unit, !!group, n, lang, DICCIONARIOS)]));
+}
+// Dos páginas no pueden compartir dirección.
+for (const lang of LANGS) {
+  const vistas = new Set();
+  for (const mapa of MAPAS_CON_PAGINAS) {
+    for (const pagina of mapa.paginas) {
+      const { slug } = mapa.textos[lang][pagina.id];
+      if (vistas.has(slug)) throw new Error(`build-pages: la dirección «${slug}» se repite en «${lang}».`);
+      vistas.add(slug);
+    }
+  }
+}
+/** Nombre del país de un mapa en un idioma (el de la aplicación). */
+const paisDe = (mapa, lang) => (lang === 'es' ? COUNTRY_MAPS[mapa.id].title : DICCIONARIOS[lang][COUNTRY_MAPS[mapa.id].title]);
 const base = (lang) => (lang === 'es' ? '/' : `/${lang}/`);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -404,7 +433,8 @@ ${content}
 }
 
 // ───────────────────────── mapas de un país: provincias, capitales y comunidades ─────────────────────────
-// Tres páginas por mapa e idioma (textos en scripts/data/mapas/<mapa>.mjs). Cada una enlaza a la
+// Dos o tres páginas por mapa e idioma (textos en scripts/data/mapas/<mapa>.mjs o, si no los trae, de
+// las plantillas de scripts/data/mapas/plantillas.mjs). Cada una enlaza a la
 // aplicación con el mapa y el reto ya elegidos (?mapa=…&reto=…, ver src/app/share.ts).
 
 let paginasMapa = 0;
@@ -434,14 +464,22 @@ ${rows.map((cells) => `        <tr>${cells.map((cell) => `<td>${cell}</td>`).joi
       </tbody>
     </table></div>`;
     // Contenido de cada página y, para los datos estructurados, la lista de lo que enseña.
+    // Sin agrupación (Alemania, Francia…), la página de las unidades las da con su capital y la de las
+    // capitales va al revés, ordenada por capital: así no son la misma tabla.
+    const agrupado = comunidades.length > 0;
+    const porCapital = [...provincias].sort((a, b) => a.capital.localeCompare(b.capital, lang));
     const contenido = {
       provincias: [
-        tabla([X.columnas.provincia, X.columnas.comunidad], provincias.map((p) => [esc(p.name), esc(regionName(p.region))])),
+        agrupado
+          ? tabla([X.columnas.provincia, X.columnas.comunidad], provincias.map((p) => [esc(p.name), esc(regionName(p.region))]))
+          : tabla([X.columnas.provincia, X.columnas.capital], provincias.map((p) => [`<strong>${esc(p.name)}</strong>`, esc(p.capital)])),
         provincias.map((p) => p.name),
       ],
       capitales: [
-        tabla([X.columnas.provincia, X.columnas.capital], provincias.map((p) => [esc(p.name), `<strong>${esc(p.capital)}</strong>`])),
-        provincias.map((p) => `${p.capital} (${p.name})`),
+        agrupado
+          ? tabla([X.columnas.provincia, X.columnas.capital], provincias.map((p) => [esc(p.name), `<strong>${esc(p.capital)}</strong>`]))
+          : tabla([X.columnas.capital, X.columnas.provincia], porCapital.map((p) => [`<strong>${esc(p.capital)}</strong>`, esc(p.name)])),
+        (agrupado ? provincias : porCapital).map((p) => `${p.capital} (${p.name})`),
       ],
       comunidades: [
         tabla([X.columnas.comunidad, X.columnas.provincias], comunidades.map((c) => [esc(c.name), esc(c.list.map((p) => p.name).join(', '))])),
@@ -707,7 +745,6 @@ for (const lang of LANGS) {
   const { continents } = worldIn(lang);
   void continents;
   const porZona = ZONAS.map((z) => ({ name: T.zonas[z.id], enlaces: RETOS.map((r) => [juegoPath(lang, r, z), T.juego.enlace(T.retos[r.id], T.zonas[z.id])]) }));
-  const mapas = MAPAS_CON_PAGINAS.flatMap((mapa) => mapa.paginas.map((pagina) => [mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)]));
   const nav = (enlaces) => `    <nav class="toc">${enlaces.map(([href, text]) => `<a href="${href}">${esc(text)}</a>`).join(' ')}</nav>`;
   const titulo = T.paises.juegosAria;
   write(
@@ -723,7 +760,7 @@ for (const lang of LANGS) {
       body: `    <h1>${esc(titulo)}</h1>
     <a class="cta" href="${base(lang)}">${T.paises.cta}</a>
 ${porZona.map((z) => `    <h2>${esc(z.name)}</h2>\n${nav(z.enlaces)}`).join('\n')}
-${MAPAS_CON_PAGINAS.length ? `    <h2>${esc(mapaEnlace(MAPAS_CON_PAGINAS[0], lang, MAPAS_CON_PAGINAS[0].paginas[0]))}</h2>\n${nav(mapas)}` : ''}${
+${MAPAS_CON_PAGINAS.map((mapa) => `    <h2>${esc(paisDe(mapa, lang))}</h2>\n${nav(mapa.paginas.map((pagina) => [mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)]))}`).join('\n')}${
         `\n    <h2>${esc(TEMAS[lang].textos.indiceFisico)}</h2>\n${nav(TEMAS[lang].filter((t) => t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}\n    <h2>${esc(TEMAS[lang].textos.indicePlaneta)}</h2>\n${nav(TEMAS[lang].filter((t) => !t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}`
       }
     <p><a href="${paisesPath(lang)}">${T.juego.todos}</a></p>`,
@@ -787,7 +824,8 @@ for (const lang of LANGS) {
   const tema = (id) => TEMAS[lang].find((t) => t.id === id);
   const grupos = [
     [a(`${base(lang)}${T.ruta.juego}/`, T.paises.juegosAria)],
-    MAPAS_CON_PAGINAS.flatMap((mapa) => mapa.paginas.map((pagina) => a(mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)))),
+    // De los países con plantilla, solo su primera página: con todas, la lista no acabaría nunca.
+    MAPAS_CON_PAGINAS.flatMap((mapa) => mapa.paginas.slice(0, mapa.plantilla ? 1 : undefined).map((pagina) => a(mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)))),
     ['rios', 'montanas', 'mares', 'tierras'].map((id) => a(tema(id).path, tema(id).enlace)),
     ['climas', 'poblacion'].map((id) => a(tema(id).path, tema(id).enlace)),
     ['tierra', 'atmosfera'].map((id) => a(tema(id).path, tema(id).enlace)),

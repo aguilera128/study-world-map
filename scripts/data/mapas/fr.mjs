@@ -42,7 +42,4 @@ export default {
     pt: { provincias: { 'FR-CVL': { capital: 'Orléans' }, 'FR-NOR': { capital: 'Rouen' }, 'FR-NAQ': { capital: 'Bordeaux' } } },
     zh: { provincias: { 'FR-BRE': { capital: '雷恩' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

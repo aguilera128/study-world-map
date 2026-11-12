@@ -49,7 +49,4 @@ export default {
     // Caracteres simplificados.
     zh: { provincias: { 'IT-57': { capital: '安科纳' }, 'IT-88': { capital: '卡利亚里' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

@@ -57,7 +57,4 @@ export default {
     pt: { provincias: { 'CZ-20': { nombre: 'Boêmia Central' } } },
     eu: { provincias: { 'CZ-20': { nombre: 'Erdialdeko Bohemia' }, 'CZ-31': { nombre: 'Hegoaldeko Bohemia' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

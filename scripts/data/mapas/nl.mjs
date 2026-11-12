@@ -37,7 +37,4 @@ export default {
     // Wikidata da la forma de Portugal; aquí el portugués es el de Brasil.
     pt: { provincias: { 'NL-UT': { nombre: 'Utrecht', capital: 'Utrecht' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

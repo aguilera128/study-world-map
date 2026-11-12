@@ -190,7 +190,9 @@ Hay diecisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo co
    ejecutar `node scripts/build-subdivisions.mjs <ruta> <país>`: deja `<país>.topo.json`.
 3. `node scripts/fetch-subdivisions.mjs <país>`: deja `<país>.wikidata.json`, y lista lo que hay que
    revisar a mano.
-4. En la aplicación, una entrada en `src/game/countryMaps.ts`: su nombre, el tipo de sus unidades,
+4. Para sus páginas estáticas, su nombre con preposición en cada idioma en
+   `scripts/data/mapas/plantillas.mjs` (el resto sale de las plantillas).
+5. En la aplicación, una entrada en `src/game/countryMaps.ts`: su nombre, el tipo de sus unidades,
    si se agrupan y sus zonas. Los textos no se escriben por país: salen del tipo de unidad
    («provincia», «estado»), en `src/game/maps.ts`. Un tipo nuevo («cantón», «región») son unas
    veinte frases, que hay que traducir a los nueve idiomas.

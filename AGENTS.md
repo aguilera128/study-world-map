@@ -59,6 +59,10 @@ docs/                  planes y propuestas con fecha
   `scripts/data/idiomas/<idioma>.mjs` (portada, países, juegos) y `scripts/data/temas/<idioma>.mjs`
   (geografía física, climas, población y «El planeta»). Los nombres de climas y capas de esas
   páginas salen del diccionario de la aplicación: `scripts/build-pages.mjs` falla si falta alguno.
+- Las páginas de los mapas de un país salen de plantillas (`scripts/data/mapas/plantillas.mjs`),
+  salvo las de España, que van a mano en `es.mjs`. Las palabras del tipo de unidad las toman del
+  diccionario de la aplicación; un país nuevo solo añade allí su nombre con preposición («de
+  Francia», «of France»…) en los diez idiomas.
 - El catalán usa formas valencianas (aprén, meua, eixir) y el portugués es el de Brasil.
 - Los nombres de países, accidentes, corrientes y placas no están en los diccionarios sino en los
   datos (`public/data/**/names.<idioma>.json`, `corrientes.json`, `tectonica.json`).

@@ -34,7 +34,4 @@ export default {
     // Wikidata no da nombre en español a Cardiff: se queda el nuestro en todos los idiomas menos el chino.
     zh: { provincias: { 'GB-WLS': { capital: '加的夫' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

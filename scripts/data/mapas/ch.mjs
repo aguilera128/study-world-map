@@ -58,7 +58,4 @@ export default {
     // Caracteres simplificados.
     zh: { provincias: { 'CH-GL': { nombre: '格拉鲁斯', capital: '格拉鲁斯' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

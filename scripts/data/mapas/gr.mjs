@@ -52,7 +52,4 @@ export default {
     // Caracteres simplificados.
     zh: { provincias: { 'GR-69': { nombre: '圣山' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

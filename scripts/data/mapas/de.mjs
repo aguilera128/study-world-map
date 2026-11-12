@@ -48,7 +48,4 @@ export default {
     // Caracteres simplificados.
     zh: { provincias: { 'DE-NW': { capital: '杜塞尔多夫' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

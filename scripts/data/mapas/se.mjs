@@ -66,7 +66,4 @@ export default {
     // Caracteres simplificados.
     zh: { provincias: { 'SE-I': { capital: '维斯比' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

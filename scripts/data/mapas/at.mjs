@@ -38,7 +38,4 @@ export default {
     // Wikidata no da nombre en español a Bregenz: se queda el nuestro en todos los idiomas menos el chino.
     zh: { provincias: { 'AT-8': { capital: '布雷根茨' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

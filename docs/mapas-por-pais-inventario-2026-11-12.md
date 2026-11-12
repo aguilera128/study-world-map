@@ -84,7 +84,9 @@ Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados), Re
    idiomas (el de Suecia es «Provinz» en alemán; el de Irlanda, «Grafschaft»): para eso está `tc()`,
    que da a las frases de un tipo un contexto (`condadoSueco`), y solo el idioma que difiere añade
    sus claves «texto|contexto». Rumanía, Lituania o Hungría pedirán lo mismo.
-3. **Páginas estáticas**: solo España las tiene (son tres páginas en diez idiomas por país).
+3. **Páginas estáticas**: todos las tienen. Las de España están escritas a mano; las demás salen de
+   plantillas por idioma (`scripts/data/mapas/plantillas.mjs`), dos por país y una tercera si sus
+   unidades se agrupan. Un país nuevo solo necesita su nombre con preposición en cada idioma.
 4. **Wikidata se revisa siempre a ojo**: en chino, la ficha de un condado irlandés (Roscommon)
    llevaba el nombre de una batalla. Va corregido a mano.
 5. **Capitales**: las de los tres países nuevos coinciden con la capital (P36) de Wikidata, salvo

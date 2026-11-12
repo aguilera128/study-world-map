@@ -117,7 +117,4 @@ export default {
       comunidades: { 'us-noreste': '东北部', 'us-medio-oeste': '中西部', 'us-sur': '南部', 'us-oeste': '西部' },
     },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };

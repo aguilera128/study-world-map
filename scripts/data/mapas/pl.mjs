@@ -90,7 +90,4 @@ export default {
     },
     zh: { provincias: { 'PL-30': { capital: '波兹南' } } },
   },
-
-  // Sin páginas estáticas de momento: sus textos (tres páginas en diez idiomas) están por escribir.
-  paginas: [],
 };
