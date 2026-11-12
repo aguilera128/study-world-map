@@ -37,7 +37,7 @@ scripts/data/          fuentes editables: países, idiomas, legales, temario fí
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
 src/atlas/             carga del atlas y triangulación (sin React ni three.js, con pruebas)
 src/game/              lógica pura: retos, partida, progreso, población, clima (con pruebas)
-src/game/countryMaps.ts  los once países que se estudian por dentro (España, EE. UU., Alemania…): solo datos
+src/game/countryMaps.ts  los países que se estudian por dentro (España, EE. UU., Francia…): solo datos
 src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
 src/app/               estado (Zustand), sincronización, exportar imagen, hora
 src/ui/                componentes de React
@@ -114,7 +114,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Dato | Generador | Fuente |
 |---|---|---|
 | Países, fronteras, banderas | `scripts/build-atlas.mjs` | Natural Earth, flag-icons, mledoze/countries |
-| Subdivisiones de un país (los once de `scripts/data/mapas/`) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo |
+| Subdivisiones de un país (los de `scripts/data/mapas/`) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo |
 | Geografía física | `scripts/build-physical.py` + `build-fisico.mjs` | Natural Earth, Wikidata |
 | Correcciones de geografía física | `scripts/data/fisico-correcciones.json` | a mano, cada una con su motivo |
 | Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |

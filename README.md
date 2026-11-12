@@ -31,7 +31,7 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
 - **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica
-  (provincias), Chequia, Eslovaquia y Grecia (regiones) y Suecia (condados). El país se elige en un
+  (provincias), Francia, Italia, Chequia, Eslovaquia y Grecia (regiones) y Suecia (condados). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
   `docs/mapas-por-pais-inventario-2026-11-12.md`.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
@@ -172,14 +172,15 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay once (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay trece (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
    nombres. Darlo de alta en `scripts/data/mapas/index.mjs`. Un país sin agrupaciones deja
    `comunidades` vacío; lo que se dibuja pero no se pregunta lleva `decorado: true`; un país mucho
-   mayor que España baja el detalle con `detalle` e `islote`; y si Natural Earth trae un código ISO
-   antiguo, `renombrar` lo pasa al vigente. En `contexto` van solo los vecinos con frontera, y la
+   mayor que España baja el detalle con `detalle` e `islote`; si Natural Earth trae un código ISO
+   antiguo, `renombrar` lo pasa al vigente; y si trae un nivel más fino que el que se estudia (los
+   departamentos de Francia), `fundir` dice por qué campo se reúnen sus piezas. En `contexto` van solo los vecinos con frontera, y la
    `ventana` tiene que abarcarlos enteros: el resto del mundo lo pone de fondo la aplicación, del
    atlas mundial.
 2. Descargar `ne_10m_admin_1_states_provinces.geojson` de

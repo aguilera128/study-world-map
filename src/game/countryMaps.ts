@@ -88,6 +88,9 @@ export const COUNTRY_MAPS = {
       { id: 'be-wal', keys: ['BE-WAL'] },
     ],
   },
+  // Las trece regiones metropolitanas de Francia y las veinte de Italia.
+  fr: { title: 'Francia', iso: 'FRA', unit: 'region', zones: [] },
+  it: { title: 'Italia', iso: 'ITA', unit: 'region', zones: [] },
   cz: { title: 'Chequia', iso: 'CZE', unit: 'region', zones: [] },
   sk: { title: 'Eslovaquia', iso: 'SVK', unit: 'region', zones: [] },
   gr: { title: 'Grecia', iso: 'GRC', unit: 'region', zones: [] },

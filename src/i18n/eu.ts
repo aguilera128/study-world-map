@@ -661,6 +661,10 @@ const eu: Record<string, string> = {
   'Eslovaquia': 'Eslovakia',
   'Grecia': 'Grezia',
   'Suecia': 'Suedia',
+
+  // ── Mapas de un país: Francia e Italia ──
+  'Francia': 'Frantzia',
+  'Italia': 'Italia',
 };
 
 export default eu;

@@ -201,7 +201,7 @@ export const NIGHT: Palette = {
   sheetShadow: '#000000',
   sheetShadowAlpha: 0.4,
   line: '#364250',
-  linePhoto: '#aebacb',
+  linePhoto: '#76859a',
   linePlay: '#93a3b8',
   lineEmph: '#f3ead7',
   river: '#5f9cc4',

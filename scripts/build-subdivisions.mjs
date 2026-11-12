@@ -63,14 +63,24 @@ for (const f of capa.features) {
     // Lo que cae lejos de la ventana no es de este mapa (los municipios caribeños de los Países Bajos).
     const [w, s, e, n] = caja(f.geometry);
     if (!(e > oeste && w < este && n > sur && s < norte)) continue;
+    // Si la capa trae un nivel más fino que el que se estudia (los departamentos de Francia), el
+    // código es el del campo que dice a qué unidad pertenece cada pieza (`fundir`); se juntan abajo.
     // Natural Earth arrastra algún código ISO antiguo o equivocado: `renombrar` lo pasa al vigente.
-    const codigo = f.properties.iso_3166_2;
+    const codigo = mapa.fundir ? String(f.properties[mapa.fundir] ?? '').trim() : f.properties.iso_3166_2;
     propias.push({ type: 'Feature', id: mapa.renombrar?.[codigo] ?? codigo, properties: {}, geometry: f.geometry });
   } else if (mapa.contexto.includes(a3)) {
     // De los vecinos solo interesa lo que cae cerca (Francia sin sus territorios de ultramar).
     const [w, s, e, n] = caja(f.geometry);
     if (e > oeste && w < este && n > sur && s < norte) contexto.push({ type: 'Feature', id: a3, properties: {}, geometry: f.geometry });
   }
+}
+
+// Las piezas de una misma unidad se funden en una, sin las fronteras de dentro.
+if (mapa.fundir) {
+  const piezas = topology({ capa: { type: 'FeatureCollection', features: propias } }, 1e6);
+  const porCodigo = Map.groupBy(piezas.objects.capa.geometries, (g) => g.id);
+  propias.length = 0;
+  for (const [codigo, partes] of porCodigo) propias.push({ type: 'Feature', id: codigo, properties: {}, geometry: client.merge(piezas, partes) });
 }
 
 // La lista de Natural Earth y la escrita a mano tienen que coincidir.

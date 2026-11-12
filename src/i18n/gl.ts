@@ -660,6 +660,10 @@ const gl: Record<string, string> = {
   'Eslovaquia': 'Eslovaquia',
   'Grecia': 'Grecia',
   'Suecia': 'Suecia',
+
+  // ── Mapas de un país: Francia e Italia ──
+  'Francia': 'Francia',
+  'Italia': 'Italia',
 };
 
 export default gl;

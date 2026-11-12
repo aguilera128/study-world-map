@@ -4,9 +4,9 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (11):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
-y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Chequia,
-Eslovaquia y Grecia (regiones) y Suecia (condados).
+**Hecho (13):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
+Italia, Chequia, Eslovaquia y Grecia (regiones) y Suecia (condados).
 
 ## Cómo leer la tabla
 
@@ -51,8 +51,8 @@ Eslovaquia y Grecia (regiones) y Suecia (condados).
 | Croacia | 20 condados + Zagreb (20 códigos distintos) | condados | directo, revisar el código repetido |
 | Islandia | 8 regiones + 1 «ciudad independiente» | regiones | directo, revisar la unidad suelta |
 | Chipre | 5 distritos | distritos | revisar: falta un distrito (el norte va aparte en NE) |
-| Francia | 101 departamentos; 18 regiones en `region` | regiones (13 + ultramar) | fundir |
-| Italia | 110 provincias; 20 regiones en `region` | regiones | fundir |
+| Francia | 101 departamentos; 18 regiones en `region` | las 13 regiones metropolitanas | **hecho** (fundiendo; sin ultramar) |
+| Italia | 110 provincias; 20 regiones en `region` | regiones | **hecho** (fundiendo) |
 | Irlanda | 34 unidades, 26 códigos ISO | condados | fundir por código |
 | Reino Unido | 232 unidades de una docena de tipos | las 4 naciones | fundir (por `geonunit`) |
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | fundir las ciudades en su condado |
@@ -73,8 +73,9 @@ Eslovaquia y Grecia (regiones) y Suecia (condados).
 
 ## Lo que falta para seguir
 
-1. **Fundir** (Francia, Italia, Irlanda, Reino Unido, Hungría): `build-subdivisions.mjs` tiene que
-   poder reunir varias unidades de NE en una por un campo (`region`, código ISO o `geonunit`).
+1. **Fundir**: hecho (`fundir` en el fichero del mapa: el campo de NE que dice a qué unidad pertenece
+   cada pieza). Con ello quedan a tiro Irlanda (por código ISO), Reino Unido (por `geonunit`) y
+   Hungría (hay que ver cómo reunir cada ciudad con su condado).
 2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia», «estado», «estado
    federado», «cantón», «región» y «condado». Cada tipo son unas veinte frases en nueve idiomas.
    Hacen falta, al menos: voivodato, distrito y nación. Ojo: el tipo lo define la palabra española,

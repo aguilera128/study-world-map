@@ -659,6 +659,10 @@ const zh: Record<string, string> = {
   'Eslovaquia': '斯洛伐克',
   'Grecia': '希腊',
   'Suecia': '瑞典',
+
+  // ── Mapas de un país: Francia e Italia ──
+  'Francia': '法国',
+  'Italia': '意大利',
 };
 
 export default zh;

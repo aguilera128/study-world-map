@@ -660,6 +660,10 @@ const de: Record<string, string> = {
   'Eslovaquia': 'Slowakei',
   'Grecia': 'Griechenland',
   'Suecia': 'Schweden',
+
+  // ── Mapas de un país: Francia e Italia ──
+  'Francia': 'Frankreich',
+  'Italia': 'Italien',
 };
 
 export default de;
