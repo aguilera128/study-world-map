@@ -724,6 +724,9 @@ const zh: Record<string, string> = {
   'Reino Unido': '英国',
   'Polonia': '波兰',
   'Portugal': '葡萄牙',
+
+  // ── Mapas de un país: Irlanda ──
+  'Irlanda': '爱尔兰',
 };
 
 export default zh;

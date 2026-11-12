@@ -39,9 +39,9 @@ const norm = (s) =>
  * «Distrito» no está a propósito: se llevaría por delante el Distrito de Columbia.
  */
 const TIPO = {
-  en: [/^Province of /i, / Province$/i, /^Canton of (the )?/i, / (County|Region|Voivodeship)$/i],
+  en: [/^Province of /i, / Province$/i, /^Canton of (the )?/i, / (County|Region|Voivodeship)$/i, /^County /i],
   fr: [/^province (de |du |des |d[’'])/i, /^canton (de |du |des |d[’'])/i, /^(comté|périphérie|voïvodie) (de |du |des |d[’'])/i],
-  de: [/^Provinz /i, /^Kanton /i, /s? län$/i, /^Woiwodschaft /i],
+  de: [/^Provinz /i, /^Kanton /i, /s? län$/i, /^Woiwodschaft /i, /^County /i],
   it: [/^provincia (di |del |della |delle |dello |dei |degli |dell[’']|d[’'])/i, /^cantone? (di |del |dei |della |d[’'])?/i, /^(contea|regione|voivodato) (di |del |della |d[’'])/i],
   pt: [/^província (de |da |do |das |dos |d[’'])/i, /^cantão (de |da |do |das |dos )/i, /^(condado|periferia|voivodia) (de |da |do )/i, /^região (de |da |do )?/i],
   ca: [/^província (de |d[’'])/i, /^cantó (de |del |dels |d[’'])/i, /^estat (de |del |d[’'])/i, /^(comtat|regió|perifèria|voivodat) (de la |de les |del |dels |de |d[’'])/i],

@@ -1,7 +1,7 @@
 import type { Bounds, MapId, RegionKey } from '../atlas/types';
 import type { ModeId } from './config';
 import { COUNTRY_IDS, COUNTRY_MAPS, countryModes, type CountryMap, type CountryMapId, type GroupKind, type UnitKind } from './countryMaps';
-import { t } from '../i18n';
+import { t, tc } from '../i18n';
 
 // Los mapas que se pueden estudiar: el mundo por países y cada país por sus subdivisiones. Los datos
 // de un mapa están en su atlas (scripts/build-maps.mjs); aquí va lo que cambia en la aplicación:
@@ -212,6 +212,29 @@ const UNITS: Record<UnitKind, UnitText> = {
     locate: t('Te damos el nombre de un condado y lo buscas en el mapa.'),
     name: t('Señalamos un condado en el mapa y dices cuál es.'),
     capital: t('Une cada condado con su capital.'),
+  },
+  // Los «län» de Suecia: las mismas frases que «condado», con contexto, porque en alemán no se
+  // llaman «Grafschaft» sino «Provinz» (ver `tc` en src/i18n).
+  condadoSueco: {
+    count: tc('se', '{n} condados'),
+    each: tc('se', 'condado a condado.'),
+    units: tc('se', 'Condados'),
+    scopeAria: tc('se', 'Condados que entran'),
+    unit: [tc('se', 'condado'), tc('se', 'condados')],
+    mastered: tc('se', 'Dominas {n} de {total} condados'),
+    study: tc('se', 'Estudia los condados antes de jugar'),
+    practice: tc('se', 'Practicar estos condados →'),
+    search: tc('se', 'Buscar condado o capital…'),
+    searchAria: tc('se', 'Buscar condado o capital'),
+    notFound: tc('se', 'No hay ningún condado con ese nombre.'),
+    askName: tc('se', '¿Qué condado es el señalado?'),
+    askCapitalOwner: tc('se', '¿De qué condado es la capital?'),
+    tap: tc('se', 'Toca el condado en el mapa'),
+    type: tc('se', 'Escribe el condado…'),
+    findOwner: tc('se', 'Buscando el condado'),
+    locate: tc('se', 'Te damos el nombre de un condado y lo buscas en el mapa.'),
+    name: tc('se', 'Señalamos un condado en el mapa y dices cuál es.'),
+    capital: tc('se', 'Une cada condado con su capital.'),
   },
   nacion: {
     count: t('{n} naciones'),

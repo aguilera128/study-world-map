@@ -725,6 +725,9 @@ const gl: Record<string, string> = {
   'Reino Unido': 'Reino Unido',
   'Polonia': 'Polonia',
   'Portugal': 'Portugal',
+
+  // ── Mapas de un país: Irlanda ──
+  'Irlanda': 'Irlanda',
 };
 
 export default gl;

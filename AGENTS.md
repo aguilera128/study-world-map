@@ -52,6 +52,9 @@ docs/                  planes y propuestas con fecha
   (`src/i18n/<idioma>.ts`) y una prueba falla si a alguno le falta o le sobra una clave, o si no
   conserva las variables `{n}`.
 - Los textos que llegan a `t()` en una variable hay que añadirlos a la lista de `src/i18n/i18n.test.ts`.
+- Dos textos iguales en español que en algún idioma se dicen distinto (el «condado» de Suecia es
+  «Provinz» en alemán y el de Irlanda, «Grafschaft») se separan con `tc('contexto', 'texto')`: el
+  diccionario que necesita distinguirlos lleva además la clave «texto|contexto»; los demás, nada.
 - Las páginas estáticas tienen sus textos aparte, un fichero por idioma con las mismas claves:
   `scripts/data/idiomas/<idioma>.mjs` (portada, países, juegos) y `scripts/data/temas/<idioma>.mjs`
   (geografía física, climas, población y «El planeta»). Los nombres de climas y capas de esas

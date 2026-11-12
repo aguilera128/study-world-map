@@ -77,8 +77,21 @@ export async function initI18n(): Promise<void> {
   document.documentElement.lang = lang;
 }
 
-export function t(text: string, vars?: Record<string, string | number>): string {
-  let out = dict[text] ?? text;
+function fill(out: string, vars?: Record<string, string | number>): string {
   if (vars) for (const key in vars) out = out.replaceAll(`{${key}}`, String(vars[key]));
   return out;
+}
+
+export function t(text: string, vars?: Record<string, string | number>): string {
+  return fill(dict[text] ?? text, vars);
+}
+
+/**
+ * Como `t()`, para un texto que en español se dice igual que otro pero en algún idioma no: el
+ * «condado» de Suecia es «Provinz» en alemán y el de Irlanda, «Grafschaft». Un diccionario puede dar
+ * a ese texto otra traducción para un contexto, con la clave «texto|contexto»; el que no la da usa
+ * la del texto a secas. El contexto nunca se enseña.
+ */
+export function tc(context: string, text: string, vars?: Record<string, string | number>): string {
+  return fill(dict[`${text}|${context}`] ?? dict[text] ?? text, vars);
 }

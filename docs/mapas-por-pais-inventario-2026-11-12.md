@@ -4,10 +4,10 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (16):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (17):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia (condados), Reino Unido (naciones),
-Polonia (voivodatos) y Portugal (distritos, con las Azores y Madeira).
+Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados), Reino Unido
+(naciones), Polonia (voivodatos) y Portugal (distritos, con las Azores y Madeira).
 
 ## Cómo leer la tabla
 
@@ -54,7 +54,7 @@ Polonia (voivodatos) y Portugal (distritos, con las Azores y Madeira).
 | Chipre | 5 distritos | distritos | revisar: falta un distrito (el norte va aparte en NE) |
 | Francia | 101 departamentos; 18 regiones en `region` | las 13 regiones metropolitanas | **hecho** (fundiendo; sin ultramar) |
 | Italia | 110 provincias; 20 regiones en `region` | regiones | **hecho** (fundiendo) |
-| Irlanda | 34 unidades, 26 códigos ISO | condados | pendiente: se funde por código, pero ver la nota de abajo |
+| Irlanda | 34 unidades, 26 códigos ISO | los 26 condados tradicionales | **hecho** (fundiendo por código) |
 | Reino Unido | 232 unidades de una docena de tipos | las 4 naciones | **hecho** (fundiendo por `geonunit`) |
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | fundir las ciudades en su condado |
 | Finlandia | 18 unidades (14 «provincias» + 4 «regiones») | regiones | revisar: no cuadra con las regiones vigentes |
@@ -76,21 +76,20 @@ Polonia (voivodatos) y Portugal (distritos, con las Azores y Madeira).
 
 1. **Fundir**: hecho (`fundir` en el fichero del mapa: el campo de NE que dice a qué unidad pertenece
    cada pieza). Queda Hungría (hay que ver cómo reunir cada ciudad con su condado).
-   **Irlanda** se funde sin más por código ISO, pero se ha dejado por dos cosas: su tipo de unidad
-   sería «condado», que ya usa Suecia y que en alemán está traducido como «Provinz» (para Irlanda
-   sería «Grafschaft», y allí «provincia» es otra cosa: Leinster, Munster…), y como la clave de
-   cada frase es el texto español no caben dos traducciones; y varias capitales de condado no son
-   inequívocas (Tipperary, Waterford). Hace falta decidir cómo distinguir dos tipos que en español
-   se llaman igual.
+   Irlanda se funde por código ISO. Dos de sus capitales no son inequívocas y se acepta la segunda
+   al escribir: Tipperary (Clonmel y Nenagh) y Waterford (Waterford y Dungarvan).
 2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia», «estado», «estado
    federado», «cantón», «región», «condado», «nación», «voivodato» y «distrito». Cada tipo son unas
-   veinte frases en nueve idiomas. Ojo: el tipo lo define la palabra española,
-   y en otros idiomas un mismo «condado» no se llama igual en cada país (el de Suecia es «Provinz»
-   en alemán; el de Irlanda sería «Grafschaft»): un país así pide su propio tipo.
+   veinte frases en nueve idiomas. Un mismo «condado» no se llama igual en cada país en todos los
+   idiomas (el de Suecia es «Provinz» en alemán; el de Irlanda, «Grafschaft»): para eso está `tc()`,
+   que da a las frases de un tipo un contexto (`condadoSueco`), y solo el idioma que difiere añade
+   sus claves «texto|contexto». Rumanía, Lituania o Hungría pedirán lo mismo.
 3. **Páginas estáticas**: solo España las tiene (son tres páginas en diez idiomas por país).
-4. **Capitales**: las de los tres países nuevos coinciden con la capital (P36) de Wikidata, salvo
+4. **Wikidata se revisa siempre a ojo**: en chino, la ficha de un condado irlandés (Roscommon)
+   llevaba el nombre de una batalla. Va corregido a mano.
+5. **Capitales**: las de los tres países nuevos coinciden con la capital (P36) de Wikidata, salvo
    Berlín, Hamburgo y Viena (ciudades-estado, sin capital en Wikidata) y Bregenz (sin nombre en
    español allí), que van por elaboración propia.
-5. **Decisiones**: Ucrania y Rusia (Crimea). Kosovo no es una decisión pendiente: el mapa del
+6. **Decisiones**: Ucrania y Rusia (Crimea). Kosovo no es una decisión pendiente: el mapa del
    mundo ya lo trata como país.
-6. **Turquía** (81 provincias): directa, pero pide zonas para que las partidas tengan sentido.
+7. **Turquía** (81 provincias): directa, pero pide zonas para que las partidas tengan sentido.

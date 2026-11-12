@@ -726,6 +726,9 @@ const eu: Record<string, string> = {
   'Reino Unido': 'Erresuma Batua',
   'Polonia': 'Polonia',
   'Portugal': 'Portugal',
+
+  // ── Mapas de un país: Irlanda ──
+  'Irlanda': 'Irlanda',
 };
 
 export default eu;
