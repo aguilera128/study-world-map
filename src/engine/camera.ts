@@ -71,6 +71,11 @@ export class CameraRig {
   width = 1;
   height = 1;
   pad: Padding = { left: 0, right: 0, top: 0, bottom: 0 };
+  /**
+   * Hasta dónde se puede acercar la cámara. En el mapa de un país pequeño (Suiza) baja: con la del
+   * mundo, el país entero no llenaría la pantalla y sus cantones no se distinguirían. Lo fija el motor.
+   */
+  minHeight = MIN_HEIGHT;
 
   private readonly sample = newSample();
   private readonly basis = new Matrix4();
@@ -131,7 +136,7 @@ export class CameraRig {
     const ratio = Math.max(1, this.flatMaxHeight() / globe);
     const toFlatHeight = (hg: number) => hg * (1 + (ratio - 1) * smoothstep(0.3, 0.9, hg / globe));
     if (toFlat) return toFlatHeight(Math.min(h, globe));
-    let lo = MIN_HEIGHT * 0.5;
+    let lo = this.minHeight * 0.5;
     let hi = globe;
     for (let i = 0; i < 32; i++) {
       const mid = (lo + hi) / 2;
@@ -143,7 +148,7 @@ export class CameraRig {
 
   /** Mantiene la pose dentro de límites: latitud, zoom y, en plano, que el mapa no se salga de la vista. */
   clampPose(pose: Pose = this, morph = this.morph): Pose {
-    pose.h = clamp(pose.h, MIN_HEIGHT, this.maxHeight(morph));
+    pose.h = clamp(pose.h, this.minHeight, this.maxHeight(morph));
     if (morph > 0.5) {
       pose.lon = wrapLon(pose.lon);
       pose.lat = clamp(pose.lat, -MAX_LAT, MAX_LAT);
@@ -201,7 +206,7 @@ export class CameraRig {
   /** Multiplica la altura por `factor` manteniendo fijo, si se indica, el punto bajo (x, y). */
   zoomBy(factor: number, x?: number, y?: number) {
     const anchor = x !== undefined && y !== undefined ? this.screenToGeo(x, y) : null;
-    this.h = clamp(this.h * factor, MIN_HEIGHT, this.maxHeight());
+    this.h = clamp(this.h * factor, this.minHeight, this.maxHeight());
     if (anchor && x !== undefined && y !== undefined) {
       // Tras cambiar la altura, se corrige el foco hasta que el ancla vuelve a quedar bajo el cursor.
       for (let i = 0; i < 2; i++) {

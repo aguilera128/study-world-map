@@ -279,7 +279,9 @@ for (const mapa of Object.values(MAPAS)) {
         paises[p.iso] = { n };
         continue;
       }
-      const c = extra.capital ?? wikidata[p.iso]?.c?.[idioma] ?? p.capital;
+      // Sin nombre para la capital (las ciudades-estado, que en Wikidata no tienen capital): si en
+      // español se llama igual que la unidad, también en este idioma (Berlín → Berlin, Viena → Wien).
+      const c = extra.capital ?? wikidata[p.iso]?.c?.[idioma] ?? (p.capital === p.nombre ? n : p.capital);
       paises[p.iso] = {
         n,
         c,

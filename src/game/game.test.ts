@@ -651,6 +651,19 @@ describe('mapas de un país', () => {
     });
   }
 
+  it('un país sin agrupaciones (Alemania) se juega igual, sin el reto de la región', () => {
+    const germany = new Atlas(JSON.parse(readFileSync('public/data/de/atlas.json', 'utf8')) as RawAtlas, 'de');
+    expect(modesOf('de').map((m) => m.id)).toEqual(['locate', 'name', 'capital']);
+    expect(resolveScope(germany, 'de', []).countries.length).toBe(16);
+    expect(germany.byIdOrThrow('DE-BY').capital).toBe('Múnich');
+    expect(sanitizeConfig({ map: 'de', mode: 'region', answer: 'choice', scope: 'de', length: 10 }, []).mode).toBe('locate');
+    for (const mode of ['locate', 'name', 'capital'] as const) {
+      const config: GameConfig = { map: 'de', mode, answer: modesOf('de').find((m) => m.id === mode)!.answers[0], scope: 'de', length: 'all' };
+      const session = createSession(germany, config, resolveScope(germany, 'de', []), {}, NOW, { rng: seeded(3) });
+      expect(session.total, mode).toBe(16);
+    }
+  });
+
   it('Estados Unidos: 50 estados en las cuatro regiones del censo; el Distrito de Columbia se dibuja pero no se pregunta', () => {
     const usa = new Atlas(JSON.parse(readFileSync('public/data/us/atlas.json', 'utf8')) as RawAtlas, 'us');
     const count = (scope: string) => resolveScope(usa, scope, []).countries.length;

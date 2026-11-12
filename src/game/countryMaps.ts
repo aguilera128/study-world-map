@@ -10,7 +10,7 @@ import type { ModeId } from './config';
 // la clave de su traducción, y se traducen al usarlos.
 
 /** Cómo se llaman las unidades de un país. De ello dependen las frases de la interfaz (./maps.ts). */
-export type UnitKind = 'provincia' | 'estado';
+export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton';
 /** En qué se agrupan: las comunidades autónomas de España o, en general, regiones. */
 export type GroupKind = 'comunidad' | 'region';
 
@@ -71,6 +71,11 @@ export const COUNTRY_MAPS = {
       { id: 'us-oeste', keys: ['us-oeste'] },
     ],
   },
+  // Los estados federados de Alemania y Austria y los cantones de Suiza no se agrupan en nada que se
+  // estudie: sin zonas ni reto de «región».
+  de: { title: 'Alemania', iso: 'DEU', unit: 'estadoFederado', zones: [] },
+  at: { title: 'Austria', iso: 'AUT', unit: 'estadoFederado', zones: [] },
+  ch: { title: 'Suiza', iso: 'CHE', unit: 'canton', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

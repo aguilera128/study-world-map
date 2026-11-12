@@ -73,6 +73,8 @@ export interface Palette {
   sheetShadow: string;
   sheetShadowAlpha: number;
   line: string;
+  /** Fronteras sobre la imagen de satélite: las del tema de noche, pensadas para una tierra oscura, no se leen encima de la foto. */
+  linePhoto: string;
   /** Fronteras durante una partida: en el mapa mudo son lo único que separa un país de otro. */
   linePlay: string;
   lineEmph: string;
@@ -123,6 +125,7 @@ export const PAPER: Palette = {
   sheetShadow: '#1b2a3a',
   sheetShadowAlpha: 0.16,
   line: '#8f897a',
+  linePhoto: '#8f897a',
   linePlay: '#6f6a5e',
   lineEmph: '#1b2a3a',
   river: '#4f86ab',
@@ -198,6 +201,7 @@ export const NIGHT: Palette = {
   sheetShadow: '#000000',
   sheetShadowAlpha: 0.4,
   line: '#364250',
+  linePhoto: '#aebacb',
   linePlay: '#93a3b8',
   lineEmph: '#f3ead7',
   river: '#5f9cc4',
@@ -299,6 +303,7 @@ export const TOON: Palette = {
   outline: '#160d22',
   outlineAlpha: 1,
   line: '#160d22',
+  linePhoto: '#160d22',
   linePlay: '#160d22',
   lineEmph: '#fff36b',
   hover: '#fff36b',

@@ -32,16 +32,16 @@ const norm = (s) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
 
-/** «Provincia de…» en cada idioma: se quita del nombre de la entidad. */
+/** «Provincia de…», «cantón de…», «estado de…» en cada idioma: se quita del nombre de la entidad. */
 const TIPO = {
-  en: [/^Province of /i, / Province$/i],
-  fr: [/^province (de |du |des |d[’'])/i],
-  de: [/^Provinz /i],
-  it: [/^provincia (di |del |della |dello |dell[’']|d[’'])/i],
-  pt: [/^província (de |da |do |das |dos |d[’'])/i],
-  ca: [/^província (de |d[’'])/i],
-  gl: [/^provincia (de |da |do |das |dos )/i],
-  eu: [/(ko|go) probintzia$/i, / probintzia$/i],
+  en: [/^Province of /i, / Province$/i, /^Canton of (the )?/i],
+  fr: [/^province (de |du |des |d[’'])/i, /^canton (de |du |des |d[’'])/i],
+  de: [/^Provinz /i, /^Kanton /i],
+  it: [/^provincia (di |del |della |dello |dell[’']|d[’'])/i, /^cantone? (di |del |dei |della |d[’'])?/i],
+  pt: [/^província (de |da |do |das |dos |d[’'])/i, /^cantão (de |da |do |das |dos )/i],
+  ca: [/^província (de |d[’'])/i, /^cantó (de |del |dels |d[’'])/i, /^estat (de |del |d[’'])/i],
+  gl: [/^provincia (de |da |do |das |dos )/i, /^cantón (de |da |do |das |dos )/i, /^estado (de |da |do )/i],
+  eu: [/(ko|go) probintzia$/i, / probintzia$/i, / kantonamendua$/i],
   zh: [/省$/],
 };
 const sinTipo = (lang, name) => TIPO[lang].reduce((s, re) => s.replace(re, ''), name).trim();

@@ -30,7 +30,7 @@ import type { Atlas } from '../atlas/atlas';
 import type { MeshData } from '../atlas/mesh';
 import type { Bounds } from '../atlas/types';
 import { takeBitmap } from './bitmaps';
-import { CameraRig, type Padding, type Pose, type ScreenPoint } from './camera';
+import { CameraRig, MIN_HEIGHT, type Padding, type Pose, type ScreenPoint } from './camera';
 import { faintStarGeometry, fillGeometry, frameGeometry, lineGeometry, markerGeometry, oceanGeometry, quadGeometry, starGeometry, wallGeometry } from './geometry';
 import { FeatureLabels, type MapFeature } from './labels';
 import { rgb, Style, STYLE_COUNT, type Palette } from './palette';
@@ -390,6 +390,12 @@ export class MapEngine {
   constructor(canvas: HTMLCanvasElement, atlas: Atlas, mesh: MeshData, options: EngineOptions) {
     this.canvas = canvas;
     this.atlas = atlas;
+    // Un país pequeño se mira desde más cerca: que con el máximo acercamiento llene la pantalla.
+    if (atlas.frame) {
+      const [w, s, e, n] = atlas.frame;
+      const span = Math.max(n - s, (e - w) * Math.cos((((s + n) / 2) * Math.PI) / 180));
+      this.rig.minHeight = Math.min(MIN_HEIGHT, Math.max(0.03, (MIN_HEIGHT * span) / 9));
+    }
     this.count = atlas.countries.length;
     this.palette = options.palette;
     this.mode = options.mode;
@@ -664,7 +670,6 @@ export class MapEngine {
     u.uRim.value.copy(vec3(p.rim));
     u.uRimAmount.value = p.rimAmount;
     u.uRimPower.value = p.rimPower;
-    u.uLine.value.copy(vec3(this.playLines ? p.linePlay : p.line));
     this.syncEmph();
     this.own.river.uLine.value.copy(vec3(p.river));
     this.own.river.uLineEmph.value.copy(vec3(p.river));
@@ -862,7 +867,7 @@ export class MapEngine {
   /** Fronteras de partida: más contrastadas y algo más gruesas que las del mapa de consulta. */
   setPlayLines(on: boolean) {
     this.playLines = on;
-    this.uniforms.uLine.value.copy(vec3(on ? this.palette.linePlay : this.palette.line));
+    this.syncEmph();
     this.invalidate();
   }
 
@@ -1109,9 +1114,12 @@ export class MapEngine {
    * Contorno del país señalado. Sobre la imagen de satélite el país no se puede teñir (se taparía la
    * foto), así que el amarillo de «señalado» pasa al contorno, con un ribete oscuro que lo separa de
    * la arena y de la nieve. Sin la foto, el contorno es el del tema (crema o tinta), sin ribete.
+   * Las fronteras también cambian con la foto: las del tema pueden no leerse encima de ella.
    */
   private syncEmph() {
     this.photoOutline = this.showPhoto && this.photoReady;
+    const p = this.palette;
+    this.uniforms.uLine.value.copy(vec3(this.playLines ? p.linePlay : this.photoOutline ? p.linePhoto : p.line));
     this.uniforms.uLineEmph.value.copy(vec3(this.photoOutline ? this.palette.hover : this.palette.lineEmph));
   }
 

@@ -4,7 +4,8 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho:** España (provincias) y Estados Unidos (estados, con las regiones del censo).
+**Hecho:** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania y
+Austria (estados federados) y Suiza (cantones).
 
 ## Cómo leer la tabla
 
@@ -27,9 +28,9 @@ lista de trabajo para ir añadiendo países; cómo se añade uno está en el REA
 |---|---|---|---|
 | Estados Unidos | 51: 50 estados + distrito federal; 4 regiones | estados | **hecho** |
 | España | 52: 50 provincias + 2 ciudades; 19 regiones | provincias | **hecho** |
-| Alemania | 16 estados | estados federados | directo |
-| Austria | 9 estados | estados federados | directo |
-| Suiza | 26 cantones | cantones | directo |
+| Alemania | 16 estados | estados federados | **hecho** |
+| Austria | 9 estados | estados federados | **hecho** |
+| Suiza | 26 cantones | cantones | **hecho** |
 | Países Bajos | 12 provincias + 3 municipios especiales (Caribe) | provincias | directo (sin los 3 del Caribe) |
 | Bélgica | 10 provincias + Bruselas; 3 regiones | provincias, agrupadas en regiones | directo |
 | Polonia | 16 voivodatos | voivodatos | directo |
@@ -73,10 +74,11 @@ lista de trabajo para ir añadiendo países; cómo se añade uno está en el REA
 
 1. **Fundir** (Francia, Italia, Irlanda, Reino Unido, Hungría): `build-subdivisions.mjs` tiene que
    poder reunir varias unidades de NE en una por un campo (`region`, código ISO o `geonunit`).
-2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia» y «estado». Cada tipo son
-   unas veinte frases en nueve idiomas. Hacen falta, al menos: región, cantón, condado, voivodato,
-   distrito y nación.
-3. **Países sin agrupación** (Alemania, Austria…): el generador y la aplicación ya lo admiten (no se
-   ofrece el reto de «región»), pero no se ha probado con ningún país real.
-4. **Páginas estáticas**: Estados Unidos no tiene todavía (tres páginas en diez idiomas por país).
+2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia», «estado», «estado
+   federado» y «cantón». Cada tipo son unas veinte frases en nueve idiomas. Hacen falta, al menos:
+   región, condado, voivodato, distrito y nación.
+3. **Páginas estáticas**: solo España las tiene (son tres páginas en diez idiomas por país).
+4. **Capitales**: las de los tres países nuevos coinciden con la capital (P36) de Wikidata, salvo
+   Berlín, Hamburgo y Viena (ciudades-estado, sin capital en Wikidata) y Bregenz (sin nombre en
+   español allí), que van por elaboración propia.
 5. **Decisiones**: Ucrania y Rusia (Crimea), Serbia y Kosovo.

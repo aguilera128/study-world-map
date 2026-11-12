@@ -29,9 +29,10 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   Melilla, con retos de localizar, nombrar, capitales y «¿a qué comunidad autónoma pertenece?». Las
   zonas son agrupaciones de comunidades y su progreso se guarda aparte del de los países. Las listas
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
-- **Estados Unidos por estados.** Los 50 estados con sus capitales y las cuatro regiones del censo
-  («¿a qué región pertenece?»). El país se elige en un desplegable de la portada, pensado para ir
-  añadiendo más: ver `docs/mapas-por-pais-inventario-2026-11-12.md`.
+- **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
+  del censo), Alemania y Austria (estados federados) y Suiza (cantones). El país se elige en un
+  desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
+  `docs/mapas-por-pais-inventario-2026-11-12.md`.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
   servidor), con racha de días seguidos y botón para compartir el resultado.
 - **Listas de estudio.** En «Países → Elegir países» se crea una selección con justo los países que
@@ -170,7 +171,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay dos, España y Estados Unidos; el resto se añade sobre todo con datos:
+Hay cinco (España, Estados Unidos, Alemania, Austria y Suiza); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de

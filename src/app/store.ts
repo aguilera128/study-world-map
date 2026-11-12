@@ -408,10 +408,12 @@ export function showWhole(atlas: Atlas | null) {
 
 /**
  * Encuadra un país con algo de contexto alrededor (`wide`: con más, para situarlo). En el mapa de un
- * país todo es más pequeño: una provincia se enseña con su región, no con medio continente.
+ * país todo es más pequeño: una provincia se enseña con su región, no con medio continente; y en
+ * el de un país pequeño (Suiza), menos aún: que alrededor de un cantón no quepa el país entero.
  */
 export function showCountry(atlas: Atlas, index: number, wide = false) {
-  const minSpan = atlas.frame ? (wide ? 7 : 4) : wide ? 30 : 16;
+  const own = atlas.frame ? Math.max(atlas.frame[2] - atlas.frame[0], atlas.frame[3] - atlas.frame[1]) * 0.35 : Infinity;
+  const minSpan = atlas.frame ? Math.min(wide ? 7 : 4, own) : wide ? 30 : 16;
   getEngine()?.frameCountry(index, { minSpan });
 }
 
