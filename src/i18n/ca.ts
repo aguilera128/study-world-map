@@ -740,6 +740,9 @@ const ca: Record<string, string> = {
   'Serbia': 'Sèrbia',
   'Hungría': 'Hongria',
   'Turquía': 'Turquia',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': 'Bulgària',
 };
 
 export default ca;

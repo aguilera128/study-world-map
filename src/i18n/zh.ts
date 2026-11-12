@@ -860,6 +860,29 @@ const zh: Record<string, string> = {
   'Serbia': '塞尔维亚',
   'Hungría': '匈牙利',
   'Turquía': '土耳其',
+
+  // ── 州（保加利亚） ──
+  '{n} provincias|bg': '{n} 个州',
+  'provincia a provincia.|bg': '一州一州地学。',
+  'Provincias|bg': '州',
+  'Provincias que entran|bg': '包含的州',
+  'provincia|bg': '个州',
+  'provincias|bg': '个州',
+  'Dominas {n} de {total} provincias|bg': '已掌握 {n} / {total} 个州',
+  'Buscar provincia o capital…|bg': '搜索州或首府…',
+  'Buscar provincia o capital|bg': '搜索州或首府',
+  'No hay ninguna provincia con ese nombre.|bg': '没有叫这个名字的州。',
+  '¿Qué provincia es la señalada?|bg': '标出的是哪个州？',
+  '¿De qué provincia es la capital?|bg': '这是哪个州的首府？',
+  'Toca la provincia en el mapa|bg': '在地图上点出这个州',
+  'Escribe la provincia…|bg': '输入州名…',
+  'Buscando la provincia|bg': '找州',
+  'Te damos el nombre de una provincia y la buscas en el mapa.|bg': '我们给出州名，你在地图上找到它。',
+  'Señalamos una provincia en el mapa y dices cuál es.|bg': '我们在地图上标出一个州，你说出它是哪个州。',
+  'Une cada provincia con su capital.|bg': '把每个州和它的首府配对。',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': '保加利亚',
 };
 
 export default zh;

@@ -734,6 +734,14 @@ describe('mapas de un país', () => {
     expect(serbia.countries[serbia.locate(20.46, 44.8)].id).toBe('RS-00');
   });
 
+  it('Bulgaria: la ciudad de Sofía y la provincia que la rodea son dos unidades con la misma capital', () => {
+    const bulgaria = new Atlas(JSON.parse(readFileSync('public/data/bg/atlas.json', 'utf8')) as RawAtlas, 'bg');
+    expect(bulgaria.quizzable.length).toBe(28);
+    // El centro de Sofía cae en la ciudad; Samokov, en la provincia.
+    expect(bulgaria.countries[bulgaria.locate(23.32, 42.7)].id).toBe('BG-22');
+    expect(bulgaria.countries[bulgaria.locate(23.55, 42.34)].id).toBe('BG-23');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

@@ -821,6 +821,30 @@ const fr: Record<string, string> = {
   'Serbia': 'Serbie',
   'Hungría': 'Hongrie',
   'Turquía': 'Turquie',
+
+  // ── Bulgarie «oblast» ──
+  '{n} provincias|bg': '{n} oblasts',
+  'provincia a provincia.|bg': 'oblast par oblast.',
+  'Provincias|bg': 'Oblasts',
+  'Provincias que entran|bg': 'Oblasts inclus',
+  'provincia|bg': 'oblast',
+  'provincias|bg': 'oblasts',
+  'Dominas {n} de {total} provincias|bg': 'Vous maîtrisez {n} oblasts sur {total}',
+  'Buscar provincia o capital…|bg': 'Chercher un oblast ou un chef-lieu…',
+  'Buscar provincia o capital|bg': 'Chercher un oblast ou un chef-lieu',
+  'No hay ninguna provincia con ese nombre.|bg': 'Aucun oblast ne porte ce nom.',
+  '¿Qué provincia es la señalada?|bg': 'Quel est l’oblast indiqué ?',
+  '¿De qué provincia es la capital?|bg': 'De quel oblast est-ce le chef-lieu ?',
+  'Toca la provincia en el mapa|bg': 'Touchez l’oblast sur la carte',
+  'Escribe la provincia…|bg': 'Écrivez l’oblast…',
+  'Buscando la provincia|bg': 'En cherchant l’oblast',
+  'Te damos el nombre de una provincia y la buscas en el mapa.|bg': 'Nous vous donnons le nom d’un oblast et vous le cherchez sur la carte.',
+  'Señalamos una provincia en el mapa y dices cuál es.|bg': 'Nous indiquons un oblast sur la carte et vous dites lequel c’est.',
+  'Une cada provincia con su capital.|bg': 'Associez chaque oblast à son chef-lieu.',
+  'Practicar estas →|bg': 'S’entraîner avec ceux-ci →',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': 'Bulgarie',
 };
 
 export default fr;

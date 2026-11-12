@@ -740,6 +740,9 @@ const eu: Record<string, string> = {
   'Serbia': 'Serbia',
   'Hungría': 'Hungaria',
   'Turquía': 'Turkia',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': 'Bulgaria',
 };
 
 export default eu;

@@ -119,6 +119,8 @@ export const COUNTRY_MAPS = {
   rs: { title: 'Serbia', iso: 'SRB', unit: 'distrito', context: 'rs', zones: [] },
   hu: { title: 'Hungría', iso: 'HUN', unit: 'condado', context: 'hu', zones: [] },
   tr: { title: 'Turquía', iso: 'TUR', unit: 'provincia', zones: [] },
+  // Provincias de Bulgaria: «Oblast» en alemán y en francés, «distretto» en italiano.
+  bg: { title: 'Bulgaria', iso: 'BGR', unit: 'provincia', context: 'bg', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

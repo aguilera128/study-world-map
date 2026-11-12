@@ -4,11 +4,11 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (24):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (25):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
 Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
 Hungría (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
-Azores y Madeira), Rumanía y Serbia (distritos) y Turquía (provincias).
+Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provincias).
 
 ## Cómo leer la tabla
 
@@ -39,14 +39,14 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía (provincias).
 | Polonia | 16 voivodatos (con los códigos ISO anteriores a 2018) | voivodatos | **hecho** |
 | Chequia | 14 regiones (con los códigos ISO anteriores a 2016) | regiones | **hecho** |
 | Eslovaquia | 8 regiones | regiones | **hecho** |
-| Dinamarca | 5 regiones | regiones | revisar: creo recordar una reforma que funde dos regiones en 2027; comprobarlo antes |
+| Dinamarca | 5 regiones | regiones | **esperar**: NE y Wikidata coinciden hoy, pero el 1-ene-2027 la Región Capital y Selandia se funden en «Østdanmark» y quedan cuatro (ley de 20-jun-2025). Hacerlo ya con cuatro, fundiendo DK-84 y DK-85, cuando entre en vigor |
 | Suecia | 21 condados | condados | **hecho** |
 | Portugal | 18 distritos + 2 regiones autónomas | distritos | **hecho** (nombres a mano: Wikidata los tiene a medias) |
 | Grecia | 13 regiones + Monte Athos (el Ática, con un código que no es el suyo) | regiones | **hecho** (Athos como decorado) |
 | Rumanía | 41 distritos + Bucarest | distritos | **hecho** |
-| Bulgaria | 28 provincias | provincias | directo, con cuidado: dos se llaman Sofía y la transliteración al español no es única |
+| Bulgaria | 28 provincias | provincias | **hecho** (las 28 y sus códigos coinciden con Wikidata; la ciudad y la provincia de Sofía, distinguidas en cada idioma; transliteración oficial búlgara) |
 | Lituania | 10 condados | condados | **hecho** |
-| Estonia | 15 condados | condados | desfasado: creo recordar que la reforma de 2017 movió municipios entre condados y que sus códigos ISO cambiaron en 2020; comprobarlo, y si es así hace falta otra fuente |
+| Estonia | 15 condados | condados | **desfasado, comprobado**: la reforma de 2017 pasó Lihula, Hanila, Koonga y Varbla al municipio de Lääneranna (condado de Pärnu) y NE sigue poniendo Lihula en Lääne; además lleva los códigos ISO antiguos (EE-67 por EE-68…). Hace falta otra fuente |
 | Turquía | 81 provincias | provincias | **hecho**, sin zonas: sus siete regiones geográficas no vienen en NE y repartirlas a mano sin fuente no es de fiar |
 | Albania | 12 condados | condados | **hecho** |
 | Bielorrusia | 6 regiones + Minsk | regiones | directo |
@@ -58,7 +58,7 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía (provincias).
 | Irlanda | 34 unidades, 26 códigos ISO | los 26 condados tradicionales | **hecho** (fundiendo por código) |
 | Reino Unido | 232 unidades de una docena de tipos | las 4 naciones | **hecho** (fundiendo por `geonunit`) |
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | **hecho** (cada ciudad, fundida con su condado) |
-| Finlandia | 18 unidades (14 «provincias» + 4 «regiones») | regiones | revisar: no cuadra con las regiones vigentes |
+| Finlandia | 18 regiones (Åland va aparte en NE, como `ALD` y por municipios) | regiones | **desfasado, comprobado**: el 1-ene-2021 cambiaron de región Heinävesi, Joroinen, Iitti, Kuhmoinen e Isokyrö, y NE los deja en la antigua. Hace falta otra fuente |
 | Serbia | 24 distritos + Belgrado | distritos | **hecho** (Kosovo va aparte, como en el mapa del mundo) |
 | Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024) |
 | Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado |
@@ -96,6 +96,9 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía (provincias).
    español allí), que van por elaboración propia.
 6. **Decisiones**: Ucrania y Rusia (Crimea). Kosovo no es una decisión pendiente: el mapa del
    mundo ya lo trata como país.
-7. **Lo que queda de Europa** necesita verificar algo antes (Dinamarca, Finlandia, Bulgaria,
-   Estonia) u otra fuente de fronteras (Noruega, Letonia, Eslovenia, Macedonia del Norte, Malta,
-   Montenegro, Moldavia, Bosnia).
+7. **Lo que queda de Europa** necesita otra fuente de fronteras (Finlandia, Estonia, Noruega,
+   Letonia, Eslovenia, Macedonia del Norte, Malta, Montenegro, Moldavia, Bosnia) o esperar a enero
+   de 2027 (Dinamarca). Para saber si NE recoge una reforma basta mirar en qué unidad cae un
+   municipio que cambió de sitio: así se comprobaron Finlandia y Estonia el 12-nov-2026 (fuentes:
+   Statistics Finland, clasificación de regiones de 2021; informe de Estonia a UNGEGN de 2019; ley
+   danesa 699/2025).

@@ -781,6 +781,31 @@ const it: Record<string, string> = {
   'Serbia': 'Serbia',
   'Hungría': 'Ungheria',
   'Turquía': 'Turchia',
+
+  // ── Bulgaria «distretto» ──
+  '{n} provincias|bg': '{n} distretti',
+  'provincia a provincia.|bg': 'distretto per distretto.',
+  'Provincias|bg': 'Distretti',
+  'Provincias que entran|bg': 'Distretti inclusi',
+  'provincia|bg': 'distretto',
+  'provincias|bg': 'distretti',
+  'Dominas {n} de {total} provincias|bg': 'Padroneggi {n} distretti su {total}',
+  'Buscar provincia o capital…|bg': 'Cerca distretto o capoluogo…',
+  'Buscar provincia o capital|bg': 'Cerca distretto o capoluogo',
+  'No hay ninguna provincia con ese nombre.|bg': 'Non c’è nessun distretto con quel nome.',
+  '¿Qué provincia es la señalada?|bg': 'Qual è il distretto indicato?',
+  '¿De qué provincia es la capital?|bg': 'Di quale distretto è il capoluogo?',
+  'Toca la provincia en el mapa|bg': 'Tocca il distretto sulla mappa',
+  'Escribe la provincia…|bg': 'Scrivi il distretto…',
+  'Buscando la provincia|bg': 'Cercando il distretto',
+  'Te damos el nombre de una provincia y la buscas en el mapa.|bg': 'Ti diamo il nome di un distretto e lo cerchi sulla mappa.',
+  'Señalamos una provincia en el mapa y dices cuál es.|bg': 'Indichiamo un distretto sulla mappa e dici qual è.',
+  'Une cada provincia con su capital.|bg': 'Abbina ogni distretto al suo capoluogo.',
+  'Estúdialas antes de jugar|bg': 'Studiali prima di giocare',
+  'Practicar estas →|bg': 'Esercitati con questi →',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': 'Bulgaria',
 };
 
 export default it;

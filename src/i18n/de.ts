@@ -881,6 +881,29 @@ const de: Record<string, string> = {
   'Serbia': 'Serbien',
   'Hungría': 'Ungarn',
   'Turquía': 'Türkei',
+
+  // ── Bulgarien «Oblast» ──
+  '{n} provincias|bg': '{n} Oblaste',
+  'provincia a provincia.|bg': 'Oblast für Oblast.',
+  'Provincias|bg': 'Oblaste',
+  'Provincias que entran|bg': 'Enthaltene Oblaste',
+  'provincia|bg': 'Oblast',
+  'provincias|bg': 'Oblaste',
+  'Dominas {n} de {total} provincias|bg': 'Du beherrschst {n} von {total} Oblasten',
+  'Buscar provincia o capital…|bg': 'Oblast oder Hauptstadt suchen…',
+  'Buscar provincia o capital|bg': 'Oblast oder Hauptstadt suchen',
+  'No hay ninguna provincia con ese nombre.|bg': 'Es gibt keine Oblast mit diesem Namen.',
+  '¿Qué provincia es la señalada?|bg': 'Welche Oblast ist markiert?',
+  '¿De qué provincia es la capital?|bg': 'Von welcher Oblast ist das die Hauptstadt?',
+  'Toca la provincia en el mapa|bg': 'Tippe die Oblast auf der Karte an',
+  'Escribe la provincia…|bg': 'Oblast eintippen…',
+  'Buscando la provincia|bg': 'Oblast suchen',
+  'Te damos el nombre de una provincia y la buscas en el mapa.|bg': 'Wir nennen dir eine Oblast und du suchst sie auf der Karte.',
+  'Señalamos una provincia en el mapa y dices cuál es.|bg': 'Wir markieren eine Oblast auf der Karte und du sagst, welche es ist.',
+  'Une cada provincia con su capital.|bg': 'Ordne jeder Oblast ihre Hauptstadt zu.',
+
+  // ── Mapas de un país: Bulgaria ──
+  'Bulgaria': 'Bulgarien',
 };
 
 export default de;
