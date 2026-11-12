@@ -201,14 +201,17 @@ export function withBackdrop(raw: RawAtlas, world: RawAtlas): RawAtlas {
  */
 export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atlas> {
   const dir = map === 'world' ? '/data' : `/data/${map}`;
-  const [raw, names, worldNames] = await Promise.all([
+  const [raw, names, worldNames, world] = await Promise.all([
     getJson<RawAtlas>(`${dir}/atlas.json`),
     lang === 'es' ? null : getJson<RawNames>(`${dir}/names.${lang}.json`),
     // El decorado (los países de alrededor en el mapa de un país) toma su nombre del atlas del mundo.
     lang === 'es' || map === 'world' ? null : getJson<RawNames>(`/data/names.${lang}.json`).catch(() => null),
+    // El atlas del mundo va de fondo en todos los demás mapas: se pide a la vez que el suyo, no
+    // después, que es una ida y vuelta menos para quien entra directo al mapa de un país.
+    map === 'world' ? null : getJson<RawAtlas>('/data/atlas.json'),
   ]);
   // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
-  if (raw.base === 'world' || raw.country) withBackdrop(raw, await getJson<RawAtlas>('/data/atlas.json'));
+  if (world && (raw.base === 'world' || raw.country)) withBackdrop(raw, world);
   if (names) {
     for (const key of Object.keys(raw.regions) as RegionKey[]) raw.regions[key].name = names.regions[key];
     raw.continents = names.continents;
