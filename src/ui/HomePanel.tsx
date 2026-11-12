@@ -5,6 +5,7 @@ import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/sto
 import { answerLabel, modeDef, modesOf, resolveScope, type ModeId } from '../game/config';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
+import { answersOf, askableOf } from '../game/session';
 import { Icon } from './Icon';
 import { homeOf, lang, preferredLang, VIEW_IN } from '../i18n';
 import { MapPicker } from './MapPicker';
@@ -107,7 +108,11 @@ export function HomePanel() {
       ),
     [progress, scope, atlas, config.mode],
   );
-  const total = scope.countries.length;
+  // Solo las formas de responder con algo que preguntar en esta zona, y las preguntas que salen con
+  // la elegida: en capitales, eligiendo o escribiendo, no entran las unidades que se llaman como su capital.
+  const answers = useMemo(() => answersOf(atlas, modeDef(config.mode, atlas.map), scope.countries), [atlas, config.mode, scope]);
+  const answer = answers.includes(config.answer) ? config.answer : (answers[0] ?? config.answer);
+  const total = useMemo(() => askableOf(atlas, { mode: config.mode, answer }, scope.countries).length, [atlas, config.mode, answer, scope]);
   // El ranking de lo que está elegido; no se pide hasta que se abre.
   const ranking = rankingOf(config, { daily: null, review: false, lists });
   const [rankingOpen, setRankingOpen] = useState(false);
@@ -184,12 +189,12 @@ export function HomePanel() {
             {def.text.study}
           </button>
         </p>
-        {mode.answers.length > 1 && (
+        {answers.length > 1 && (
           <Segmented
             label={t('Cómo responder')}
-            value={config.answer}
+            value={answer}
             onChange={(answer) => setConfig({ answer })}
-            options={mode.answers.map((a) => ({
+            options={answers.map((a) => ({
               value: a,
               label: (
                 <>

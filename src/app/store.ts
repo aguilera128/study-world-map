@@ -9,6 +9,7 @@ import type { PointerInfo, ViewMode } from '../engine/MapEngine';
 import {
   DEFAULT_CONFIG,
   inputOf,
+  modeDef,
   resolveScope,
   SAMPLE_LIST,
   sanitizeConfig,
@@ -18,7 +19,7 @@ import {
   type StudyList,
 } from '../game/config';
 import { record, sanitizeProgress, type Outcome, type Progress, mergeProgress } from '../game/progress';
-import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
+import { advance, answersOf, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { dailyConfig, dailyKey, dailyRng, recordDaily, type DailyRecord } from '../game/daily';
 import { COUNTRY_IDS, COUNTRY_MAPS, type CountryMapId } from '../game/countryMaps';
 import { isCountryMap, isMapId, MAPS, type MapDef } from '../game/maps';
@@ -533,8 +534,13 @@ export const useApp = create<AppState>()((set, get) => {
       const { atlas } = get();
       if (!atlas) return;
       clearTimers();
-      const { config, lists } = useSettings.getState();
-      const scope = resolveScope(atlas, config.scope, lists);
+      const { config: chosen, lists } = useSettings.getState();
+      const scope = resolveScope(atlas, chosen.scope, lists);
+      // La forma de responder elegida puede no tener nada que preguntar en esta zona (la capital de
+      // una provincia que se llama como ella): se pasa a la primera que sí.
+      const answers = answersOf(atlas, modeDef(chosen.mode, atlas.map), scope.countries);
+      const config = answers.length && !answers.includes(chosen.answer) ? { ...chosen, answer: answers[0] } : chosen;
+      if (config !== chosen) useSettings.getState().setConfig({ answer: config.answer });
       const session = createSession(atlas, config, scope, useProgress.getState().progress, Date.now(), { only });
       set({ session, screen: 'play', reviewOnly: !!only, newBest: false, daily: null, labels: [], selected: -1 });
       frameQuestion(session, true);

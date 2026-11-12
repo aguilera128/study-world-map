@@ -1,9 +1,10 @@
 import type { Atlas } from '../atlas/atlas';
-import type { ClimateKey, ContinentKey } from '../atlas/types';
+import type { ClimateKey, ContinentKey, Country } from '../atlas/types';
 import { CLIMATE_KEYS, climateLabel } from './climate';
-import { inputOf, MAX_ATTEMPTS, type GameConfig, type Scope } from './config';
+import { inputOf, MAX_ATTEMPTS, type AnswerKind, type GameConfig, type ModeDef, type Scope } from './config';
+import { isCountryMap } from './maps';
 import { selectionWeight, type Outcome, type Progress } from './progress';
-import { matchesAnswer } from './text';
+import { matchesAnswer, normalize } from './text';
 import { LEVEL_KEYS, levelLabel, levelOf, levelRange } from './population';
 import { t } from '../i18n';
 
@@ -204,6 +205,41 @@ function makeQuestion(atlas: Atlas, config: GameConfig, pool: number[], country:
   return { country, review, options: makeOptions(atlas, config, pool, country, rng) };
 }
 
+/** ¿Dice ya el nombre de la unidad cuál es su capital? («Sevilla», «Provincia de Sofía».) */
+export function namesItsCapital(country: Pick<Country, 'name' | 'capital'>): boolean {
+  if (!country.capital) return false;
+  const words = new Set(normalize(country.name).split(' '));
+  return normalize(country.capital)
+    .split(' ')
+    .every((word) => words.has(word));
+}
+
+/** Los países de una zona que entran en la partida de este reto: de ellos salen también las opciones. */
+function poolOf(atlas: Atlas, config: Pick<GameConfig, 'mode'>, countries: number[]): number[] {
+  // En el reto de población solo entran los países con dato de densidad.
+  if (config.mode === 'population') return countries.filter((i) => levelOf(atlas.countries[i]) !== null);
+  if (config.mode === 'inhabitants') return mostPopulated(atlas, countries);
+  return countries;
+}
+
+/**
+ * De los países de una zona, por cuáles se pregunta en este reto y con esta forma de responder.
+ * En el mapa de un país, eligiendo o escribiendo la capital no se pregunta la de la unidad que se
+ * llama como ella (la de Sevilla es Sevilla): la respuesta iría en la pregunta. Buscándola en el
+ * mapa sí, porque ahí lo que hay que saber es dónde está.
+ */
+export function askableOf(atlas: Atlas, config: Pick<GameConfig, 'mode' | 'answer'>, countries: number[]): number[] {
+  const pool = poolOf(atlas, config, countries);
+  if (config.mode === 'inhabitants') return pool.filter((i) => clearlySmaller(atlas, pool, i).length >= 3);
+  if (config.mode === 'capital' && config.answer !== 'map' && isCountryMap(atlas.map)) return pool.filter((i) => !namesItsCapital(atlas.countries[i]));
+  return pool;
+}
+
+/** Las formas de responder de un reto que tienen algo que preguntar en esa zona. */
+export function answersOf(atlas: Atlas, mode: Pick<ModeDef, 'id' | 'answers'>, countries: number[]): AnswerKind[] {
+  return mode.answers.filter((answer) => askableOf(atlas, { mode: mode.id, answer }, countries).length > 0);
+}
+
 export interface SessionOptions {
   /** Preguntar solo estos países (p. ej. para repasar los fallos de la partida anterior). */
   only?: number[];
@@ -218,14 +254,8 @@ export function createSession(
   now: number,
   { only, rng = Math.random }: SessionOptions = {},
 ): Session {
-  // En el reto de población solo entran los países con dato de densidad.
-  const pool =
-    config.mode === 'population'
-      ? scope.countries.filter((i) => levelOf(atlas.countries[i]) !== null)
-      : config.mode === 'inhabitants'
-        ? mostPopulated(atlas, scope.countries)
-        : scope.countries;
-  const askable = config.mode === 'inhabitants' ? pool.filter((i) => clearlySmaller(atlas, pool, i).length >= 3) : pool;
+  const pool = poolOf(atlas, config, scope.countries);
+  const askable = askableOf(atlas, config, scope.countries);
   const source = only ? only.filter((i) => askable.includes(i)) : askable;
   const n = only || config.length === 'all' ? source.length : Math.min(config.length, source.length);
   const chosen = weightedSample(source, n, (i) => selectionWeight(progress, atlas.countries[i].id, config.mode, now), rng);

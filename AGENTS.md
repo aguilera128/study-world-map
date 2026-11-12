@@ -83,6 +83,11 @@ docs/                  planes y propuestas con fecha
   como mar. Por eso un vecino tiene que entrar entero o no entrar.
 - Dos unidades de un país no pueden llamarse igual en ningún idioma (la ciudad y el condado de
   Zagreb): lo comprueba una prueba, y se arregla en `correcciones`.
+- En el reto de capitales, eligiendo o escribiendo no se pregunta la unidad cuyo nombre ya trae su
+  capital (Sevilla, «Provincia de Sofía»): la respuesta iría en la pregunta. Buscándola en el mapa
+  sí. La forma de responder que se queda sin preguntas en una zona no se ofrece (`askableOf` y
+  `answersOf` en `session.ts`); en Bulgaria, Bielorrusia, Chipre, Lituania y Eslovaquia solo queda
+  el mapa. El mapa del mundo no cambia.
 - Dos unidades pueden tener la misma capital (Praga lo es de la ciudad y de Bohemia Central): el
   reto de capitales no la ofrece dos veces y acepta cualquiera de las dos en el mapa (`session.ts`).
 - En el mapa de un país pequeño la cámara se acerca más que en el del mundo (`minHeight` de la

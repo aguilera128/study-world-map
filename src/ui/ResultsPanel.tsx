@@ -121,7 +121,9 @@ export function ResultsPanel() {
           <ul className="thin-scroll -mx-1 max-h-56 overflow-y-auto px-1">
             {toReview.map((index) => {
               const country = atlas.countries[index];
-              const extra = answerFor(country, session.config, atlas);
+              // Si la respuesta es el propio nombre (la provincia que se llama como su capital), no se repite.
+              const answer = answerFor(country, session.config, atlas);
+              const extra = answer === country.name ? null : answer;
               return (
                 <li key={index}>
                   <button
@@ -131,7 +133,8 @@ export function ResultsPanel() {
                     title={t('Ver en el mapa')}
                   >
                     <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${TONE[session.marks[index] ?? 'failed']}`} />
-                    <Flag a2={country.a2} height={18} />
+                    {/* (las unidades de un país no tienen bandera: sin esto salía un hueco gris) */}
+                    {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={18} />}
                     <span className="min-w-0 flex-1 truncate font-semibold">{country.name}</span>
                     {extra && <span className="shrink-0 text-sm text-ink-soft">{extra}</span>}
                   </button>

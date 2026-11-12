@@ -7,7 +7,7 @@ import { COUNTRY_IDS, COUNTRY_MAPS } from './countryMaps';
 import { dailyConfig } from './daily';
 import { MAPS } from './maps';
 import { mastery, record, sanitizeProgress, selectionWeight, summarize, type Progress } from './progress';
-import { advance, attemptsLeft, createSession, currentQuestion, gradeLabel, missed, score, submit, type Session } from './session';
+import { advance, answersOf, askableOf, attemptsLeft, createSession, currentQuestion, gradeLabel, missed, namesItsCapital, score, submit, type Session } from './session';
 import { editDistance, hint, matchesAnswer, normalize } from './text';
 import { LANGS } from '../i18n';
 
@@ -475,6 +475,37 @@ describe('mapa de España', () => {
   const at = (id: string) => spain.indexOf(id);
   const play = (config: GameConfig, seed = 7) => createSession(spain, config, resolveScope(spain, config.scope, [SAMPLE_LIST]), {}, NOW, { rng: seeded(seed) });
 
+  it('en capitales, eligiendo o escribiendo no se pregunta la provincia que se llama como su capital', () => {
+    expect(namesItsCapital({ name: 'Sevilla', capital: 'Sevilla' })).toBe(true);
+    expect(namesItsCapital({ name: 'La Coruña', capital: 'La Coruña' })).toBe(true);
+    expect(namesItsCapital({ name: 'Provincia de Sofía', capital: 'Sofía' })).toBe(true);
+    // El nombre no trae la respuesta entera: se sigue preguntando.
+    expect(namesItsCapital({ name: 'Las Palmas', capital: 'Las Palmas de Gran Canaria' })).toBe(false);
+    expect(namesItsCapital({ name: 'Brasil', capital: 'Brasilia' })).toBe(false);
+    expect(namesItsCapital({ name: 'Asturias', capital: 'Oviedo' })).toBe(false);
+
+    const all = { map: 'es', mode: 'capital', scope: 'es', length: 'all' } as const;
+    const choice = play({ ...all, answer: 'choice' });
+    const asked = choice.queue.map((q) => spain.countries[q.country]);
+    expect(asked.length).toBeGreaterThan(5);
+    expect(asked.length).toBeLessThan(20);
+    expect(asked.some(namesItsCapital)).toBe(false);
+    expect(asked.map((c) => c.id)).toContain('ES-O');
+    expect(asked.map((c) => c.id)).not.toContain('ES-SE');
+    // Las opciones siguen saliendo de todas las provincias, y en el mapa se preguntan todas.
+    expect(choice.pool.length).toBe(52);
+    expect(play({ ...all, answer: 'type' }).total).toBe(choice.total);
+    expect(play({ ...all, answer: 'map' }).total).toBe(52);
+
+    // Una zona donde todas se llaman como su capital (Galicia) solo deja buscarla en el mapa.
+    const capital = modesOf('es').find((m) => m.id === 'capital')!;
+    expect(answersOf(spain, capital, resolveScope(spain, 'es-ga', []).countries)).toEqual(['map']);
+    expect(answersOf(spain, capital, resolveScope(spain, 'es', []).countries)).toEqual(capital.answers);
+    // El mapa del mundo no cambia: Singapur se sigue preguntando.
+    const world = atlas.quizzable;
+    expect(askableOf(atlas, { mode: 'capital', answer: 'choice' }, world).length).toBe(world.length);
+  });
+
   it('ofrece localizar, comunidades, nombrar y capitales, y no banderas, continentes ni climas', () => {
     expect(modesOf('es').map((m) => m.id)).toEqual(['locate', 'region', 'name', 'capital']);
     expect(modesOf('world').map((m) => m.id)).not.toContain('region');
@@ -660,7 +691,8 @@ describe('mapas de un país', () => {
     for (const mode of ['locate', 'name', 'capital'] as const) {
       const config: GameConfig = { map: 'de', mode, answer: modesOf('de').find((m) => m.id === mode)!.answers[0], scope: 'de', length: 'all' };
       const session = createSession(germany, config, resolveScope(germany, 'de', []), {}, NOW, { rng: seeded(3) });
-      expect(session.total, mode).toBe(16);
+      // Eligiendo la capital no se preguntan Berlín, Hamburgo y Bremen, que se llaman como ella.
+      expect(session.total, mode).toBe(mode === 'capital' ? 13 : 16);
     }
   });
 
