@@ -728,6 +728,32 @@ const en: Record<string, string> = {
 
   // ── Mapas de un país: Irlanda ──
   'Irlanda': 'Ireland',
+
+  // ── Romania: «county» ──
+  '{n} distritos|ro': '{n} counties',
+  'distrito a distrito.|ro': 'county by county.',
+  'Distritos|ro': 'Counties',
+  'Distritos que entran|ro': 'Counties included',
+  'distrito|ro': 'county',
+  'distritos|ro': 'counties',
+  'Dominas {n} de {total} distritos|ro': 'You have mastered {n} of {total} counties',
+  'Buscar distrito o capital…|ro': 'Search county or capital…',
+  'Buscar distrito o capital|ro': 'Search county or capital',
+  'No hay ningún distrito con ese nombre.|ro': 'There is no county with that name.',
+  '¿Qué distrito es el señalado?|ro': 'Which county is highlighted?',
+  '¿De qué distrito es la capital?|ro': 'Which county is this the capital of?',
+  'Toca el distrito en el mapa|ro': 'Tap the county on the map',
+  'Escribe el distrito…|ro': 'Type the county…',
+  'Buscando el distrito|ro': 'Finding the county',
+  'Te damos el nombre de un distrito y lo buscas en el mapa.|ro': 'We give you the name of a county and you find it on the map.',
+  'Señalamos un distrito en el mapa y dices cuál es.|ro': 'We highlight a county on the map and you say which one it is.',
+  'Une cada distrito con su capital.|ro': 'Match each county with its capital.',
+
+  // ── Mapas de un país: Rumanía, Lituania, Croacia y Albania ──
+  'Rumanía': 'Romania',
+  'Lituania': 'Lithuania',
+  'Croacia': 'Croatia',
+  'Albania': 'Albania',
 };
 
 export default en;

@@ -31,8 +31,9 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
 - **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica
-  (provincias), Francia, Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados),
-  Reino Unido (naciones), Polonia (voivodatos) y Portugal (distritos). El país se elige en un
+  (provincias), Francia, Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania,
+  Croacia y Albania (condados), Reino Unido (naciones), Polonia (voivodatos) y Portugal y Rumanía
+  (distritos). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
   `docs/mapas-por-pais-inventario-2026-11-12.md`.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
@@ -173,7 +174,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay diecisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay veintiuno (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
@@ -181,7 +182,8 @@ Hay diecisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo co
    `comunidades` vacío; lo que se dibuja pero no se pregunta lleva `decorado: true`; un país mucho
    mayor que España baja el detalle con `detalle` e `islote`; si Natural Earth trae un código ISO
    antiguo, `renombrar` lo pasa al vigente; y si trae un nivel más fino que el que se estudia (los
-   departamentos de Francia), `fundir` dice por qué campo se reúnen sus piezas. Si el encuadre de
+   departamentos de Francia), `fundir` dice por qué campo se reúnen sus piezas; y si una pieza
+   suelta trae el código de otra, `corregir` le pone el suyo. Si el encuadre de
    todas sus unidades juntas no sirve (Portugal con las Azores), `marco` lo fija a mano. En `contexto` van solo los vecinos con frontera, y la
    `ventana` tiene que abarcarlos enteros: el resto del mundo lo pone de fondo la aplicación, del
    atlas mundial.
@@ -189,7 +191,8 @@ Hay diecisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo co
    [natural-earth-vector](https://github.com/nvkelso/natural-earth-vector) (40 MB, fuera del repositorio) y
    ejecutar `node scripts/build-subdivisions.mjs <ruta> <país>`: deja `<país>.topo.json`.
 3. `node scripts/fetch-subdivisions.mjs <país>`: deja `<país>.wikidata.json`, y lista lo que hay que
-   revisar a mano.
+   revisar a mano. Las coletillas propias del país («Kreis Alba») se quitan con `wikidata.tipo`, por
+   idioma, sin tocar a los demás países.
 4. Para sus páginas estáticas, su nombre con preposición en cada idioma en
    `scripts/data/mapas/plantillas.mjs` (el resto sale de las plantillas).
 5. En la aplicación, una entrada en `src/game/countryMaps.ts`: su nombre, el tipo de sus unidades,

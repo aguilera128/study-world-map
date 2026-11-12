@@ -729,6 +729,12 @@ const ca: Record<string, string> = {
 
   // ── Mapas de un país: Irlanda ──
   'Irlanda': 'Irlanda',
+
+  // ── Mapas de un país: Rumanía, Lituania, Croacia y Albania ──
+  'Rumanía': 'Romania',
+  'Lituania': 'Lituània',
+  'Croacia': 'Croàcia',
+  'Albania': 'Albània',
 };
 
 export default ca;

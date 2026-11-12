@@ -55,6 +55,8 @@ docs/                  planes y propuestas con fecha
 - Dos textos iguales en español que en algún idioma se dicen distinto (el «condado» de Suecia es
   «Provinz» en alemán y el de Irlanda, «Grafschaft») se separan con `tc('contexto', 'texto')`: el
   diccionario que necesita distinguirlos lleva además la clave «texto|contexto»; los demás, nada.
+  En los mapas de un país el contexto es un dato del país (`context` en `countryMaps.ts`), y vale
+  también para sus páginas estáticas.
 - Las páginas estáticas tienen sus textos aparte, un fichero por idioma con las mismas claves:
   `scripts/data/idiomas/<idioma>.mjs` (portada, países, juegos) y `scripts/data/temas/<idioma>.mjs`
   (geografía física, climas, población y «El planeta»). Los nombres de climas y capas de esas
@@ -79,6 +81,8 @@ docs/                  planes y propuestas con fecha
   detalle para que las fronteras casen. El resto del mundo se lo añade la aplicación al cargarlo,
   del atlas mundial (`withBackdrop` en `src/atlas/atlas.ts`): sin ello, lo que no es vecino salía
   como mar. Por eso un vecino tiene que entrar entero o no entrar.
+- Dos unidades de un país no pueden llamarse igual en ningún idioma (la ciudad y el condado de
+  Zagreb): lo comprueba una prueba, y se arregla en `correcciones`.
 - Dos unidades pueden tener la misma capital (Praga lo es de la ciudad y de Bohemia Central): el
   reto de capitales no la ofrece dos veces y acepta cualquiera de las dos en el mapa (`session.ts`).
 - En el mapa de un país pequeño la cámara se acerca más que en el del mundo (`minHeight` de la

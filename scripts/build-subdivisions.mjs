@@ -66,7 +66,9 @@ for (const f of capa.features) {
     // Si la capa trae un nivel más fino que el que se estudia (los departamentos de Francia), el
     // código es el del campo que dice a qué unidad pertenece cada pieza (`fundir`); se juntan abajo.
     // Natural Earth arrastra algún código ISO antiguo o equivocado: `renombrar` lo pasa al vigente.
-    const codigo = mapa.fundir ? String(f.properties[mapa.fundir] ?? '').trim() : f.properties.iso_3166_2;
+    // Y si una pieza suelta trae el código de otra (Požega-Eslavonia, el de su vecina), `corregir`
+    // le pone el suyo por su identificador en la capa (adm1_code).
+    const codigo = mapa.corregir?.[f.properties.adm1_code] ?? (mapa.fundir ? String(f.properties[mapa.fundir] ?? '').trim() : f.properties.iso_3166_2);
     propias.push({ type: 'Feature', id: mapa.renombrar?.[codigo] ?? codigo, properties: {}, geometry: f.geometry });
   } else if (mapa.contexto.includes(a3)) {
     // De los vecinos solo interesa lo que cae cerca (Francia sin sus territorios de ultramar).

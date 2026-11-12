@@ -728,6 +728,12 @@ const pt: Record<string, string> = {
 
   // ── Mapas de un país: Irlanda ──
   'Irlanda': 'Irlanda',
+
+  // ── Mapas de un país: Rumanía, Lituania, Croacia y Albania ──
+  'Rumanía': 'Romênia',
+  'Lituania': 'Lituânia',
+  'Croacia': 'Croácia',
+  'Albania': 'Albânia',
 };
 
 export default pt;

@@ -49,7 +49,9 @@ const TIPO = {
   eu: [/(ko|go) probintzia$/i, / probintzia$/i, / kantonamendua$/i, / eskualdea$/i, / voivoderria$/i],
   zh: [/省$/],
 };
-const sinTipo = (lang, name) => TIPO[lang].reduce((s, re) => s.replace(re, ''), name).trim();
+// Cada mapa puede añadir las suyas (`wikidata.tipo`, por idioma): así «Kreis Alba» pierde el
+// «Kreis» en Rumanía sin que la regla toque a ningún otro país.
+const sinTipo = (lang, name) => [...TIPO[lang], ...(mapa.wikidata?.tipo?.[lang] ?? [])].reduce((s, re) => s.replace(re, ''), name).trim();
 /** «Cáceres (Espanha)» → «Cáceres»; «îles Canaries» → «Îles Canaries». */
 const limpio = (name) => {
   const s = name.replace(/\s*\([^)]*\)$/, '').trim();

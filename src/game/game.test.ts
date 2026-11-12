@@ -699,6 +699,27 @@ describe('mapas de un país', () => {
     expect(portugal.byIdOrThrow('PT-20').capital).toBe('Ponta Delgada');
   });
 
+  it('dentro de un país, dos unidades no se llaman igual en ningún idioma', () => {
+    for (const id of COUNTRY_IDS) {
+      const raw = JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas;
+      const asked = raw.countries.filter((c) => c.kind === 'country');
+      const repeated = (names: string[]) => names.filter((name, i) => names.indexOf(name) !== i);
+      expect(repeated(asked.map((c) => c.name)), `${id} es`).toEqual([]);
+      for (const lang of Object.keys(LANGS).filter((l) => l !== 'es')) {
+        const names = JSON.parse(readFileSync(`public/data/${id}/names.${lang}.json`, 'utf8'));
+        expect(repeated(asked.map((c) => names.countries[c.id].n)), `${id} ${lang}`).toEqual([]);
+      }
+    }
+  });
+
+  it('Croacia: Požega-Eslavonia tiene su propio código, que Natural Earth confunde con el de su vecina', () => {
+    const croatia = new Atlas(JSON.parse(readFileSync('public/data/hr/atlas.json', 'utf8')) as RawAtlas, 'hr');
+    expect(croatia.quizzable.length).toBe(21);
+    // Požega cae en su condado y Slavonski Brod en el suyo.
+    expect(croatia.countries[croatia.locate(17.68, 45.33)].id).toBe('HR-11');
+    expect(croatia.countries[croatia.locate(18.01, 45.17)].id).toBe('HR-12');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

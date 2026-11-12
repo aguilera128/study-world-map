@@ -728,6 +728,12 @@ const gl: Record<string, string> = {
 
   // ── Mapas de un país: Irlanda ──
   'Irlanda': 'Irlanda',
+
+  // ── Mapas de un país: Rumanía, Lituania, Croacia y Albania ──
+  'Rumanía': 'Romanía',
+  'Lituania': 'Lituania',
+  'Croacia': 'Croacia',
+  'Albania': 'Albania',
 };
 
 export default gl;

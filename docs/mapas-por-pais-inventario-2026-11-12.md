@@ -4,10 +4,11 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (17):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (21):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados), Reino Unido
-(naciones), Polonia (voivodatos) y Portugal (distritos, con las Azores y Madeira).
+Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania, Croacia y Albania
+(condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las Azores y
+Madeira) y Rumanía (distritos).
 
 ## Cómo leer la tabla
 
@@ -42,14 +43,14 @@ Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados), Re
 | Suecia | 21 condados | condados | **hecho** |
 | Portugal | 18 distritos + 2 regiones autónomas | distritos | **hecho** (nombres a mano: Wikidata los tiene a medias) |
 | Grecia | 13 regiones + Monte Athos (el Ática, con un código que no es el suyo) | regiones | **hecho** (Athos como decorado) |
-| Rumanía | 41 condados + Bucarest | condados | directo |
+| Rumanía | 41 distritos + Bucarest | distritos | **hecho** |
 | Bulgaria | 28 provincias | provincias | directo, con cuidado: dos se llaman Sofía y la transliteración al español no es única |
-| Lituania | 10 condados | condados | directo |
-| Estonia | 14 condados + 1 «municipio» (15 códigos) | condados | directo, revisar la unidad suelta |
+| Lituania | 10 condados | condados | **hecho** |
+| Estonia | 15 condados | condados | desfasado: creo recordar que la reforma de 2017 movió municipios entre condados y que sus códigos ISO cambiaron en 2020; comprobarlo, y si es así hace falta otra fuente |
 | Turquía | 81 provincias | provincias | directo (son muchas: pide zonas) |
-| Albania | 12 condados | condados | directo |
+| Albania | 12 condados | condados | **hecho** |
 | Bielorrusia | 6 regiones + Minsk | regiones | directo |
-| Croacia | 20 condados + Zagreb (20 códigos distintos) | condados | directo, revisar el código repetido |
+| Croacia | 20 condados + Zagreb (20 códigos distintos) | condados | **hecho** (NE daba a Požega-Eslavonia el código de su vecina: corregido) |
 | Islandia | 8 regiones + 1 «ciudad independiente» | regiones | directo, revisar la unidad suelta |
 | Chipre | 5 distritos | distritos | revisar: falta un distrito (el norte va aparte en NE) |
 | Francia | 101 departamentos; 18 regiones en `region` | las 13 regiones metropolitanas | **hecho** (fundiendo; sin ultramar) |
@@ -81,9 +82,10 @@ Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia e Irlanda (condados), Re
 2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia», «estado», «estado
    federado», «cantón», «región», «condado», «nación», «voivodato» y «distrito». Cada tipo son unas
    veinte frases en nueve idiomas. Un mismo «condado» no se llama igual en cada país en todos los
-   idiomas (el de Suecia es «Provinz» en alemán; el de Irlanda, «Grafschaft»): para eso está `tc()`,
-   que da a las frases de un tipo un contexto (`condadoSueco`), y solo el idioma que difiere añade
-   sus claves «texto|contexto». Rumanía, Lituania o Hungría pedirán lo mismo.
+   idiomas (el de Suecia es «Provinz» en alemán; el de Irlanda, «Grafschaft»; el de Croacia,
+   «Gespanschaft»): el país lleva un `context` y solo el idioma que difiere añade sus claves
+   «texto|contexto». Hoy lo usan Suecia, Rumanía, Lituania, Croacia y Albania, en alemán, francés,
+   italiano, inglés y chino.
 3. **Páginas estáticas**: todos las tienen. Las de España están escritas a mano; las demás salen de
    plantillas por idioma (`scripts/data/mapas/plantillas.mjs`), dos por país y una tercera si sus
    unidades se agrupan. Un país nuevo solo necesita su nombre con preposición en cada idioma.

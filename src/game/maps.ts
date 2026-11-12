@@ -70,6 +70,11 @@ export interface MapDef {
 // artículos cambian en cada idioma y no se pueden componer («la provincia», «el estado», «der
 // Staat»). Al añadir un tipo hay que mirar que las dos frases compartidas con el mapa del mundo
 // («Estúdialos…», «Practicar estos…») concuerden con su género en todos los diccionarios.
+//
+// Las frases reciben la función que traduce: la de siempre o, si el país lleva `context`, la que
+// busca antes su traducción propia («condado|se»). Así el condado de Suecia puede ser «Provinz» en
+// alemán y el de Irlanda «Grafschaft» sin escribir las frases dos veces. El parámetro se llama «t»
+// para que la prueba de traducciones siga encontrando los textos.
 
 interface UnitText extends Omit<MapText, 'count' | 'headline' | 'askRegion' | 'solution' | 'modes'> {
   /** «{n} provincias», para el rótulo «España · 52 provincias». */
@@ -82,7 +87,7 @@ interface UnitText extends Omit<MapText, 'count' | 'headline' | 'askRegion' | 's
   capital: string;
 }
 
-const UNITS: Record<UnitKind, UnitText> = {
+const units = (t: (text: string) => string): Record<UnitKind, UnitText> => ({
   provincia: {
     count: t('{n} provincias'),
     each: t('provincia a provincia.'),
@@ -213,29 +218,6 @@ const UNITS: Record<UnitKind, UnitText> = {
     name: t('Señalamos un condado en el mapa y dices cuál es.'),
     capital: t('Une cada condado con su capital.'),
   },
-  // Los «län» de Suecia: las mismas frases que «condado», con contexto, porque en alemán no se
-  // llaman «Grafschaft» sino «Provinz» (ver `tc` en src/i18n).
-  condadoSueco: {
-    count: tc('se', '{n} condados'),
-    each: tc('se', 'condado a condado.'),
-    units: tc('se', 'Condados'),
-    scopeAria: tc('se', 'Condados que entran'),
-    unit: [tc('se', 'condado'), tc('se', 'condados')],
-    mastered: tc('se', 'Dominas {n} de {total} condados'),
-    study: tc('se', 'Estudia los condados antes de jugar'),
-    practice: tc('se', 'Practicar estos condados →'),
-    search: tc('se', 'Buscar condado o capital…'),
-    searchAria: tc('se', 'Buscar condado o capital'),
-    notFound: tc('se', 'No hay ningún condado con ese nombre.'),
-    askName: tc('se', '¿Qué condado es el señalado?'),
-    askCapitalOwner: tc('se', '¿De qué condado es la capital?'),
-    tap: tc('se', 'Toca el condado en el mapa'),
-    type: tc('se', 'Escribe el condado…'),
-    findOwner: tc('se', 'Buscando el condado'),
-    locate: tc('se', 'Te damos el nombre de un condado y lo buscas en el mapa.'),
-    name: tc('se', 'Señalamos un condado en el mapa y dices cuál es.'),
-    capital: tc('se', 'Une cada condado con su capital.'),
-  },
   nacion: {
     count: t('{n} naciones'),
     each: t('nación a nación.'),
@@ -300,7 +282,7 @@ const UNITS: Record<UnitKind, UnitText> = {
     name: t('Señalamos un distrito en el mapa y dices cuál es.'),
     capital: t('Une cada distrito con su capital.'),
   },
-};
+});
 
 /** El reto de «¿a qué … pertenece?»: su título (si no es «Región»), su pregunta y su resumen. */
 const GROUPS: Record<GroupKind, { title?: string; ask: string; summary: string }> = {
@@ -310,7 +292,8 @@ const GROUPS: Record<GroupKind, { title?: string; ask: string; summary: string }
 
 function countryMap(id: CountryMapId): MapDef {
   const data: CountryMap = COUNTRY_MAPS[id];
-  const { count, each, locate, name, capital, ...unit } = UNITS[data.unit];
+  const { context } = data;
+  const { count, each, locate, name, capital, ...unit } = units(context ? (text) => tc(context, text) : t)[data.unit];
   const group = data.group ? GROUPS[data.group] : null;
   const title = t(data.title);
   return {

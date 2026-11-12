@@ -20,7 +20,6 @@ const TIPOS = {
   canton: ['cantón', 'cantones', 'Cantones'],
   region: ['región', 'regiones', 'Regiones'],
   condado: ['condado', 'condados', 'Condados'],
-  condadoSueco: ['condado', 'condados', 'Condados', 'se'],
   nacion: ['nación', 'naciones', 'Naciones'],
   voivodato: ['voivodato', 'voivodatos', 'Voivodatos'],
   distrito: ['distrito', 'distritos', 'Distritos'],
@@ -29,26 +28,26 @@ const ORDEN = Object.keys(TIPOS);
 
 /** Artículo determinado plural de cada tipo, en el orden de TIPOS, donde depende del género. */
 const ARTICULOS = {
-  es: ['las', 'los', 'los', 'los', 'las', 'los', 'los', 'las', 'los', 'los'],
-  it: ['le', 'gli', 'gli', 'i', 'le', 'le', 'le', 'le', 'i', 'i'],
-  pt: ['as', 'os', 'os', 'os', 'as', 'os', 'os', 'as', 'as', 'os'],
-  ca: ['les', 'els', 'els', 'els', 'les', 'els', 'els', 'les', 'els', 'els'],
-  gl: ['as', 'os', 'os', 'os', 'as', 'os', 'os', 'as', 'os', 'os'],
+  es: ['las', 'los', 'los', 'los', 'las', 'los', 'las', 'los', 'los'],
+  it: ['le', 'gli', 'gli', 'i', 'le', 'le', 'le', 'i', 'i'],
+  pt: ['as', 'os', 'os', 'os', 'as', 'os', 'as', 'as', 'os'],
+  ca: ['les', 'els', 'els', 'els', 'les', 'els', 'les', 'els', 'els'],
+  gl: ['as', 'os', 'os', 'os', 'as', 'os', 'as', 'os', 'os'],
 };
 const FEMENINO = new Set(['las', 'le', 'as', 'les']);
 
 /** El país con su preposición, por mapa. En euskera es el genitivo, que va delante; en chino, el nombre. */
 const PAISES = {
-  es: { es: 'de España', us: 'de Estados Unidos', de: 'de Alemania', at: 'de Austria', ch: 'de Suiza', nl: 'de los Países Bajos', be: 'de Bélgica', fr: 'de Francia', it: 'de Italia', cz: 'de Chequia', sk: 'de Eslovaquia', gr: 'de Grecia', se: 'de Suecia', gb: 'del Reino Unido', pl: 'de Polonia', pt: 'de Portugal', ie: 'de Irlanda' },
-  en: { es: 'of Spain', us: 'of the United States', de: 'of Germany', at: 'of Austria', ch: 'of Switzerland', nl: 'of the Netherlands', be: 'of Belgium', fr: 'of France', it: 'of Italy', cz: 'of Czechia', sk: 'of Slovakia', gr: 'of Greece', se: 'of Sweden', gb: 'of the United Kingdom', pl: 'of Poland', pt: 'of Portugal', ie: 'of Ireland' },
-  fr: { es: 'd’Espagne', us: 'des États-Unis', de: 'd’Allemagne', at: 'd’Autriche', ch: 'de Suisse', nl: 'des Pays-Bas', be: 'de Belgique', fr: 'de France', it: 'd’Italie', cz: 'de Tchéquie', sk: 'de Slovaquie', gr: 'de Grèce', se: 'de Suède', gb: 'du Royaume-Uni', pl: 'de Pologne', pt: 'du Portugal', ie: 'd’Irlande' },
-  de: { es: 'Spaniens', us: 'der USA', de: 'Deutschlands', at: 'Österreichs', ch: 'der Schweiz', nl: 'der Niederlande', be: 'Belgiens', fr: 'Frankreichs', it: 'Italiens', cz: 'Tschechiens', sk: 'der Slowakei', gr: 'Griechenlands', se: 'Schwedens', gb: 'des Vereinigten Königreichs', pl: 'Polens', pt: 'Portugals', ie: 'Irlands' },
-  it: { es: 'della Spagna', us: 'degli Stati Uniti', de: 'della Germania', at: 'dell’Austria', ch: 'della Svizzera', nl: 'dei Paesi Bassi', be: 'del Belgio', fr: 'della Francia', it: 'dell’Italia', cz: 'della Cechia', sk: 'della Slovacchia', gr: 'della Grecia', se: 'della Svezia', gb: 'del Regno Unito', pl: 'della Polonia', pt: 'del Portogallo', ie: 'dell’Irlanda' },
-  pt: { es: 'da Espanha', us: 'dos Estados Unidos', de: 'da Alemanha', at: 'da Áustria', ch: 'da Suíça', nl: 'dos Países Baixos', be: 'da Bélgica', fr: 'da França', it: 'da Itália', cz: 'da Tchéquia', sk: 'da Eslováquia', gr: 'da Grécia', se: 'da Suécia', gb: 'do Reino Unido', pl: 'da Polônia', pt: 'de Portugal', ie: 'da Irlanda' },
-  ca: { es: 'd’Espanya', us: 'dels Estats Units', de: 'd’Alemanya', at: 'd’Àustria', ch: 'de Suïssa', nl: 'dels Països Baixos', be: 'de Bèlgica', fr: 'de França', it: 'd’Itàlia', cz: 'de Txèquia', sk: 'd’Eslovàquia', gr: 'de Grècia', se: 'de Suècia', gb: 'del Regne Unit', pl: 'de Polònia', pt: 'de Portugal', ie: 'd’Irlanda' },
-  gl: { es: 'de España', us: 'dos Estados Unidos', de: 'de Alemaña', at: 'de Austria', ch: 'de Suíza', nl: 'dos Países Baixos', be: 'de Bélxica', fr: 'de Francia', it: 'de Italia', cz: 'de Chequia', sk: 'de Eslovaquia', gr: 'de Grecia', se: 'de Suecia', gb: 'do Reino Unido', pl: 'de Polonia', pt: 'de Portugal', ie: 'de Irlanda' },
-  eu: { es: 'Espainiako', us: 'Estatu Batuetako', de: 'Alemaniako', at: 'Austriako', ch: 'Suitzako', nl: 'Herbehereetako', be: 'Belgikako', fr: 'Frantziako', it: 'Italiako', cz: 'Txekiako', sk: 'Eslovakiako', gr: 'Greziako', se: 'Suediako', gb: 'Erresuma Batuko', pl: 'Poloniako', pt: 'Portugalgo', ie: 'Irlandako' },
-  zh: { es: '西班牙', us: '美国', de: '德国', at: '奥地利', ch: '瑞士', nl: '荷兰', be: '比利时', fr: '法国', it: '意大利', cz: '捷克', sk: '斯洛伐克', gr: '希腊', se: '瑞典', gb: '英国', pl: '波兰', pt: '葡萄牙', ie: '爱尔兰' },
+  es: { es: 'de España', us: 'de Estados Unidos', de: 'de Alemania', at: 'de Austria', ch: 'de Suiza', nl: 'de los Países Bajos', be: 'de Bélgica', fr: 'de Francia', it: 'de Italia', cz: 'de Chequia', sk: 'de Eslovaquia', gr: 'de Grecia', se: 'de Suecia', gb: 'del Reino Unido', pl: 'de Polonia', pt: 'de Portugal', ie: 'de Irlanda', ro: 'de Rumanía', lt: 'de Lituania', hr: 'de Croacia', al: 'de Albania' },
+  en: { es: 'of Spain', us: 'of the United States', de: 'of Germany', at: 'of Austria', ch: 'of Switzerland', nl: 'of the Netherlands', be: 'of Belgium', fr: 'of France', it: 'of Italy', cz: 'of Czechia', sk: 'of Slovakia', gr: 'of Greece', se: 'of Sweden', gb: 'of the United Kingdom', pl: 'of Poland', pt: 'of Portugal', ie: 'of Ireland', ro: 'of Romania', lt: 'of Lithuania', hr: 'of Croatia', al: 'of Albania' },
+  fr: { es: 'd’Espagne', us: 'des États-Unis', de: 'd’Allemagne', at: 'd’Autriche', ch: 'de Suisse', nl: 'des Pays-Bas', be: 'de Belgique', fr: 'de France', it: 'd’Italie', cz: 'de Tchéquie', sk: 'de Slovaquie', gr: 'de Grèce', se: 'de Suède', gb: 'du Royaume-Uni', pl: 'de Pologne', pt: 'du Portugal', ie: 'd’Irlande', ro: 'de Roumanie', lt: 'de Lituanie', hr: 'de Croatie', al: 'd’Albanie' },
+  de: { es: 'Spaniens', us: 'der USA', de: 'Deutschlands', at: 'Österreichs', ch: 'der Schweiz', nl: 'der Niederlande', be: 'Belgiens', fr: 'Frankreichs', it: 'Italiens', cz: 'Tschechiens', sk: 'der Slowakei', gr: 'Griechenlands', se: 'Schwedens', gb: 'des Vereinigten Königreichs', pl: 'Polens', pt: 'Portugals', ie: 'Irlands', ro: 'Rumäniens', lt: 'Litauens', hr: 'Kroatiens', al: 'Albaniens' },
+  it: { es: 'della Spagna', us: 'degli Stati Uniti', de: 'della Germania', at: 'dell’Austria', ch: 'della Svizzera', nl: 'dei Paesi Bassi', be: 'del Belgio', fr: 'della Francia', it: 'dell’Italia', cz: 'della Cechia', sk: 'della Slovacchia', gr: 'della Grecia', se: 'della Svezia', gb: 'del Regno Unito', pl: 'della Polonia', pt: 'del Portogallo', ie: 'dell’Irlanda', ro: 'della Romania', lt: 'della Lituania', hr: 'della Croazia', al: 'dell’Albania' },
+  pt: { es: 'da Espanha', us: 'dos Estados Unidos', de: 'da Alemanha', at: 'da Áustria', ch: 'da Suíça', nl: 'dos Países Baixos', be: 'da Bélgica', fr: 'da França', it: 'da Itália', cz: 'da Tchéquia', sk: 'da Eslováquia', gr: 'da Grécia', se: 'da Suécia', gb: 'do Reino Unido', pl: 'da Polônia', pt: 'de Portugal', ie: 'da Irlanda', ro: 'da Romênia', lt: 'da Lituânia', hr: 'da Croácia', al: 'da Albânia' },
+  ca: { es: 'd’Espanya', us: 'dels Estats Units', de: 'd’Alemanya', at: 'd’Àustria', ch: 'de Suïssa', nl: 'dels Països Baixos', be: 'de Bèlgica', fr: 'de França', it: 'd’Itàlia', cz: 'de Txèquia', sk: 'd’Eslovàquia', gr: 'de Grècia', se: 'de Suècia', gb: 'del Regne Unit', pl: 'de Polònia', pt: 'de Portugal', ie: 'd’Irlanda', ro: 'de Romania', lt: 'de Lituània', hr: 'de Croàcia', al: 'd’Albània' },
+  gl: { es: 'de España', us: 'dos Estados Unidos', de: 'de Alemaña', at: 'de Austria', ch: 'de Suíza', nl: 'dos Países Baixos', be: 'de Bélxica', fr: 'de Francia', it: 'de Italia', cz: 'de Chequia', sk: 'de Eslovaquia', gr: 'de Grecia', se: 'de Suecia', gb: 'do Reino Unido', pl: 'de Polonia', pt: 'de Portugal', ie: 'de Irlanda', ro: 'de Romanía', lt: 'de Lituania', hr: 'de Croacia', al: 'de Albania' },
+  eu: { es: 'Espainiako', us: 'Estatu Batuetako', de: 'Alemaniako', at: 'Austriako', ch: 'Suitzako', nl: 'Herbehereetako', be: 'Belgikako', fr: 'Frantziako', it: 'Italiako', cz: 'Txekiako', sk: 'Eslovakiako', gr: 'Greziako', se: 'Suediako', gb: 'Erresuma Batuko', pl: 'Poloniako', pt: 'Portugalgo', ie: 'Irlandako', ro: 'Errumaniako', lt: 'Lituaniako', hr: 'Kroaziako', al: 'Albaniako' },
+  zh: { es: '西班牙', us: '美国', de: '德国', at: '奥地利', ch: '瑞士', nl: '荷兰', be: '比利时', fr: '法国', it: '意大利', cz: '捷克', sk: '斯洛伐克', gr: '希腊', se: '瑞典', gb: '英国', pl: '波兰', pt: '葡萄牙', ie: '爱尔兰', ro: '罗马尼亚', lt: '立陶宛', hr: '克罗地亚', al: '阿尔巴尼亚' },
 };
 
 /** «Capital» como cabecera de columna. */
@@ -127,15 +126,16 @@ const slug = (texto) =>
  * (ver ./es.mjs): `columnas` y, por página, `slug`, `h1`, `description`, `cta` y `h2`.
  * @param {string} id        el del mapa
  * @param {string} tipo      tipo de sus unidades (src/game/countryMaps.ts)
+ * @param {string | undefined} contexto  el del país, si sus unidades tienen traducción propia
  * @param {boolean} agrupado si lleva la página de la agrupación
  * @param {number} n         cuántas unidades se preguntan
  * @param {string} idioma
  * @param {Record<string, string>} diccionarios  los de la aplicación, por idioma (sin el español)
  */
-export function textosDe(id, tipo, agrupado, n, idioma, diccionarios) {
+export function textosDe(id, tipo, contexto, agrupado, n, idioma, diccionarios) {
   const frases = (lang) => {
     const dic = diccionarios[lang];
-    const [singular, plural, Plural, contexto] = TIPOS[tipo];
+    const [singular, plural, Plural] = TIPOS[tipo];
     const tr = (texto, ctx = contexto) => {
       if (lang === 'es') return texto;
       const propio = (ctx && dic[`${texto}|${ctx}`]) ?? dic[texto];

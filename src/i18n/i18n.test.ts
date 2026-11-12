@@ -4,28 +4,26 @@ import { describe, expect, it } from 'vitest';
 import { COUNTRY_MAPS, type CountryMap } from '../game/countryMaps';
 import { LANGS, pathLang, preferredLang, t, tc, VIEW_IN } from './index';
 
-/** Claves «texto|contexto» de los textos que el código pasa a `tc()`: un diccionario las puede llevar o no. */
-const contextual = new Set<string>();
+/** Contextos que usan los países (src/game/countryMaps.ts): un diccionario puede llevar «texto|contexto» o no. */
+const CONTEXTS = new Set(Object.values<CountryMap>(COUNTRY_MAPS).flatMap((map) => map.context ?? []));
+/** ¿Es la traducción propia de un contexto para un texto que existe? */
+const isContextual = (key: string, texts: Set<string>) => {
+  const cut = key.lastIndexOf('|');
+  return cut > 0 && texts.has(key.slice(0, cut)) && CONTEXTS.has(key.slice(cut + 1));
+};
 
-/** Todos los textos que el código pasa a `t()`, `tx()` o `tc()` (los literales entre comillas simples). */
+/** Todos los textos que el código pasa a `t()` o `tx()` (los literales entre comillas simples). */
 function sourceTexts(): Set<string> {
   const texts = new Set<string>();
   const literal = String.raw`'((?:[^'\\]|\\.)*)'`;
-  const withContext = new RegExp(String.raw`\btc\(\s*${literal}\s*,\s*${literal}`, 'g');
   const call = new RegExp(String.raw`\bt[x]?\(\s*(?:[^'()]*\?\s*)?${literal}(?:\s*:\s*${literal})?`, 'g');
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const path = join(dir, entry.name);
       if (entry.isDirectory()) walk(path);
       else if (/\.tsx?$/.test(entry.name) && !entry.name.includes('.test.') && !path.includes('i18n')) {
-        const source = readFileSync(path, 'utf8');
-        for (const match of source.matchAll(call)) {
+        for (const match of readFileSync(path, 'utf8').matchAll(call)) {
           for (const text of [match[1], match[2]]) if (text) texts.add(text.replace(/\\'/g, "'"));
-        }
-        for (const match of source.matchAll(withContext)) {
-          const text = match[2].replace(/\\'/g, "'");
-          texts.add(text);
-          contextual.add(`${text}|${match[1]}`);
         }
       }
     }
@@ -69,20 +67,21 @@ describe('idiomas', () => {
     expect(tc('se', '{n} condados', { n: 21 })).toBe('21 condados');
   });
 
+  const texts = sourceTexts();
+
   it('el alemán distingue el condado de Suecia («Provinz») del genérico («Grafschaft»)', async () => {
     const de: Record<string, string> = (await import('./de.ts')).default;
     expect(de['condado']).toBe('Grafschaft');
     expect(de['condado|se']).toBe('Provinz');
-    expect(contextual.has('condado|se')).toBe(true);
+    expect(isContextual('condado|se', texts)).toBe(true);
+    expect(isContextual('condado|xx', texts)).toBe(false);
   });
-
-  const texts = sourceTexts();
   for (const lang of Object.keys(LANGS).filter((l) => l !== 'es')) {
     it(`el diccionario «${lang}» traduce todos los textos y conserva sus variables`, async () => {
       const dict: Record<string, string> = (await import(`./${lang}.ts`)).default;
       const missing = [...texts].filter((text) => !(text in dict));
       expect(missing, `faltan en ${lang}.ts`).toEqual([]);
-      const unused = Object.keys(dict).filter((text) => !texts.has(text) && !contextual.has(text));
+      const unused = Object.keys(dict).filter((text) => !texts.has(text) && !isContextual(text, texts));
       expect(unused, `sobran en ${lang}.ts`).toEqual([]);
       const vars = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
       for (const [text, translation] of Object.entries(dict)) expect(vars(translation), text).toEqual(vars(text));

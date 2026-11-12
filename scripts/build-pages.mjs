@@ -36,11 +36,11 @@ const DICCIONARIOS = Object.fromEntries(
 const MAPAS_CON_PAGINAS = Object.values(MAPAS);
 for (const mapa of MAPAS_CON_PAGINAS) {
   if (mapa.textos) continue;
-  const { unit, group } = COUNTRY_MAPS[mapa.id];
+  const { unit, group, context } = COUNTRY_MAPS[mapa.id];
   const n = JSON.parse(readFileSync(`public/data/${mapa.id}/atlas.json`, 'utf8')).countries.filter((c) => c.kind === 'country').length;
   mapa.plantilla = true;
   mapa.paginas = [{ id: 'provincias', reto: 'localizar' }, { id: 'capitales', reto: 'capitales' }, ...(group ? [{ id: 'comunidades', reto: 'comunidades' }] : [])];
-  mapa.textos = Object.fromEntries(LANGS.map((lang) => [lang, textosDe(mapa.id, unit, !!group, n, lang, DICCIONARIOS)]));
+  mapa.textos = Object.fromEntries(LANGS.map((lang) => [lang, textosDe(mapa.id, unit, context, !!group, n, lang, DICCIONARIOS)]));
 }
 // Dos páginas no pueden compartir dirección.
 for (const lang of LANGS) {

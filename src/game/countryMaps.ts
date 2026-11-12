@@ -10,7 +10,7 @@ import type { ModeId } from './config';
 // la clave de su traducción, y se traducen al usarlos.
 
 /** Cómo se llaman las unidades de un país. De ello dependen las frases de la interfaz (./maps.ts). */
-export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton' | 'region' | 'condado' | 'condadoSueco' | 'nacion' | 'voivodato' | 'distrito';
+export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton' | 'region' | 'condado' | 'nacion' | 'voivodato' | 'distrito';
 /** En qué se agrupan: las comunidades autónomas de España o, en general, regiones. */
 export type GroupKind = 'comunidad' | 'region';
 
@@ -28,6 +28,11 @@ export interface CountryMap {
   /** Su código en el atlas del mundo (ISO alfa-3): para ofrecer a cada visitante el mapa de su país. */
   iso: string;
   unit: UnitKind;
+  /**
+   * Si sus unidades se llaman, en algún idioma, de otra forma que las del tipo (el condado de Suecia
+   * es «Provinz» en alemán): la clave con la que un diccionario les da su traducción («texto|se»).
+   */
+  context?: string;
   /** Si sus unidades se agrupan en algo que se estudia; sin ello no hay reto de «región». */
   group?: GroupKind;
   /** Encuadre del país entero, si no vale el de todas sus unidades juntas (el del atlas). */
@@ -99,11 +104,16 @@ export const COUNTRY_MAPS = {
   cz: { title: 'Chequia', iso: 'CZE', unit: 'region', zones: [] },
   sk: { title: 'Eslovaquia', iso: 'SVK', unit: 'region', zones: [] },
   gr: { title: 'Grecia', iso: 'GRC', unit: 'region', zones: [] },
-  // Los «län» de Suecia: en español se llaman condados o provincias, pero en los demás idiomas no se
-  // dicen igual que las de España ni, en alemán, que los condados de Irlanda: llevan su propio tipo.
-  se: { title: 'Suecia', iso: 'SWE', unit: 'condadoSueco', zones: [] },
+  // Los «län» de Suecia: condados en español, pero en alemán no se llaman como los de Irlanda.
+  se: { title: 'Suecia', iso: 'SWE', unit: 'condado', context: 'se', zones: [] },
   // Los veintiséis condados tradicionales de Irlanda.
   ie: { title: 'Irlanda', iso: 'IRL', unit: 'condado', zones: [] },
+  // Distritos de Rumanía y condados de Lituania, Croacia y Albania: cada uno con su contexto, porque
+  // en alemán, francés, italiano o chino no se llaman como el tipo («Kreis», «comitat», «prefettura»…).
+  ro: { title: 'Rumanía', iso: 'ROU', unit: 'distrito', context: 'ro', zones: [] },
+  lt: { title: 'Lituania', iso: 'LTU', unit: 'condado', context: 'lt', zones: [] },
+  hr: { title: 'Croacia', iso: 'HRV', unit: 'condado', context: 'hr', zones: [] },
+  al: { title: 'Albania', iso: 'ALB', unit: 'condado', context: 'al', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;
