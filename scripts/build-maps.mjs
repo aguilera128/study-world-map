@@ -254,7 +254,8 @@ for (const mapa of Object.values(MAPAS)) {
     source: mapa.fuente,
     // El resto del mundo lo pone de fondo la aplicación, del atlas mundial (ver `withBackdrop`).
     country: mapa.adm0,
-    frame: marcoDe(provincias),
+    // El de todas sus unidades juntas, salvo que el mapa diga otro (`marco`: Portugal sin las islas).
+    frame: mapa.marco ?? marcoDe(provincias),
     regions: Object.fromEntries(
       Object.entries(mapa.comunidades).map(([clave, nombre]) => [clave, { name: nombre, frame: marcoDe(provincias.filter((e) => e.regions[0] === clave)) }]),
     ),

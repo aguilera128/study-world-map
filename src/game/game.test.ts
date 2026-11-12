@@ -681,6 +681,24 @@ describe('mapas de un país', () => {
     }
   });
 
+  it('las unidades de Natural Earth se funden en las que se estudian (Reino Unido, Francia, Italia)', () => {
+    const count = (id: (typeof COUNTRY_IDS)[number]) => (JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas).countries.filter((c) => c.kind === 'country').length;
+    expect([count('gb'), count('fr'), count('it')]).toEqual([4, 13, 20]);
+    const britain = new Atlas(JSON.parse(readFileSync('public/data/gb/atlas.json', 'utf8')) as RawAtlas, 'gb');
+    // Londres cae en Inglaterra y Edimburgo en Escocia: las piezas se han reunido en su nación.
+    expect(britain.countries[britain.locate(-0.13, 51.5)].id).toBe('GB-ENG');
+    expect(britain.countries[britain.locate(-3.19, 55.95)].id).toBe('GB-SCT');
+    expect(britain.countries[britain.locate(-3.18, 51.48)].id).toBe('GB-WLS');
+    expect(britain.countries[britain.locate(-5.93, 54.6)].id).toBe('GB-NIR');
+  });
+
+  it('Portugal se encuadra en el continente, con las islas fuera de la vista general', () => {
+    const portugal = new Atlas(JSON.parse(readFileSync('public/data/pt/atlas.json', 'utf8')) as RawAtlas, 'pt');
+    expect(portugal.frame).toEqual([-9.6, 36.9, -6.1, 42.2]);
+    expect(portugal.quizzable.length).toBe(20);
+    expect(portugal.byIdOrThrow('PT-20').capital).toBe('Ponta Delgada');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

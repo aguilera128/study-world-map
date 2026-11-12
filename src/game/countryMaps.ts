@@ -10,7 +10,7 @@ import type { ModeId } from './config';
 // la clave de su traducción, y se traducen al usarlos.
 
 /** Cómo se llaman las unidades de un país. De ello dependen las frases de la interfaz (./maps.ts). */
-export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton' | 'region' | 'condado';
+export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton' | 'region' | 'condado' | 'nacion' | 'voivodato' | 'distrito';
 /** En qué se agrupan: las comunidades autónomas de España o, en general, regiones. */
 export type GroupKind = 'comunidad' | 'region';
 
@@ -91,6 +91,11 @@ export const COUNTRY_MAPS = {
   // Las trece regiones metropolitanas de Francia y las veinte de Italia.
   fr: { title: 'Francia', iso: 'FRA', unit: 'region', zones: [] },
   it: { title: 'Italia', iso: 'ITA', unit: 'region', zones: [] },
+  // Las cuatro naciones del Reino Unido, los voivodatos de Polonia y los distritos de Portugal (con las
+  // Azores y Madeira, que son regiones autónomas).
+  gb: { title: 'Reino Unido', iso: 'GBR', unit: 'nacion', zones: [] },
+  pl: { title: 'Polonia', iso: 'POL', unit: 'voivodato', zones: [] },
+  pt: { title: 'Portugal', iso: 'PRT', unit: 'distrito', zones: [] },
   cz: { title: 'Chequia', iso: 'CZE', unit: 'region', zones: [] },
   sk: { title: 'Eslovaquia', iso: 'SVK', unit: 'region', zones: [] },
   gr: { title: 'Grecia', iso: 'GRC', unit: 'region', zones: [] },
