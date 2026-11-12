@@ -32,7 +32,7 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
 - **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos, Bélgica,
   Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda,
-  Lituania, Croacia, Albania, Hungría y Noruega (condados), Reino Unido (naciones), Polonia (voivodatos) y
+  Lituania, Croacia, Albania, Hungría, Noruega y Estonia (condados), Reino Unido (naciones), Polonia (voivodatos) y
   Portugal, Rumanía y Serbia (distritos). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
   `docs/mapas-por-pais-inventario-2026-11-12.md`.
@@ -174,7 +174,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay veintinueve (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay treinta (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
@@ -257,6 +257,9 @@ que la lista sea coherente y avisa si no.
 - Fronteras de los condados de Noruega: [Kartverket](https://kartkatalog.geonorge.no/), «Administrative enheter
   fylker» de 2026 (CC BY 4.0), recortadas por la costa de Natural Earth con
   [polyclip-ts](https://github.com/luizbarboza/polyclip-ts). Natural Earth trae los condados anteriores a 2018.
+- Fronteras de los condados de Estonia: división administrativa de Estonia (EHAK), Republic of Estonia Land and
+  Spatial Development Board, 01.11.2026 ([licencia de datos abiertos](https://geoportaal.maaruum.ee/opendata-licence)).
+  Natural Earth es anterior a la reforma de 2017.
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).

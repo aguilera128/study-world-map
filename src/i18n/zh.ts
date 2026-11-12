@@ -913,6 +913,31 @@ const zh: Record<string, string> = {
 
   // ── Mapas de un país: Noruega ──
   'Noruega': '挪威',
+
+  // ── 县（爱沙尼亚） ──
+  '{n} condados|ee': '{n} 个县',
+  'condado a condado.|ee': '一县一县地学。',
+  'Condados|ee': '县',
+  'Condados que entran|ee': '包含的县',
+  'condado|ee': '个县',
+  'condados|ee': '个县',
+  'Dominas {n} de {total} condados|ee': '已掌握 {n} / {total} 个县',
+  'Estudia los condados antes de jugar|ee': '先学习各县，再开始',
+  'Practicar estos condados →|ee': '练习这些县 →',
+  'Buscar condado o capital…|ee': '搜索县或首府…',
+  'Buscar condado o capital|ee': '搜索县或首府',
+  'No hay ningún condado con ese nombre.|ee': '没有叫这个名字的县。',
+  '¿Qué condado es el señalado?|ee': '标出的是哪个县？',
+  '¿De qué condado es la capital?|ee': '这是哪个县的首府？',
+  'Toca el condado en el mapa|ee': '在地图上点出这个县',
+  'Escribe el condado…|ee': '输入县名…',
+  'Buscando el condado|ee': '找县',
+  'Te damos el nombre de un condado y lo buscas en el mapa.|ee': '我们给出县名，你在地图上找到它。',
+  'Señalamos un condado en el mapa y dices cuál es.|ee': '我们在地图上标出一个县，你说出它是哪个县。',
+  'Une cada condado con su capital.|ee': '把每个县和它的首府配对。',
+
+  // ── Mapas de un país: Estonia ──
+  'Estonia': '爱沙尼亚',
 };
 
 export default zh;

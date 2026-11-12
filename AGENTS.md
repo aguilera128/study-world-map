@@ -89,7 +89,7 @@ docs/                  planes y propuestas con fecha
   cámara, que fija el motor según el tamaño del país) y la unidad señalada se encuadra más de cerca
   (`showCountry` en `store.ts`).
 - Si Natural Earth no trae las fronteras vigentes de un país, sus unidades salen de la capa oficial
-  de ese país (`capa` en su fichero de datos, que dice de dónde se descarga; hoy, Finlandia y Noruega) y solo
+  de ese país (`capa` en su fichero de datos, que dice de dónde se descarga; hoy, Finlandia, Noruega y Estonia) y solo
   los vecinos de Natural Earth. Si esa capa llega mar adentro (Noruega), `capa.costa` la recorta por
   la tierra de Natural Earth con `polyclip-ts`, que es dependencia de desarrollo solo para eso: no
   se importa desde `src/` ni llega al navegador. La fuente y su licencia van además en `legales.mjs`. No se mezclan
@@ -133,7 +133,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Dato | Generador | Fuente |
 |---|---|---|
 | Países, fronteras, banderas | `scripts/build-atlas.mjs` | Natural Earth, flag-icons, mledoze/countries |
-| Subdivisiones de un país (los de `scripts/data/mapas/`) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo; fronteras de Finlandia: Statistics Finland; de Noruega: Kartverket (las dos, CC BY 4.0) |
+| Subdivisiones de un país (los de `scripts/data/mapas/`) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo; fronteras de Finlandia: Statistics Finland; de Noruega: Kartverket (las dos, CC BY 4.0); de Estonia: Maa- ja Ruumiamet (licencia propia: citar organismo, datos y fecha) |
 | Geografía física | `scripts/build-physical.py` + `build-fisico.mjs` | Natural Earth, Wikidata |
 | Correcciones de geografía física | `scripts/data/fisico-correcciones.json` | a mano, cada una con su motivo |
 | Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |

@@ -129,6 +129,8 @@ export const COUNTRY_MAPS = {
   fi: { title: 'Finlandia', iso: 'FIN', unit: 'region', zones: [] },
   // Los 15 condados de Noruega («Provinz» en alemán, como los de Suecia). Sus fronteras son de Kartverket.
   no: { title: 'Noruega', iso: 'NOR', unit: 'condado', context: 'no', zones: [] },
+  // Los 15 condados de Estonia («Kreis» en alemán). Sus fronteras son de la Junta de Tierras estonia.
+  ee: { title: 'Estonia', iso: 'EST', unit: 'condado', context: 'ee', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

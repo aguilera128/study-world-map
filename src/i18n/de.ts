@@ -936,6 +936,31 @@ const de: Record<string, string> = {
 
   // ── Mapas de un país: Noruega ──
   'Noruega': 'Norwegen',
+
+  // ── Estland «Kreis» ──
+  '{n} condados|ee': '{n} Kreise',
+  'condado a condado.|ee': 'Kreis für Kreis.',
+  'Condados|ee': 'Kreise',
+  'Condados que entran|ee': 'Enthaltene Kreise',
+  'condado|ee': 'Kreis',
+  'condados|ee': 'Kreise',
+  'Dominas {n} de {total} condados|ee': 'Du beherrschst {n} von {total} Kreisen',
+  'Estudia los condados antes de jugar|ee': 'Lerne die Kreise, bevor du spielst',
+  'Practicar estos condados →|ee': 'Diese Kreise üben →',
+  'Buscar condado o capital…|ee': 'Kreis oder Hauptstadt suchen…',
+  'Buscar condado o capital|ee': 'Kreis oder Hauptstadt suchen',
+  'No hay ningún condado con ese nombre.|ee': 'Es gibt keinen Kreis mit diesem Namen.',
+  '¿Qué condado es el señalado?|ee': 'Welcher Kreis ist markiert?',
+  '¿De qué condado es la capital?|ee': 'Von welchem Kreis ist das die Hauptstadt?',
+  'Toca el condado en el mapa|ee': 'Tippe den Kreis auf der Karte an',
+  'Escribe el condado…|ee': 'Kreis eintippen…',
+  'Buscando el condado|ee': 'Kreis suchen',
+  'Te damos el nombre de un condado y lo buscas en el mapa.|ee': 'Wir nennen dir einen Kreis und du suchst ihn auf der Karte.',
+  'Señalamos un condado en el mapa y dices cuál es.|ee': 'Wir markieren einen Kreis auf der Karte und du sagst, welcher es ist.',
+  'Une cada condado con su capital.|ee': 'Ordne jedem Kreis seine Hauptstadt zu.',
+
+  // ── Mapas de un país: Estonia ──
+  'Estonia': 'Estland',
 };
 
 export default de;

@@ -4,10 +4,10 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (29):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (30):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
 Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania,
-Hungría y Noruega (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
+Hungría, Noruega y Estonia (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
 Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provincias).
 
 ## Cómo leer la tabla
@@ -46,7 +46,7 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Rumanía | 41 distritos + Bucarest | distritos | **hecho** |
 | Bulgaria | 28 provincias | provincias | **hecho** (las 28 y sus códigos coinciden con Wikidata; la ciudad y la provincia de Sofía, distinguidas en cada idioma; transliteración oficial búlgara) |
 | Lituania | 10 condados | condados | **hecho** |
-| Estonia | 15 condados | condados | **desfasado, comprobado**: la reforma de 2017 pasó Lihula, Hanila, Koonga y Varbla al municipio de Lääneranna (condado de Pärnu) y NE sigue poniendo Lihula en Lääne; además lleva los códigos ISO antiguos (EE-67 por EE-68…). Hace falta otra fuente |
+| Estonia | 15 condados | condados | **desfasado, comprobado**: la reforma de 2017 pasó Lihula, Hanila, Koonga y Varbla al municipio de Lääneranna (condado de Pärnu) y NE sigue poniendo Lihula en Lääne; además lleva los códigos ISO antiguos (EE-67 por EE-68…). **Hecho con otra fuente**: la división administrativa oficial (EHAK) de la Junta de Tierras estonia, con datos del 1-nov-2026, que ya viene sin el mar; se descarga en GeoJSON del servicio WFS de la Agencia de Medio Ambiente de Estonia, que la redistribuye |
 | Turquía | 81 provincias | provincias | **hecho**, sin zonas: sus siete regiones geográficas no vienen en NE y repartirlas a mano sin fuente no es de fiar |
 | Albania | 12 condados | condados | **hecho** |
 | Bielorrusia | 6 regiones + Minsk | regiones | **hecho** (coincide con Wikidata; NE trae cambiado el tipo de la ciudad y de la región de Minsk, pero los códigos están bien) |
@@ -109,10 +109,9 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
      unidades estadísticas por municipios: trae las 19 regiones del año, CC BY 4.0): el generador
      acepta una capa propia como tercer argumento y la frontera con los vecinos de NE casa a
      simple vista con el máximo acercamiento. Noruega también está (Kartverket, CC BY 4.0,
-     recortada por la costa de NE con `polyclip-ts`). Siguen Estonia
-     (Land Board, licencia propia de datos abiertos con cita de fuente y fecha) y, desde el
-     1-ene-2027, Dinamarca con sus cuatro regiones. Hay que descargar esas capas, cosa que se
-     pregunta antes.
+     recortada por la costa de NE con `polyclip-ts`) y Estonia (Junta de Tierras, licencia propia
+     de datos abiertos: citar organismo, datos y fecha). Queda, desde el 1-ene-2027, Dinamarca
+     con sus cuatro regiones. Hay que descargar su capa, cosa que se pregunta antes.
    - **Pendientes de fuente o de comprobar**: Chipre (seis distritos de derecho), Islandia (sin
      capitales), Letonia (42 unidades, por confirmar), Moldavia (geoBoundaries trae 37 unidades de
      ACNUR/OCHA, de 2020, CC BY 3.0 IGO: por contrastar con la lista oficial) y Montenegro.

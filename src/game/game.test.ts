@@ -807,6 +807,23 @@ describe('mapas de un país', () => {
     expect(at(18.07, 59.33)).toBe('SWE');
   });
 
+  it('Estonia: los condados son los de después de la reforma de 2017', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    const estonia = new Atlas(withBackdrop(JSON.parse(readFileSync('public/data/ee/atlas.json', 'utf8')) as RawAtlas, world), 'ee');
+    expect(estonia.quizzable.length).toBe(15);
+    const at = (lon: number, lat: number) => estonia.countries[estonia.locate(lon, lat)]?.id;
+    // Lihula, Hanila, Koonga y Varbla pasaron de Lääne a Pärnu. Natural Earth deja Lihula en Lääne.
+    expect(at(23.8, 58.69)).toBe('EE-68');
+    expect(at(23.56, 58.62)).toBe('EE-68');
+    expect(at(24.07, 58.58)).toBe('EE-68');
+    expect(at(23.7, 58.43)).toBe('EE-68');
+    // Tallin, Tartu, Värska (Setomaa, hoy en Võru) y, al otro lado de la frontera, Riga.
+    expect(at(24.75, 59.43)).toBe('EE-37');
+    expect(at(26.72, 58.38)).toBe('EE-79');
+    expect(at(27.63, 57.96)).toBe('EE-87');
+    expect(at(24.1, 56.95)).toBe('LVA');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);
