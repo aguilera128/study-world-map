@@ -97,7 +97,7 @@ const de: Record<string, string> = {
   '¡Bien!': 'Richtig!',
   'Con ayuda': 'Mit Hilfe',
   'A repasar': 'Wiederholen',
-  'Búscalo en el mapa': 'Finde es auf der Karte',
+  'Busca en el mapa': 'Auf der Karte finden',
   '¿En qué continente está?': 'Auf welchem Kontinent liegt es?',
   '¿Qué país es el señalado?': 'Welches Land ist markiert?',
   '¿De qué país es la capital?': 'Von welchem Land ist das die Hauptstadt?',
@@ -212,8 +212,8 @@ const de: Record<string, string> = {
   'Mi progreso': 'Mein Fortschritt',
   'Dominas {n} de {total} países': 'Du beherrschst {n} von {total} Ländern',
   'Tu mapa de lo aprendido': 'Deine Karte des Gelernten',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    'Jede richtige Antwort beim ersten Versuch bringt ein Land eine Stufe höher; ein Fehler setzt es an den Anfang zurück. Was du am wenigsten kannst, kommt häufiger dran.',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    'Was du beim ersten Versuch richtig hast, steigt eine Stufe auf; was du falsch hast, fängt wieder von vorn an. Was du am wenigsten kannst, kommt häufiger dran.',
   'Practicar {x}': '{x} üben',
   'Practicar →': 'Üben →',
   'Practicar lo que peor llevo': 'Meine Schwächen üben',

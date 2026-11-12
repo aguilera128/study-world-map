@@ -98,7 +98,7 @@ const eu: Record<string, string> = {
   '¡Bien!': 'Ondo!',
   'Con ayuda': 'Laguntzarekin',
   'A repasar': 'Errepasatzeko',
-  'Búscalo en el mapa': 'Bilatu mapan',
+  'Busca en el mapa': 'Bilatu mapan',
   '¿En qué continente está?': 'Zein kontinentetan dago?',
   '¿Qué país es el señalado?': 'Zein da markatutako herrialdea?',
   '¿De qué país es la capital?': 'Zein herrialdetako hiriburua da?',
@@ -213,8 +213,8 @@ const eu: Record<string, string> = {
   'Mi progreso': 'Nire aurrerapena',
   'Dominas {n} de {total} países': '{total} herrialdetik {n} menderatzen dituzu',
   'Tu mapa de lo aprendido': 'Ikasi duzunaren mapa',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    'Lehenengoan asmatzen duzun bakoitzean herrialdea maila bat igotzen da; hutsegite batek hasierara itzultzen du. Okerren dakizuna maizago ateratzen da partidetan.',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    'Lehenengoan asmatzen duzuna maila bat igotzen da; huts egiten duzuna hasierara itzultzen da. Okerren dakizuna maizago ateratzen da partidetan.',
   'Practicar {x}': 'Praktikatu: {x}',
   'Practicar →': 'Praktikatu →',
   'Practicar lo que peor llevo': 'Praktikatu okerren dakidana',

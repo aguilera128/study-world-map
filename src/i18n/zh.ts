@@ -97,7 +97,7 @@ const zh: Record<string, string> = {
   '¡Bien!': '答对了！',
   'Con ayuda': '有提示',
   'A repasar': '待复习',
-  'Búscalo en el mapa': '在地图上找到它',
+  'Busca en el mapa': '在地图上找到',
   '¿En qué continente está?': '它在哪个大洲？',
   '¿Qué país es el señalado?': '标出的是哪个国家？',
   '¿De qué país es la capital?': '这是哪个国家的首都？',
@@ -212,8 +212,8 @@ const zh: Record<string, string> = {
   'Mi progreso': '我的进度',
   'Dominas {n} de {total} países': '已掌握 {n} / {total} 个国家',
   'Tu mapa de lo aprendido': '你的学习地图',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    '只要一次答对，该国家就升一级；答错则回到起点。你最不熟的内容会在游戏中更常出现。',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    '一次答对就升一级；答错则回到起点。你最不熟的内容会在游戏中更常出现。',
   'Practicar {x}': '练习：{x}',
   'Practicar →': '练习 →',
   'Practicar lo que peor llevo': '练习最薄弱的内容',

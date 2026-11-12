@@ -31,7 +31,7 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
   let main: ReactNode;
   switch (config.mode) {
     case 'locate':
-      label = t('Búscalo en el mapa');
+      label = t('Busca en el mapa');
       main = country.name;
       break;
     case 'continent':

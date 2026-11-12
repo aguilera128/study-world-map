@@ -265,13 +265,16 @@ describe('atlas de España', () => {
     expect(names('ES-CE')).toEqual([]);
   });
 
-  it('la vista general encuadra España, con Canarias', () => {
+  it('la vista general encuadra la península con las Baleares, Ceuta y Melilla; Canarias queda fuera', () => {
     expect(spain.frame).not.toBeNull();
     const [w, s, e, n] = spain.frame!;
-    expect(w).toBeLessThan(-18);
-    expect(s).toBeLessThan(27.7);
+    expect(w).toBeGreaterThan(-10);
+    expect(w).toBeLessThan(-9.3);
+    expect(s).toBeLessThan(35.27);
     expect(e).toBeGreaterThan(4.3);
     expect(n).toBeGreaterThan(43.7);
+    // Las islas siguen en el mapa y la zona de Canarias las encuadra.
+    expect(spain.regions['ES-CN'].frame[0]).toBeLessThan(-18);
     expect(atlas.frame).toBeNull();
   });
 

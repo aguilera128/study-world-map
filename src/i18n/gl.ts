@@ -97,7 +97,7 @@ const gl: Record<string, string> = {
   '¡Bien!': 'Ben!',
   'Con ayuda': 'Con axuda',
   'A repasar': 'A repasar',
-  'Búscalo en el mapa': 'Búscao no mapa',
+  'Busca en el mapa': 'Busca no mapa',
   '¿En qué continente está?': 'En que continente está?',
   '¿Qué país es el señalado?': 'Que país é o sinalado?',
   '¿De qué país es la capital?': 'De que país é a capital?',
@@ -212,8 +212,8 @@ const gl: Record<string, string> = {
   'Mi progreso': 'O meu progreso',
   'Dominas {n} de {total} países': 'Dominas {n} de {total} países',
   'Tu mapa de lo aprendido': 'O teu mapa do aprendido',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    'Cada acerto á primeira sobe un país de nivel; un fallo devólveo ao principio. O que peor levas sae máis a miúdo nas partidas.',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    'O que acertas á primeira sobe de nivel; o que fallas volve ao principio. O que peor levas sae máis a miúdo nas partidas.',
   'Practicar {x}': 'Practicar {x}',
   'Practicar →': 'Practicar →',
   'Practicar lo que peor llevo': 'Practicar o que peor levo',

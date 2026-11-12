@@ -97,7 +97,7 @@ const en: Record<string, string> = {
   '¡Bien!': 'Correct!',
   'Con ayuda': 'With help',
   'A repasar': 'To review',
-  'Búscalo en el mapa': 'Find it on the map',
+  'Busca en el mapa': 'Find on the map',
   '¿En qué continente está?': 'Which continent is it in?',
   '¿Qué país es el señalado?': 'Which country is highlighted?',
   '¿De qué país es la capital?': 'Which country is this the capital of?',
@@ -212,8 +212,8 @@ const en: Record<string, string> = {
   'Mi progreso': 'My progress',
   'Dominas {n} de {total} países': 'You have mastered {n} of {total} countries',
   'Tu mapa de lo aprendido': 'Your map of what you have learned',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    'Each correct first-try answer moves a country up a level; a miss sends it back to the start. What you know least comes up more often.',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    'What you get right first try moves up a level; what you miss goes back to the start. What you know least comes up more often.',
   'Practicar {x}': 'Practise {x}',
   'Practicar →': 'Practise →',
   'Practicar lo que peor llevo': 'Practise my weak spots',

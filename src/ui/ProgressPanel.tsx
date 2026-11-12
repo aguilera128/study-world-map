@@ -181,7 +181,7 @@ export function ProgressPanel() {
         )}
       </h1>
       <p className="mt-2 text-ink-soft" style={order(2)}>
-        {t('Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.')}
+        {t('Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.')}
       </p>
 
       <div className="mt-5" style={order(3)}>

@@ -36,6 +36,8 @@ export default {
    */
   contexto: ['PRT', 'FRA', 'AND', 'MAR', 'DZA', 'SAH'],
   ventana: [-20, 20, 12, 52],
+  /** El encuadre del mapa es el de la península, con las Baleares, Ceuta y Melilla: con Canarias dentro se veía pequeña. Las islas se buscan girando el globo. */
+  marco: [-9.4, 35.2, 4.4, 43.9],
 
   // Las 17 comunidades autónomas y las dos ciudades autónomas.
   comunidades: {

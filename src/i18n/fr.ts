@@ -97,7 +97,7 @@ const fr: Record<string, string> = {
   '¡Bien!': 'Bravo !',
   'Con ayuda': 'Avec aide',
   'A repasar': 'À revoir',
-  'Búscalo en el mapa': 'Trouvez-le sur la carte',
+  'Busca en el mapa': 'Trouvez sur la carte',
   '¿En qué continente está?': 'Sur quel continent se trouve-t-il ?',
   '¿Qué país es el señalado?': 'Quel est le pays indiqué ?',
   '¿De qué país es la capital?': 'De quel pays est-ce la capitale ?',
@@ -212,8 +212,8 @@ const fr: Record<string, string> = {
   'Mi progreso': 'Mes progrès',
   'Dominas {n} de {total} países': 'Vous maîtrisez {n} pays sur {total}',
   'Tu mapa de lo aprendido': 'Votre carte de ce que vous avez appris',
-  'Cada acierto a la primera sube un país de nivel; un fallo lo devuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
-    'Chaque bonne réponse du premier coup fait monter un pays d’un niveau ; une erreur le renvoie au début. Ce que vous maîtrisez le moins revient plus souvent.',
+  'Lo que aciertas a la primera sube de nivel; lo que fallas vuelve al principio. Lo que peor llevas sale más a menudo en las partidas.':
+    'Ce que vous réussissez du premier coup monte d’un niveau ; ce que vous ratez revient au début. Ce que vous maîtrisez le moins revient plus souvent.',
   'Practicar {x}': 'S’entraîner : {x}',
   'Practicar →': 'S’entraîner →',
   'Practicar lo que peor llevo': 'M’entraîner sur mes points faibles',
