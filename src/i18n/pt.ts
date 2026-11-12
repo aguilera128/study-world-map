@@ -749,6 +749,9 @@ const pt: Record<string, string> = {
 
   // ── Mapas de un país: Finlandia ──
   'Finlandia': 'Finlândia',
+
+  // ── Mapas de un país: Noruega ──
+  'Noruega': 'Noruega',
 };
 
 export default pt;

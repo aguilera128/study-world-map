@@ -750,6 +750,9 @@ const ca: Record<string, string> = {
 
   // ── Mapas de un país: Finlandia ──
   'Finlandia': 'Finlàndia',
+
+  // ── Mapas de un país: Noruega ──
+  'Noruega': 'Noruega',
 };
 
 export default ca;

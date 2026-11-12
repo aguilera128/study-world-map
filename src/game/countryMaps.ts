@@ -127,6 +127,8 @@ export const COUNTRY_MAPS = {
   ua: { title: 'Ucrania', iso: 'UKR', unit: 'region', context: 'oblast', zones: [] },
   // Las 19 regiones de Finlandia, con Åland. Sus fronteras son de Statistics Finland, no de Natural Earth.
   fi: { title: 'Finlandia', iso: 'FIN', unit: 'region', zones: [] },
+  // Los 15 condados de Noruega («Provinz» en alemán, como los de Suecia). Sus fronteras son de Kartverket.
+  no: { title: 'Noruega', iso: 'NOR', unit: 'condado', context: 'no', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

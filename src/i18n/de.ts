@@ -911,6 +911,31 @@ const de: Record<string, string> = {
 
   // ── Mapas de un país: Finlandia ──
   'Finlandia': 'Finnland',
+
+  // ── Norwegen «Provinz» ──
+  '{n} condados|no': '{n} Provinzen',
+  'condado a condado.|no': 'Provinz für Provinz.',
+  'Condados|no': 'Provinzen',
+  'Condados que entran|no': 'Enthaltene Provinzen',
+  'condado|no': 'Provinz',
+  'condados|no': 'Provinzen',
+  'Dominas {n} de {total} condados|no': 'Du beherrschst {n} von {total} Provinzen',
+  'Estudia los condados antes de jugar|no': 'Lerne die Provinzen, bevor du spielst',
+  'Practicar estos condados →|no': 'Diese Provinzen üben →',
+  'Buscar condado o capital…|no': 'Provinz oder Hauptstadt suchen…',
+  'Buscar condado o capital|no': 'Provinz oder Hauptstadt suchen',
+  'No hay ningún condado con ese nombre.|no': 'Es gibt keine Provinz mit diesem Namen.',
+  '¿Qué condado es el señalado?|no': 'Welche Provinz ist markiert?',
+  '¿De qué condado es la capital?|no': 'Von welcher Provinz ist das die Hauptstadt?',
+  'Toca el condado en el mapa|no': 'Tippe die Provinz auf der Karte an',
+  'Escribe el condado…|no': 'Provinz eintippen…',
+  'Buscando el condado|no': 'Provinz suchen',
+  'Te damos el nombre de un condado y lo buscas en el mapa.|no': 'Wir nennen dir eine Provinz und du suchst sie auf der Karte.',
+  'Señalamos un condado en el mapa y dices cuál es.|no': 'Wir markieren eine Provinz auf der Karte und du sagst, welche es ist.',
+  'Une cada condado con su capital.|no': 'Ordne jeder Provinz ihre Hauptstadt zu.',
+
+  // ── Mapas de un país: Noruega ──
+  'Noruega': 'Norwegen',
 };
 
 export default de;

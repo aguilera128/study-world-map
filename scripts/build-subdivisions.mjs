@@ -11,7 +11,9 @@
 // Un país cuyas fronteras vigentes no están en Natural Earth (Finlandia) trae sus unidades de otra
 // capa, en GeoJSON y EPSG:4326, que se pasa como tercer argumento; su fichero de datos dice en
 // `capa` de dónde se descarga, qué campo identifica cada unidad y qué código ISO le corresponde.
-// Los vecinos siguen saliendo de Natural Earth.
+// Los vecinos siguen saliendo de Natural Earth. Si esa capa llega mar adentro (los condados de
+// Noruega, hasta el límite del mar territorial), `capa.costa` la recorta por la tierra que Natural
+// Earth da al país (con polyclip-ts): la costa queda igual que en los demás mapas.
 //
 // Las fronteras se simplifican sobre una topología (topojson): cada tramo compartido por dos
 // provincias se simplifica una sola vez, así que no quedan huecos ni solapes entre vecinas. Los
@@ -20,6 +22,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { intersection } from 'polyclip-ts';
 import * as client from 'topojson-client';
 import { topology } from 'topojson-server';
 import { filter, filterWeight, presimplify, simplify } from 'topojson-simplify';
@@ -68,14 +71,20 @@ const DE_UCRANIA = new Set(['RUS-283', 'RUS-5482']);
 
 const propias = [];
 const contexto = [];
+/** La tierra del país según Natural Earth, para recortar por la costa una capa propia que llega mar adentro. */
+const tierra = [];
 for (const f of capa.features) {
   const a3 = DE_UCRANIA.has(f.properties.adm1_code) ? 'UKR' : f.properties.adm0_a3;
   if (a3 === mapa.adm0) {
-    // Sus unidades vienen de otra capa (abajo): de Natural Earth solo salen los vecinos.
-    if (mapa.capa) continue;
     // Lo que cae lejos de la ventana no es de este mapa (los municipios caribeños de los Países Bajos).
     const [w, s, e, n] = caja(f.geometry);
     if (!(e > oeste && w < este && n > sur && s < norte)) continue;
+    // Sus unidades vienen de otra capa (abajo): de Natural Earth solo salen los vecinos y, si hay
+    // que recortar esa capa por la costa, la tierra.
+    if (mapa.capa) {
+      if (mapa.capa.costa) tierra.push({ type: 'Feature', properties: {}, geometry: f.geometry });
+      continue;
+    }
     // Si la capa trae un nivel más fino que el que se estudia (los departamentos de Francia), el
     // código es el del campo que dice a qué unidad pertenece cada pieza (`fundir`); se juntan abajo.
     // Natural Earth arrastra algún código ISO antiguo o equivocado: `renombrar` lo pasa al vigente.
@@ -92,10 +101,29 @@ for (const f of capa.features) {
 
 if (mapa.capa) {
   if (!propia) throw new Error(`${id}: sus unidades no salen de Natural Earth; pasa como tercer argumento la capa de ${mapa.capa.origen}.`);
-  for (const f of JSON.parse(readFileSync(propia, 'utf8')).features) {
+  // Toda la tierra del país en una pieza, sin sus fronteras de dentro (que son las desfasadas).
+  let costa;
+  if (mapa.capa.costa) {
+    const piezas = topology({ capa: { type: 'FeatureCollection', features: tierra } }, 1e6);
+    costa = client.merge(piezas, piezas.objects.capa.geometries).coordinates;
+  }
+  // (La capa de Kartverket empieza con una marca de orden de bytes.)
+  for (const f of JSON.parse(readFileSync(propia, 'utf8').replace(/^\uFEFF/, '')).features) {
+    // Puede traer además las líneas de las fronteras: solo interesan las superficies.
+    if (!/Polygon$/.test(f.geometry?.type)) continue;
     const codigo = mapa.capa.codigos[f.properties[mapa.capa.campo]];
     if (!codigo) throw new Error(`${id}: la capa trae una unidad sin código (${mapa.capa.campo} = ${f.properties[mapa.capa.campo]}).`);
-    propias.push({ type: 'Feature', id: codigo, properties: {}, geometry: f.geometry });
+    let geometry = f.geometry;
+    if (costa) {
+      // Solo la tierra que cae cerca: recortar contra las miles de islas del país entero es lento.
+      const [w, s, e, n] = caja(geometry);
+      const cerca = costa.filter((p) => {
+        const [pw, ps, pe, pn] = caja({ coordinates: p });
+        return pe > w && pw < e && pn > s && ps < n;
+      });
+      geometry = { type: 'MultiPolygon', coordinates: intersection(geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates, cerca) };
+    }
+    propias.push({ type: 'Feature', id: codigo, properties: {}, geometry });
   }
 }
 

@@ -4,10 +4,10 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (28):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (29):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
-Hungría (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
+Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania,
+Hungría y Noruega (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
 Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provincias).
 
 ## Cómo leer la tabla
@@ -60,7 +60,7 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | **hecho** (cada ciudad, fundida con su condado) |
 | Finlandia | 18 regiones (Åland va aparte en NE, como `ALD` y por municipios) | regiones | **hecho con otra fuente**: el 1-ene-2021 cambiaron de región Heinävesi, Joroinen, Iitti, Kuhmoinen e Isokyrö, y NE los deja en la antigua. Las 19 regiones salen de Statistics Finland (capa de 2026, 1:1 000 000, CC BY 4.0); los vecinos, de NE |
 | Serbia | 24 distritos + Belgrado | distritos | **hecho** (Kosovo va aparte, como en el mapa del mundo) |
-| Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024): desde el 1-ene-2024 son 15. Otra fuente: Kartverket |
+| Noruega | 19 condados + 2 | condados | **hecho con otra fuente**: NE trae los condados anteriores a 2018 y desde el 1-ene-2024 son 15. Salen de Kartverket («Administrative enheter fylker», edición de julio de 2026, CC BY 4.0), recortados por la costa de NE porque la capa llega hasta el límite del mar territorial |
 | Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado: desde 2021 son municipios y ciudades estatales (43; 42 desde el 1-jul-2025, al unirse Varakļāni a Madona, según Wikipedia: falta fuente oficial) |
 | Eslovenia | 193 unidades (municipios) | regiones estadísticas en `region` (12) | fundir, y no es un nivel que se estudie |
 | Macedonia del Norte | 84 unidades | — | no apto |
@@ -108,8 +108,8 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
    - **Con la fuente oficial de cada país**, uno a uno. Finlandia ya está (Statistics Finland,
      unidades estadísticas por municipios: trae las 19 regiones del año, CC BY 4.0): el generador
      acepta una capa propia como tercer argumento y la frontera con los vecinos de NE casa a
-     simple vista con el máximo acercamiento. Siguen, por este orden:
-     Noruega (Kartverket, los 15 condados; licencia por confirmar en su edición vigente), Estonia
+     simple vista con el máximo acercamiento. Noruega también está (Kartverket, CC BY 4.0,
+     recortada por la costa de NE con `polyclip-ts`). Siguen Estonia
      (Land Board, licencia propia de datos abiertos con cita de fuente y fecha) y, desde el
      1-ene-2027, Dinamarca con sus cuatro regiones. Hay que descargar esas capas, cosa que se
      pregunta antes.

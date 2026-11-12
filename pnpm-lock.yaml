@@ -73,6 +73,9 @@ devDependencies:
   moment-timezone:
     specifier: ^0.6.6
     version: 0.6.6
+  polyclip-ts:
+    specifier: 0.16.8
+    version: 0.16.8
   polylabel:
     specifier: ^2.1.0
     version: 2.1.0
@@ -785,6 +788,10 @@ packages:
       retry: 0.13.1
     dev: true
 
+  /bignumber.js@9.3.1:
+    resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
+    dev: true
+
   /chai@6.3.0:
     resolution: {integrity: sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg==}
     engines: {node: '>=18'}
@@ -1198,6 +1205,13 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /polyclip-ts@0.16.8:
+    resolution: {integrity: sha512-JPtKbDRuPEuAjuTdhR62Gph7Is2BS1Szx69CFOO3g71lpJDFo78k4tFyi+qFOMVPePEzdSKkpGU3NBXPHHjvKQ==}
+    dependencies:
+      bignumber.js: 9.3.1
+      splaytree-ts: 1.0.2
+    dev: true
+
   /polylabel@2.1.0:
     resolution: {integrity: sha512-ZCL9pc/BpnyBB1Es5Eh6baziBhZFS0fTlEXGarLMqbMYbAyawqGAjyo2+MfignMggSubmllMgRGcR0L0liOugg==}
     dependencies:
@@ -1284,6 +1298,10 @@ packages:
   /source-map-js@1.2.2:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /splaytree-ts@1.0.2:
+    resolution: {integrity: sha512-0kGecIZNIReCSiznK3uheYB8sbstLjCZLiwcQwbmLhgHJj2gz6OnSPkVzJQCMnmEz1BQ4gPK59ylhBoEWOhGNA==}
     dev: true
 
   /std-env@4.3.0:

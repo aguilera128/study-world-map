@@ -785,6 +785,28 @@ describe('mapas de un país', () => {
     expect(finland.countries.some((c) => c.id === 'ALA')).toBe(false);
   });
 
+  it('Noruega: los quince condados de 2024, recortados por la costa', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    const norway = new Atlas(withBackdrop(JSON.parse(readFileSync('public/data/no/atlas.json', 'utf8')) as RawAtlas, world), 'no');
+    expect(norway.quizzable.length).toBe(15);
+    const at = (lon: number, lat: number) => norway.countries[norway.locate(lon, lat)]?.id;
+    // Municipios que cambiaron de condado con las reformas: Jevnaker y Rømskog (hoy en Akershus),
+    // Svelvik (Buskerud), Hornindal (Møre og Romsdal), Halsa (Trøndelag) y Tjeldsund (Troms).
+    expect(at(10.39, 60.24)).toBe('NO-32');
+    expect(at(11.82, 59.75)).toBe('NO-32');
+    expect(at(10.36, 59.62)).toBe('NO-33');
+    expect(at(6.52, 61.97)).toBe('NO-15');
+    expect(at(8.37, 63.07)).toBe('NO-50');
+    expect(at(16.57, 68.58)).toBe('NO-55');
+    // La isla de Hinnøya está repartida entre Troms (al este) y Nordland (al oeste).
+    expect(at(16.4, 68.78)).toBe('NO-55');
+    expect(at(15.5, 68.6)).toBe('NO-18');
+    expect(at(10.75, 59.91)).toBe('NO-03');
+    // La capa de Kartverket llega mar adentro: el mar frente a Bergen ya no es de ningún condado.
+    expect(at(4.6, 60.4)).toBeUndefined();
+    expect(at(18.07, 59.33)).toBe('SWE');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

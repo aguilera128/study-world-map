@@ -910,6 +910,9 @@ const zh: Record<string, string> = {
 
   // ── Mapas de un país: Finlandia ──
   'Finlandia': '芬兰',
+
+  // ── Mapas de un país: Noruega ──
+  'Noruega': '挪威',
 };
 
 export default zh;

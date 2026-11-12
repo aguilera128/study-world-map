@@ -41,6 +41,7 @@
     "d3-geo-projection": "^4.0.0",
     "flag-icons": "^7.6.0",
     "moment-timezone": "^0.6.6",
+    "polyclip-ts": "0.16.8",
     "polylabel": "^2.1.0",
     "tailwindcss": "^4.3.5",
     "topojson-client": "^3.1.0",

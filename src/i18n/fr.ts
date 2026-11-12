@@ -852,6 +852,9 @@ const fr: Record<string, string> = {
 
   // ── Mapas de un país: Finlandia ──
   'Finlandia': 'Finlande',
+
+  // ── Mapas de un país: Noruega ──
+  'Noruega': 'Norvège',
 };
 
 export default fr;
