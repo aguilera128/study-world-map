@@ -22,7 +22,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { intersection } from 'polyclip-ts';
+import { difference, intersection, union } from 'polyclip-ts';
 import * as client from 'topojson-client';
 import { topology } from 'topojson-server';
 import { filter, filterWeight, presimplify, simplify } from 'topojson-simplify';
@@ -124,6 +124,29 @@ if (mapa.capa) {
       geometry = { type: 'MultiPolygon', coordinates: intersection(geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates, cerca) };
     }
     propias.push({ type: 'Feature', id: codigo, properties: {}, geometry });
+  }
+  // Las dos capas no trazan igual la frontera del país: donde la propia se queda corta sobra una
+  // franja de tierra que no es de ninguna unidad y se vería como mar. Cada trozo se da a la unidad
+  // con la que más linda (la que comparte con él más vértices).
+  if (costa) {
+    const clave = ([x, y]) => `${x.toFixed(9)},${y.toFixed(9)}`;
+    const lindes = new Map();
+    for (const f of propias) {
+      for (const p of f.geometry.coordinates.flat(2)) {
+        const k = clave(p);
+        if (!lindes.has(k)) lindes.set(k, new Set());
+        lindes.get(k).add(f);
+      }
+    }
+    let sueltos = 0;
+    for (const trozo of difference(costa, ...propias.map((f) => f.geometry.coordinates))) {
+      const votos = new Map();
+      for (const p of trozo[0]) for (const f of lindes.get(clave(p)) ?? []) votos.set(f, (votos.get(f) ?? 0) + 1);
+      const vecina = [...votos].sort((a, b) => b[1] - a[1])[0]?.[0];
+      if (vecina) vecina.geometry = { type: 'MultiPolygon', coordinates: union(vecina.geometry.coordinates, [trozo]) };
+      else sueltos++;
+    }
+    if (sueltos) console.warn(`${id}: ${sueltos} trozos de tierra de Natural Earth no lindan con ninguna unidad y se quedan fuera.`);
   }
 }
 

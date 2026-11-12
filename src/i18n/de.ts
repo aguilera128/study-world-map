@@ -961,6 +961,50 @@ const de: Record<string, string> = {
 
   // ── Mapas de un país: Estonia ──
   'Estonia': 'Estland',
+
+  // ── Zypern «Bezirk» ──
+  '{n} distritos|cy': '{n} Bezirke',
+  'distrito a distrito.|cy': 'Bezirk für Bezirk.',
+  'Distritos|cy': 'Bezirke',
+  'Distritos que entran|cy': 'Enthaltene Bezirke',
+  'distrito|cy': 'Bezirk',
+  'distritos|cy': 'Bezirke',
+  'Dominas {n} de {total} distritos|cy': 'Du beherrschst {n} von {total} Bezirken',
+  'Buscar distrito o capital…|cy': 'Bezirk oder Hauptstadt suchen…',
+  'Buscar distrito o capital|cy': 'Bezirk oder Hauptstadt suchen',
+  'No hay ningún distrito con ese nombre.|cy': 'Es gibt keinen Bezirk mit diesem Namen.',
+  '¿Qué distrito es el señalado?|cy': 'Welcher Bezirk ist markiert?',
+  '¿De qué distrito es la capital?|cy': 'Von welchem Bezirk ist das die Hauptstadt?',
+  'Toca el distrito en el mapa|cy': 'Tippe den Bezirk auf der Karte an',
+  'Escribe el distrito…|cy': 'Bezirk eintippen…',
+  'Buscando el distrito|cy': 'Bezirk suchen',
+  'Te damos el nombre de un distrito y lo buscas en el mapa.|cy': 'Wir nennen dir einen Bezirk und du suchst ihn auf der Karte.',
+  'Señalamos un distrito en el mapa y dices cuál es.|cy': 'Wir markieren einen Bezirk auf der Karte und du sagst, welcher es ist.',
+  'Une cada distrito con su capital.|cy': 'Ordne jedem Bezirk seine Hauptstadt zu.',
+
+  // ── Moldau «Rajon» ──
+  '{n} distritos|md': '{n} Rajons',
+  'distrito a distrito.|md': 'Rajon für Rajon.',
+  'Distritos|md': 'Rajons',
+  'Distritos que entran|md': 'Enthaltene Rajons',
+  'distrito|md': 'Rajon',
+  'distritos|md': 'Rajons',
+  'Dominas {n} de {total} distritos|md': 'Du beherrschst {n} von {total} Rajons',
+  'Buscar distrito o capital…|md': 'Rajon oder Hauptstadt suchen…',
+  'Buscar distrito o capital|md': 'Rajon oder Hauptstadt suchen',
+  'No hay ningún distrito con ese nombre.|md': 'Es gibt keinen Rajon mit diesem Namen.',
+  '¿Qué distrito es el señalado?|md': 'Welcher Rajon ist markiert?',
+  '¿De qué distrito es la capital?|md': 'Von welchem Rajon ist das die Hauptstadt?',
+  'Toca el distrito en el mapa|md': 'Tippe den Rajon auf der Karte an',
+  'Escribe el distrito…|md': 'Rajon eintippen…',
+  'Buscando el distrito|md': 'Rajon suchen',
+  'Te damos el nombre de un distrito y lo buscas en el mapa.|md': 'Wir nennen dir einen Rajon und du suchst ihn auf der Karte.',
+  'Señalamos un distrito en el mapa y dices cuál es.|md': 'Wir markieren einen Rajon auf der Karte und du sagst, welcher es ist.',
+  'Une cada distrito con su capital.|md': 'Ordne jedem Rajon seine Hauptstadt zu.',
+
+  // ── Mapas de un país: Chipre y Moldavia ──
+  'Chipre': 'Zypern',
+  'Moldavia': 'Moldau',
 };
 
 export default de;

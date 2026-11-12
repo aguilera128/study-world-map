@@ -755,6 +755,10 @@ const pt: Record<string, string> = {
 
   // ── Mapas de un país: Estonia ──
   'Estonia': 'Estônia',
+
+  // ── Mapas de un país: Chipre y Moldavia ──
+  'Chipre': 'Chipre',
+  'Moldavia': 'Moldávia',
 };
 
 export default pt;

@@ -824,6 +824,36 @@ describe('mapas de un país', () => {
     expect(at(24.1, 56.95)).toBe('LVA');
   });
 
+  it('Chipre: los seis distritos cubren la isla entera; Moldavia: las 37 unidades, con las fronteras de derecho', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    const open = (id: 'cy' | 'md') => new Atlas(withBackdrop(JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas, world), id);
+    const cyprus = open('cy');
+    expect(cyprus.quizzable.length).toBe(6);
+    const cy = (lon: number, lat: number) => cyprus.countries[cyprus.locate(lon, lat)]?.id;
+    // Nicosia, Limasol, Lárnaca, Famagusta, Pafos y Kyrenia; Morfou (en el norte) es de Nicosia.
+    expect(cy(33.36, 35.17)).toBe('CY-01');
+    expect(cy(33.03, 34.72)).toBe('CY-02');
+    expect(cy(33.6, 34.95)).toBe('CY-03');
+    expect(cy(33.9, 35.15)).toBe('CY-04');
+    expect(cy(32.45, 34.8)).toBe('CY-05');
+    expect(cy(33.32, 35.3)).toBe('CY-06');
+    expect(cy(32.99, 35.2)).toBe('CY-01');
+    const moldova = open('md');
+    expect(moldova.quizzable.length).toBe(37);
+    const md = (lon: number, lat: number) => moldova.countries[moldova.locate(lon, lat)]?.id;
+    // Chisináu, Tiraspol, Comrat y Bălți; Cocieri, en la margen izquierda, es del distrito de
+    // Dubăsari, y la ciudad de Dubăsari, de Transnistria.
+    expect(md(28.86, 47.01)).toBe('MD-CU');
+    expect(md(29.63, 46.84)).toBe('MD-SN');
+    expect(md(28.66, 46.3)).toBe('MD-GA');
+    expect(md(27.93, 47.76)).toBe('MD-BA');
+    expect(md(29.1, 47.3)).toBe('MD-DU');
+    expect(md(29.16, 47.26)).toBe('MD-SN');
+    // Al otro lado de la frontera, Iași y Odesa.
+    expect(md(27.59, 47.16)).toBe('ROU');
+    expect(md(30.7, 46.5)).toBe('UKR');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

@@ -33,7 +33,7 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos, Bélgica,
   Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda,
   Lituania, Croacia, Albania, Hungría, Noruega y Estonia (condados), Reino Unido (naciones), Polonia (voivodatos) y
-  Portugal, Rumanía y Serbia (distritos). El país se elige en un
+  Portugal, Rumanía, Serbia, Chipre y Moldavia (distritos). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
   `docs/mapas-por-pais-inventario-2026-11-12.md`.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
@@ -174,7 +174,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay treinta (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay treinta y dos (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
@@ -260,6 +260,10 @@ que la lista sea coherente y avisa si no.
 - Fronteras de los condados de Estonia: división administrativa de Estonia (EHAK), Republic of Estonia Land and
   Spatial Development Board, 01.11.2026 ([licencia de datos abiertos](https://geoportaal.maaruum.ee/opendata-licence)).
   Natural Earth es anterior a la reforma de 2017.
+- Fronteras de los distritos de Chipre: Department of Lands and Surveys de la República de Chipre, unidades
+  administrativas INSPIRE. Natural Earth trae cinco distritos y el norte aparte.
+- Fronteras de los distritos de Moldavia: ACNUR y OCHA, 2020 (CC BY 3.0 IGO), vía
+  [geoBoundaries](https://www.geoboundaries.org/). Natural Earth parte Transnistria y no trae Dubăsari.
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).

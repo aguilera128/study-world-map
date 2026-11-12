@@ -938,6 +938,10 @@ const zh: Record<string, string> = {
 
   // ── Mapas de un país: Estonia ──
   'Estonia': '爱沙尼亚',
+
+  // ── Mapas de un país: Chipre y Moldavia ──
+  'Chipre': '塞浦路斯',
+  'Moldavia': '摩尔多瓦',
 };
 
 export default zh;

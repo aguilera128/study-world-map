@@ -51,6 +51,8 @@ ${titularBlock()}
       <li>Regiones de Finlandia: <a href="https://stat.fi/org/avoindata/paikkatietoaineistot_en.html">Statistics Finland</a>, unidades estadísticas por municipios de 2026 (licencia CC BY 4.0), simplificadas.</li>
       <li>Condados de Noruega: <a href="https://kartkatalog.geonorge.no/">Kartverket</a>, «Administrative enheter fylker» de 2026 (licencia CC BY 4.0), recortados por la costa y simplificados.</li>
       <li>Condados de Estonia: división administrativa de Estonia (EHAK), Junta de Tierras y Ordenación del Territorio de Estonia (Republic of Estonia Land and Spatial Development Board), datos del 01.11.2026, simplificados, con su <a href="https://geoportaal.maaruum.ee/opendata-licence">licencia de datos abiertos</a>.</li>
+      <li>Distritos de Chipre: Departamento de Tierras y Catastro de la República de Chipre (Department of Lands and Surveys), unidades administrativas INSPIRE, simplificados.</li>
+      <li>Distritos de Moldavia: ACNUR y OCHA, límites administrativos de Moldavia de 2020 (licencia CC BY 3.0 IGO), vía <a href="https://www.geoboundaries.org/">geoBoundaries</a>, recortados y simplificados.</li>
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
       <li>Luces nocturnas de las ciudades: Black Marble 2016, NASA Earth Observatory (dominio público).</li>
