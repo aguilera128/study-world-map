@@ -4,11 +4,11 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (21):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (24):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania, Croacia y Albania
-(condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las Azores y
-Madeira) y Rumanía (distritos).
+Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
+Hungría (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
+Azores y Madeira), Rumanía y Serbia (distritos) y Turquía (provincias).
 
 ## Cómo leer la tabla
 
@@ -47,7 +47,7 @@ Madeira) y Rumanía (distritos).
 | Bulgaria | 28 provincias | provincias | directo, con cuidado: dos se llaman Sofía y la transliteración al español no es única |
 | Lituania | 10 condados | condados | **hecho** |
 | Estonia | 15 condados | condados | desfasado: creo recordar que la reforma de 2017 movió municipios entre condados y que sus códigos ISO cambiaron en 2020; comprobarlo, y si es así hace falta otra fuente |
-| Turquía | 81 provincias | provincias | directo (son muchas: pide zonas) |
+| Turquía | 81 provincias | provincias | **hecho**, sin zonas: sus siete regiones geográficas no vienen en NE y repartirlas a mano sin fuente no es de fiar |
 | Albania | 12 condados | condados | **hecho** |
 | Bielorrusia | 6 regiones + Minsk | regiones | directo |
 | Croacia | 20 condados + Zagreb (20 códigos distintos) | condados | **hecho** (NE daba a Požega-Eslavonia el código de su vecina: corregido) |
@@ -57,9 +57,9 @@ Madeira) y Rumanía (distritos).
 | Italia | 110 provincias; 20 regiones en `region` | regiones | **hecho** (fundiendo) |
 | Irlanda | 34 unidades, 26 códigos ISO | los 26 condados tradicionales | **hecho** (fundiendo por código) |
 | Reino Unido | 232 unidades de una docena de tipos | las 4 naciones | **hecho** (fundiendo por `geonunit`) |
-| Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | fundir las ciudades en su condado |
+| Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | **hecho** (cada ciudad, fundida con su condado) |
 | Finlandia | 18 unidades (14 «provincias» + 4 «regiones») | regiones | revisar: no cuadra con las regiones vigentes |
-| Serbia | 24 distritos + Belgrado | distritos | directo (Kosovo va aparte, como en el mapa del mundo) |
+| Serbia | 24 distritos + Belgrado | distritos | **hecho** (Kosovo va aparte, como en el mapa del mundo) |
 | Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024) |
 | Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado |
 | Eslovenia | 193 unidades (municipios) | regiones estadísticas en `region` (12) | fundir, y no es un nivel que se estudie |
@@ -76,7 +76,7 @@ Madeira) y Rumanía (distritos).
 ## Lo que falta para seguir
 
 1. **Fundir**: hecho (`fundir` en el fichero del mapa: el campo de NE que dice a qué unidad pertenece
-   cada pieza). Queda Hungría (hay que ver cómo reunir cada ciudad con su condado).
+   cada pieza). En Hungría, `renombrar` da antes a cada ciudad el código de su condado.
    Irlanda se funde por código ISO. Dos de sus capitales no son inequívocas y se acepta la segunda
    al escribir: Tipperary (Clonmel y Nenagh) y Waterford (Waterford y Dungarvan).
 2. **Tipos de unidad nuevos** en `src/game/maps.ts`: hoy hay «provincia», «estado», «estado
@@ -96,4 +96,6 @@ Madeira) y Rumanía (distritos).
    español allí), que van por elaboración propia.
 6. **Decisiones**: Ucrania y Rusia (Crimea). Kosovo no es una decisión pendiente: el mapa del
    mundo ya lo trata como país.
-7. **Turquía** (81 provincias): directa, pero pide zonas para que las partidas tengan sentido.
+7. **Lo que queda de Europa** necesita verificar algo antes (Dinamarca, Finlandia, Bulgaria,
+   Estonia) u otra fuente de fronteras (Noruega, Letonia, Eslovenia, Macedonia del Norte, Malta,
+   Montenegro, Moldavia, Bosnia).

@@ -734,6 +734,11 @@ const gl: Record<string, string> = {
   'Lituania': 'Lituania',
   'Croacia': 'Croacia',
   'Albania': 'Albania',
+
+  // ── Mapas de un país: Serbia, Hungría y Turquía ──
+  'Serbia': 'Serbia',
+  'Hungría': 'Hungría',
+  'Turquía': 'Turquía',
 };
 
 export default gl;

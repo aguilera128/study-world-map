@@ -114,6 +114,11 @@ export const COUNTRY_MAPS = {
   lt: { title: 'Lituania', iso: 'LTU', unit: 'condado', context: 'lt', zones: [] },
   hr: { title: 'Croacia', iso: 'HRV', unit: 'condado', context: 'hr', zones: [] },
   al: { title: 'Albania', iso: 'ALB', unit: 'condado', context: 'al', zones: [] },
+  // Distritos de Serbia («Bezirk» en alemán), condados de Hungría («Komitat», «comitat») y las 81
+  // provincias de Turquía.
+  rs: { title: 'Serbia', iso: 'SRB', unit: 'distrito', context: 'rs', zones: [] },
+  hu: { title: 'Hungría', iso: 'HUN', unit: 'condado', context: 'hu', zones: [] },
+  tr: { title: 'Turquía', iso: 'TUR', unit: 'provincia', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

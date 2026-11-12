@@ -735,6 +735,11 @@ const ca: Record<string, string> = {
   'Lituania': 'Lituània',
   'Croacia': 'Croàcia',
   'Albania': 'Albània',
+
+  // ── Mapas de un país: Serbia, Hungría y Turquía ──
+  'Serbia': 'Sèrbia',
+  'Hungría': 'Hongria',
+  'Turquía': 'Turquia',
 };
 
 export default ca;

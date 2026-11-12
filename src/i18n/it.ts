@@ -776,6 +776,11 @@ const it: Record<string, string> = {
   'Lituania': 'Lituania',
   'Croacia': 'Croazia',
   'Albania': 'Albania',
+
+  // ── Mapas de un país: Serbia, Hungría y Turquía ──
+  'Serbia': 'Serbia',
+  'Hungría': 'Ungheria',
+  'Turquía': 'Turchia',
 };
 
 export default it;

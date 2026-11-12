@@ -833,6 +833,33 @@ const zh: Record<string, string> = {
   'Lituania': '立陶宛',
   'Croacia': '克罗地亚',
   'Albania': '阿尔巴尼亚',
+
+  // ── 州（匈牙利） ──
+  '{n} condados|hu': '{n} 个州',
+  'condado a condado.|hu': '一州一州地学。',
+  'Condados|hu': '州',
+  'Condados que entran|hu': '包含的州',
+  'condado|hu': '个州',
+  'condados|hu': '个州',
+  'Dominas {n} de {total} condados|hu': '已掌握 {n} / {total} 个州',
+  'Estudia los condados antes de jugar|hu': '先学习各州，再开始',
+  'Practicar estos condados →|hu': '练习这些州 →',
+  'Buscar condado o capital…|hu': '搜索州或首府…',
+  'Buscar condado o capital|hu': '搜索州或首府',
+  'No hay ningún condado con ese nombre.|hu': '没有叫这个名字的州。',
+  '¿Qué condado es el señalado?|hu': '标出的是哪个州？',
+  '¿De qué condado es la capital?|hu': '这是哪个州的首府？',
+  'Toca el condado en el mapa|hu': '在地图上点出这个州',
+  'Escribe el condado…|hu': '输入州名…',
+  'Buscando el condado|hu': '找州',
+  'Te damos el nombre de un condado y lo buscas en el mapa.|hu': '我们给出州名，你在地图上找到它。',
+  'Señalamos un condado en el mapa y dices cuál es.|hu': '我们在地图上标出一个州，你说出它是哪个州。',
+  'Une cada condado con su capital.|hu': '把每个州和它的首府配对。',
+
+  // ── Mapas de un país: Serbia, Hungría y Turquía ──
+  'Serbia': '塞尔维亚',
+  'Hungría': '匈牙利',
+  'Turquía': '土耳其',
 };
 
 export default zh;

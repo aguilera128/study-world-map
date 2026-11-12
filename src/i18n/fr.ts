@@ -794,6 +794,33 @@ const fr: Record<string, string> = {
   'Lituania': 'Lituanie',
   'Croacia': 'Croatie',
   'Albania': 'Albanie',
+
+  // ── Hongrie «comitat» ──
+  '{n} condados|hu': '{n} comitats',
+  'condado a condado.|hu': 'comitat par comitat.',
+  'Condados|hu': 'Comitats',
+  'Condados que entran|hu': 'Comitats inclus',
+  'condado|hu': 'comitat',
+  'condados|hu': 'comitats',
+  'Dominas {n} de {total} condados|hu': 'Vous maîtrisez {n} comitats sur {total}',
+  'Estudia los condados antes de jugar|hu': 'Étudiez les comitats avant de jouer',
+  'Practicar estos condados →|hu': 'S’entraîner avec ces comitats →',
+  'Buscar condado o capital…|hu': 'Chercher un comitat ou un chef-lieu…',
+  'Buscar condado o capital|hu': 'Chercher un comitat ou un chef-lieu',
+  'No hay ningún condado con ese nombre.|hu': 'Aucun comitat ne porte ce nom.',
+  '¿Qué condado es el señalado?|hu': 'Quel est le comitat indiqué ?',
+  '¿De qué condado es la capital?|hu': 'De quel comitat est-ce le chef-lieu ?',
+  'Toca el condado en el mapa|hu': 'Touchez le comitat sur la carte',
+  'Escribe el condado…|hu': 'Écrivez le comitat…',
+  'Buscando el condado|hu': 'En cherchant le comitat',
+  'Te damos el nombre de un condado y lo buscas en el mapa.|hu': 'Nous vous donnons le nom d’un comitat et vous le cherchez sur la carte.',
+  'Señalamos un condado en el mapa y dices cuál es.|hu': 'Nous indiquons un comitat sur la carte et vous dites lequel c’est.',
+  'Une cada condado con su capital.|hu': 'Associez chaque comitat à son chef-lieu.',
+
+  // ── Mapas de un país: Serbia, Hungría y Turquía ──
+  'Serbia': 'Serbie',
+  'Hungría': 'Hongrie',
+  'Turquía': 'Turquie',
 };
 
 export default fr;

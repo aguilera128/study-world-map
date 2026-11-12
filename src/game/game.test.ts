@@ -720,6 +720,20 @@ describe('mapas de un país', () => {
     expect(croatia.countries[croatia.locate(18.01, 45.17)].id).toBe('HR-12');
   });
 
+  it('Hungría: las ciudades con rango de condado se funden con el suyo; Serbia: cada distrito, con su código', () => {
+    const hungary = new Atlas(JSON.parse(readFileSync('public/data/hu/atlas.json', 'utf8')) as RawAtlas, 'hu');
+    expect(hungary.quizzable.length).toBe(20);
+    // Debrecen cae en Hajdú-Bihar, Szeged en Csongrád-Csanád y Sopron en Győr-Moson-Sopron.
+    expect(hungary.countries[hungary.locate(21.63, 47.53)].id).toBe('HU-HB');
+    expect(hungary.countries[hungary.locate(20.15, 46.25)].id).toBe('HU-CS');
+    expect(hungary.countries[hungary.locate(16.59, 47.68)].id).toBe('HU-GS');
+    const serbia = new Atlas(JSON.parse(readFileSync('public/data/rs/atlas.json', 'utf8')) as RawAtlas, 'rs');
+    // Natural Earth llama igual a dos distritos: Kruševac cae en Rasina y Jagodina en Pomoravlje.
+    expect(serbia.countries[serbia.locate(21.33, 43.58)].id).toBe('RS-19');
+    expect(serbia.countries[serbia.locate(21.26, 43.98)].id).toBe('RS-13');
+    expect(serbia.countries[serbia.locate(20.46, 44.8)].id).toBe('RS-00');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);
