@@ -84,7 +84,8 @@ Numeración de pasos (`Step`) en los paneles: 1 Reto, 2 Países, 3 Preguntas.
 ## El mapa
 
 - **Países** en seis tonos apagados que nunca coinciden entre vecinos; se levantan al señalarlos.
-- **Imagen de satélite** sobre la tierra de entrada (es una capa: se puede quitar). Con ella el país
+- **Imagen de satélite** sobre la tierra, como capa que se enciende desde el panel de capas (de
+  entrada va apagada: se ven los países en sus tonos). Con ella el país
   señalado no se tiñe, se marca con un contorno amarillo con ribete oscuro.
 - **En las partidas**, mapa mudo de tonos apagados: sin foto y, en los mapas de países, sin relieve,
   con las fronteras más contrastadas y algo más gruesas, que es lo que hay que leer.
