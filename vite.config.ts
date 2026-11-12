@@ -43,8 +43,36 @@ function preloadCritical(): Plugin {
   };
 }
 
+/**
+ * En desarrollo, sirve /api/tiempo con la misma función que despliega Vercel (api/tiempo.ts), para
+ * poder ver las capas del tiempo de ahora. Las otras dos funciones necesitan la base de datos y no
+ * se sirven aquí.
+ */
+function devWeather(): Plugin {
+  return {
+    name: 'dev-weather',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/api/tiempo', (req, res) => {
+        void (async () => {
+          try {
+            const { default: handler } = (await server.ssrLoadModule('/api/tiempo.ts')) as { default: { fetch(request: Request): Promise<Response> } };
+            const response = await handler.fetch(new Request(`http://localhost${req.originalUrl ?? '/api/tiempo'}`, { method: req.method }));
+            res.statusCode = response.status;
+            response.headers.forEach((value, key) => res.setHeader(key, value));
+            res.end(Buffer.from(await response.arrayBuffer()));
+          } catch (e) {
+            res.statusCode = 500;
+            res.end(String(e));
+          }
+        })();
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), preloadCritical()],
+  plugins: [react(), tailwindcss(), preloadCritical(), devWeather()],
   build: {
     target: 'es2022',
     // three.js va en su propio chunk (se carga con el motor del mapa) y supera el aviso por defecto

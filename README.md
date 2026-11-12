@@ -6,12 +6,17 @@ que insiste en lo que todavía no te sabes.
 
 Casi todo funciona en el navegador y no hay cuentas: el progreso se guarda en el propio dispositivo.
 Solo si se crea un código para seguir en otro dispositivo, se guarda también en una base de datos
-(una única función de Vercel, `api/sync.ts`).
+(una función de Vercel, `api/sync.ts`); otra guarda los rankings y una tercera sirve el tiempo de ahora.
 
 Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.md](DESIGN.md) (diseño).
 
 ## Qué incluye
 
+- **El tiempo de ahora.** Cuatro capas de meteorología, apagadas de entrada: temperatura, nubes y
+  viento según el modelo GFS de la NOAA (un dato por grado, del paso de tres horas más cercano) y
+  la lluvia y la nieve que ha medido la misión GPM de la NASA (cada media hora, con unas cinco
+  horas de retraso). La leyenda dice de qué hora es cada dato. Los pide una función propia
+  (`api/tiempo.ts`): el navegador no habla con ningún tercero.
 - **Dos vistas del mismo mapa.** Globo 3D y mapa plano (proyección Natural Earth), con una
   transición animada entre ambos. Se arrastra, se hace zoom con la rueda o pellizcando, y los
   países se levantan al pasar el cursor.
@@ -265,6 +270,9 @@ que la lista sea coherente y avisa si no.
 - Fronteras de los distritos de Moldavia: ACNUR y OCHA, 2020 (CC BY 3.0 IGO), vía
   [geoBoundaries](https://www.geoboundaries.org/). Natural Earth parte Transnistria y no trae Dubăsari.
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
+- Temperatura, nubes y viento de ahora: modelo GFS de NOAA/NCEP (dominio público), del
+  [programa de datos abiertos de la NOAA](https://registry.opendata.aws/noaa-gfs-bdp-pds/).
+- Lluvia y nieve de ahora: IMERG (misión GPM), NASA, vía [GIBS](https://www.earthdata.nasa.gov/engage/open-data-services-software/earthdata-developer-portal/gibs-api).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
 - Banderas: [flag-icons](https://github.com/lipis/flag-icons) (MIT).

@@ -321,12 +321,12 @@ const eu: Record<string, string> = {
   'Baja': 'Baxua',
   'Media': 'Ertaina',
   'Alta': 'Altua',
-  'menos de {n} hab./km²': '{n} bizt./km² baino gutxiago',
-  'de {a} a {b} hab./km²': '{a} eta {b} bizt./km² artean',
-  'más de {n} hab./km²': '{n} bizt./km² baino gehiago',
-  '¿Su densidad de población es alta, media o baja?': 'Biztanleria-dentsitatea altua, ertaina ala baxua da?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Esan herrialde bakoitzaren biztanleria-dentsitatea altua, ertaina ala baxua den.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} biztanle eta {d} bizt./km². Dentsitatea: {level}.',
+  'menos de {n} millones': '{n} milioi baino gutxiago',
+  'de {a} a {b} millones': '{a} eta {b} milioi artean',
+  'más de {n} millones': '{n} milioi baino gehiago',
+  '¿Su población es alta, media o baja?': 'Biztanleria altua, ertaina ala baxua da?',
+  'Di si la población de cada país es alta, media o baja.': 'Esan herrialde bakoitzaren biztanleria altua, ertaina ala baxua den.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} biztanle. Biztanleria: {level}.',
   'Densidad': 'Dentsitatea',
   'Habitantes': 'Biztanleak',
   'De cuatro países, di cuál tiene más habitantes.': 'Lau herrialderen artean, esan zeinek dituen biztanle gehien.',
@@ -760,6 +760,16 @@ const eu: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Zipre',
   'Moldavia': 'Moldavia',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Eguraldia',
+  'Nubes': 'Hodeiak',
+  'Lluvia y nieve': 'Euria eta elurra',
+  'Viento': 'Haizea',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Tenperatura, hodeiak eta haizea: GFS eredua (NOAA), {time}rako iragarpena.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Euria eta elurra: GPM sateliteak (NASA), {time} neurtua. Berdea, ahula; gorria, handia; urdina, elurra.',
+  'No se ha podido cargar el tiempo de ahora.': 'Ezin izan da oraingo eguraldia kargatu.',
+  'Cargando el tiempo de ahora…': 'Oraingo eguraldia kargatzen…',
 };
 
 export default eu;

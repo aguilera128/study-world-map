@@ -320,12 +320,12 @@ const fr: Record<string, string> = {
   'Baja': 'Faible',
   'Media': 'Moyenne',
   'Alta': 'Élevée',
-  'menos de {n} hab./km²': 'moins de {n} hab./km²',
-  'de {a} a {b} hab./km²': 'de {a} à {b} hab./km²',
-  'más de {n} hab./km²': 'plus de {n} hab./km²',
-  '¿Su densidad de población es alta, media o baja?': 'Sa densité de population est-elle élevée, moyenne ou faible ?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Dites si la densité de population de chaque pays est élevée, moyenne ou faible.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country} : {n} habitants et {d} hab./km². Densité {level}.',
+  'menos de {n} millones': 'moins de {n} millions',
+  'de {a} a {b} millones': 'de {a} à {b} millions',
+  'más de {n} millones': 'plus de {n} millions',
+  '¿Su población es alta, media o baja?': 'Sa population est-elle élevée, moyenne ou faible ?',
+  'Di si la población de cada país es alta, media o baja.': 'Dites si la population de chaque pays est élevée, moyenne ou faible.',
+  '{country}: {n} habitantes. Población {level}.': '{country} : {n} habitants. Population {level}.',
   'Densidad': 'Densité',
   'Habitantes': 'Habitants',
   'De cuatro países, di cuál tiene más habitantes.': 'Parmi quatre pays, dites lequel a le plus d’habitants.',
@@ -862,6 +862,16 @@ const fr: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Chypre',
   'Moldavia': 'Moldavie',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Météo',
+  'Nubes': 'Nuages',
+  'Lluvia y nieve': 'Pluie et neige',
+  'Viento': 'Vent',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Température, nuages et vent : modèle GFS (NOAA), prévision pour {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Pluie et neige : satellites GPM (NASA), mesuré {time}. Vert, faible ; rouge, forte ; bleu, neige.',
+  'No se ha podido cargar el tiempo de ahora.': 'Impossible de charger la météo actuelle.',
+  'Cargando el tiempo de ahora…': 'Chargement de la météo actuelle…',
 };
 
 export default fr;

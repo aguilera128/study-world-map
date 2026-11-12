@@ -76,7 +76,6 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
               {country.capitalNote && <span className="font-normal text-ink-soft"> ({country.capitalNote})</span>}
             </Fact>
           )}
-          {/* nivel de densidad, para el reto de población */}
           {country.continents.length > 0 && <Fact label={t('Continente')}>{atlas.continents[country.continents[0]]}</Fact>}
           {/* En el mundo, solo donde afina el continente (América); en el mapa de un país, la comunidad. */}
           {country.regions.length > 0 && (country.regions[0].startsWith('am-') || atlas.frame) && (
@@ -97,14 +96,11 @@ function CountryCard({ atlas, country }: { atlas: Atlas; country: Country }) {
             <Fact label={t('Población')}>
               {country.population.toLocaleString(LOCALE)}
               {country.populationYear && <span className="font-normal text-ink-soft"> ({country.populationYear})</span>}
+              {/* el nivel (alta, media o baja), que es lo que pregunta el reto de población */}
+              {level && <span className="font-normal text-ink-soft"> · {levelLabel(level).toLowerCase()}</span>}
             </Fact>
           )}
-          {level && (
-            <Fact label={t('Densidad')}>
-              {t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}
-              <span className="font-normal text-ink-soft"> · {levelLabel(level).toLowerCase()}</span>
-            </Fact>
-          )}
+          {density(country) !== null && <Fact label={t('Densidad')}>{t('{n} hab./km²', { n: Math.round(density(country)!).toLocaleString(LOCALE) })}</Fact>}
           {currencies.length > 0 && <Fact label={t('Moneda')}>{currencies.join(', ')}</Fact>}
           {languages.length > 0 && <Fact label={t('Idiomas')} wide={languages.length > 2}>{languages.join(', ')}</Fact>}
           {neighbors.length > 0 && (

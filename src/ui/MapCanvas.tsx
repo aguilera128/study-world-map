@@ -5,6 +5,7 @@ import { climateText } from '../game/climate';
 import { computeMapState } from '../app/mapState';
 import { gameLayers, useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
 import { clockIn } from '../app/time';
+import { useWeather } from '../app/weather';
 import type { Atlas } from '../atlas/atlas';
 import { takeMesh } from '../atlas/meshAsync';
 import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
@@ -323,6 +324,8 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   useEffect(() => engine?.setSatellite(layers.satellite), [engine, layers.satellite]);
   useEffect(() => engine?.setSeaDepth(layers.depth), [engine, layers.depth]);
   useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);
+  // El tiempo de ahora no va con el planeta de dibujos, que es una broma y no un mapa.
+  useWeather(engine, { temp: layers.weatherTemp && !toon, cloud: layers.weatherCloud && !toon, rain: layers.weatherRain && !toon, wind: layers.weatherWind && !toon });
   useEffect(() => {
     engine?.setGuides(
       layers.guides

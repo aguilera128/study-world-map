@@ -48,6 +48,11 @@ export const LAYERS = {
   tectonics: t('Placas y volcanes'),
   features: t('Montañas, ríos y mares'),
   satellite: t('Imagen de satélite'),
+  // el tiempo de ahora: se piden sus datos al encenderlas (./weather.ts)
+  weatherTemp: t('Temperatura'),
+  weatherCloud: t('Nubes'),
+  weatherRain: t('Lluvia y nieve'),
+  weatherWind: t('Viento'),
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
   stars: t('Estrellas'),
@@ -60,13 +65,15 @@ export const LAYERS = {
 export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
-const OFF_BY_DEFAULT: LayerId[] = ['satellite', 'climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population'];
+const WEATHER: LayerId[] = ['weatherTemp', 'weatherCloud', 'weatherRain', 'weatherWind'];
+const OFF_BY_DEFAULT: LayerId[] = ['satellite', 'climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', ...WEATHER];
 /**
  * Capas que se apartan durante una partida, las tenga puestas o no quien juega: tapan el mapa mudo
  * (la foto de satélite), lo llenan de líneas y rótulos (ríos, placas, corrientes, líneas
- * imaginarias, husos) o son colores de otro tema (climas, densidad). Al salir vuelven como estaban.
+ * imaginarias, husos) o son colores de otro tema (climas, densidad, el tiempo de ahora). Al salir
+ * vuelven como estaban.
  */
-const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population'];
+const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population', ...WEATHER];
 /**
  * Las capas que se apartan jugando en un mapa. En los de países también el relieve: su sombreado
  * compite con las fronteras, que es lo que hay que leer. En el de geografía física se queda, porque
@@ -271,7 +278,16 @@ export const useProgress = create<ProgressState>()(
     }),
     {
       name: 'mapamundi:progreso',
-      version: 1,
+      version: 2,
+      // Versión 2: el reto «Población» deja de preguntar la densidad y pregunta la población total.
+      // Lo aprendido y las marcas de ese reto eran de otra pregunta: se descartan (solo las suyas).
+      migrate: (persisted, version) => {
+        const saved = (persisted ?? {}) as { progress?: Progress; bests?: Record<string, Best> };
+        if (version >= 2) return saved as ProgressState;
+        const progress = Object.fromEntries(Object.entries(saved.progress ?? {}).map(([id, modes]) => [id, Object.fromEntries(Object.entries(modes ?? {}).filter(([mode]) => mode !== 'population'))]));
+        const bests = Object.fromEntries(Object.entries(saved.bests ?? {}).filter(([key]) => !key.startsWith('population/')));
+        return { ...saved, progress, bests } as unknown as ProgressState;
+      },
       partialize: ({ progress, bests, daily }) => ({ progress, bests, daily }),
       // Igual que con los ajustes: lo guardado se valida antes de usarlo.
       merge: (persisted, current) => ({ ...current, ...cleanSaved(persisted) }),

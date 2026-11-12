@@ -16,27 +16,29 @@ export function density(country: Pick<Country, 'population' | 'areaKm2'>): numbe
 /** Tramo (0…4) de una densidad. */
 export const densityClass = (value: number): number => DENSITY_LIMITS.filter((limit) => value >= limit).length;
 
-// Para el reto «Población»: la densidad de un país, en tres niveles. No hay un criterio oficial;
-// se usan los cortes que aparecen en material de clase de Geografía de ESO: baja por debajo de
-// 10 hab./km² y alta por encima de 100 (la media mundial ronda los 50). Si el examen usa otros, se
-// cambian aquí.
+// Para el reto «Población»: la población total de un país (no su densidad), en tres niveles. No hay
+// un criterio oficial; se usan los cortes con los que se da en clase: baja por debajo de 40 millones
+// de habitantes, media de 40 a 100 y alta a partir de 100. En clase la alta se da como «de 100 a
+// 350 millones»; los dos países que pasan de ahí (China e India) cuentan también como alta. Si el
+// examen usa otros cortes, se cambian aquí.
 
 export type LevelKey = 'baja' | 'media' | 'alta';
 export const LEVEL_KEYS: LevelKey[] = ['baja', 'media', 'alta'];
-export const LEVEL_LIMITS = [10, 100];
+/** Límites entre niveles, en millones de habitantes. */
+export const LEVEL_LIMITS = [40, 100];
 
-/** Nivel de densidad de un país, o null si no hay dato. */
-export function levelOf(country: Pick<Country, 'population' | 'areaKm2'>): LevelKey | null {
-  const value = density(country);
-  return value === null ? null : LEVEL_KEYS[LEVEL_LIMITS.filter((limit) => value >= limit).length];
+/** Nivel de población de un país, o null si no hay dato. */
+export function levelOf(country: Pick<Country, 'population'>): LevelKey | null {
+  const people = country.population;
+  return people ? LEVEL_KEYS[LEVEL_LIMITS.filter((limit) => people >= limit * 1e6).length] : null;
 }
 
 export const levelLabel = (key: LevelKey): string => ({ baja: t('Baja'), media: t('Media'), alta: t('Alta') })[key];
 
-/** «menos de 25 hab./km²» */
+/** «menos de 40 millones» */
 export const levelRange = (key: LevelKey): string =>
   ({
-    baja: t('menos de {n} hab./km²', { n: LEVEL_LIMITS[0] }),
-    media: t('de {a} a {b} hab./km²', { a: LEVEL_LIMITS[0], b: LEVEL_LIMITS[1] }),
-    alta: t('más de {n} hab./km²', { n: LEVEL_LIMITS[1] }),
+    baja: t('menos de {n} millones', { n: LEVEL_LIMITS[0] }),
+    media: t('de {a} a {b} millones', { a: LEVEL_LIMITS[0], b: LEVEL_LIMITS[1] }),
+    alta: t('más de {n} millones', { n: LEVEL_LIMITS[1] }),
   })[key];

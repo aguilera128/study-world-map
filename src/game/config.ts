@@ -86,7 +86,7 @@ export const MODES: ModeDef[] = [
   {
     id: 'population',
     title: t('Población'),
-    summary: t('Di si la densidad de población de cada país es alta, media o baja.'),
+    summary: t('Di si la población de cada país es alta, media o baja.'),
     answers: ['choice', 'guided'],
   },
   {

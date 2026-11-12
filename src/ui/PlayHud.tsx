@@ -1,4 +1,4 @@
-import { density, levelLabel, levelOf } from '../game/population';
+import { levelLabel, levelOf } from '../game/population';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { formatCoords, formatTime } from '../app/format';
@@ -51,7 +51,7 @@ function Prompt({ config, country, resolved }: { config: GameConfig; country: Co
       main = resolved ? country.name : <span className="text-ink-faint">¿…?</span>;
       break;
     case 'population':
-      label = t('¿Su densidad de población es alta, media o baja?');
+      label = t('¿Su población es alta, media o baja?');
       main = country.name;
       break;
     case 'coords':
@@ -120,10 +120,9 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       const level = levelOf(country);
       return (
         <>
-          {tx('{country}: {n} habitantes y {d} hab./km². Densidad {level}.', {
+          {tx('{country}: {n} habitantes. Población {level}.', {
             country: country.name,
             n: (country.population ?? 0).toLocaleString(LOCALE),
-            d: Math.round(density(country) ?? 0).toLocaleString(LOCALE),
             level: strong(level ? levelLabel(level).toLowerCase() : ''),
           })}
         </>

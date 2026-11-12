@@ -321,12 +321,12 @@ const ca: Record<string, string> = {
   'Baja': 'Baixa',
   'Media': 'Mitjana',
   'Alta': 'Alta',
-  'menos de {n} hab./km²': 'menys de {n} hab./km²',
-  'de {a} a {b} hab./km²': 'de {a} a {b} hab./km²',
-  'más de {n} hab./km²': 'més de {n} hab./km²',
-  '¿Su densidad de población es alta, media o baja?': 'La seua densitat de població és alta, mitjana o baixa?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Digues si la densitat de població de cada país és alta, mitjana o baixa.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} habitants i {d} hab./km². Densitat {level}.',
+  'menos de {n} millones': 'menys de {n} milions',
+  'de {a} a {b} millones': 'de {a} a {b} milions',
+  'más de {n} millones': 'més de {n} milions',
+  '¿Su población es alta, media o baja?': 'La seua població és alta, mitjana o baixa?',
+  'Di si la población de cada país es alta, media o baja.': 'Digues si la població de cada país és alta, mitjana o baixa.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} habitants. Població {level}.',
   'Densidad': 'Densitat',
   'Habitantes': 'Habitants',
   'De cuatro países, di cuál tiene más habitantes.': 'De quatre països, digues quin té més habitants.',
@@ -760,6 +760,16 @@ const ca: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Xipre',
   'Moldavia': 'Moldàvia',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Meteorologia',
+  'Nubes': 'Núvols',
+  'Lluvia y nieve': 'Pluja i neu',
+  'Viento': 'Vent',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatura, núvols i vent: model GFS (NOAA), previsió per a {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Pluja i neu: satèl·lits GPM (NASA), mesurat {time}. Verd, feble; roig, forta; blau, neu.',
+  'No se ha podido cargar el tiempo de ahora.': 'No s’ha pogut carregar l’oratge d’ara.',
+  'Cargando el tiempo de ahora…': 'Carregant l’oratge d’ara…',
 };
 
 export default ca;

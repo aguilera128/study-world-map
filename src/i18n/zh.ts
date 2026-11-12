@@ -320,12 +320,12 @@ const zh: Record<string, string> = {
   'Baja': '低',
   'Media': '中',
   'Alta': '高',
-  'menos de {n} hab./km²': '低于 {n} 人/km²',
-  'de {a} a {b} hab./km²': '{a} 至 {b} 人/km²',
-  'más de {n} hab./km²': '高于 {n} 人/km²',
-  '¿Su densidad de población es alta, media o baja?': '它的人口密度是高、中还是低？',
-  'Di si la densidad de población de cada país es alta, media o baja.': '说出每个国家的人口密度是高、中还是低。',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}：{n} 人，{d} 人/km²。密度：{level}。',
+  'menos de {n} millones': '少于 {n} 百万',
+  'de {a} a {b} millones': '{a} 至 {b} 百万',
+  'más de {n} millones': '多于 {n} 百万',
+  '¿Su población es alta, media o baja?': '它的人口数量是高、中还是低？',
+  'Di si la población de cada país es alta, media o baja.': '说出每个国家的人口数量是高、中还是低。',
+  '{country}: {n} habitantes. Población {level}.': '{country}：{n} 人。人口：{level}。',
   'Densidad': '密度',
   'Habitantes': '人口数量',
   'De cuatro países, di cuál tiene más habitantes.': '在四个国家中，说出哪个人口最多。',
@@ -942,6 +942,16 @@ const zh: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': '塞浦路斯',
   'Moldavia': '摩尔多瓦',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': '实时天气',
+  'Nubes': '云',
+  'Lluvia y nieve': '雨雪',
+  'Viento': '风',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': '气温、云和风：GFS 模式（NOAA），{time} 的预报。',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': '雨雪：GPM 卫星（NASA），{time} 测得。绿色为小雨，红色为大雨，蓝色为雪。',
+  'No se ha podido cargar el tiempo de ahora.': '无法加载当前天气。',
+  'Cargando el tiempo de ahora…': '正在加载当前天气…',
 };
 
 export default zh;

@@ -320,12 +320,12 @@ const it: Record<string, string> = {
   'Baja': 'Bassa',
   'Media': 'Media',
   'Alta': 'Alta',
-  'menos de {n} hab./km²': 'meno di {n} ab./km²',
-  'de {a} a {b} hab./km²': 'da {a} a {b} ab./km²',
-  'más de {n} hab./km²': 'più di {n} ab./km²',
-  '¿Su densidad de población es alta, media o baja?': 'La sua densità di popolazione è alta, media o bassa?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Di’ se la densità di popolazione di ogni paese è alta, media o bassa.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} abitanti e {d} ab./km². Densità {level}.',
+  'menos de {n} millones': 'meno di {n} milioni',
+  'de {a} a {b} millones': 'da {a} a {b} milioni',
+  'más de {n} millones': 'più di {n} milioni',
+  '¿Su población es alta, media o baja?': 'La sua popolazione è alta, media o bassa?',
+  'Di si la población de cada país es alta, media o baja.': 'Di’ se la popolazione di ogni paese è alta, media o bassa.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} abitanti. Popolazione {level}.',
   'Densidad': 'Densità',
   'Habitantes': 'Abitanti',
   'De cuatro países, di cuál tiene más habitantes.': 'Tra quattro paesi, di’ quale ha più abitanti.',
@@ -823,6 +823,16 @@ const it: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Cipro',
   'Moldavia': 'Moldavia',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Meteo',
+  'Nubes': 'Nuvole',
+  'Lluvia y nieve': 'Pioggia e neve',
+  'Viento': 'Vento',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatura, nuvole e vento: modello GFS (NOAA), previsione per {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Pioggia e neve: satelliti GPM (NASA), misurato {time}. Verde, debole; rosso, forte; blu, neve.',
+  'No se ha podido cargar el tiempo de ahora.': 'Impossibile caricare il meteo attuale.',
+  'Cargando el tiempo de ahora…': 'Caricamento del meteo attuale…',
 };
 
 export default it;

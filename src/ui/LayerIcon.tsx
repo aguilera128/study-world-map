@@ -171,6 +171,36 @@ const ICONS: Record<LayerId, ReactNode> = {
       <circle cx="5.600" cy="11" r="0.800" {...fine} />
     </>
   ),
+  // Temperatura: el termómetro, con el depósito lleno.
+  weatherTemp: (
+    <>
+      <path d="M10 14.200V5.500a2 2 0 0 1 4 0v8.700a4 4 0 1 1-4 0z" />
+      <circle cx="12" cy="17.500" r="1.700" {...solid} />
+      <path d="M12 9v7" {...fine} />
+    </>
+  ),
+  // Nubes: una nube, con su masa en aguada.
+  weatherCloud: (
+    <>
+      <path d="M7.500 18.500h9.500a3.800 3.800 0 0 0 .500-7.570 5.300 5.300 0 0 0-10.200 1.270A3.200 3.200 0 0 0 7.500 18.500z" {...wash} />
+      <path d="M7.500 18.500h9.500a3.800 3.800 0 0 0 .500-7.570 5.300 5.300 0 0 0-10.200 1.270A3.200 3.200 0 0 0 7.500 18.500z" />
+    </>
+  ),
+  // Lluvia y nieve: la nube y lo que cae de ella.
+  weatherRain: (
+    <>
+      <path d="M7.500 14.500h9.500a3.400 3.400 0 0 0 .450-6.770 4.800 4.800 0 0 0-9.250 1.140A2.900 2.900 0 0 0 7.500 14.500z" />
+      <path d="M8.500 17.500l-1 2.500M12.500 17.500l-1 2.500M16.500 17.500l-1 2.500" {...fine} />
+    </>
+  ),
+  // Viento: tres rachas que se rizan al final.
+  weatherWind: (
+    <>
+      <path d="M3 9h10.500a2.500 2.500 0 1 0-2.400-3.200" />
+      <path d="M3 13.500h15a2.500 2.500 0 1 1-2.400 3.200" />
+      <path d="M3 18h6.500" {...fine} />
+    </>
+  ),
   // Mi ubicación: la chincheta clavada en el suelo, con el cerco de donde estás.
   you: (
     <>

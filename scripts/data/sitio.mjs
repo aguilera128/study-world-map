@@ -17,4 +17,4 @@ export const TITULAR = {
 export const DONAR_URL = 'https://paypal.me/studyworldmap';
 
 /** Fecha de la última revisión de los textos legales (se muestra al pie de cada uno). */
-export const REVISION_LEGAL = '11 de noviembre de 2026';
+export const REVISION_LEGAL = '12 de noviembre de 2026';

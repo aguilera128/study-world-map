@@ -216,7 +216,7 @@ export function namesItsCapital(country: Pick<Country, 'name' | 'capital'>): boo
 
 /** Los países de una zona que entran en la partida de este reto: de ellos salen también las opciones. */
 function poolOf(atlas: Atlas, config: Pick<GameConfig, 'mode'>, countries: number[]): number[] {
-  // En el reto de población solo entran los países con dato de densidad.
+  // En el reto de población solo entran los países con dato de población.
   if (config.mode === 'population') return countries.filter((i) => levelOf(atlas.countries[i]) !== null);
   if (config.mode === 'inhabitants') return mostPopulated(atlas, countries);
   return countries;

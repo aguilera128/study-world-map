@@ -320,12 +320,12 @@ const en: Record<string, string> = {
   'Baja': 'Low',
   'Media': 'Medium',
   'Alta': 'High',
-  'menos de {n} hab./km²': 'under {n} people/km²',
-  'de {a} a {b} hab./km²': '{a} to {b} people/km²',
-  'más de {n} hab./km²': 'over {n} people/km²',
-  '¿Su densidad de población es alta, media o baja?': 'Is its population density high, medium or low?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Say whether each country’s population density is high, medium or low.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} inhabitants and {d} people/km². Density: {level}.',
+  'menos de {n} millones': 'under {n} million',
+  'de {a} a {b} millones': '{a} to {b} million',
+  'más de {n} millones': 'over {n} million',
+  '¿Su población es alta, media o baja?': 'Is its population high, medium or low?',
+  'Di si la población de cada país es alta, media o baja.': 'Say whether each country’s population is high, medium or low.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} inhabitants. Population: {level}.',
   'Densidad': 'Density',
   'Habitantes': 'Inhabitants',
   'De cuatro países, di cuál tiene más habitantes.': 'Out of four countries, say which has the most inhabitants.',
@@ -779,6 +779,16 @@ const en: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Cyprus',
   'Moldavia': 'Moldova',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Weather now',
+  'Nubes': 'Clouds',
+  'Lluvia y nieve': 'Rain and snow',
+  'Viento': 'Wind',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperature, clouds and wind: GFS model (NOAA), forecast for {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Rain and snow: GPM satellites (NASA), measured {time}. Green, light; red, heavy; blue, snow.',
+  'No se ha podido cargar el tiempo de ahora.': 'Could not load the current weather.',
+  'Cargando el tiempo de ahora…': 'Loading the current weather…',
 };
 
 export default en;

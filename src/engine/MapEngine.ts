@@ -57,6 +57,8 @@ import {
   SHEET_FRAG,
   SHEET_VERT,
   WALL_VERT,
+  WEATHER_FRAG,
+  WEATHER_VERT,
 } from './shaders';
 import type { ToonScene } from './toonScene';
 
@@ -150,7 +152,7 @@ const TILE_URL = `${TILE_STORE}/foto`; // Blue Marble Next Generation
 const LIGHT_TILE_URL = `${TILE_STORE}/luces`; // Black Marble 2016: solo la luz, en grises
 const LIFT = 0.024;
 /** Altura de cada capa sobre el océano (evita que parpadeen unas sobre otras). */
-const ALT = { fill: 0.002, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
+const ALT = { fill: 0.002, weather: 0.0024, line: 0.0027, frame: 0.003, marker: 0.004, shadow: -0.004 };
 const HOVER_LIFT = 0.34;
 /** Un país más pequeño que esto en pantalla (px) se señala con un marcador. */
 const MARKER_THRESHOLD = 8;
@@ -326,6 +328,7 @@ export class MapEngine {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uStreak: { value: 60 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
     fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 } },
     wall: { uWallTint: { value: 0.7 } },
+    weather: { uModel: { value: null as Texture | null }, uRain: { value: null as Texture | null }, uTemp: { value: 0 }, uCloud: { value: 0 }, uRainAmt: { value: 0 }, uWind: { value: 0 }, uInk: { value: new Vector3() } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
     graticule: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.55 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
     guide: { uWidth: { value: 1 }, uEmphWidth: { value: 1 }, uOpacity: { value: 0.85 }, uFlat: { value: 1 }, uCasing: { value: 0 }, uLine: { value: new Vector3() }, uLineEmph: { value: new Vector3() } },
@@ -356,6 +359,13 @@ export class MapEngine {
   private readonly halo: Mesh;
   private readonly sheetShadow: Mesh;
   private readonly frameLine: LineLoop;
+  /** Lámina del tiempo de ahora (temperatura, nubes, lluvia y viento): solo se dibuja con alguna capa encendida y sus datos cargados. */
+  private readonly weather: Mesh;
+  private weatherShown = { temp: false, cloud: false, rain: false, wind: false };
+  private modelTexture: DataTexture | null = null;
+  private rainTexture: Texture | null = null;
+  /** El viento se mueve: con él a la vista el mapa se sigue redibujando aunque esté quieto. */
+  private windy = false;
   private readonly disposables: { dispose(): void }[] = [];
   /** De dónde sale cada textura de imagen, para volver a pedirla si se pierde el contexto WebGL. */
   private readonly sources = new Map<Texture, { url: string; onLoad: () => void }>();
@@ -483,6 +493,10 @@ export class MapEngine {
     this.add(this.sheetShadow, 3, false);
     this.frameLine = new LineLoop(frameGeometry(), this.material(SHEET_VERT, SHEET_FRAG, ALT.frame, this.own.frame, blended));
     this.add(this.frameLine, 4);
+    // El tiempo de ahora, sobre los países y bajo las fronteras, que se siguen leyendo encima.
+    this.weather = new Mesh(ocean, this.material(WEATHER_VERT, WEATHER_FRAG, ALT.weather, { ...this.own.weather, uTime: this.own.ocean.uTime, uStreak: this.own.ocean.uStreak }, blended));
+    this.weather.visible = false;
+    this.add(this.weather, 4, false);
     this.add(new Mesh(lineGeometry(mesh), this.material(LINE_VERT, LINE_FRAG, ALT.line, this.own.line, blended)), 5);
     this.add(
       new Points(
@@ -697,6 +711,7 @@ export class MapEngine {
     this.own.halo.uOutline.value.copy(vec3(p.outline));
     this.own.shadow.uColor.value.copy(vec3(p.sheetShadow));
     this.own.frame.uColor.value.copy(vec3(p.line));
+    this.own.weather.uInk.value.copy(vec3(p.outline));
     this.hoverColor = rgb(p.hover);
     this.pulseColor = rgb(p.pulse);
     if (p.styles.length !== STYLE_COUNT) throw new Error('La paleta no define todos los estilos.');
@@ -1099,6 +1114,64 @@ export class MapEngine {
   setCurrents(on: boolean) {
     this.showCurrents = on;
     this.own.ocean.uFlowShow.value = on && this.flowReady ? 1 : 0;
+    this.invalidate();
+  }
+
+  /** Qué capas del tiempo de ahora se ven. Sus datos llegan aparte (setWeatherModel y setWeatherRain). */
+  setWeather(shown: { temp: boolean; cloud: boolean; rain: boolean; wind: boolean }) {
+    this.weatherShown = shown;
+    this.syncWeather();
+  }
+
+  /**
+   * Temperatura, viento y nubosidad del modelo: los píxeles RGBA de la imagen de src/weather/format.ts,
+   * por filas y empezando por arriba. `null` los retira.
+   */
+  setWeatherModel(pixels: Uint8Array | null, width = 0, height = 0) {
+    this.modelTexture?.dispose();
+    this.modelTexture = null;
+    if (pixels) {
+      const texture = new DataTexture(pixels, width, height, RGBAFormat, UnsignedByteType);
+      texture.colorSpace = NoColorSpace;
+      // Se interpola entre grados, y de un lado a otro del antimeridiano.
+      texture.magFilter = LinearFilter;
+      texture.minFilter = LinearFilter;
+      texture.wrapS = RepeatWrapping;
+      texture.needsUpdate = true;
+      this.modelTexture = texture;
+    }
+    this.own.weather.uModel.value = this.modelTexture;
+    this.syncWeather();
+  }
+
+  /** La lluvia medida: un lienzo con el mundo entero (el norte arriba, 180° O a la izquierda). `null` la retira. */
+  setWeatherRain(canvas: HTMLCanvasElement | null) {
+    this.rainTexture?.dispose();
+    this.rainTexture = null;
+    if (canvas) {
+      const texture = new Texture(canvas);
+      texture.colorSpace = NoColorSpace;
+      texture.flipY = false;
+      texture.magFilter = LinearFilter;
+      texture.minFilter = LinearFilter;
+      texture.generateMipmaps = false;
+      texture.needsUpdate = true;
+      this.rainTexture = texture;
+    }
+    this.own.weather.uRain.value = this.rainTexture;
+    this.syncWeather();
+  }
+
+  private syncWeather() {
+    const { temp, cloud, rain, wind } = this.weatherShown;
+    const model = this.modelTexture !== null;
+    const u = this.own.weather;
+    u.uTemp.value = temp && model ? 1 : 0;
+    u.uCloud.value = cloud && model ? 1 : 0;
+    u.uWind.value = wind && model ? 1 : 0;
+    u.uRainAmt.value = rain && this.rainTexture ? 1 : 0;
+    this.windy = u.uWind.value > 0;
+    this.weather.visible = u.uTemp.value + u.uCloud.value + u.uWind.value + u.uRainAmt.value > 0;
     this.invalidate();
   }
 
@@ -1916,7 +1989,7 @@ export class MapEngine {
     if (busyCamera || busyState || flying) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.wavy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
+    } else if ((this.wavy || this.windy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.
@@ -2163,6 +2236,8 @@ export class MapEngine {
     this.guideLabels?.dispose();
     this.graticuleLabels?.dispose();
     this.zoneLabels?.dispose();
+    this.modelTexture?.dispose();
+    this.rainTexture?.dispose();
     this.disposed = true;
     cancelAnimationFrame(this.raf);
     this.abort.abort();

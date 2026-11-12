@@ -22,7 +22,20 @@ describe('retos de población', () => {
     }
   });
 
-  it('densidad: solo entra quien tiene dato y la respuesta buena es su nivel', () => {
+  it('población: los niveles son los de clase, por población total y no por densidad', () => {
+    const level = (id: string) => levelOf(atlas.byIdOrThrow(id));
+    // Baja, menos de 40 millones; media, de 40 a 100; alta, a partir de 100 (China e India incluidas).
+    expect(['PRT', 'NLD', 'AUS', 'BEL'].map(level)).toEqual(['baja', 'baja', 'baja', 'baja']);
+    expect(['ESP', 'FRA', 'DEU', 'ITA', 'TUR'].map(level)).toEqual(['media', 'media', 'media', 'media', 'media']);
+    expect(['USA', 'BRA', 'JPN', 'NGA', 'CHN', 'IND'].map(level)).toEqual(['alta', 'alta', 'alta', 'alta', 'alta', 'alta']);
+    // Los cortes entran en el nivel de arriba, y sin dato no hay nivel.
+    expect(levelOf({ population: 39_999_999 })).toBe('baja');
+    expect(levelOf({ population: 40_000_000 })).toBe('media');
+    expect(levelOf({ population: 100_000_000 })).toBe('alta');
+    expect(levelOf({ population: undefined })).toBeNull();
+  });
+
+  it('población: solo entra quien tiene dato y la respuesta buena es su nivel', () => {
     const session = play({ map: 'world', mode: 'population', answer: 'choice', scope: 'europa', length: 10 });
     const target = atlas.countries[session.queue[0].country];
     const level = levelOf(target)!;

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
+import { useWeatherInfo } from '../app/weather';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -10,7 +11,8 @@ import { useTheme, useWide } from './hooks';
 import { ExportMenu } from './ExportMenu';
 import { Icon, type IconName } from './Icon';
 import { LayerIcon, PortalIcon } from './LayerIcon';
-import { t } from '../i18n';
+import { LOCALE, t } from '../i18n';
+import { TEMP_STOPS } from '../weather/format';
 
 function Control({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
   return (
@@ -30,10 +32,41 @@ function Control({ icon, label, onClick }: { icon: IconName; label: string; onCl
 const LAYER_GROUPS: { title: string; ids: LayerId[] }[] = [
   { title: t('Relieve y mar'), ids: ['relief', 'features', 'depth', 'currents', 'tectonics'] },
   { title: t('Datos por país'), ids: ['climate', 'population', 'timezones'] },
+  { title: t('Meteorología'), ids: ['weatherTemp', 'weatherCloud', 'weatherRain', 'weatherWind'] },
   { title: t('Líneas'), ids: ['grid', 'guides'] },
   { title: t('Aspecto'), ids: ['satellite', 'glint', 'stars'] },
 ];
 const REAL_TIME_LAYERS: LayerId[] = ['dayNight', 'sun', 'moon', 'you'];
+
+/** «jue, 19:00»: la hora local de un dato del tiempo, con el día por si es de ayer. */
+const weatherTime = (iso: string) => new Date(iso).toLocaleString(LOCALE, { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+const TEMP_FROM = TEMP_STOPS[0][0];
+const TEMP_TO = TEMP_STOPS[TEMP_STOPS.length - 1][0];
+/** La escala de temperatura, con los mismos colores y en los mismos puntos que el mapa. */
+const TEMP_GRADIENT = `linear-gradient(to right, ${TEMP_STOPS.map(([celsius, color]) => `${color} ${((celsius - TEMP_FROM) / (TEMP_TO - TEMP_FROM)) * 100}%`).join(', ')})`;
+
+/** Leyenda de las capas del tiempo de ahora: la escala, de dónde sale cada dato y de qué hora es. */
+function WeatherLegend({ model, rain, temp }: { model: boolean; rain: boolean; temp: boolean }) {
+  const info = useWeatherInfo();
+  const waiting = (model && !info.model) || (rain && !info.rain);
+  return (
+    <div className="flex flex-col gap-1.5 text-xs text-ink-faint">
+      {temp && info.model && (
+        <div className="font-semibold text-ink-soft" aria-hidden="true">
+          <div className="h-2.5 rounded-[3px] border border-rule-strong" style={{ background: TEMP_GRADIENT }} />
+          <div className="tabular mt-0.5 flex justify-between">
+            {[TEMP_FROM, -20, 0, 20, TEMP_TO].map((celsius) => (
+              <span key={celsius}>{celsius} °C</span>
+            ))}
+          </div>
+        </div>
+      )}
+      {model && info.model && <p>{t('Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.', { time: weatherTime(info.model) })}</p>}
+      {rain && info.rain && <p>{t('Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.', { time: weatherTime(info.rain) })}</p>}
+      {waiting && <p role="status">{info.failed ? t('No se ha podido cargar el tiempo de ahora.') : t('Cargando el tiempo de ahora…')}</p>}
+    </div>
+  );
+}
 
 /** Botón de capas: qué se dibuja sobre el mapa. */
 function LayersMenu() {
@@ -93,6 +126,10 @@ function LayersMenu() {
   // una capa: cambia el aspecto de todo el mapa y no se guarda. Va con las de aspecto.
   const toonRow = row('toon', <PortalIcon className={`shrink-0 transition-[filter,opacity] ${toon ? '' : 'opacity-70 saturate-50'}`} />, t('Planeta de dibujos'), toon, (on) => on !== toon && toggleToon());
 
+  // Durante una partida las capas del tiempo están apartadas: tampoco se enseña su leyenda.
+  const weatherModel = (['weatherTemp', 'weatherCloud', 'weatherWind'] as const).some((id) => layers[id] && !parked(id));
+  const weatherRain = layers.weatherRain && !parked('weatherRain');
+  const weatherLegend = (weatherModel || weatherRain) && <WeatherLegend model={weatherModel} rain={weatherRain} temp={layers.weatherTemp && !parked('weatherTemp')} />;
   const legends = (
     <>
       {layers.climate && (
@@ -129,7 +166,8 @@ function LayersMenu() {
     <>
       {playing && <p className="text-xs text-ink-faint">{t('Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.')}</p>}
       {LAYER_GROUPS.map((g, i) => (
-        <div key={g.title}>{group(g.title, g.ids, i === LAYER_GROUPS.length - 1 ? toonRow : undefined)}</div>
+        // La leyenda del tiempo va con sus interruptores: dice de qué hora es lo que se acaba de encender.
+        <div key={g.title}>{group(g.title, g.ids, i === LAYER_GROUPS.length - 1 ? toonRow : g.ids.includes('weatherTemp') ? weatherLegend : undefined)}</div>
       ))}
       {legends}
       {realTime ? (

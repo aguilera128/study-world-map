@@ -32,6 +32,7 @@ pnpm atlas      # solo regenera public/data (atlas del mundo, de España y de ge
 ```
 api/sync.ts            función de Vercel: sincronización del progreso por código (Neon)
 api/ranking.ts         función de Vercel: los diez mejores resultados de cada reto (Neon)
+api/tiempo.ts          función de Vercel: el tiempo de ahora para las capas de meteorología (NOAA y NASA)
 scripts/               generadores de datos y de páginas estáticas (se ejecutan a mano o en el build)
 scripts/data/          fuentes editables: países, idiomas, legales, temario físico, correcciones
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
@@ -40,6 +41,7 @@ src/game/              lógica pura: retos, partida, progreso, población, clima
 src/game/countryMaps.ts  los países que se estudian por dentro (España, EE. UU., Francia…): solo datos
 src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
 src/app/               estado (Zustand), sincronización, exportar imagen, hora
+src/weather/           el tiempo de ahora: lectura del modelo (GRIB2) y formato de la imagen (con pruebas)
 src/ui/                componentes de React
 src/i18n/              un diccionario por idioma; el texto en español es la clave
 docs/                  planes y propuestas con fecha
@@ -155,6 +157,8 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Vía Láctea | `exr-to-raw.mjs` + `build-milkyway.py` | NASA Deep Star Maps 2020 (Gaia DR2) |
 | Continentes de la ilustración | `build-planet-land.mjs` | Natural Earth |
 | Ilustraciones del huevo de pascua (`public/toon/`) | a mano, sin generador | diseños originales generados con IA (imágenes de Codex) a partir de una descripción propia; no son de ninguna serie |
+| Temperatura, nubes y viento de ahora | `api/tiempo.ts` (`src/weather/model.ts`), en vivo | modelo GFS de NOAA/NCEP (dominio público), del almacén abierto de la NOAA en AWS |
+| Lluvia y nieve de ahora | `api/tiempo.ts`, en vivo | IMERG (GPM), NASA, vía GIBS |
 | Interior de la Tierra, atmósfera, Sol y Luna | `src/ui/planetLayers.ts`, `RealTime.tsx` | USGS, IGN, PREM, artículos citados, NASA |
 
 Los ficheros grandes de origen (Natural Earth, EXR de la NASA, rejilla de Köppen) **no** van al
@@ -164,8 +168,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - Bajo `api/` solo puede haber rutas reales: todo `.ts`/`.js` que haya ahí se despliega como función
   y Vercel la arranca sin que nadie la llame. Los scripts van en `scripts/`, con guarda de módulo
   principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
-- Hoy hay **dos** funciones (`api/sync.ts` y `api/ranking.ts`). Si en *Resources* aparecen más, algo
-  se despliega de más.
+- Hoy hay **tres** funciones (`api/sync.ts`, `api/ranking.ts` y `api/tiempo.ts`). Si en *Resources*
+  aparecen más, algo se despliega de más.
 - `vercel.json` manda una política de contenido (cabecera `Content-Security-Policy`): solo se carga
   lo propio, el Blob de las teselas y Google Tag Manager. Consecuencias al tocar las páginas:
   - Nada de `onclick` ni otros atributos con código: se escucha desde un `.js` (así abre el aviso de
@@ -195,6 +199,15 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
   fecha de revisión de `scripts/data/sitio.mjs`.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
+- Las capas de meteorología (temperatura, nubes, lluvia y viento de ahora) tampoco piden nada a
+  terceros desde el navegador: preguntan a `/api/tiempo`, y es la función la que habla con la NOAA
+  y la NASA y guarda la respuesta media hora en la red de Vercel. Así no hay que abrir la política
+  de contenido ni sale de aquí la IP de nadie. La función solo deja pedir a la NASA teselas que
+  existen (no es un intermediario para cualquier dirección). El servicio de la NASA que da el mundo
+  en una sola imagen tarda de veinte segundos a dos minutos: por eso se piden teselas. En
+  desarrollo la sirve Vite (`devWeather` en `vite.config.ts`). Lo que comparten la función y la
+  aplicación está en `src/weather/format.ts`, que no puede importar nada que se ejecute; lo que
+  carga la función se escribe sin «propiedades de parámetro» ni nada que Node no sepa quitar.
 - La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
   detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
   nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`

@@ -320,12 +320,12 @@ const de: Record<string, string> = {
   'Baja': 'Niedrig',
   'Media': 'Mittel',
   'Alta': 'Hoch',
-  'menos de {n} hab./km²': 'unter {n} Einw./km²',
-  'de {a} a {b} hab./km²': '{a} bis {b} Einw./km²',
-  'más de {n} hab./km²': 'über {n} Einw./km²',
-  '¿Su densidad de población es alta, media o baja?': 'Ist die Bevölkerungsdichte hoch, mittel oder niedrig?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Sag, ob die Bevölkerungsdichte jedes Landes hoch, mittel oder niedrig ist.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} Einwohner und {d} Einw./km². Dichte: {level}.',
+  'menos de {n} millones': 'unter {n} Millionen',
+  'de {a} a {b} millones': '{a} bis {b} Millionen',
+  'más de {n} millones': 'über {n} Millionen',
+  '¿Su población es alta, media o baja?': 'Ist die Bevölkerung hoch, mittel oder niedrig?',
+  'Di si la población de cada país es alta, media o baja.': 'Sag, ob die Bevölkerung jedes Landes hoch, mittel oder niedrig ist.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} Einwohner. Bevölkerung: {level}.',
   'Densidad': 'Dichte',
   'Habitantes': 'Einwohner',
   'De cuatro países, di cuál tiene más habitantes.': 'Sag, welches von vier Ländern die meisten Einwohner hat.',
@@ -1005,6 +1005,16 @@ const de: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Zypern',
   'Moldavia': 'Moldau',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Wetter',
+  'Nubes': 'Wolken',
+  'Lluvia y nieve': 'Regen und Schnee',
+  'Viento': 'Wind',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatur, Wolken und Wind: GFS-Modell (NOAA), Vorhersage für {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Regen und Schnee: GPM-Satelliten (NASA), gemessen {time}. Grün: schwach; Rot: stark; Blau: Schnee.',
+  'No se ha podido cargar el tiempo de ahora.': 'Das aktuelle Wetter konnte nicht geladen werden.',
+  'Cargando el tiempo de ahora…': 'Aktuelles Wetter wird geladen…',
 };
 
 export default de;

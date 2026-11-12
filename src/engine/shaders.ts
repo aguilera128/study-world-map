@@ -6,6 +6,8 @@
 // dos texturas de 1 píxel de alto con un téxel por país. Así, pintar o levantar un país es escribir
 // 4 bytes, sin tocar la geometría.
 
+import { GRID_ROWS, GRID_WIDTH, TEMP_MAX, TEMP_MIN, TEMP_STOPS, WIND_MAX } from '../weather/format';
+
 const glsl = String.raw;
 
 const SURFACE = glsl`
@@ -988,5 +990,109 @@ void main() {
   float a = (1.0 - smoothstep(0.35, 1.0, r)) * vAlpha * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(vTint, a);
+}
+`;
+
+// ───────────────────────── El tiempo de ahora ─────────────────────────
+//
+// Una lámina transparente sobre el mapa con lo que hay ahora mismo: temperatura, nubes y viento del
+// modelo GFS (una imagen de un píxel por grado, ver src/weather/format.ts) y la lluvia medida por
+// satélite (una imagen del mundo con la paleta de la NASA). Cada capa se enciende por separado.
+
+const f = (n: number) => n.toFixed(4);
+const colorOf = (hex: string) => `vec3(${[1, 3, 5].map((i) => f(parseInt(hex.slice(i, i + 2), 16) / 255)).join(', ')})`;
+/** La escala de temperatura, tramo a tramo: es la misma lista con la que se dibuja la leyenda. */
+const TEMP_RAMP = `vec3 tempColor(float t) {
+  vec3 c = ${colorOf(TEMP_STOPS[0][1])};
+${TEMP_STOPS.slice(1)
+  .map(([t, hex], i) => `  c = mix(c, ${colorOf(hex)}, clamp((t - ${f(TEMP_STOPS[i][0])}) / ${f(t - TEMP_STOPS[i][0])}, 0.0, 1.0));`)
+  .join('\n')}
+  return c;
+}`;
+
+export const WEATHER_VERT = glsl`
+${SURFACE}
+varying vec2 vLonLat;
+varying vec3 vGeo;
+
+void main() {
+  vec3 n;
+  vec3 p = surface(position.xy, uBaseAlt, n);
+  vLonLat = position.xy;
+  vGeo = geoVector(position.xy);
+  gl_Position = projectionMatrix * viewMatrix * vec4(p, 1.0);
+}
+`;
+
+export const WEATHER_FRAG = glsl`
+${NOISE3}
+${TEMP_RAMP}
+uniform sampler2D uModel; // arriba: temperatura (r) y viento (g, b); abajo: nubosidad (r)
+uniform sampler2D uRain;  // lluvia medida, con el fondo transparente
+uniform float uTemp;
+uniform float uCloud;
+uniform float uRainAmt;
+uniform float uWind;
+uniform vec3 uInk;        // tinta de las vetas del viento: oscura sobre papel, clara de noche
+uniform float uTime;
+uniform float uStreak;    // cuántas vetas caben en un radio (lo fija el motor según el zoom)
+varying vec2 vLonLat;
+varying vec3 vGeo;
+
+// Un bloque de la imagen del modelo: el píxel (0, 0) es 180° O, 90° N, y cada píxel, un grado.
+vec3 model(vec2 ll, float block) {
+  float col = degrees(ll.x) + 180.5;
+  float row = clamp(90.5 - degrees(ll.y), 0.5, ${f(GRID_ROWS - 0.5)});
+  return texture2D(uModel, vec2(col / ${f(GRID_WIDTH)}, (row + block * ${f(GRID_ROWS)}) / ${f(GRID_ROWS * 2)})).rgb;
+}
+
+// Ruido promediado a lo largo del viento: lo que en el ruido son manchas, promediadas en esa
+// dirección quedan como vetas alargadas. «shift» las hace avanzar.
+float along(vec3 p, vec3 dir, float shift) {
+  float sum = 0.0;
+  for (int k = -3; k <= 3; k++) sum += noise(p + dir * (float(k) * 0.4 - shift));
+  return sum / 7.0;
+}
+
+// Las vetas avanzan con el viento. Para que el dibujo no se estire sin fin, se alternan dos copias
+// desfasadas medio ciclo que se funden una en otra (como las de las corrientes del mar).
+float gusts(vec3 p, vec3 dir, float travel) {
+  float a = fract(uTime / 7.0);
+  float b = fract(uTime / 7.0 + 0.5);
+  return mix(along(p + vec3(3.7), dir, travel * b), along(p, dir, travel * a), 1.0 - abs(2.0 * a - 1.0));
+}
+
+// Pone una capa encima de lo acumulado (color ya multiplicado por su opacidad).
+vec4 over(vec4 under, vec3 color, float alpha) {
+  return vec4(color * alpha + under.rgb * (1.0 - alpha), alpha + under.a * (1.0 - alpha));
+}
+
+void main() {
+  vec4 acc = vec4(0.0);
+  vec3 top = model(vLonLat, 0.0);
+  if (uTemp > 0.0) {
+    acc = over(acc, tempColor(${f(TEMP_MIN)} + top.r * ${f(TEMP_MAX - TEMP_MIN)}), 0.74 * uTemp);
+  }
+  if (uCloud > 0.0) {
+    float cover = model(vLonLat, 1.0).r;
+    // Blancas, y algo grises donde el cielo está cubierto del todo.
+    acc = over(acc, mix(vec3(0.98), vec3(0.82, 0.85, 0.90), smoothstep(0.75, 1.0, cover)), 0.85 * uCloud * smoothstep(0.3, 0.95, cover));
+  }
+  if (uRainAmt > 0.0) {
+    vec4 rain = texture2D(uRain, vec2(vLonLat.x / 6.283185307 + 0.5, 0.5 - vLonLat.y / 3.141592654));
+    acc = over(acc, rain.rgb, 0.92 * uRainAmt * rain.a);
+  }
+  if (uWind > 0.0) {
+    vec2 wind = (top.gb * 255.0 - 128.0) / 127.0 * ${f(WIND_MAX)}; // m/s, hacia el este y hacia el norte
+    float speed = length(wind);
+    vec3 east = vec3(cos(vLonLat.x), 0.0, -sin(vLonLat.x));
+    vec3 north = vec3(-sin(vLonLat.y) * sin(vLonLat.x), cos(vLonLat.y), -sin(vLonLat.y) * cos(vLonLat.x));
+    vec3 dir = speed > 0.05 ? (east * wind.x + north * wind.y) / speed : vec3(0.0);
+    // Vetas finas en la dirección del viento, que avanzan tanto más deprisa cuanto más sopla.
+    float streak = smoothstep(0.52, 0.62, gusts(normalize(vGeo) * uStreak * 5.0, dir, 1.6 + 0.7 * sqrt(speed)));
+    acc = over(acc, uInk, 0.5 * uWind * streak * smoothstep(0.5, 7.0, speed));
+  }
+  if (acc.a < 0.004) discard;
+  gl_FragColor = vec4(acc.rgb / acc.a, acc.a);
 }
 `;

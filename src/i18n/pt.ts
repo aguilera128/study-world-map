@@ -320,12 +320,12 @@ const pt: Record<string, string> = {
   'Baja': 'Baixa',
   'Media': 'Média',
   'Alta': 'Alta',
-  'menos de {n} hab./km²': 'menos de {n} hab./km²',
-  'de {a} a {b} hab./km²': 'de {a} a {b} hab./km²',
-  'más de {n} hab./km²': 'mais de {n} hab./km²',
-  '¿Su densidad de población es alta, media o baja?': 'A densidade populacional é alta, média ou baixa?',
-  'Di si la densidad de población de cada país es alta, media o baja.': 'Diga se a densidade populacional de cada país é alta, média ou baixa.',
-  '{country}: {n} habitantes y {d} hab./km². Densidad {level}.': '{country}: {n} habitantes e {d} hab./km². Densidade {level}.',
+  'menos de {n} millones': 'menos de {n} milhões',
+  'de {a} a {b} millones': 'de {a} a {b} milhões',
+  'más de {n} millones': 'mais de {n} milhões',
+  '¿Su población es alta, media o baja?': 'A população é alta, média ou baixa?',
+  'Di si la población de cada país es alta, media o baja.': 'Diga se a população de cada país é alta, média ou baixa.',
+  '{country}: {n} habitantes. Población {level}.': '{country}: {n} habitantes. População {level}.',
   'Densidad': 'Densidade',
   'Habitantes': 'Habitantes',
   'De cuatro países, di cuál tiene más habitantes.': 'De quatro países, diga qual tem mais habitantes.',
@@ -759,6 +759,16 @@ const pt: Record<string, string> = {
   // ── Mapas de un país: Chipre y Moldavia ──
   'Chipre': 'Chipre',
   'Moldavia': 'Moldávia',
+
+  // ── El tiempo de ahora (capas de meteorología) ──
+  'Meteorología': 'Meteorologia',
+  'Nubes': 'Nuvens',
+  'Lluvia y nieve': 'Chuva e neve',
+  'Viento': 'Vento',
+  'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatura, nuvens e vento: modelo GFS (NOAA), previsão para {time}.',
+  'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Chuva e neve: satélites GPM (NASA), medido {time}. Verde, fraca; vermelho, forte; azul, neve.',
+  'No se ha podido cargar el tiempo de ahora.': 'Não foi possível carregar o tempo de agora.',
+  'Cargando el tiempo de ahora…': 'Carregando o tempo de agora…',
 };
 
 export default pt;
