@@ -742,6 +742,10 @@ const gl: Record<string, string> = {
 
   // ── Mapas de un país: Bulgaria ──
   'Bulgaria': 'Bulgaria',
+
+  // ── Mapas de un país: Bielorrusia y Ucrania ──
+  'Bielorrusia': 'Belarús',
+  'Ucrania': 'Ucraína',
 };
 
 export default gl;

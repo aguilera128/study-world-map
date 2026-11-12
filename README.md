@@ -31,7 +31,7 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
 - **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos, Bélgica,
-  Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda,
+  Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia, Grecia, Bielorrusia y Ucrania (regiones), Suecia, Irlanda,
   Lituania, Croacia, Albania y Hungría (condados), Reino Unido (naciones), Polonia (voivodatos) y
   Portugal, Rumanía y Serbia (distritos). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
@@ -174,7 +174,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay veinticinco (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay veintisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de

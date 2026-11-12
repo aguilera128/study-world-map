@@ -4,9 +4,9 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (25):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (27):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia y Grecia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
+Italia, Chequia, Eslovaquia, Grecia, Bielorrusia y Ucrania (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
 Hungría (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
 Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provincias).
 
@@ -49,10 +49,10 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Estonia | 15 condados | condados | **desfasado, comprobado**: la reforma de 2017 pasó Lihula, Hanila, Koonga y Varbla al municipio de Lääneranna (condado de Pärnu) y NE sigue poniendo Lihula en Lääne; además lleva los códigos ISO antiguos (EE-67 por EE-68…). Hace falta otra fuente |
 | Turquía | 81 provincias | provincias | **hecho**, sin zonas: sus siete regiones geográficas no vienen en NE y repartirlas a mano sin fuente no es de fiar |
 | Albania | 12 condados | condados | **hecho** |
-| Bielorrusia | 6 regiones + Minsk | regiones | directo |
+| Bielorrusia | 6 regiones + Minsk | regiones | **hecho** (coincide con Wikidata; NE trae cambiado el tipo de la ciudad y de la región de Minsk, pero los códigos están bien) |
 | Croacia | 20 condados + Zagreb (20 códigos distintos) | condados | **hecho** (NE daba a Požega-Eslavonia el código de su vecina: corregido) |
-| Islandia | 8 regiones + 1 «ciudad independiente» | regiones | directo, revisar la unidad suelta |
-| Chipre | 5 distritos | distritos | revisar: falta un distrito (el norte va aparte en NE) |
+| Islandia | 8 regiones + 1 «ciudad independiente» | regiones | **desfasado, comprobado**: Hornafjörður pasó de Austurland a Suðurland (en la clasificación de Statistics Iceland, desde el 1-dic-2020) y NE lo deja en Austurland. Además las regiones no tienen capital oficial (son agrupaciones estadísticas): si se hace, con otra fuente y sin reto de capitales |
+| Chipre | 5 distritos | distritos | **no apto con NE**: los distritos de derecho son seis (falta Kyrenia) y el norte viene como un solo bloque. El mapa del mundo trata la isla como un solo país, así que tocarían los seis: hace falta otra fuente (geoBoundaries los trae, pero de OpenStreetMap, con licencia ODbL) |
 | Francia | 101 departamentos; 18 regiones en `region` | las 13 regiones metropolitanas | **hecho** (fundiendo; sin ultramar) |
 | Italia | 110 provincias; 20 regiones en `region` | regiones | **hecho** (fundiendo) |
 | Irlanda | 34 unidades, 26 códigos ISO | los 26 condados tradicionales | **hecho** (fundiendo por código) |
@@ -60,8 +60,8 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | **hecho** (cada ciudad, fundida con su condado) |
 | Finlandia | 18 regiones (Åland va aparte en NE, como `ALD` y por municipios) | regiones | **desfasado, comprobado**: el 1-ene-2021 cambiaron de región Heinävesi, Joroinen, Iitti, Kuhmoinen e Isokyrö, y NE los deja en la antigua. Hace falta otra fuente |
 | Serbia | 24 distritos + Belgrado | distritos | **hecho** (Kosovo va aparte, como en el mapa del mundo) |
-| Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024) |
-| Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado |
+| Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024): desde el 1-ene-2024 son 15. Otra fuente: Kartverket |
+| Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado: desde 2021 son municipios y ciudades estatales (43; 42 desde el 1-jul-2025, al unirse Varakļāni a Madona, según Wikipedia: falta fuente oficial) |
 | Eslovenia | 193 unidades (municipios) | regiones estadísticas en `region` (12) | fundir, y no es un nivel que se estudie |
 | Macedonia del Norte | 84 unidades | — | no apto |
 | Malta | 68 consejos locales | — | no apto (y demasiado pequeño) |
@@ -69,8 +69,8 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Moldavia | 40 unidades de 4 tipos | — | no apto |
 | Bosnia y Herzegovina | 18 unidades, 7 sin código | entidades | no apto |
 | Kosovo | 30 distritos sin código ISO | — | no apto |
-| Ucrania | 25 (Crimea y Sebastopol van con Rusia en NE) | óblasts | decisión |
-| Rusia | 86 sujetos (incluye Crimea y Sebastopol) | sujetos federales | decisión |
+| Ucrania | 25 (Crimea y Sebastopol van con Rusia en NE) | óblasts | **hecho**, con las fronteras reconocidas (resolución 68/262 de la Asamblea General de la ONU): 24 regiones, Crimea, Kiev y Sebastopol, como ya hacía el mapa del mundo |
+| Rusia | 86 sujetos (incluye Crimea y Sebastopol) | sujetos federales | **no se hace**: la propia lista está en disputa (Rusia cuenta como suyos Crimea, Sebastopol y cuatro regiones ucranianas), contradiría el mapa de Ucrania, y son más de ochenta piezas a ambos lados del antimeridiano |
 | Andorra, Liechtenstein, Luxemburgo, Mónaco, San Marino, Vaticano | 7, 11, 3, 1, 9, 1 | — | no merece mapa propio |
 
 ## Lo que falta para seguir
@@ -94,11 +94,31 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 5. **Capitales**: las de los tres países nuevos coinciden con la capital (P36) de Wikidata, salvo
    Berlín, Hamburgo y Viena (ciudades-estado, sin capital en Wikidata) y Bregenz (sin nombre en
    español allí), que van por elaboración propia.
-6. **Decisiones**: Ucrania y Rusia (Crimea). Kosovo no es una decisión pendiente: el mapa del
-   mundo ya lo trata como país.
-7. **Lo que queda de Europa** necesita otra fuente de fronteras (Finlandia, Estonia, Noruega,
-   Letonia, Eslovenia, Macedonia del Norte, Malta, Montenegro, Moldavia, Bosnia) o esperar a enero
-   de 2027 (Dinamarca). Para saber si NE recoge una reforma basta mirar en qué unidad cae un
-   municipio que cambió de sitio: así se comprobaron Finlandia y Estonia el 12-nov-2026 (fuentes:
-   Statistics Finland, clasificación de regiones de 2021; informe de Estonia a UNGEGN de 2019; ley
-   danesa 699/2025).
+6. **Decisiones** (12-nov-2026): Ucrania se hace con Crimea y Rusia no se hace (ver la tabla).
+   Kosovo no es una decisión pendiente: el mapa del mundo ya lo trata como país. El generador de
+   fronteras cuenta Crimea y Sebastopol como Ucrania en todos los mapas: antes, donde Ucrania era
+   vecina (Rumanía, Eslovaquia, Hungría, Polonia), Crimea salía como mar.
+7. **Lo que queda de Europa** (decidido el 12-nov-2026). Para saber si NE recoge una reforma basta
+   mirar en qué unidad cae un municipio que cambió de sitio: así se comprobaron Finlandia, Estonia
+   e Islandia (fuentes: Statistics Finland, clasificación de regiones de 2021; informe de Estonia
+   a UNGEGN de 2019; ley danesa 699/2025; nota de Statistics Iceland de 18-nov-2020).
+   - **No hay una fuente única que sirva.** geoBoundaries (consultados sus metadatos) arrastra los
+     mismos desfases: Finlandia de 2017, Estonia de 2016, Noruega de 2022 (11 condados), Islandia
+     de 2017, Montenegro con 23 municipios; y lo que toma de OpenStreetMap lleva licencia ODbL.
+   - **Con la fuente oficial de cada país**, uno a uno, por este orden: Finlandia (Statistics
+     Finland, unidades estadísticas por municipios: trae las 19 regiones del año, CC BY 4.0),
+     Noruega (Kartverket, los 15 condados; licencia por confirmar en su edición vigente), Estonia
+     (Land Board, licencia propia de datos abiertos con cita de fuente y fecha) y, desde el
+     1-ene-2027, Dinamarca con sus cuatro regiones. Requiere que `build-subdivisions.mjs` acepte
+     otra capa además de Natural Earth (qué campo trae el código de cada unidad) y descargar esas
+     capas, cosa que se pregunta antes.
+   - **Pendientes de fuente o de comprobar**: Chipre (seis distritos de derecho), Islandia (sin
+     capitales), Letonia (42 unidades, por confirmar), Moldavia (geoBoundaries trae 37 unidades de
+     ACNUR/OCHA, de 2020, CC BY 3.0 IGO: por contrastar con la lista oficial) y Montenegro.
+   - **No se hacen**: Eslovenia y Macedonia del Norte (entre el Estado y los municipios solo hay
+     regiones estadísticas, que no son un nivel administrativo), Malta (68 consejos locales en una
+     isla que no se distingue a la escala del mapa), Bosnia y Herzegovina (dos entidades y un
+     distrito: un mapa de tres piezas; los cantones solo existen en una de las entidades), Rusia
+     y los microestados.
+   - **Turquía sigue sin zonas**: sus siete regiones geográficas no son administrativas y hay
+     provincias a caballo entre dos.

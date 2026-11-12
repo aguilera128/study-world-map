@@ -121,6 +121,10 @@ export const COUNTRY_MAPS = {
   tr: { title: 'Turquía', iso: 'TUR', unit: 'provincia', zones: [] },
   // Provincias de Bulgaria: «Oblast» en alemán y en francés, «distretto» en italiano.
   bg: { title: 'Bulgaria', iso: 'BGR', unit: 'provincia', context: 'bg', zones: [] },
+  // Regiones (vóblasts, óblasts) de Bielorrusia y de Ucrania; esta, con Crimea, como en el mapa del mundo.
+  // Comparten contexto: en chino son «州», no «大区».
+  by: { title: 'Bielorrusia', iso: 'BLR', unit: 'region', context: 'oblast', zones: [] },
+  ua: { title: 'Ucrania', iso: 'UKR', unit: 'region', context: 'oblast', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

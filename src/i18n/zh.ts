@@ -883,6 +883,30 @@ const zh: Record<string, string> = {
 
   // ── Mapas de un país: Bulgaria ──
   'Bulgaria': '保加利亚',
+
+  // ── Mapas de un país: Bielorrusia y Ucrania ──
+  'Bielorrusia': '白俄罗斯',
+  'Ucrania': '乌克兰',
+
+  // ── 州（白俄罗斯、乌克兰）──
+  '{n} regiones|oblast': '{n} 个州',
+  'región a región.|oblast': '一州一州地学。',
+  'Regiones|oblast': '州',
+  'Regiones que entran|oblast': '包含的州',
+  'región|oblast': '个州',
+  'regiones|oblast': '个州',
+  'Dominas {n} de {total} regiones|oblast': '已掌握 {n} / {total} 个州',
+  'Buscar región o capital…|oblast': '搜索州或首府…',
+  'Buscar región o capital|oblast': '搜索州或首府',
+  'No hay ninguna región con ese nombre.|oblast': '没有叫这个名字的州。',
+  '¿Qué región es la señalada?|oblast': '标出的是哪个州？',
+  '¿De qué región es la capital?|oblast': '这是哪个州的首府？',
+  'Toca la región en el mapa|oblast': '在地图上点出这个州',
+  'Escribe la región…|oblast': '输入州名…',
+  'Buscando la región|oblast': '找州',
+  'Te damos el nombre de una región y la buscas en el mapa.|oblast': '我们给出州名，你在地图上找到它。',
+  'Señalamos una región en el mapa y dices cuál es.|oblast': '我们在地图上标出一个州，你说出它是哪个州。',
+  'Une cada región con su capital.|oblast': '把每个州和它的首府配对。',
 };
 
 export default zh;

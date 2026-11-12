@@ -88,6 +88,8 @@ docs/                  planes y propuestas con fecha
 - En el mapa de un país pequeño la cámara se acerca más que en el del mundo (`minHeight` de la
   cámara, que fija el motor según el tamaño del país) y la unidad señalada se encuadra más de cerca
   (`showCountry` en `store.ts`).
+- Crimea y Sebastopol son de Ucrania en todos los mapas (el del mundo y los de un país), aunque
+  Natural Earth las asigne a Rusia: lo corrigen `build-atlas.mjs` y `build-subdivisions.mjs`.
 - Solo se añade un país si sus fronteras y su nivel administrativo son los vigentes y los que se
   estudian. Qué trae Natural Earth para cada uno y qué falta está en
   `docs/mapas-por-pais-inventario-2026-11-12.md`.

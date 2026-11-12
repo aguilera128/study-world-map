@@ -742,6 +742,29 @@ describe('mapas de un país', () => {
     expect(bulgaria.countries[bulgaria.locate(23.55, 42.34)].id).toBe('BG-23');
   });
 
+  it('Ucrania lleva Crimea y Sebastopol, y donde es vecina Crimea no sale como mar', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    const open = (id: 'ua' | 'by' | 'ro' | 'sk' | 'hu' | 'pl') =>
+      new Atlas(withBackdrop(JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas, world), id);
+    const ukraine = open('ua');
+    expect(ukraine.quizzable.length).toBe(27);
+    // Simferópol, Sebastopol, el centro de Kiev y Bila Tserkva (región de Kiev).
+    expect(ukraine.countries[ukraine.locate(34.1, 45.0)].id).toBe('UA-43');
+    expect(ukraine.countries[ukraine.locate(33.6, 44.6)].id).toBe('UA-40');
+    expect(ukraine.countries[ukraine.locate(30.52, 50.45)].id).toBe('UA-30');
+    expect(ukraine.countries[ukraine.locate(30.11, 49.8)].id).toBe('UA-32');
+    // Natural Earth asigna Crimea a Rusia: en los mapas de los vecinos de Ucrania quedaba en blanco.
+    for (const id of ['by', 'ro', 'sk', 'hu', 'pl'] as const) {
+      const atlas = open(id);
+      expect(atlas.countries[atlas.locate(34.1, 45.0)]?.id, id).toBe('UKR');
+    }
+    const belarus = open('by');
+    expect(belarus.quizzable.length).toBe(7);
+    // El centro de Minsk cae en la ciudad; Barýsaw, en la región.
+    expect(belarus.countries[belarus.locate(27.56, 53.9)].id).toBe('BY-HM');
+    expect(belarus.countries[belarus.locate(28.5, 54.23)].id).toBe('BY-MI');
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

@@ -806,6 +806,10 @@ const it: Record<string, string> = {
 
   // ── Mapas de un país: Bulgaria ──
   'Bulgaria': 'Bulgaria',
+
+  // ── Mapas de un país: Bielorrusia y Ucrania ──
+  'Bielorrusia': 'Bielorussia',
+  'Ucrania': 'Ucraina',
 };
 
 export default it;

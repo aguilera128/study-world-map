@@ -55,10 +55,16 @@ function caja(geometry) {
   return [w, s, e, n];
 }
 
+/**
+ * Crimea y Sebastopol van con Ucrania, como en el mapa del mundo (scripts/build-atlas.mjs): Natural
+ * Earth las asigna a Rusia. Sin esto, donde Ucrania es vecina, Crimea salía como mar.
+ */
+const DE_UCRANIA = new Set(['RUS-283', 'RUS-5482']);
+
 const propias = [];
 const contexto = [];
 for (const f of capa.features) {
-  const a3 = f.properties.adm0_a3;
+  const a3 = DE_UCRANIA.has(f.properties.adm1_code) ? 'UKR' : f.properties.adm0_a3;
   if (a3 === mapa.adm0) {
     // Lo que cae lejos de la ventana no es de este mapa (los municipios caribeños de los Países Bajos).
     const [w, s, e, n] = caja(f.geometry);

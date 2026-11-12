@@ -743,6 +743,10 @@ const ca: Record<string, string> = {
 
   // ── Mapas de un país: Bulgaria ──
   'Bulgaria': 'Bulgària',
+
+  // ── Mapas de un país: Bielorrusia y Ucrania ──
+  'Bielorrusia': 'Belarús',
+  'Ucrania': 'Ucraïna',
 };
 
 export default ca;
