@@ -29,6 +29,9 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   Melilla, con retos de localizar, nombrar, capitales y «¿a qué comunidad autónoma pertenece?». Las
   zonas son agrupaciones de comunidades y su progreso se guarda aparte del de los países. Las listas
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
+- **Estados Unidos por estados.** Los 50 estados con sus capitales y las cuatro regiones del censo
+  («¿a qué región pertenece?»). El país se elige en un desplegable de la portada, pensado para ir
+  añadiendo más: ver `docs/mapas-por-pais-inventario-2026-11-12.md`.
 - **Reto del día.** Las mismas diez preguntas para todo el mundo cada día (salen de la fecha, sin
   servidor), con racha de días seguidos y botón para compartir el resultado.
 - **Listas de estudio.** En «Países → Elegir países» se crea una selección con justo los países que
@@ -167,21 +170,25 @@ src/
 
 ### Añadir otro país por provincias
 
-España es el primero; el resto (Estados Unidos, México, Francia…) se añade sobre todo con datos:
+Hay dos, España y Estados Unidos; el resto se añade sobre todo con datos:
 
-1. `scripts/data/mapas/<país>.mjs`, copiando `es.mjs`: subdivisiones con su capital y su región, países
-   de alrededor, correcciones de nombres y textos de sus tres páginas estáticas. Darlo de alta en
-   `scripts/data/mapas/index.mjs`.
+1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
+   estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
+   nombres. Darlo de alta en `scripts/data/mapas/index.mjs`. Un país sin agrupaciones deja
+   `comunidades` vacío; lo que se dibuja pero no se pregunta lleva `decorado: true`; y un país mucho
+   mayor que España baja el detalle con `detalle` e `islote`.
 2. Descargar `ne_10m_admin_1_states_provinces.geojson` de
    [natural-earth-vector](https://github.com/nvkelso/natural-earth-vector) (40 MB, fuera del repositorio) y
    ejecutar `node scripts/build-subdivisions.mjs <ruta> <país>`: deja `<país>.topo.json`.
 3. `node scripts/fetch-subdivisions.mjs <país>`: deja `<país>.wikidata.json`, y lista lo que hay que
    revisar a mano.
-4. En la aplicación: su clave en `MapId` (`src/atlas/types.ts`) y su entrada en `MAPS`
-   (`src/game/maps.ts`), con sus retos, sus zonas y los textos que hablan de «provincias».
+4. En la aplicación, una entrada en `src/game/countryMaps.ts`: su nombre, el tipo de sus unidades,
+   si se agrupan y sus zonas. Los textos no se escriben por país: salen del tipo de unidad
+   («provincia», «estado»), en `src/game/maps.ts`. Un tipo nuevo («cantón», «región») son unas
+   veinte frases, que hay que traducir a los nueve idiomas.
 
-`build-maps.mjs` no corta por el antimeridiano: un país que lo cruce (Estados Unidos, Rusia) necesita
-antes ese recorte, que `build-atlas.mjs` sí hace.
+`build-maps.mjs` no corta por el antimeridiano: confía en que Natural Earth ya trae partido lo que
+lo cruza (las Aleutianas) y falla si no es así.
 
 ## Idiomas
 
@@ -230,7 +237,8 @@ que la lista sea coherente y avisa si no.
   [world-atlas](https://github.com/topojson/world-atlas); las provincias, de su capa 1:10m de
   subdivisiones (`ne_10m_admin_1_states_provinces`), reducida con
   [topojson](https://github.com/topojson) (`scripts/build-subdivisions.mjs`).
-- Nombres de provincias, comunidades y capitales en otros idiomas: [Wikidata](https://www.wikidata.org) (CC0).
+- Nombres de provincias, estados, comunidades y capitales en otros idiomas: [Wikidata](https://www.wikidata.org) (CC0).
+- Regiones de Estados Unidos: las cuatro de la Oficina del Censo (U.S. Census Bureau, Census Regions).
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).

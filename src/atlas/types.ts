@@ -1,15 +1,18 @@
 // Tipos del atlas. `Raw*` describe public/data/atlas.json tal como lo escribe
 // scripts/build-atlas.mjs; el resto es la forma ya decodificada que usa la aplicación.
 
+import type { CountryMapId } from '../game/countryMaps';
+
 /**
  * Qué atlas es: el del mundo, el de las subdivisiones de un país (scripts/build-maps.mjs) o el de
  * geografía física (scripts/build-fisico.mjs).
  */
-export type MapId = 'world' | 'es' | 'fisico';
+export type MapId = 'world' | 'fisico' | CountryMapId;
 
 /**
  * Clave de una región del atlas. En el del mundo: europa · asia · africa · am-norte · am-central ·
- * am-caribe · am-sur · oceania. En el de un país, el código ISO 3166-2 de cada comunidad (ES-AN…).
+ * am-caribe · am-sur · oceania. En el de un país, el código ISO 3166-2 de cada comunidad (ES-AN…) o,
+ * si sus agrupaciones no lo tienen, una clave propia (us-noreste…).
  */
 export type RegionKey = string;
 

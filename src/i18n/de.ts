@@ -486,8 +486,6 @@ const de: Record<string, string> = {
   'Centro': 'Mitte',
   'Este y Baleares': 'Osten und Balearen',
   'Sur y Canarias': 'Süden und Kanaren',
-  'Mapa de España · {n} provincias': 'Spanienkarte · {n} Provinzen',
-  'Aprende España,': 'Lerne Spanien kennen,',
   'provincia a provincia.': 'Provinz für Provinz.',
   'Provincias': 'Provinzen',
   'Provincias que entran': 'Enthaltene Provinzen',
@@ -548,6 +546,33 @@ const de: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Comic-Planet',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} Provinzen',
+  '{n} estados': '{n} Bundesstaaten',
+  'estado a estado.': 'Bundesstaat für Bundesstaat.',
+  'Estados': 'Bundesstaaten',
+  'Estados que entran': 'Enthaltene Bundesstaaten',
+  'estado': 'Bundesstaat',
+  'estados': 'Bundesstaaten',
+  'Dominas {n} de {total} estados': 'Du beherrschst {n} von {total} Bundesstaaten',
+  'Buscar estado o capital…': 'Bundesstaat oder Hauptstadt suchen…',
+  'Buscar estado o capital': 'Bundesstaat oder Hauptstadt suchen',
+  'No hay ningún estado con ese nombre.': 'Es gibt keinen Bundesstaat mit diesem Namen.',
+  '¿Qué estado es el señalado?': 'Welcher Bundesstaat ist markiert?',
+  '¿De qué estado es la capital?': 'Von welchem Bundesstaat ist das die Hauptstadt?',
+  'Toca el estado en el mapa': 'Tippe den Bundesstaat auf der Karte an',
+  'Escribe el estado…': 'Bundesstaat eintippen…',
+  'Buscando el estado': 'Bundesstaat suchen',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Wir nennen dir einen Bundesstaat und du suchst ihn auf der Karte.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Wir markieren einen Bundesstaat auf der Karte und du sagst, welcher es ist.',
+  'Une cada estado con su capital.': 'Ordne jedem Bundesstaat seine Hauptstadt zu.',
+  '¿A qué región pertenece?': 'Zu welcher Region gehört er?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Wir nennen dir einen Namen und du sagst, zu welcher Region des Landes er gehört.',
+  '{country},': '{country},',
+  'Es {country}.': 'Das ist {country}.',
+  'País': 'Land',
+  'Estados Unidos': 'Vereinigte Staaten',
 };
 
 export default de;

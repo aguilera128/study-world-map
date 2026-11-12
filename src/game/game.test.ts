@@ -3,11 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
 import { modesOf, REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
+import { COUNTRY_IDS } from './countryMaps';
 import { dailyConfig } from './daily';
 import { MAPS } from './maps';
 import { mastery, record, sanitizeProgress, selectionWeight, summarize, type Progress } from './progress';
 import { advance, attemptsLeft, createSession, currentQuestion, gradeLabel, missed, score, submit, type Session } from './session';
 import { editDistance, hint, matchesAnswer, normalize } from './text';
+import { LANGS } from '../i18n';
 
 const atlas = new Atlas(JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas);
 const idx = (id: string) => atlas.indexOf(id);
@@ -596,5 +598,66 @@ describe('mapa de España', () => {
     expect(summarize(progress, ids(spain), 'locate').seen).toBe(1);
     expect(summarize(progress, ids(spain), 'region').mastered).toBe(0);
     expect(summarize(progress, ids(spain), 'region').seen).toBe(1);
+  });
+});
+
+// Los mapas de un país salen todos del mismo molde (./countryMaps.ts y scripts/build-maps.mjs): lo
+// que se comprueba aquí vale para cualquiera que se añada.
+describe('mapas de un país', () => {
+  for (const id of COUNTRY_IDS) {
+    const country = new Atlas(JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas, id);
+    const asked = country.quizzable.map((i) => country.countries[i]);
+
+    it(`${id}: sus zonas existen en el atlas, se encuadran y dan para una partida`, () => {
+      expect(MAPS[id].filters[0].id).toBe(id);
+      for (const f of MAPS[id].filters) {
+        for (const key of f.keys) expect(country.regions[key], `${f.id}: ${key}`).toBeTruthy();
+        const scope = resolveScope(country, f.id, []);
+        expect(scope.frame, f.id).not.toBeNull();
+        expect(scope.label, f.id).toBeTruthy();
+        expect(scope.countries.length, f.id).toBeGreaterThanOrEqual(4);
+      }
+    });
+
+    it(`${id}: cada reto tiene título y resumen, y la región solo se pregunta si hay regiones`, () => {
+      for (const m of modesOf(id)) expect(m.title && m.summary, m.id).toBeTruthy();
+      const grouped = Object.keys(country.regions).length > 0;
+      expect(MAPS[id].modes.includes('region')).toBe(grouped);
+      expect(!!MAPS[id].text.askRegion).toBe(grouped);
+      for (const c of asked) expect(c.regions.length, c.id).toBe(grouped ? 1 : 0);
+    });
+
+    it(`${id}: lo que se pregunta tiene capital, un encuadre que no da la vuelta al mundo y vecinas que también se preguntan`, () => {
+      for (const c of asked) {
+        expect(c.capital, c.id).toBeTruthy();
+        expect(c.frame[2] - c.frame[0], c.id).toBeLessThan(180);
+        for (const n of c.neighbors) expect(country.countries[n].kind, c.id).toBe('country');
+      }
+      const [w, , e] = country.frame!;
+      expect(e - w).toBeLessThan(180);
+    });
+
+    it(`${id}: todo tiene nombre en cada idioma`, () => {
+      for (const lang of Object.keys(LANGS).filter((l) => l !== 'es')) {
+        const names = JSON.parse(readFileSync(`public/data/${id}/names.${lang}.json`, 'utf8'));
+        for (const c of asked) {
+          expect(names.countries[c.id]?.n, `${lang} ${c.id}`).toBeTruthy();
+          expect(names.countries[c.id]?.c, `${lang} ${c.id}`).toBeTruthy();
+        }
+        for (const key of Object.keys(country.regions)) expect(names.regions[key], `${lang} ${key}`).toBeTruthy();
+      }
+    });
+  }
+
+  it('Estados Unidos: 50 estados en las cuatro regiones del censo; el Distrito de Columbia se dibuja pero no se pregunta', () => {
+    const usa = new Atlas(JSON.parse(readFileSync('public/data/us/atlas.json', 'utf8')) as RawAtlas, 'us');
+    const count = (scope: string) => resolveScope(usa, scope, []).countries.length;
+    expect(count('us')).toBe(50);
+    expect([count('us-noreste'), count('us-medio-oeste'), count('us-sur'), count('us-oeste')]).toEqual([9, 12, 16, 13]);
+    expect(usa.byIdOrThrow('US-DC').kind).toBe('context');
+    expect(usa.byIdOrThrow('US-TX').capital).toBe('Austin');
+    expect(resolveScope(usa, 'us-sur', []).label).toBe('Sur');
+    // Maryland rodea al distrito, pero no lo tiene por vecino: no puede salir como opción.
+    expect(usa.byIdOrThrow('US-MD').neighbors.map((n) => usa.countries[n].id).sort()).toEqual(['US-DE', 'US-PA', 'US-VA', 'US-WV']);
   });
 });

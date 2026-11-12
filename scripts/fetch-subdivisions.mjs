@@ -80,7 +80,7 @@ async function sparql(q) {
 const rows = await sparql(query);
 
 // Las mismas ciudades, buscadas por su nombre en español entre los municipios del país.
-const nombres = [...new Set(mapa.provincias.flatMap((p) => [p.capital, ...(p.capAlias ?? [])]))];
+const nombres = [...new Set(mapa.provincias.filter((p) => p.capital).flatMap((p) => [p.capital, ...(p.capAlias ?? [])]))];
 const porNombre = mapa.wikidata?.capitalClase
   ? await sparql(`SELECT ?cap ?capEs ${columns.map((c) => `?c${c.name}`).join(' ')} WHERE {
   VALUES ?capEs { ${nombres.map((n) => `${JSON.stringify(n)}@es`).join(' ')} }
@@ -113,6 +113,8 @@ const missing = (code, what, o) => {
 };
 
 for (const [code, nombre] of Object.entries(mapa.comunidades)) {
+  // Una agrupación sin código ISO (las regiones del censo de EE. UU.) no se busca: va a mano.
+  if (!code.startsWith(mapa.prefijo)) continue;
   const options = (byCode.get(code) ?? []).map((r) => pick(r, 'n')).sort((a, b) => filled(b) - filled(a));
   if (!options.length) {
     pending.push(`${code} ${nombre}: no está en Wikidata con ese código`);
@@ -126,7 +128,7 @@ for (const [code, nombre] of Object.entries(mapa.comunidades)) {
 const porComunidad = Map.groupBy(mapa.provincias, (p) => p.comunidad);
 
 for (const p of mapa.provincias) {
-  const unica = porComunidad.get(p.comunidad).length === 1;
+  const unica = !!p.comunidad && porComunidad.get(p.comunidad).length === 1;
   const options = [...(byCode.get(p.iso) ?? []), ...(unica ? (byCode.get(p.comunidad) ?? []) : [])];
   // La misma ciudad que en español y, si hay varias fichas, la más completa.
   const named = (name) =>
@@ -134,8 +136,11 @@ for (const p of mapa.provincias) {
       .filter((r) => r.capEs && norm(r.capEs.value) === norm(name))
       .map((r) => pick(r, 'c'))
       .sort((a, b) => filled(b) - filled(a))[0];
-  const c = [p.capital, ...(p.capAlias ?? [])].map(named).find(Boolean);
-  if (!c) {
+  // Lo que solo es decorado (el Distrito de Columbia) no tiene capital que buscar.
+  const c = p.capital ? [p.capital, ...(p.capAlias ?? [])].map(named).find(Boolean) : undefined;
+  if (!p.capital) {
+    // nada que buscar
+  } else if (!c) {
     pending.push(`${p.iso} ${p.nombre}: «${p.capital}» no está entre ${[...new Set(options.map((r) => r.capEs?.value ?? '?'))].join(', ') || '(nada)'}`);
   } else missing(p.iso, `capital de ${p.nombre}`, c);
 

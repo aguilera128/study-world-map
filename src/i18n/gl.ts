@@ -486,8 +486,6 @@ const gl: Record<string, string> = {
   'Centro': 'Centro',
   'Este y Baleares': 'Leste e Baleares',
   'Sur y Canarias': 'Sur e Canarias',
-  'Mapa de España · {n} provincias': 'Mapa de España · {n} provincias',
-  'Aprende España,': 'Aprende España,',
   'provincia a provincia.': 'provincia a provincia.',
   'Provincias': 'Provincias',
   'Provincias que entran': 'Provincias que entran',
@@ -548,6 +546,33 @@ const gl: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Planeta de debuxos',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} provincias',
+  '{n} estados': '{n} estados',
+  'estado a estado.': 'estado a estado.',
+  'Estados': 'Estados',
+  'Estados que entran': 'Estados que entran',
+  'estado': 'estado',
+  'estados': 'estados',
+  'Dominas {n} de {total} estados': 'Dominas {n} de {total} estados',
+  'Buscar estado o capital…': 'Buscar estado ou capital…',
+  'Buscar estado o capital': 'Buscar estado ou capital',
+  'No hay ningún estado con ese nombre.': 'Non hai ningún estado con ese nome.',
+  '¿Qué estado es el señalado?': 'Que estado é o sinalado?',
+  '¿De qué estado es la capital?': 'De que estado é a capital?',
+  'Toca el estado en el mapa': 'Toca o estado no mapa',
+  'Escribe el estado…': 'Escribe o estado…',
+  'Buscando el estado': 'Buscando o estado',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Dámosche o nome dun estado e búscalo no mapa.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Sinalamos un estado no mapa e dis cal é.',
+  'Une cada estado con su capital.': 'Une cada estado coa súa capital.',
+  '¿A qué región pertenece?': 'A que rexión pertence?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Dámosche un nome e dis a que rexión do país pertence.',
+  '{country},': '{country},',
+  'Es {country}.': 'É {country}.',
+  'País': 'País',
+  'Estados Unidos': 'Estados Unidos',
 };
 
 export default gl;

@@ -143,7 +143,7 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
       return <>{tx('Es la bandera de {country}.', { country: strong(country.name) })}</>;
     default:
       return (
-        <>{tx(text.solution, { country: strong(country.name), region: atlas.regions[country.regions[0]].name })}</>
+        <>{tx(text.solution, { country: strong(country.name), region: country.regions.length ? atlas.regions[country.regions[0]].name : '' })}</>
       );
   }
 }

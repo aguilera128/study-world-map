@@ -486,8 +486,6 @@ const pt: Record<string, string> = {
   'Centro': 'Centro',
   'Este y Baleares': 'Leste e Baleares',
   'Sur y Canarias': 'Sul e Canárias',
-  'Mapa de España · {n} provincias': 'Mapa da Espanha · {n} províncias',
-  'Aprende España,': 'Aprenda a Espanha,',
   'provincia a provincia.': 'província por província.',
   'Provincias': 'Províncias',
   'Provincias que entran': 'Províncias incluídas',
@@ -548,6 +546,33 @@ const pt: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Planeta de desenho animado',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} províncias',
+  '{n} estados': '{n} estados',
+  'estado a estado.': 'estado por estado.',
+  'Estados': 'Estados',
+  'Estados que entran': 'Estados incluídos',
+  'estado': 'estado',
+  'estados': 'estados',
+  'Dominas {n} de {total} estados': 'Você domina {n} de {total} estados',
+  'Buscar estado o capital…': 'Buscar estado ou capital…',
+  'Buscar estado o capital': 'Buscar estado ou capital',
+  'No hay ningún estado con ese nombre.': 'Não há nenhum estado com esse nome.',
+  '¿Qué estado es el señalado?': 'Qual é o estado indicado?',
+  '¿De qué estado es la capital?': 'De que estado é a capital?',
+  'Toca el estado en el mapa': 'Toque o estado no mapa',
+  'Escribe el estado…': 'Escreva o estado…',
+  'Buscando el estado': 'Procurando o estado',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Damos o nome de um estado e você o procura no mapa.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Indicamos um estado no mapa e você diz qual é.',
+  'Une cada estado con su capital.': 'Ligue cada estado à sua capital.',
+  '¿A qué región pertenece?': 'A que região pertence?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Damos um nome e você diz a que região do país pertence.',
+  '{country},': '{country},',
+  'Es {country}.': 'É {country}.',
+  'País': 'País',
+  'Estados Unidos': 'Estados Unidos',
 };
 
 export default pt;

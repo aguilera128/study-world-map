@@ -486,8 +486,6 @@ const fr: Record<string, string> = {
   'Centro': 'Centre',
   'Este y Baleares': 'Est et Baléares',
   'Sur y Canarias': 'Sud et Canaries',
-  'Mapa de España · {n} provincias': 'Carte d’Espagne · {n} provinces',
-  'Aprende España,': 'Apprenez l’Espagne,',
   'provincia a provincia.': 'province par province.',
   'Provincias': 'Provinces',
   'Provincias que entran': 'Provinces incluses',
@@ -548,6 +546,33 @@ const fr: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Planète de dessin animé',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} provinces',
+  '{n} estados': '{n} États',
+  'estado a estado.': 'État par État.',
+  'Estados': 'États',
+  'Estados que entran': 'États inclus',
+  'estado': 'État',
+  'estados': 'États',
+  'Dominas {n} de {total} estados': 'Vous maîtrisez {n} États sur {total}',
+  'Buscar estado o capital…': 'Chercher un État ou une capitale…',
+  'Buscar estado o capital': 'Chercher un État ou une capitale',
+  'No hay ningún estado con ese nombre.': 'Aucun État ne porte ce nom.',
+  '¿Qué estado es el señalado?': 'Quel est l’État indiqué ?',
+  '¿De qué estado es la capital?': 'De quel État est-ce la capitale ?',
+  'Toca el estado en el mapa': 'Touchez l’État sur la carte',
+  'Escribe el estado…': 'Écrivez l’État…',
+  'Buscando el estado': 'En cherchant l’État',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Nous vous donnons le nom d’un État et vous le cherchez sur la carte.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Nous indiquons un État sur la carte et vous dites lequel c’est.',
+  'Une cada estado con su capital.': 'Associez chaque État à sa capitale.',
+  '¿A qué región pertenece?': 'À quelle région appartient-il ?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Nous vous donnons un nom et vous dites à quelle région du pays il appartient.',
+  '{country},': '{country},',
+  'Es {country}.': 'C’est {country}.',
+  'País': 'Pays',
+  'Estados Unidos': 'États-Unis',
 };
 
 export default fr;

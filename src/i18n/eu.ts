@@ -487,8 +487,6 @@ const eu: Record<string, string> = {
   'Centro': 'Erdialdea',
   'Este y Baleares': 'Ekialdea eta Balearrak',
   'Sur y Canarias': 'Hegoaldea eta Kanariak',
-  'Mapa de España · {n} provincias': 'Espainiako mapa · {n} probintzia',
-  'Aprende España,': 'Ikasi Espainia,',
   'provincia a provincia.': 'probintziaz probintzia.',
   'Provincias': 'Probintziak',
   'Provincias que entran': 'Sartzen diren probintziak',
@@ -549,6 +547,33 @@ const eu: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Marrazki bizidunen planeta',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} probintzia',
+  '{n} estados': '{n} estatu',
+  'estado a estado.': 'estatuz estatu.',
+  'Estados': 'Estatuak',
+  'Estados que entran': 'Sartzen diren estatuak',
+  'estado': 'estatu',
+  'estados': 'estatu',
+  'Dominas {n} de {total} estados': '{total} estatutik {n} menderatzen dituzu',
+  'Buscar estado o capital…': 'Bilatu estatua edo hiriburua…',
+  'Buscar estado o capital': 'Bilatu estatua edo hiriburua',
+  'No hay ningún estado con ese nombre.': 'Ez dago izen hori duen estaturik.',
+  '¿Qué estado es el señalado?': 'Zein da markatutako estatua?',
+  '¿De qué estado es la capital?': 'Zein estatutako hiriburua da?',
+  'Toca el estado en el mapa': 'Ukitu estatua mapan',
+  'Escribe el estado…': 'Idatzi estatua…',
+  'Buscando el estado': 'Estatua bilatuz',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Estatu baten izena ematen dizugu, eta mapan bilatzen duzu.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Estatu bat markatzen dugu mapan, eta zein den esaten duzu.',
+  'Une cada estado con su capital.': 'Lotu estatu bakoitza bere hiriburuarekin.',
+  '¿A qué región pertenece?': 'Zein eskualdetakoa da?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Izen bat ematen dizugu, eta herrialdeko zein eskualdetakoa den esaten duzu.',
+  '{country},': '{country},',
+  'Es {country}.': '{country} da.',
+  'País': 'Herrialdea',
+  'Estados Unidos': 'Ameriketako Estatu Batuak',
 };
 
 export default eu;

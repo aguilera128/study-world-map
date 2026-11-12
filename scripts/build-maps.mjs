@@ -121,21 +121,29 @@ for (const mapa of Object.values(MAPAS)) {
   const wikidata = JSON.parse(readFileSync(join(dir, `${mapa.id}.wikidata.json`), 'utf8'));
   const geometrias = new Map(topo.objects.mapa.geometries.map((g) => [g.id, g]));
 
-  const isos = mapa.provincias.map((p) => p.iso);
+  // Primero lo que se pregunta y después lo que solo es decorado (`decorado: true`: el Distrito de
+  // Columbia, que no es un estado): así los índices de las vecinas valen tal cual.
+  const preguntadas = mapa.provincias.filter((p) => !p.decorado);
+  const unidades = [...preguntadas, ...mapa.provincias.filter((p) => p.decorado)];
+  const isos = unidades.map((p) => p.iso);
+  const conGrupos = Object.keys(mapa.comunidades).length > 0;
   if (new Set(isos).size !== isos.length) throw new Error(`${mapa.id}: hay códigos repetidos en las provincias.`);
-  for (const p of mapa.provincias) {
+  for (const p of unidades) {
     if (!p.iso.startsWith(mapa.prefijo)) throw new Error(`${mapa.id}: ${p.iso} no empieza por ${mapa.prefijo}`);
-    if (!mapa.comunidades[p.comunidad]) throw new Error(`${mapa.id}: comunidad desconocida en ${p.iso}: ${p.comunidad}`);
-    if (!p.nombre || !p.capital) throw new Error(`${mapa.id}: a ${p.iso} le falta el nombre o la capital.`);
+    if (!p.nombre) throw new Error(`${mapa.id}: a ${p.iso} le falta el nombre.`);
     if (!geometrias.has(p.iso)) throw new Error(`${mapa.id}: ${p.iso} (${p.nombre}) no tiene geometría: vuelve a ejecutar scripts/build-subdivisions.mjs.`);
+    if (p.decorado) continue;
+    if (!p.capital) throw new Error(`${mapa.id}: a ${p.iso} le falta la capital.`);
+    // Un país sin agrupaciones (estados federados que no se reúnen en nada) no lleva ninguna.
+    if (conGrupos ? !mapa.comunidades[p.comunidad] : p.comunidad) throw new Error(`${mapa.id}: comunidad desconocida en ${p.iso}: ${p.comunidad}`);
   }
   for (const clave of Object.keys(mapa.comunidades)) {
-    if (!mapa.provincias.some((p) => p.comunidad === clave)) throw new Error(`${mapa.id}: la comunidad ${clave} no tiene provincias.`);
+    if (!preguntadas.some((p) => p.comunidad === clave)) throw new Error(`${mapa.id}: la comunidad ${clave} no tiene provincias.`);
   }
   const contexto = mapa.contexto.filter((a3) => geometrias.has(a3));
 
-  // ponytail: no corta por el antimeridiano (España y sus vecinos no lo cruzan). Un país que sí
-  // (Estados Unidos por las Aleutianas, Rusia) necesita el recorte con d3 que hace build-atlas.mjs.
+  // No corta por el antimeridiano: la capa de subdivisiones de Natural Earth ya trae partido lo que
+  // lo cruza (las Aleutianas), con un trozo a cada lado. Se comprueba aquí mismo que es así.
   /** código → polígonos planos cuantizados [exterior, ...huecos], de mayor a menor */
   const planos = new Map(
     [...isos, ...contexto].map((codigo) => {
@@ -148,6 +156,10 @@ for (const mapa of Object.values(MAPAS)) {
         if (valido(exterior)) out.push([exterior, ...huecos.filter(valido)]);
       }
       if (!out.length) throw new Error(`${mapa.id}: ${codigo} se queda sin polígonos válidos al cuantizar.`);
+      for (const pol of out) {
+        const [w, , e] = bboxPoligono(pol);
+        if (e - w > 180) throw new Error(`${mapa.id}: un polígono de ${codigo} cruza el antimeridiano sin partir.`);
+      }
       return [codigo, out.map((pol) => ({ pol, area: areaEsferica(pol) })).sort((a, b) => b.area - a.area)];
     }),
   );
@@ -185,22 +197,27 @@ for (const mapa of Object.values(MAPAS)) {
   const nombrePais = new Intl.DisplayNames(['es'], { type: 'region' });
   const a2De = { SAH: 'EH' };
   const entidades = [
-    ...mapa.provincias.map((p) => ({
-      ...base(p.iso),
-      name: p.nombre,
-      kind: 'country',
-      capital: p.capital,
-      regions: [p.comunidad],
-      aliases: p.alias,
-      capitalAliases: p.capAlias,
-    })),
+    ...unidades.map((p) =>
+      p.decorado
+        ? { ...base(p.iso), name: p.nombre, kind: 'context' }
+        : {
+            ...base(p.iso),
+            name: p.nombre,
+            kind: 'country',
+            capital: p.capital,
+            regions: p.comunidad ? [p.comunidad] : [],
+            aliases: p.alias,
+            capitalAliases: p.capAlias,
+          },
+    ),
     ...contexto.map((a3) => {
       const a2 = a2De[a3] ?? topoA2(a3);
       return { ...base(a3), name: a2 ? nombrePais.of(a2) : a3, kind: 'context' };
     }),
   ];
 
-  // Vecinas (solo entre provincias) y colores del mapa político: dos vecinas nunca comparten color.
+  // Vecinas y colores del mapa político: dos vecinas nunca comparten color. Como vecinas solo se
+  // apuntan las que se preguntan (de ahí salen las opciones de respuesta), no el decorado.
   const vecinos = topojson.neighbors(isos.map((iso) => geometrias.get(iso)));
   const color = new Array(isos.length).fill(-1);
   const uso = new Array(NUM_COLORES).fill(0);
@@ -218,12 +235,16 @@ for (const mapa of Object.values(MAPAS)) {
   }
   entidades.forEach((e, i) => {
     e.color = color[i] ?? 0;
-    e.neighbors = vecinos[i]?.length ? vecinos[i] : undefined;
+    const propias = i < preguntadas.length ? vecinos[i].filter((j) => j < preguntadas.length) : [];
+    e.neighbors = propias.length ? propias : undefined;
   });
 
   // Encuadres: el de cada comunidad (sus provincias) y el del mapa entero (todas).
-  const marcoDe = (lista) => lista.map((e) => e.bbox).reduce(unir).map((v) => red(v));
-  const provincias = entidades.slice(0, isos.length);
+  // Lo que tiene un trozo a cada lado del antimeridiano (Alaska) ocupa, según su caja, el mundo
+  // entero: se encuadra por su parte principal.
+  const cajaDe = (e) => (e.bbox[2] - e.bbox[0] > 180 ? e.frame : e.bbox);
+  const marcoDe = (lista) => lista.map(cajaDe).reduce(unir).map((v) => red(v));
+  const provincias = entidades.slice(0, preguntadas.length);
   const atlas = {
     version: 1,
     q: Q,
@@ -251,9 +272,13 @@ for (const mapa of Object.values(MAPAS)) {
   for (const idioma of idiomas) {
     const propio = mapa.correcciones[idioma] ?? {};
     const paises = {};
-    for (const p of mapa.provincias) {
+    for (const p of unidades) {
       const extra = propio.provincias?.[p.iso] ?? {};
       const n = extra.nombre ?? wikidata[p.iso]?.n?.[idioma] ?? p.nombre;
+      if (p.decorado) {
+        paises[p.iso] = { n };
+        continue;
+      }
       const c = extra.capital ?? wikidata[p.iso]?.c?.[idioma] ?? p.capital;
       paises[p.iso] = {
         n,
@@ -269,7 +294,7 @@ for (const mapa of Object.values(MAPAS)) {
   }
 
   console.log(
-    `mapa ${mapa.id}: ${isos.length} subdivisiones en ${Object.keys(mapa.comunidades).length} regiones + ${contexto.length} países de contexto · ` +
+    `mapa ${mapa.id}: ${preguntadas.length} subdivisiones${unidades.length > preguntadas.length ? ` (+${unidades.length - preguntadas.length} de decorado)` : ''} en ${Object.keys(mapa.comunidades).length} regiones + ${contexto.length} países de contexto · ` +
       `${totalPuntos} puntos · ${(json.length / 1024).toFixed(0)} kB · colores ${uso.join('/')}`,
   );
 }

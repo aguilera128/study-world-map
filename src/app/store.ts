@@ -20,7 +20,8 @@ import {
 import { record, sanitizeProgress, type Outcome, type Progress, mergeProgress } from '../game/progress';
 import { advance, createSession, currentQuestion, score, submit, type Answer, type Session } from '../game/session';
 import { dailyConfig, dailyKey, dailyRng, recordDaily, type DailyRecord } from '../game/daily';
-import { isMapId, MAPS, type MapDef } from '../game/maps';
+import { COUNTRY_IDS, type CountryMapId } from '../game/countryMaps';
+import { isCountryMap, isMapId, MAPS, type MapDef } from '../game/maps';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
 import { lang, t } from '../i18n';
@@ -308,6 +309,8 @@ const NO_PADDING: Padding = { left: 0, right: 0, top: 0, bottom: 0 };
 
 interface AppState {
   atlas: Atlas | null;
+  /** El país que ofrece el selector de mapas: el último cuyo mapa se abrió. */
+  country: CountryMapId;
   error: string | null;
   screen: Screen;
   session: Session | null;
@@ -444,6 +447,7 @@ export const useApp = create<AppState>()((set, get) => {
 
   return {
     atlas: null,
+    country: COUNTRY_IDS.find((id) => useSettings.getState().configs[id]) ?? COUNTRY_IDS[0],
     error: null,
     screen: 'home',
     session: null,
@@ -470,7 +474,7 @@ export const useApp = create<AppState>()((set, get) => {
         if (layers.relief) images.push('/data/relief.webp');
         if (layers.stars && document.documentElement.dataset.theme === 'night') images.push('/data/milkyway.webp');
         for (const url of images) void warmBitmap(url).catch(() => {});
-        set({ atlas, error: null, location: approximateLocation(atlas) });
+        set({ atlas, error: null, location: approximateLocation(atlas), ...(isCountryMap(atlas.map) && { country: atlas.map }) });
       } catch (e) {
         set({ error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });
       }
@@ -485,7 +489,7 @@ export const useApp = create<AppState>()((set, get) => {
         // El reto y la zona del otro mapa no valen en este: la configuración se ajusta al cambiar.
         useSettings.getState().setConfig({ map });
         // La ubicación guardaba un índice del otro atlas: se vuelve a deducir (o se queda sin ella).
-        set({ atlas, error: null, screen: 'home', session: null, labels: [], selected: -1, draft: null, location: approximateLocation(atlas) });
+        set({ atlas, error: null, screen: 'home', session: null, labels: [], selected: -1, draft: null, location: approximateLocation(atlas), ...(isCountryMap(map) && { country: map }) });
       } catch (e) {
         // Sin el atlas nuevo (p. ej. sin conexión) no hay mapa que enseñar: «Reintentar» recarga el anterior.
         set({ atlas: null, error: e instanceof Error ? e.message : t('No se pudo cargar el mapa.') });

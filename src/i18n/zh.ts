@@ -485,8 +485,6 @@ const zh: Record<string, string> = {
   'Centro': '中部',
   'Este y Baleares': '东部和巴利阿里群岛',
   'Sur y Canarias': '南部和加那利群岛',
-  'Mapa de España · {n} provincias': '西班牙地图 · {n} 个省',
-  'Aprende España,': '认识西班牙，',
   'provincia a provincia.': '一省一省地学。',
   'Provincias': '省份',
   'Provincias que entran': '包含的省份',
@@ -547,6 +545,33 @@ const zh: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': '卡通星球',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} 个省',
+  '{n} estados': '{n} 个州',
+  'estado a estado.': '一州一州地学。',
+  'Estados': '州',
+  'Estados que entran': '包含的州',
+  'estado': '个州',
+  'estados': '个州',
+  'Dominas {n} de {total} estados': '已掌握 {n} / {total} 个州',
+  'Buscar estado o capital…': '搜索州或首府…',
+  'Buscar estado o capital': '搜索州或首府',
+  'No hay ningún estado con ese nombre.': '没有叫这个名字的州。',
+  '¿Qué estado es el señalado?': '标出的是哪个州？',
+  '¿De qué estado es la capital?': '这是哪个州的首府？',
+  'Toca el estado en el mapa': '在地图上点出这个州',
+  'Escribe el estado…': '输入州名…',
+  'Buscando el estado': '找州',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': '我们给出州名，你在地图上找到它。',
+  'Señalamos un estado en el mapa y dices cuál es.': '我们在地图上标出一个州，你说出它是哪个州。',
+  'Une cada estado con su capital.': '把每个州和它的首府配对。',
+  '¿A qué región pertenece?': '它属于哪个地区？',
+  'Te damos un nombre y dices a qué región del país pertenece.': '我们给出一个名字，你说出它属于该国的哪个地区。',
+  '{country},': '{country}，',
+  'Es {country}.': '这是{country}。',
+  'País': '国家',
+  'Estados Unidos': '美国',
 };
 
 export default zh;

@@ -1,12 +1,14 @@
 import type { Bounds, MapId, RegionKey } from '../atlas/types';
 import type { ModeId } from './config';
+import { COUNTRY_IDS, COUNTRY_MAPS, countryModes, type CountryMap, type CountryMapId, type GroupKind, type UnitKind } from './countryMaps';
 import { t } from '../i18n';
 
 // Los mapas que se pueden estudiar: el mundo por países y cada país por sus subdivisiones. Los datos
 // de un mapa están en su atlas (scripts/build-maps.mjs); aquí va lo que cambia en la aplicación:
 // qué retos se ofrecen, cómo se agrupan las zonas y los textos que hablan de «países» o «provincias».
 //
-// Para añadir un país: su atlas (scripts/data/mapas/), su clave en `MapId` y su entrada en `MAPS`.
+// Para añadir un país: su atlas (scripts/data/mapas/) y su entrada en ./countryMaps.ts. Sus textos no
+// se escriben país a país: salen del tipo de sus unidades («provincia», «estado»…), más abajo.
 
 export interface RegionFilterDef {
   id: string;
@@ -63,7 +65,106 @@ export interface MapDef {
   text: MapText;
 }
 
-export const MAPS: Record<MapId, MapDef> = {
+// ───────────────────────── textos del mapa de un país ─────────────────────────
+// Un juego de frases por tipo de unidad, no por país: las frases enteras, porque el género y los
+// artículos cambian en cada idioma y no se pueden componer («la provincia», «el estado», «der
+// Staat»). Al añadir un tipo hay que mirar que las dos frases compartidas con el mapa del mundo
+// («Estúdialos…», «Practicar estos…») concuerden con su género en todos los diccionarios.
+
+interface UnitText extends Omit<MapText, 'count' | 'headline' | 'askRegion' | 'solution' | 'modes'> {
+  /** «{n} provincias», para el rótulo «España · 52 provincias». */
+  count: string;
+  /** Segunda línea del titular: «provincia a provincia.» */
+  each: string;
+  /** Resumen de los retos, que en el mundo hablan de «países». */
+  locate: string;
+  name: string;
+  capital: string;
+}
+
+const UNITS: Record<UnitKind, UnitText> = {
+  provincia: {
+    count: t('{n} provincias'),
+    each: t('provincia a provincia.'),
+    units: t('Provincias'),
+    scopeAria: t('Provincias que entran'),
+    unit: [t('provincia'), t('provincias')],
+    mastered: t('Dominas {n} de {total} provincias'),
+    study: t('Estúdialas antes de jugar'),
+    practice: t('Practicar estas →'),
+    search: t('Buscar provincia o capital…'),
+    searchAria: t('Buscar provincia o capital'),
+    notFound: t('No hay ninguna provincia con ese nombre.'),
+    askName: t('¿Qué provincia es la señalada?'),
+    askCapitalOwner: t('¿De qué provincia es la capital?'),
+    tap: t('Toca la provincia en el mapa'),
+    type: t('Escribe la provincia…'),
+    findOwner: t('Buscando la provincia'),
+    locate: t('Te damos el nombre de una provincia y la buscas en el mapa.'),
+    name: t('Señalamos una provincia en el mapa y dices cuál es.'),
+    capital: t('Une cada provincia con su capital.'),
+  },
+  estado: {
+    count: t('{n} estados'),
+    each: t('estado a estado.'),
+    units: t('Estados'),
+    scopeAria: t('Estados que entran'),
+    unit: [t('estado'), t('estados')],
+    mastered: t('Dominas {n} de {total} estados'),
+    study: t('Estúdialos antes de jugar'),
+    practice: t('Practicar estos →'),
+    search: t('Buscar estado o capital…'),
+    searchAria: t('Buscar estado o capital'),
+    notFound: t('No hay ningún estado con ese nombre.'),
+    askName: t('¿Qué estado es el señalado?'),
+    askCapitalOwner: t('¿De qué estado es la capital?'),
+    tap: t('Toca el estado en el mapa'),
+    type: t('Escribe el estado…'),
+    findOwner: t('Buscando el estado'),
+    locate: t('Te damos el nombre de un estado y lo buscas en el mapa.'),
+    name: t('Señalamos un estado en el mapa y dices cuál es.'),
+    capital: t('Une cada estado con su capital.'),
+  },
+};
+
+/** El reto de «¿a qué … pertenece?»: su título (si no es «Región»), su pregunta y su resumen. */
+const GROUPS: Record<GroupKind, { title?: string; ask: string; summary: string }> = {
+  comunidad: { title: t('Comunidad'), ask: t('¿A qué comunidad autónoma pertenece?'), summary: t('Di a qué comunidad autónoma pertenece cada provincia.') },
+  region: { ask: t('¿A qué región pertenece?'), summary: t('Te damos un nombre y dices a qué región del país pertenece.') },
+};
+
+function countryMap(id: CountryMapId): MapDef {
+  const data: CountryMap = COUNTRY_MAPS[id];
+  const { count, each, locate, name, capital, ...unit } = UNITS[data.unit];
+  const group = data.group ? GROUPS[data.group] : null;
+  const title = t(data.title);
+  return {
+    id,
+    title,
+    modes: countryModes(data),
+    filters: [
+      { id, label: title, keys: [], ...(data.frame && { frame: data.frame }) },
+      ...data.zones.map((zone) => ({ id: zone.id, keys: zone.keys, ...(zone.label && { label: t(zone.label) }) })),
+    ],
+    scope: id,
+    extras: false,
+    text: {
+      ...unit,
+      count: `${title} · ${count}`,
+      headline: [t('{country},', { country: title }), each],
+      askRegion: group?.ask ?? '',
+      solution: group ? t('Es {country} ({region}).') : t('Es {country}.'),
+      modes: {
+        locate: { summary: locate },
+        name: { summary: name },
+        capital: { summary: capital },
+        ...(group && { region: { ...(group.title && { title: group.title }), summary: group.summary } }),
+      },
+    },
+  };
+}
+
+const WORLD_AND_PHYSICAL: Record<Exclude<MapId, CountryMapId>, MapDef> = {
   world: {
     id: 'world',
     title: t('Mundo'),
@@ -100,53 +201,6 @@ export const MAPS: Record<MapId, MapDef> = {
       findOwner: t('Buscando el país'),
       solution: t('Es {country}, en {region}.'),
       modes: {},
-    },
-  },
-
-  es: {
-    id: 'es',
-    title: t('España'),
-    modes: ['locate', 'region', 'name', 'capital'],
-    // Las comunidades de una sola provincia no dan para una partida: van en agrupaciones.
-    filters: [
-      { id: 'es', label: t('España'), keys: [] },
-      { id: 'es-norte', label: t('Norte'), keys: ['ES-GA', 'ES-AS', 'ES-CB', 'ES-PV', 'ES-NC', 'ES-RI'] },
-      { id: 'es-centro', label: t('Centro'), keys: ['ES-CL', 'ES-MD', 'ES-CM', 'ES-EX'] },
-      { id: 'es-este', label: t('Este y Baleares'), keys: ['ES-CT', 'ES-AR', 'ES-VC', 'ES-MC', 'ES-IB'] },
-      { id: 'es-sur', label: t('Sur y Canarias'), keys: ['ES-AN', 'ES-CN', 'ES-CE', 'ES-ML'] },
-      { id: 'es-an', keys: ['ES-AN'] },
-      { id: 'es-cl', keys: ['ES-CL'] },
-      { id: 'es-cm', keys: ['ES-CM'] },
-      { id: 'es-ct', keys: ['ES-CT'] },
-      { id: 'es-ga', keys: ['ES-GA'] },
-    ],
-    scope: 'es',
-    extras: false,
-    text: {
-      count: t('Mapa de España · {n} provincias'),
-      headline: [t('Aprende España,'), t('provincia a provincia.')],
-      units: t('Provincias'),
-      scopeAria: t('Provincias que entran'),
-      unit: [t('provincia'), t('provincias')],
-      mastered: t('Dominas {n} de {total} provincias'),
-      study: t('Estúdialas antes de jugar'),
-      practice: t('Practicar estas →'),
-      search: t('Buscar provincia o capital…'),
-      searchAria: t('Buscar provincia o capital'),
-      notFound: t('No hay ninguna provincia con ese nombre.'),
-      askName: t('¿Qué provincia es la señalada?'),
-      askCapitalOwner: t('¿De qué provincia es la capital?'),
-      askRegion: t('¿A qué comunidad autónoma pertenece?'),
-      tap: t('Toca la provincia en el mapa'),
-      type: t('Escribe la provincia…'),
-      findOwner: t('Buscando la provincia'),
-      solution: t('Es {country} ({region}).'),
-      modes: {
-        locate: { summary: t('Te damos el nombre de una provincia y la buscas en el mapa.') },
-        region: { title: t('Comunidad'), summary: t('Di a qué comunidad autónoma pertenece cada provincia.') },
-        name: { summary: t('Señalamos una provincia en el mapa y dices cuál es.') },
-        capital: { summary: t('Une cada provincia con su capital.') },
-      },
     },
   },
 
@@ -192,4 +246,10 @@ export const MAPS: Record<MapId, MapDef> = {
   },
 };
 
+export const MAPS: Record<MapId, MapDef> = {
+  ...WORLD_AND_PHYSICAL,
+  ...(Object.fromEntries(COUNTRY_IDS.map((id) => [id, countryMap(id)])) as Record<CountryMapId, MapDef>),
+};
+
 export const isMapId = (id: unknown): id is MapId => typeof id === 'string' && Object.hasOwn(MAPS, id);
+export const isCountryMap = (id: unknown): id is CountryMapId => typeof id === 'string' && Object.hasOwn(COUNTRY_MAPS, id);

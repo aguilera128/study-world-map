@@ -2,13 +2,12 @@ import { useMemo, useState, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
 import { rankingOf } from '../app/ranking';
 import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/store';
-import type { MapId } from '../atlas/types';
 import { answerLabel, modeDef, modesOf, resolveScope, type ModeId } from '../game/config';
-import { MAPS } from '../game/maps';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
 import { summarize } from '../game/progress';
 import { Icon } from './Icon';
 import { homeOf, lang, preferredLang, VIEW_IN } from '../i18n';
+import { MapPicker } from './MapPicker';
 import { ANSWER_ICONS, MODE_ICONS } from './modeIcons';
 import { Panel, Segmented, Step } from './primitives';
 import { Ranking } from './Ranking';
@@ -145,22 +144,7 @@ export function HomePanel() {
         {t('Elige un reto, responde sobre el mapa y repasa lo que falles hasta que te lo sepas.')}
       </p>
 
-      <Segmented
-        label={t('Mapa')}
-        // en el móvil, los tres mapas en una fila que se desliza, no en dos
-        className={`flex-nowrap! overflow-x-auto wide:flex-wrap! wide:overflow-visible [scrollbar-width:none] [&>*]:shrink-0 ${played ? 'wide:mt-4' : 'mt-4'}`}
-        value={atlas.map}
-        onChange={(map) => void setMap(map)}
-        options={(Object.keys(MAPS) as MapId[]).map((id) => ({
-          value: id,
-          label: (
-            <>
-              <Icon name={id === 'world' ? 'globe' : 'map'} size={16} />
-              {MAPS[id].title}
-            </>
-          ),
-        }))}
-      />
+      <MapPicker className={played ? 'wide:mt-4' : 'mt-4'} onChange={(map) => void setMap(map)} />
 
       <section className="mt-5" style={order(3)}>
         <div className="mb-2 flex items-center justify-between gap-3">

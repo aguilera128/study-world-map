@@ -487,8 +487,6 @@ const ca: Record<string, string> = {
   'Centro': 'Centre',
   'Este y Baleares': 'Est i Balears',
   'Sur y Canarias': 'Sud i Canàries',
-  'Mapa de España · {n} provincias': 'Mapa d’Espanya · {n} províncies',
-  'Aprende España,': 'Aprén Espanya,',
   'provincia a provincia.': 'província a província.',
   'Provincias': 'Províncies',
   'Provincias que entran': 'Províncies que entren',
@@ -549,6 +547,33 @@ const ca: Record<string, string> = {
 
   // ── Planeta de dibujos (huevo de pascua), en el menú de capas ──
   'Planeta de dibujos': 'Planeta de dibuixos',
+
+  // ── Mapas de un país: frases por tipo de unidad (estados) y selector de país ──
+  '{n} provincias': '{n} províncies',
+  '{n} estados': '{n} estats',
+  'estado a estado.': 'estat a estat.',
+  'Estados': 'Estats',
+  'Estados que entran': 'Estats que entren',
+  'estado': 'estat',
+  'estados': 'estats',
+  'Dominas {n} de {total} estados': 'Domines {n} de {total} estats',
+  'Buscar estado o capital…': 'Buscar estat o capital…',
+  'Buscar estado o capital': 'Buscar estat o capital',
+  'No hay ningún estado con ese nombre.': 'No hi ha cap estat amb eixe nom.',
+  '¿Qué estado es el señalado?': 'Quin estat és l’assenyalat?',
+  '¿De qué estado es la capital?': 'De quin estat és la capital?',
+  'Toca el estado en el mapa': 'Toca l’estat en el mapa',
+  'Escribe el estado…': 'Escriu l’estat…',
+  'Buscando el estado': 'Buscant l’estat',
+  'Te damos el nombre de un estado y lo buscas en el mapa.': 'Et donem el nom d’un estat i el busques en el mapa.',
+  'Señalamos un estado en el mapa y dices cuál es.': 'Assenyalem un estat en el mapa i dius quin és.',
+  'Une cada estado con su capital.': 'Uneix cada estat amb la seua capital.',
+  '¿A qué región pertenece?': 'A quina regió pertany?',
+  'Te damos un nombre y dices a qué región del país pertenece.': 'Et donem un nom i dius a quina regió del país pertany.',
+  '{country},': '{country},',
+  'Es {country}.': 'És {country}.',
+  'País': 'País',
+  'Estados Unidos': 'Estats Units',
 };
 
 export default ca;

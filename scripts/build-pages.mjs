@@ -19,6 +19,9 @@ import { CLIMAS } from './data/climas.mjs';
 import { legalPages } from './data/legales.mjs';
 import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
 import { MAPAS } from './data/mapas/index.mjs';
+
+/** Los mapas de un país que tienen páginas estáticas escritas (un país recién añadido aún no). */
+const MAPAS_CON_PAGINAS = Object.values(MAPAS).filter((mapa) => mapa.paginas.length);
 import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
@@ -269,7 +272,7 @@ for (const lang of LANGS) {
     <p>${P.juegos}</p>
     <nav class="toc" aria-label="${P.juegosAria}">
 ${zonas.map((z) => `      <a href="${juegoPath(lang, RETOS[0], z)}">${esc(T.juego.enlace(T.retos.paises, z.name))}</a>`).join('\n')}
-${Object.values(MAPAS)
+${MAPAS_CON_PAGINAS
   .map((mapa) => `      <a href="${mapaPath(mapa, lang, mapa.paginas[0])}">${esc(mapaEnlace(mapa, lang, mapa.paginas[0]))}</a>`)
   .join('\n')}
     </nav>
@@ -405,7 +408,7 @@ ${content}
 // aplicación con el mapa y el reto ya elegidos (?mapa=…&reto=…, ver src/app/share.ts).
 
 let paginasMapa = 0;
-for (const mapa of Object.values(MAPAS)) {
+for (const mapa of MAPAS_CON_PAGINAS) {
   const sub = JSON.parse(readFileSync(`public/data/${mapa.id}/atlas.json`, 'utf8'));
   const alternatesOf = (pagina) => Object.fromEntries(LANGS.map((lang) => [lang, mapaPath(mapa, lang, pagina)]));
   for (const lang of LANGS) if (!mapa.textos[lang]) throw new Error(`build-pages: al mapa «${mapa.id}» le faltan los textos en «${lang}».`);
@@ -704,7 +707,7 @@ for (const lang of LANGS) {
   const { continents } = worldIn(lang);
   void continents;
   const porZona = ZONAS.map((z) => ({ name: T.zonas[z.id], enlaces: RETOS.map((r) => [juegoPath(lang, r, z), T.juego.enlace(T.retos[r.id], T.zonas[z.id])]) }));
-  const mapas = Object.values(MAPAS).flatMap((mapa) => mapa.paginas.map((pagina) => [mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)]));
+  const mapas = MAPAS_CON_PAGINAS.flatMap((mapa) => mapa.paginas.map((pagina) => [mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)]));
   const nav = (enlaces) => `    <nav class="toc">${enlaces.map(([href, text]) => `<a href="${href}">${esc(text)}</a>`).join(' ')}</nav>`;
   const titulo = T.paises.juegosAria;
   write(
@@ -720,7 +723,7 @@ for (const lang of LANGS) {
       body: `    <h1>${esc(titulo)}</h1>
     <a class="cta" href="${base(lang)}">${T.paises.cta}</a>
 ${porZona.map((z) => `    <h2>${esc(z.name)}</h2>\n${nav(z.enlaces)}`).join('\n')}
-${Object.values(MAPAS).length ? `    <h2>${esc(mapaEnlace(Object.values(MAPAS)[0], lang, Object.values(MAPAS)[0].paginas[0]))}</h2>\n${nav(mapas)}` : ''}${
+${MAPAS_CON_PAGINAS.length ? `    <h2>${esc(mapaEnlace(MAPAS_CON_PAGINAS[0], lang, MAPAS_CON_PAGINAS[0].paginas[0]))}</h2>\n${nav(mapas)}` : ''}${
         `\n    <h2>${esc(TEMAS[lang].textos.indiceFisico)}</h2>\n${nav(TEMAS[lang].filter((t) => t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}\n    <h2>${esc(TEMAS[lang].textos.indicePlaneta)}</h2>\n${nav(TEMAS[lang].filter((t) => !t.path.startsWith(path)).map((t) => [t.path, t.enlace]))}`
       }
     <p><a href="${paisesPath(lang)}">${T.juego.todos}</a></p>`,
@@ -784,7 +787,7 @@ for (const lang of LANGS) {
   const tema = (id) => TEMAS[lang].find((t) => t.id === id);
   const grupos = [
     [a(`${base(lang)}${T.ruta.juego}/`, T.paises.juegosAria)],
-    Object.values(MAPAS).flatMap((mapa) => mapa.paginas.map((pagina) => a(mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)))),
+    MAPAS_CON_PAGINAS.flatMap((mapa) => mapa.paginas.map((pagina) => a(mapaPath(mapa, lang, pagina), mapaEnlace(mapa, lang, pagina)))),
     ['rios', 'montanas', 'mares', 'tierras'].map((id) => a(tema(id).path, tema(id).enlace)),
     ['climas', 'poblacion'].map((id) => a(tema(id).path, tema(id).enlace)),
     ['tierra', 'atmosfera'].map((id) => a(tema(id).path, tema(id).enlace)),

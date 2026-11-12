@@ -251,9 +251,11 @@ export function ExplorePanel() {
                   <span className="shrink-0 text-sm font-semibold text-ink-soft">
                     {country.continents.length
                       ? atlas.continents[country.continents[0]]
-                      : country.kind === 'country' && country.regions.length
-                        ? atlas.regions[country.regions[0]].name
-                        : t('Territorio')}
+                      : country.kind !== 'country'
+                        ? t('Territorio')
+                        : country.regions.length
+                          ? atlas.regions[country.regions[0]].name
+                          : ''}
                   </span>
                 </button>
               </li>

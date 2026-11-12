@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { COUNTRY_MAPS, type CountryMap } from '../game/countryMaps';
 import { LANGS, pathLang, preferredLang, t, VIEW_IN } from './index';
 
 /** Todos los textos que el código pasa a `t()` o `tx()` (los literales entre comillas simples). */
@@ -25,6 +26,8 @@ function sourceTexts(): Set<string> {
     ...['Luna nueva', 'Luna llena', 'Cuarto creciente', 'Cuarto menguante', 'Luna creciente', 'Luna menguante'],
     ...['Sin practicar', 'Aprendiendo', 'A medias', 'Casi', 'Dominado'],
     '50 países principales',
+    // Los países que se estudian por dentro y sus zonas (src/game/countryMaps.ts).
+    ...Object.values<CountryMap>(COUNTRY_MAPS).flatMap((map) => [map.title, ...map.zones.flatMap((zone) => zone.label ?? [])]),
   ]) {
     texts.add(text);
   }

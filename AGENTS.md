@@ -37,6 +37,7 @@ scripts/data/          fuentes editables: países, idiomas, legales, temario fí
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
 src/atlas/             carga del atlas y triangulación (sin React ni three.js, con pruebas)
 src/game/              lógica pura: retos, partida, progreso, población, clima (con pruebas)
+src/game/countryMaps.ts  los países que se estudian por dentro (España, EE. UU.): solo datos
 src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
 src/app/               estado (Zustand), sincronización, exportar imagen, hora
 src/ui/                componentes de React
@@ -59,6 +60,17 @@ docs/                  planes y propuestas con fecha
 - Los nombres de países, accidentes, corrientes y placas no están en los diccionarios sino en los
   datos (`public/data/**/names.<idioma>.json`, `corrientes.json`, `tectonica.json`).
 - Las traducciones las ha escrito un modelo: están pendientes de revisión por hablantes nativos.
+
+### Mapas de un país
+- Un país es una entrada en `src/game/countryMaps.ts` y sus tres ficheros en `scripts/data/mapas/`
+  (pasos en el README). `countryMaps.ts` **solo lleva datos y no importa nada que se ejecute**: lo
+  carga también el servidor a través de `ranking.ts`.
+- Los textos no van por país sino por tipo de unidad (`UNITS` en `src/game/maps.ts`): frases
+  enteras, porque el género y los artículos cambian en cada idioma. Al añadir un tipo hay que mirar
+  que «Estúdialos…» y «Practicar estos…» (o sus femeninos) concuerden en los nueve diccionarios.
+- Solo se añade un país si sus fronteras y su nivel administrativo son los vigentes y los que se
+  estudian. Qué trae Natural Earth para cada uno y qué falta está en
+  `docs/mapas-por-pais-inventario-2026-11-12.md`.
 
 ### Sombreadores (`src/engine/shaders.ts`)
 - Son plantillas de texto: **nada de comillas invertidas dentro de un comentario GLSL** (rompen la
@@ -93,7 +105,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Dato | Generador | Fuente |
 |---|---|---|
 | Países, fronteras, banderas | `scripts/build-atlas.mjs` | Natural Earth, flag-icons, mledoze/countries |
-| Provincias de España | `scripts/build-maps.mjs` | Natural Earth, Wikidata |
+| Provincias de España y estados de EE. UU. | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo |
 | Geografía física | `scripts/build-physical.py` + `build-fisico.mjs` | Natural Earth, Wikidata |
 | Correcciones de geografía física | `scripts/data/fisico-correcciones.json` | a mano, cada una con su motivo |
 | Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |

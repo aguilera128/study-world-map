@@ -1,9 +1,10 @@
-import type { MapId } from '../atlas/types';
 import type { GameConfig } from './config';
+import { COUNTRY_IDS, COUNTRY_MAPS, countryModes, countryScopes } from './countryMaps.ts';
 
 // Ranking de resultados: lo que comparten la aplicación y la función del servidor (api/ranking.ts).
-// Este fichero no importa nada que se ejecute (solo tipos): el servidor lo carga tal cual, y no debe
-// arrastrar los diccionarios ni nada que necesite un navegador.
+// Este fichero no importa nada que se ejecute, salvo los datos de los mapas de un país (que tampoco
+// importan nada): el servidor lo carga tal cual, y no debe arrastrar los diccionarios ni nada que
+// necesite un navegador.
 //
 // Cada «categoría» tiene su ranking: el mismo mapa, reto, forma de responder, zona y número de
 // preguntas. Solo entran las partidas que cualquiera puede repetir igual: las zonas que vienen de
@@ -18,19 +19,17 @@ export const MIN_GRADE = 5;
  * Qué se puede clasificar en cada mapa. Tiene que coincidir con los retos y las zonas de
  * src/game/maps.ts (lo comprueba ranking.test.ts); la última zona del mundo es la lista de ejemplo.
  */
-export const RANKED: Record<MapId, { modes: readonly string[]; scopes: readonly string[] }> = {
+export const RANKED: Record<string, { modes: readonly string[]; scopes: readonly string[] }> = {
   world: {
     modes: ['locate', 'continent', 'name', 'capital', 'flag', 'climate', 'population', 'inhabitants', 'coords'],
     scopes: ['mundo', 'europa', 'asia', 'africa', 'america', 'america-nc', 'america-sur', 'oceania', 'lista-50-principales'],
-  },
-  es: {
-    modes: ['locate', 'region', 'name', 'capital'],
-    scopes: ['es', 'es-norte', 'es-centro', 'es-este', 'es-sur', 'es-an', 'es-cl', 'es-cm', 'es-ct', 'es-ga'],
   },
   fisico: {
     modes: ['locate', 'name'],
     scopes: ['fisico', 'fisico-montanas', 'fisico-rios', 'fisico-mares', 'fisico-tierras'],
   },
+  // Los mapas de un país: sus retos y sus zonas salen de ./countryMaps.ts.
+  ...Object.fromEntries(COUNTRY_IDS.map((id) => [id, { modes: countryModes(COUNTRY_MAPS[id]), scopes: countryScopes(id) }])),
 };
 const ANSWERS: readonly string[] = ['map', 'choice', 'guided', 'type'];
 const LENGTHS: readonly string[] = ['10', '20', 'all'];
@@ -55,7 +54,7 @@ export function isCategory(category: string, now = Date.now()): boolean {
   }
   if (parts.length !== 5) return false;
   const [map, mode, answer, scope, length] = parts;
-  const ranked = Object.hasOwn(RANKED, map) ? RANKED[map as MapId] : null;
+  const ranked = Object.hasOwn(RANKED, map) ? RANKED[map] : null;
   return !!ranked && ranked.modes.includes(mode) && ranked.scopes.includes(scope) && ANSWERS.includes(answer) && LENGTHS.includes(length);
 }
 

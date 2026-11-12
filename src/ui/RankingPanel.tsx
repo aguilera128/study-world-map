@@ -7,8 +7,9 @@ import { answerLabel, modeDef, resolveScope, SAMPLE_LIST, type AnswerKind, type 
 import { MAPS } from '../game/maps';
 import type { RankBoard } from '../game/ranking';
 import { Icon } from './Icon';
+import { MapPicker } from './MapPicker';
 import { MODE_ICONS } from './modeIcons';
-import { Flag, Panel, Segmented } from './primitives';
+import { Flag, Panel } from './primitives';
 import { Ranking } from './Ranking';
 import { LOCALE, t } from '../i18n';
 
@@ -86,23 +87,12 @@ export function RankingPanel() {
         {t('Los diez mejores resultados de cada reto. Juega y publica el tuyo.')}
       </p>
 
-      <Segmented
-        label={t('Mapa')}
-        className="mt-4 flex-nowrap! overflow-x-auto wide:flex-wrap! wide:overflow-visible [scrollbar-width:none] [&>*]:shrink-0"
-        value={atlas.map}
+      <MapPicker
+        className="mt-4"
         onChange={(map) => {
           // Cambiar de mapa lleva a la portada: se vuelve aquí en cuanto está cargado.
           void setMap(map).then(() => go('ranking'));
         }}
-        options={(Object.keys(MAPS) as MapId[]).map((id) => ({
-          value: id,
-          label: (
-            <>
-              <Icon name={id === 'world' ? 'globe' : 'map'} size={16} />
-              {MAPS[id].title}
-            </>
-          ),
-        }))}
       />
 
       <div className="mt-5 grid max-w-[26rem] grid-cols-1 gap-2" style={order(3)}>

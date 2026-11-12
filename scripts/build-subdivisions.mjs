@@ -27,12 +27,15 @@ if (!origen || !mapa) {
   process.exit(1);
 }
 
-/** Tramos menores que esta área (grados²) se alisan: 2e-5 ≈ un triángulo de 500 m de lado. */
-const DETALLE = 2e-5;
+/**
+ * Tramos menores que esta área (grados²) se alisan: 2e-5 ≈ un triángulo de 500 m de lado. Un país
+ * mucho mayor que España se ve desde más lejos y pide menos: lo dice en `detalle` (y en `islote`).
+ */
+const DETALLE = mapa.detalle ?? 2e-5;
 /** Islotes menores que esta área (grados²) se descartan: 5e-4 ≈ 5 km². Ceuta y Melilla superan los 12 km². */
-const ISLOTE = 5e-4;
+const ISLOTE = mapa.islote ?? 5e-4;
 /** Los países de alrededor son decorado: se alisan mucho más. */
-const DETALLE_CONTEXTO = 4e-4;
+const DETALLE_CONTEXTO = Math.max(4e-4, DETALLE * 4);
 
 const capa = JSON.parse(readFileSync(origen, 'utf8'));
 const [oeste, sur, este, norte] = mapa.ventana;
