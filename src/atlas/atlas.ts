@@ -179,6 +179,23 @@ async function getJson<T>(url: string): Promise<T> {
 }
 
 /**
+ * Añade a un atlas, como decorado, los países del atlas del mundo que no trae. Al de geografía
+ * física, todos y por delante (sus accidentes son puntos encima). Al de un país, el resto del mundo
+ * y por detrás: todo menos el propio país y los vecinos que ya lleva dibujados con el detalle de sus
+ * fronteras; sin ello, lo que no es vecino saldría como mar. Van al final para no mover los índices
+ * de las vecinas.
+ */
+export function withBackdrop(raw: RawAtlas, world: RawAtlas): RawAtlas {
+  const own = new Set(raw.country ? [raw.country, ...raw.countries.map((c) => c.id)] : []);
+  const backdrop = world.countries
+    .filter((c) => !own.has(c.id))
+    // (con su bandera: al pasar el cursor se sigue viendo qué país es)
+    .map((c): RawCountry => ({ id: c.id, a2: c.a2, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color }));
+  raw.countries = raw.country ? [...raw.countries, ...backdrop] : [...backdrop, ...raw.countries];
+  return raw;
+}
+
+/**
  * Carga el atlas de un mapa (en español) y, si el idioma es otro, le pone encima los nombres de ese
  * idioma. El del mundo está en /data/ y el de cada país en su carpeta (/data/es/).
  */
@@ -190,15 +207,8 @@ export async function loadAtlas(lang = 'es', map: MapId = 'world'): Promise<Atla
     // El decorado (los países de alrededor en el mapa de un país) toma su nombre del atlas del mundo.
     lang === 'es' || map === 'world' ? null : getJson<RawNames>(`/data/names.${lang}.json`).catch(() => null),
   ]);
-  if (raw.base === 'world') {
-    // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
-    const world = await getJson<RawAtlas>('/data/atlas.json');
-    const backdrop = world.countries.map(
-      // (con su bandera: al pasar el cursor se sigue viendo qué país es)
-      (c): RawCountry => ({ id: c.id, a2: c.a2, name: c.name, kind: 'context', bbox: c.bbox, frame: c.frame, anchor: c.anchor, size: c.size, polys: c.polys, color: c.color }),
-    );
-    raw.countries = [...backdrop, ...raw.countries];
-  }
+  // Los países del mundo, como decorado: ya suelen estar descargados, así que no se repiten en este atlas.
+  if (raw.base === 'world' || raw.country) withBackdrop(raw, await getJson<RawAtlas>('/data/atlas.json'));
   if (names) {
     for (const key of Object.keys(raw.regions) as RegionKey[]) raw.regions[key].name = names.regions[key];
     raw.continents = names.continents;

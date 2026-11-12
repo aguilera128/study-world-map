@@ -10,7 +10,7 @@ import type { ModeId } from './config';
 // la clave de su traducción, y se traducen al usarlos.
 
 /** Cómo se llaman las unidades de un país. De ello dependen las frases de la interfaz (./maps.ts). */
-export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton';
+export type UnitKind = 'provincia' | 'estado' | 'estadoFederado' | 'canton' | 'region' | 'condado';
 /** En qué se agrupan: las comunidades autónomas de España o, en general, regiones. */
 export type GroupKind = 'comunidad' | 'region';
 
@@ -76,6 +76,24 @@ export const COUNTRY_MAPS = {
   de: { title: 'Alemania', iso: 'DEU', unit: 'estadoFederado', zones: [] },
   at: { title: 'Austria', iso: 'AUT', unit: 'estadoFederado', zones: [] },
   ch: { title: 'Suiza', iso: 'CHE', unit: 'canton', zones: [] },
+  nl: { title: 'Países Bajos', iso: 'NLD', unit: 'provincia', zones: [] },
+  be: {
+    title: 'Bélgica',
+    iso: 'BEL',
+    unit: 'provincia',
+    group: 'region',
+    // Flandes y Valonia; la tercera región, Bruselas-Capital, es una sola unidad y no da para una zona.
+    zones: [
+      { id: 'be-vlg', keys: ['BE-VLG'] },
+      { id: 'be-wal', keys: ['BE-WAL'] },
+    ],
+  },
+  cz: { title: 'Chequia', iso: 'CZE', unit: 'region', zones: [] },
+  sk: { title: 'Eslovaquia', iso: 'SVK', unit: 'region', zones: [] },
+  gr: { title: 'Grecia', iso: 'GRC', unit: 'region', zones: [] },
+  // Los «län» de Suecia: en español se llaman también provincias, pero en los demás idiomas no se
+  // dicen igual que las de España, así que llevan su propio tipo.
+  se: { title: 'Suecia', iso: 'SWE', unit: 'condado', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

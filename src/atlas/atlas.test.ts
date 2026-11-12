@@ -253,7 +253,7 @@ describe('atlas de España', () => {
 
   it('los países de alrededor son decorado: se dibujan, pero ni se preguntan ni tienen nombre que traducir', () => {
     const context = spain.countries.filter((c) => c.kind === 'context');
-    expect(context.map((c) => c.id).sort()).toEqual(['AND', 'DZA', 'FRA', 'MAR', 'PRT', 'SAH']);
+    expect(context.map((c) => c.id).sort()).toEqual(['AND', 'DZA', 'ESH', 'FRA', 'MAR', 'PRT']);
     expect(where(-8, 39.5)).toBe('PRT');
     expect(where(2.35, 48.86)).toBe('FRA');
     expect(spain.countries.every((c) => c.kind === 'country' || c.kind === 'context')).toBe(true);

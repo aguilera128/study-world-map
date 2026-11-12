@@ -29,8 +29,10 @@ export default {
   wikidata: { capitalClase: 'Q2074737' },
 
   /**
-   * Países vecinos que se dibujan apagados, como decorado (códigos adm0_a3 de Natural Earth; SAH es
-   * el Sáhara Occidental). Solo entra lo que toca la ventana [oeste, sur, este, norte].
+   * Países vecinos que se dibujan apagados, como decorado, con el detalle de sus fronteras (códigos
+   * adm0_a3 de Natural Earth; SAH es el Sáhara Occidental). Solo entra lo que toca la ventana
+   * [oeste, sur, este, norte], que tiene que abarcarlos enteros: el resto del mundo lo pone de fondo
+   * la aplicación, del atlas mundial, y un vecino a trozos dejaría el resto de su territorio en blanco.
    */
   contexto: ['PRT', 'FRA', 'AND', 'MAR', 'DZA', 'SAH'],
   ventana: [-20, 20, 12, 52],

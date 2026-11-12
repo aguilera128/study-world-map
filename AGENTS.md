@@ -37,7 +37,7 @@ scripts/data/          fuentes editables: países, idiomas, legales, temario fí
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
 src/atlas/             carga del atlas y triangulación (sin React ni three.js, con pruebas)
 src/game/              lógica pura: retos, partida, progreso, población, clima (con pruebas)
-src/game/countryMaps.ts  los países que se estudian por dentro (España, EE. UU., Alemania…): solo datos
+src/game/countryMaps.ts  los once países que se estudian por dentro (España, EE. UU., Alemania…): solo datos
 src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
 src/app/               estado (Zustand), sincronización, exportar imagen, hora
 src/ui/                componentes de React
@@ -68,6 +68,12 @@ docs/                  planes y propuestas con fecha
 - Los textos no van por país sino por tipo de unidad (`UNITS` en `src/game/maps.ts`): frases
   enteras, porque el género y los artículos cambian en cada idioma. Al añadir un tipo hay que mirar
   que «Estúdialos…» y «Practicar estos…» (o sus femeninos) concuerden en los nueve diccionarios.
+- El atlas de un país solo trae sus unidades y los vecinos con frontera, dibujados con el mismo
+  detalle para que las fronteras casen. El resto del mundo se lo añade la aplicación al cargarlo,
+  del atlas mundial (`withBackdrop` en `src/atlas/atlas.ts`): sin ello, lo que no es vecino salía
+  como mar. Por eso un vecino tiene que entrar entero o no entrar.
+- Dos unidades pueden tener la misma capital (Praga lo es de la ciudad y de Bohemia Central): el
+  reto de capitales no la ofrece dos veces y acepta cualquiera de las dos en el mapa (`session.ts`).
 - En el mapa de un país pequeño la cámara se acerca más que en el del mundo (`minHeight` de la
   cámara, que fija el motor según el tamaño del país) y la unidad señalada se encuadra más de cerca
   (`showCountry` en `store.ts`).
@@ -108,7 +114,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Dato | Generador | Fuente |
 |---|---|---|
 | Países, fronteras, banderas | `scripts/build-atlas.mjs` | Natural Earth, flag-icons, mledoze/countries |
-| Subdivisiones de un país (España, EE. UU., Alemania, Austria, Suiza) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo |
+| Subdivisiones de un país (los once de `scripts/data/mapas/`) | `scripts/build-maps.mjs` (datos en `scripts/data/mapas/`) | Natural Earth, Wikidata; regiones de EE. UU.: Oficina del Censo |
 | Geografía física | `scripts/build-physical.py` + `build-fisico.mjs` | Natural Earth, Wikidata |
 | Correcciones de geografía física | `scripts/data/fisico-correcciones.json` | a mano, cada una con su motivo |
 | Climas | `scripts/build-climate.mjs` | Köppen-Geiger (Kottek et al. 2006) |

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { Atlas } from '../atlas/atlas';
+import { Atlas, withBackdrop } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
 import { modesOf, REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
 import { COUNTRY_IDS, COUNTRY_MAPS } from './countryMaps';
@@ -662,6 +662,37 @@ describe('mapas de un país', () => {
       const session = createSession(germany, config, resolveScope(germany, 'de', []), {}, NOW, { rng: seeded(3) });
       expect(session.total, mode).toBe(16);
     }
+  });
+
+  it('el resto del mundo va de fondo: lo que no es vecino no sale como mar, y nada se dibuja dos veces', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    for (const id of COUNTRY_IDS) {
+      const raw = JSON.parse(readFileSync(`public/data/${id}/atlas.json`, 'utf8')) as RawAtlas;
+      const before = raw.countries.map((c) => c.id);
+      const full = new Atlas(withBackdrop(raw, world), id);
+      const ids = full.countries.map((c) => c.id);
+      expect(new Set(ids).size, id).toBe(ids.length);
+      // Lo propio sigue delante y en su sitio (los índices de las vecinas no se mueven)…
+      expect(ids.slice(0, before.length), id).toEqual(before);
+      // …el país no se repite entero debajo de sus provincias, y el fondo no se pregunta.
+      expect(full.indexOf(COUNTRY_MAPS[id].iso), id).toBe(-1);
+      expect(full.quizzable.length, id).toBe(before.filter((code) => raw.countries.find((c) => c.id === code)!.kind === 'country').length);
+      for (const far of ['JPN', 'BRA', 'ZAF']) expect(full.byIdOrThrow(far).kind, `${id} ${far}`).toBe('context');
+    }
+  });
+
+  it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
+    const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
+    const scope = resolveScope(czechia, 'cz', []);
+    const [prague, central] = [czechia.indexOf('CZ-10'), czechia.indexOf('CZ-20')];
+    for (let seed = 1; seed <= 20; seed++) {
+      const choice = createSession(czechia, { map: 'cz', mode: 'capital', answer: 'choice', scope: 'cz', length: 'all' }, scope, {}, NOW, { rng: seeded(seed), only: [central] });
+      const labels = currentQuestion(choice)!.options.map((o) => o.label);
+      expect(new Set(labels).size, `semilla ${seed}`).toBe(labels.length);
+    }
+    const onMap = createSession(czechia, { map: 'cz', mode: 'capital', answer: 'map', scope: 'cz', length: 'all' }, scope, {}, NOW, { rng: seeded(1), only: [central] });
+    expect(submit(czechia, onMap, { kind: 'country', index: prague }, NOW).verdict).toBe('right');
+    expect(submit(czechia, onMap, { kind: 'country', index: czechia.indexOf('CZ-64') }, NOW).verdict).toBe('wrong');
   });
 
   it('Estados Unidos: 50 estados en las cuatro regiones del censo; el Distrito de Columbia se dibuja pero no se pregunta', () => {

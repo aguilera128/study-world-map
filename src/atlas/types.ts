@@ -91,6 +91,11 @@ export interface RawAtlas {
   frame?: Bounds;
   /** El atlas lleva de fondo los países de otro (el del mundo), que no repite: se le añaden al cargarlo. */
   base?: 'world';
+  /**
+   * En el mapa de un país, su código en el atlas del mundo: al cargarlo se le añade de fondo el resto
+   * del mundo (todo menos él y los vecinos que ya trae dibujados con más detalle).
+   */
+  country?: string;
   regions: Record<RegionKey, RegionInfo>;
   /** Nombre de cada continente, en el orden en que se ofrecen como respuesta. */
   continents: Record<ContinentKey, string>;

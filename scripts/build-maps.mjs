@@ -196,6 +196,8 @@ for (const mapa of Object.values(MAPAS)) {
 
   const nombrePais = new Intl.DisplayNames(['es'], { type: 'region' });
   const a2De = { SAH: 'EH' };
+  /** Códigos de Natural Earth que en el atlas del mundo son otros (ISO alfa-3 y el habitual de Kosovo). */
+  const ID_MUNDO = { SAH: 'ESH', KOS: 'XKX' };
   const entidades = [
     ...unidades.map((p) =>
       p.decorado
@@ -212,7 +214,8 @@ for (const mapa of Object.values(MAPAS)) {
     ),
     ...contexto.map((a3) => {
       const a2 = a2De[a3] ?? topoA2(a3);
-      return { ...base(a3), name: a2 ? nombrePais.of(a2) : a3, kind: 'context' };
+      // Con el código que tiene en el atlas del mundo: así la aplicación no lo dibuja otra vez de fondo.
+      return { ...base(a3), id: ID_MUNDO[a3] ?? a3, name: a2 ? nombrePais.of(a2) : a3, kind: 'context' };
     }),
   ];
 
@@ -249,6 +252,8 @@ for (const mapa of Object.values(MAPAS)) {
     version: 1,
     q: Q,
     source: mapa.fuente,
+    // El resto del mundo lo pone de fondo la aplicación, del atlas mundial (ver `withBackdrop`).
+    country: mapa.adm0,
     frame: marcoDe(provincias),
     regions: Object.fromEntries(
       Object.entries(mapa.comunidades).map(([clave, nombre]) => [clave, { name: nombre, frame: marcoDe(provincias.filter((e) => e.regions[0] === clave)) }]),

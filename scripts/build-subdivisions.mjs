@@ -60,7 +60,12 @@ const contexto = [];
 for (const f of capa.features) {
   const a3 = f.properties.adm0_a3;
   if (a3 === mapa.adm0) {
-    propias.push({ type: 'Feature', id: f.properties.iso_3166_2, properties: {}, geometry: f.geometry });
+    // Lo que cae lejos de la ventana no es de este mapa (los municipios caribeños de los Países Bajos).
+    const [w, s, e, n] = caja(f.geometry);
+    if (!(e > oeste && w < este && n > sur && s < norte)) continue;
+    // Natural Earth arrastra algún código ISO antiguo o equivocado: `renombrar` lo pasa al vigente.
+    const codigo = f.properties.iso_3166_2;
+    propias.push({ type: 'Feature', id: mapa.renombrar?.[codigo] ?? codigo, properties: {}, geometry: f.geometry });
   } else if (mapa.contexto.includes(a3)) {
     // De los vecinos solo interesa lo que cae cerca (Francia sin sus territorios de ultramar).
     const [w, s, e, n] = caja(f.geometry);

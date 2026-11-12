@@ -32,16 +32,20 @@ const norm = (s) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
 
-/** «Provincia de…», «cantón de…», «estado de…» en cada idioma: se quita del nombre de la entidad. */
+/**
+ * «Provincia de…», «cantón de…», «estado de…», «región de…», «condado de…» en cada idioma: se quita
+ * del nombre de la entidad. Lo que no sale bien con una regla (los genitivos del euskera, los
+ * adjetivos del inglés: «Central Bohemian Region») se corrige a mano en el fichero de cada mapa.
+ */
 const TIPO = {
-  en: [/^Province of /i, / Province$/i, /^Canton of (the )?/i],
-  fr: [/^province (de |du |des |d[’'])/i, /^canton (de |du |des |d[’'])/i],
-  de: [/^Provinz /i, /^Kanton /i],
-  it: [/^provincia (di |del |della |dello |dell[’']|d[’'])/i, /^cantone? (di |del |dei |della |d[’'])?/i],
-  pt: [/^província (de |da |do |das |dos |d[’'])/i, /^cantão (de |da |do |das |dos )/i],
-  ca: [/^província (de |d[’'])/i, /^cantó (de |del |dels |d[’'])/i, /^estat (de |del |d[’'])/i],
-  gl: [/^provincia (de |da |do |das |dos )/i, /^cantón (de |da |do |das |dos )/i, /^estado (de |da |do )/i],
-  eu: [/(ko|go) probintzia$/i, / probintzia$/i, / kantonamendua$/i],
+  en: [/^Province of /i, / Province$/i, /^Canton of (the )?/i, / (County|Region)$/i],
+  fr: [/^province (de |du |des |d[’'])/i, /^canton (de |du |des |d[’'])/i, /^(comté|périphérie) (de |du |des |d[’'])/i],
+  de: [/^Provinz /i, /^Kanton /i, /s? län$/i],
+  it: [/^provincia (di |del |della |delle |dello |dei |degli |dell[’']|d[’'])/i, /^cantone? (di |del |dei |della |d[’'])?/i, /^(contea|regione) (di |del |della |d[’'])/i],
+  pt: [/^província (de |da |do |das |dos |d[’'])/i, /^cantão (de |da |do |das |dos )/i, /^(condado|periferia) (de |da |do )/i, /^região (de |da |do )?/i],
+  ca: [/^província (de |d[’'])/i, /^cantó (de |del |dels |d[’'])/i, /^estat (de |del |d[’'])/i, /^(comtat|regió|perifèria) (de la |de les |del |dels |de |d[’'])/i],
+  gl: [/^provincia (de |da |do |das |dos )/i, /^cantón (de |da |do |das |dos )/i, /^estado (de |da |do )/i, /^(condado|rexión|periferia) (de |da |do |das |dos )/i],
+  eu: [/(ko|go) probintzia$/i, / probintzia$/i, / kantonamendua$/i, / eskualdea$/i],
   zh: [/省$/],
 };
 const sinTipo = (lang, name) => TIPO[lang].reduce((s, re) => s.replace(re, ''), name).trim();

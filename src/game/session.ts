@@ -183,9 +183,11 @@ function makeOptions(atlas: Atlas, config: GameConfig, pool: number[], country: 
       .filter((key) => picked.has(key))
       .map((key) => ({ id: key, label: atlas.regions[key].name, country: -1 }));
   }
-  // Tres distractores entre los países más cercanos: son los que de verdad se confunden.
-  let candidates = pool.filter((i) => i !== country);
-  if (candidates.length < 6) candidates = atlas.quizzable.filter((i) => i !== country);
+  // Tres distractores entre los países más cercanos: son los que de verdad se confunden. En las
+  // capitales no vale el que tiene la misma (Praga lo es de dos regiones): saldría dos veces.
+  const other = (i: number) => i !== country && !(config.mode === 'capital' && sameCapital(atlas, i, country));
+  let candidates = pool.filter(other);
+  if (candidates.length < 6) candidates = atlas.quizzable.filter(other);
   const nearest = candidates
     .map((i) => ({ i, d: distance(atlas, country, i) }))
     .sort((a, b) => a.d - b.d)
@@ -248,6 +250,9 @@ export function createSession(
   };
 }
 
+/** ¿Tienen estas dos unidades la misma capital? (Praga lo es de la ciudad y de Bohemia Central.) */
+const sameCapital = (atlas: Atlas, a: number, b: number): boolean => !!atlas.countries[a].capital && atlas.countries[a].capital === atlas.countries[b].capital;
+
 export const currentQuestion = (session: Session): Question | null =>
   session.status === 'finished' ? null : (session.queue[0] ?? null);
 
@@ -261,7 +266,7 @@ function isRightText(atlas: Atlas, session: Session, question: Question, text: s
     return matchesAnswer(
       text,
       [target.capital!, ...target.capitalAliases],
-      others.map((c) => c.capital!),
+      others.filter((c) => c.capital !== target.capital).map((c) => c.capital!),
     );
   }
   return matchesAnswer(
@@ -320,7 +325,8 @@ export function submit(atlas: Atlas, session: Session, answer: Answer, now: numb
     case 'country': {
       if (input !== 'map' || !session.pool.includes(answer.index)) return ignored;
       key = atlas.countries[answer.index].id;
-      right = answer.index === question.country;
+      // Buscando de quién es una capital, vale cualquiera que la tenga.
+      right = answer.index === question.country || (session.config.mode === 'capital' && sameCapital(atlas, answer.index, question.country));
       break;
     }
     case 'option': {
