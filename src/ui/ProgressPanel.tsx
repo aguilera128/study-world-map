@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import { createCode, deleteRemote, formatCode, joinCode, leaveSync, syncLink, useSync } from '../app/sync';
 import { PALETTES, Style } from '../engine/palette';
@@ -8,6 +8,7 @@ import { MODE_ICONS } from './modeIcons';
 import { useTheme } from './hooks';
 import { Icon } from './Icon';
 import { Panel, Segmented } from './primitives';
+import { QrCode } from './QrCode';
 import { t } from '../i18n';
 import { tx } from '../i18n/tx';
 
@@ -25,45 +26,6 @@ function LevelBar({ levels, total, colors }: { levels: number[]; total: number; 
         />
       ))}
     </div>
-  );
-}
-
-interface QrMaker {
-  addData(data: string): void;
-  make(): void;
-  getModuleCount(): number;
-  isDark(row: number, col: number): boolean;
-}
-
-/** Código QR de un texto, dibujado como SVG. La librería solo se descarga cuando hace falta. */
-function QrCode({ text, label }: { text: string; label: string }) {
-  const [path, setPath] = useState<{ d: string; size: number } | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    void import('qrcode-generator').then((mod) => {
-      if (cancelled) return;
-      // el paquete exporta la función con `export =`: según el empaquetador llega tal cual o en `default`
-      const make = ((mod as { default?: unknown }).default ?? mod) as (type: 0, level: 'M') => QrMaker;
-      const qr = make(0, 'M');
-      qr.addData(text);
-      qr.make();
-      const n = qr.getModuleCount();
-      let d = '';
-      for (let row = 0; row < n; row++) {
-        for (let col = 0; col < n; col++) if (qr.isDark(row, col)) d += `M${col} ${row}h1v1h-1z`;
-      }
-      setPath({ d, size: n });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [text]);
-  if (!path) return <div className="h-36 w-36 rounded-lg bg-sunken" aria-hidden="true" />;
-  // Siempre negro sobre blanco y con margen: es lo que leen bien las cámaras, también en tema oscuro.
-  return (
-    <svg viewBox={`-3 -3 ${path.size + 6} ${path.size + 6}`} role="img" aria-label={label} className="h-36 w-36 shrink-0 rounded-lg bg-white" shapeRendering="crispEdges">
-      <path d={path.d} fill="#000" />
-    </svg>
   );
 }
 

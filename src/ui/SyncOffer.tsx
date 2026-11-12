@@ -2,6 +2,7 @@ import { useState, type CSSProperties } from 'react';
 import { useApp } from '../app/store';
 import { createCode, formatCode, syncLink, useSync } from '../app/sync';
 import { Icon } from './Icon';
+import { QrCode } from './QrCode';
 import { t } from '../i18n';
 
 const DISMISSED_KEY = 'swm:sin-oferta';
@@ -49,8 +50,13 @@ export function SyncOffer({ style }: { style?: CSSProperties }) {
       </h2>
       {code ? (
         <>
-          <p className="display tabular mt-2 text-xl tracking-wide">{formatCode(code)}</p>
-          <p className="mt-1 text-sm text-ink-soft">{t('Sincronizado. Escribe este código en el otro dispositivo o abre allí el enlace.')}</p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-3.5">
+            <QrCode text={syncLink(code)} label={t('Código QR para abrir este progreso en otro dispositivo')} size="h-32 w-32" />
+            <div className="min-w-0 flex-1 basis-36">
+              <p className="display tabular whitespace-nowrap! text-lg tracking-wide">{formatCode(code)}</p>
+              <p className="mt-1 text-sm text-ink-soft">{t('Escanéalo con la cámara del móvil o escribe el código.')}</p>
+            </div>
+          </div>
           <div className="mt-2.5 flex flex-wrap gap-2">
             <button type="button" className="btn min-h-10 px-3 text-sm" onClick={() => void navigator.clipboard?.writeText(syncLink(code)).then(() => setCopied(true))}>
               <Icon name="link" size={16} />

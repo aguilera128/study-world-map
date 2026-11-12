@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Atlas } from '../atlas/atlas';
 import type { RawAtlas } from '../atlas/types';
 import { modesOf, REGION_FILTERS, resolveScope, SAMPLE_LIST, sanitizeConfig, showsTarget, type GameConfig } from './config';
-import { COUNTRY_IDS } from './countryMaps';
+import { COUNTRY_IDS, COUNTRY_MAPS } from './countryMaps';
 import { dailyConfig } from './daily';
 import { MAPS } from './maps';
 import { mastery, record, sanitizeProgress, selectionWeight, summarize, type Progress } from './progress';
@@ -610,6 +610,8 @@ describe('mapas de un país', () => {
 
     it(`${id}: sus zonas existen en el atlas, se encuadran y dan para una partida`, () => {
       expect(MAPS[id].filters[0].id).toBe(id);
+      // Su código es el de un país del atlas del mundo: de ahí sale a quién se le ofrece su mapa.
+      expect(atlas.indexOf(COUNTRY_MAPS[id].iso), COUNTRY_MAPS[id].iso).toBeGreaterThanOrEqual(0);
       for (const f of MAPS[id].filters) {
         for (const key of f.keys) expect(country.regions[key], `${f.id}: ${key}`).toBeTruthy();
         const scope = resolveScope(country, f.id, []);

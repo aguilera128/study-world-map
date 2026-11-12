@@ -25,6 +25,8 @@ export interface CountryZone {
 export interface CountryMap {
   /** Nombre del país, en español. */
   title: string;
+  /** Su código en el atlas del mundo (ISO alfa-3): para ofrecer a cada visitante el mapa de su país. */
+  iso: string;
   unit: UnitKind;
   /** Si sus unidades se agrupan en algo que se estudia; sin ello no hay reto de «región». */
   group?: GroupKind;
@@ -37,6 +39,7 @@ export interface CountryMap {
 export const COUNTRY_MAPS = {
   es: {
     title: 'España',
+    iso: 'ESP',
     unit: 'provincia',
     group: 'comunidad',
     // Las comunidades de una sola provincia no dan para una partida: van en agrupaciones.
@@ -54,6 +57,7 @@ export const COUNTRY_MAPS = {
   },
   us: {
     title: 'Estados Unidos',
+    iso: 'USA',
     unit: 'estado',
     group: 'region',
     // Los 48 estados contiguos: con Alaska y Hawái en el encuadre, los demás quedan a la mitad de
