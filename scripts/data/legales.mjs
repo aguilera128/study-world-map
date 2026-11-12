@@ -48,6 +48,7 @@ ${titularBlock()}
     <p>El diseño, el código y los textos de Study World Map son obra de su titular. Los datos de terceros se usan conforme a sus licencias:</p>
     <ul>
       <li>Cartografía: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (dominio público).</li>
+      <li>Regiones de Finlandia: <a href="https://stat.fi/org/avoindata/paikkatietoaineistot_en.html">Statistics Finland</a>, unidades estadísticas por municipios de 2026 (licencia CC BY 4.0), simplificadas.</li>
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
       <li>Luces nocturnas de las ciudades: Black Marble 2016, NASA Earth Observatory (dominio público).</li>

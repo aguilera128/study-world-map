@@ -4,9 +4,14 @@
 // La capa entera pesa 40 MB y no entra en el repositorio; solo hace falta para añadir un país o
 // cambiar el nivel de detalle:
 //
-//   node scripts/build-subdivisions.mjs <ruta a ne_10m_admin_1_states_provinces.geojson> <mapa>
+//   node scripts/build-subdivisions.mjs <ruta a ne_10m_admin_1_states_provinces.geojson> <mapa> [capa propia]
 //
 // El GeoJSON está en https://github.com/nvkelso/natural-earth-vector (carpeta geojson/).
+//
+// Un país cuyas fronteras vigentes no están en Natural Earth (Finlandia) trae sus unidades de otra
+// capa, en GeoJSON y EPSG:4326, que se pasa como tercer argumento; su fichero de datos dice en
+// `capa` de dónde se descarga, qué campo identifica cada unidad y qué código ISO le corresponde.
+// Los vecinos siguen saliendo de Natural Earth.
 //
 // Las fronteras se simplifican sobre una topología (topojson): cada tramo compartido por dos
 // provincias se simplifica una sola vez, así que no quedan huecos ni solapes entre vecinas. Los
@@ -20,7 +25,7 @@ import { topology } from 'topojson-server';
 import { filter, filterWeight, presimplify, simplify } from 'topojson-simplify';
 import { MAPAS } from './data/mapas/index.mjs';
 
-const [origen, id] = process.argv.slice(2);
+const [origen, id, propia] = process.argv.slice(2);
 const mapa = MAPAS[id];
 if (!origen || !mapa) {
   console.error(`Uso: node scripts/build-subdivisions.mjs <geojson de Natural Earth> <${Object.keys(MAPAS).join('|')}>`);
@@ -66,6 +71,8 @@ const contexto = [];
 for (const f of capa.features) {
   const a3 = DE_UCRANIA.has(f.properties.adm1_code) ? 'UKR' : f.properties.adm0_a3;
   if (a3 === mapa.adm0) {
+    // Sus unidades vienen de otra capa (abajo): de Natural Earth solo salen los vecinos.
+    if (mapa.capa) continue;
     // Lo que cae lejos de la ventana no es de este mapa (los municipios caribeños de los Países Bajos).
     const [w, s, e, n] = caja(f.geometry);
     if (!(e > oeste && w < este && n > sur && s < norte)) continue;
@@ -80,6 +87,15 @@ for (const f of capa.features) {
     // De los vecinos solo interesa lo que cae cerca (Francia sin sus territorios de ultramar).
     const [w, s, e, n] = caja(f.geometry);
     if (e > oeste && w < este && n > sur && s < norte) contexto.push({ type: 'Feature', id: a3, properties: {}, geometry: f.geometry });
+  }
+}
+
+if (mapa.capa) {
+  if (!propia) throw new Error(`${id}: sus unidades no salen de Natural Earth; pasa como tercer argumento la capa de ${mapa.capa.origen}.`);
+  for (const f of JSON.parse(readFileSync(propia, 'utf8')).features) {
+    const codigo = mapa.capa.codigos[f.properties[mapa.capa.campo]];
+    if (!codigo) throw new Error(`${id}: la capa trae una unidad sin código (${mapa.capa.campo} = ${f.properties[mapa.capa.campo]}).`);
+    propias.push({ type: 'Feature', id: codigo, properties: {}, geometry: f.geometry });
   }
 }
 

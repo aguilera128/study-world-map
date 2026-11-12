@@ -186,7 +186,7 @@ async function getJson<T>(url: string): Promise<T> {
  * de las vecinas.
  */
 export function withBackdrop(raw: RawAtlas, world: RawAtlas): RawAtlas {
-  const own = new Set(raw.country ? [raw.country, ...raw.countries.map((c) => c.id)] : []);
+  const own = new Set(raw.country ? [raw.country, ...(raw.covers ?? []), ...raw.countries.map((c) => c.id)] : []);
   const backdrop = world.countries
     .filter((c) => !own.has(c.id))
     // (con su bandera: al pasar el cursor se sigue viendo qué país es)

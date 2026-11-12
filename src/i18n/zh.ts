@@ -907,6 +907,9 @@ const zh: Record<string, string> = {
   'Te damos el nombre de una región y la buscas en el mapa.|oblast': '我们给出州名，你在地图上找到它。',
   'Señalamos una región en el mapa y dices cuál es.|oblast': '我们在地图上标出一个州，你说出它是哪个州。',
   'Une cada región con su capital.|oblast': '把每个州和它的首府配对。',
+
+  // ── Mapas de un país: Finlandia ──
+  'Finlandia': '芬兰',
 };
 
 export default zh;

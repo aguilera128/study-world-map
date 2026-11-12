@@ -9,6 +9,7 @@ import ch from './ch.mjs';
 import cz from './cz.mjs';
 import de from './de.mjs';
 import es from './es.mjs';
+import fi from './fi.mjs';
 import fr from './fr.mjs';
 import gb from './gb.mjs';
 import gr from './gr.mjs';
@@ -28,4 +29,4 @@ import tr from './tr.mjs';
 import ua from './ua.mjs';
 import us from './us.mjs';
 
-export const MAPAS = { es, us, de, at, ch, nl, be, cz, sk, gr, se, fr, it, gb, pl, pt, ie, ro, lt, hr, al, rs, hu, tr, bg, by, ua };
+export const MAPAS = { es, us, de, at, ch, nl, be, cz, sk, gr, se, fr, it, gb, pl, pt, ie, ro, lt, hr, al, rs, hu, tr, bg, by, ua, fi };

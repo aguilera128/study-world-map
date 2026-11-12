@@ -4,9 +4,9 @@ Qué trae la capa de subdivisiones de Natural Earth (`ne_10m_admin_1_states_prov
 dominio público) para Estados Unidos y cada país de Europa, y qué se puede hacer con ello. Es la
 lista de trabajo para ir añadiendo países; cómo se añade uno está en el README («Añadir otro país»).
 
-**Hecho (27):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
+**Hecho (28):** España (provincias), Estados Unidos (estados, con las regiones del censo), Alemania
 y Austria (estados federados), Suiza (cantones), Países Bajos y Bélgica (provincias), Francia,
-Italia, Chequia, Eslovaquia, Grecia, Bielorrusia y Ucrania (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
+Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda, Lituania, Croacia, Albania y
 Hungría (condados), Reino Unido (naciones), Polonia (voivodatos), Portugal (distritos, con las
 Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provincias).
 
@@ -58,7 +58,7 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
 | Irlanda | 34 unidades, 26 códigos ISO | los 26 condados tradicionales | **hecho** (fundiendo por código) |
 | Reino Unido | 232 unidades de una docena de tipos | las 4 naciones | **hecho** (fundiendo por `geonunit`) |
 | Hungría | 19 condados + 23 «condados urbanos» + Budapest | condados | **hecho** (cada ciudad, fundida con su condado) |
-| Finlandia | 18 regiones (Åland va aparte en NE, como `ALD` y por municipios) | regiones | **desfasado, comprobado**: el 1-ene-2021 cambiaron de región Heinävesi, Joroinen, Iitti, Kuhmoinen e Isokyrö, y NE los deja en la antigua. Hace falta otra fuente |
+| Finlandia | 18 regiones (Åland va aparte en NE, como `ALD` y por municipios) | regiones | **hecho con otra fuente**: el 1-ene-2021 cambiaron de región Heinävesi, Joroinen, Iitti, Kuhmoinen e Isokyrö, y NE los deja en la antigua. Las 19 regiones salen de Statistics Finland (capa de 2026, 1:1 000 000, CC BY 4.0); los vecinos, de NE |
 | Serbia | 24 distritos + Belgrado | distritos | **hecho** (Kosovo va aparte, como en el mapa del mundo) |
 | Noruega | 19 condados + 2 | condados | desfasado (reformas de 2020 y 2024): desde el 1-ene-2024 son 15. Otra fuente: Kartverket |
 | Letonia | 110 municipios + 9 ciudades | — | no apto / desfasado: desde 2021 son municipios y ciudades estatales (43; 42 desde el 1-jul-2025, al unirse Varakļāni a Madona, según Wikipedia: falta fuente oficial) |
@@ -105,13 +105,14 @@ Azores y Madeira), Rumanía y Serbia (distritos) y Turquía y Bulgaria (provinci
    - **No hay una fuente única que sirva.** geoBoundaries (consultados sus metadatos) arrastra los
      mismos desfases: Finlandia de 2017, Estonia de 2016, Noruega de 2022 (11 condados), Islandia
      de 2017, Montenegro con 23 municipios; y lo que toma de OpenStreetMap lleva licencia ODbL.
-   - **Con la fuente oficial de cada país**, uno a uno, por este orden: Finlandia (Statistics
-     Finland, unidades estadísticas por municipios: trae las 19 regiones del año, CC BY 4.0),
+   - **Con la fuente oficial de cada país**, uno a uno. Finlandia ya está (Statistics Finland,
+     unidades estadísticas por municipios: trae las 19 regiones del año, CC BY 4.0): el generador
+     acepta una capa propia como tercer argumento y la frontera con los vecinos de NE casa a
+     simple vista con el máximo acercamiento. Siguen, por este orden:
      Noruega (Kartverket, los 15 condados; licencia por confirmar en su edición vigente), Estonia
      (Land Board, licencia propia de datos abiertos con cita de fuente y fecha) y, desde el
-     1-ene-2027, Dinamarca con sus cuatro regiones. Requiere que `build-subdivisions.mjs` acepte
-     otra capa además de Natural Earth (qué campo trae el código de cada unidad) y descargar esas
-     capas, cosa que se pregunta antes.
+     1-ene-2027, Dinamarca con sus cuatro regiones. Hay que descargar esas capas, cosa que se
+     pregunta antes.
    - **Pendientes de fuente o de comprobar**: Chipre (seis distritos de derecho), Islandia (sin
      capitales), Letonia (42 unidades, por confirmar), Moldavia (geoBoundaries trae 37 unidades de
      ACNUR/OCHA, de 2020, CC BY 3.0 IGO: por contrastar con la lista oficial) y Montenegro.

@@ -765,6 +765,26 @@ describe('mapas de un país', () => {
     expect(belarus.countries[belarus.locate(28.5, 54.23)].id).toBe('BY-MI');
   });
 
+  it('Finlandia: las regiones son las vigentes desde 2021 y Åland no se repite de fondo', () => {
+    const world = JSON.parse(readFileSync('public/data/atlas.json', 'utf8')) as RawAtlas;
+    const finland = new Atlas(withBackdrop(JSON.parse(readFileSync('public/data/fi/atlas.json', 'utf8')) as RawAtlas, world), 'fi');
+    expect(finland.quizzable.length).toBe(19);
+    const at = (lon: number, lat: number) => finland.countries[finland.locate(lon, lat)]?.id;
+    // Los cinco municipios que cambiaron de región el 1 de enero de 2021: Heinävesi, Joroinen,
+    // Iitti, Kuhmoinen e Isokyrö. Natural Earth los deja en la anterior.
+    expect(at(28.63, 62.43)).toBe('FI-13');
+    expect(at(27.83, 62.18)).toBe('FI-15');
+    expect(at(26.34, 60.89)).toBe('FI-16');
+    expect(at(25.18, 61.56)).toBe('FI-11');
+    expect(at(22.33, 63.0)).toBe('FI-03');
+    // Helsinki, Mariehamn y, al otro lado de la frontera, Estocolmo.
+    expect(at(24.94, 60.17)).toBe('FI-18');
+    expect(at(19.94, 60.1)).toBe('FI-01');
+    expect(at(18.07, 59.33)).toBe('SWE');
+    // Åland es una región: el territorio que trae el atlas del mundo no va también de fondo.
+    expect(finland.countries.some((c) => c.id === 'ALA')).toBe(false);
+  });
+
   it('una capital compartida (Praga, de la ciudad y de Bohemia Central) no sale dos veces ni cuenta como fallo', () => {
     const czechia = new Atlas(JSON.parse(readFileSync('public/data/cz/atlas.json', 'utf8')) as RawAtlas, 'cz');
     const scope = resolveScope(czechia, 'cz', []);

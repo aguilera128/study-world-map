@@ -125,6 +125,8 @@ export const COUNTRY_MAPS = {
   // Comparten contexto: en chino son «州», no «大区».
   by: { title: 'Bielorrusia', iso: 'BLR', unit: 'region', context: 'oblast', zones: [] },
   ua: { title: 'Ucrania', iso: 'UKR', unit: 'region', context: 'oblast', zones: [] },
+  // Las 19 regiones de Finlandia, con Åland. Sus fronteras son de Statistics Finland, no de Natural Earth.
+  fi: { title: 'Finlandia', iso: 'FIN', unit: 'region', zones: [] },
 } satisfies Record<string, CountryMap>;
 
 export type CountryMapId = keyof typeof COUNTRY_MAPS;

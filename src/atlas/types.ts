@@ -96,6 +96,8 @@ export interface RawAtlas {
    * del mundo (todo menos él y los vecinos que ya trae dibujados con más detalle).
    */
   country?: string;
+  /** Otros códigos del atlas del mundo que este mapa ya dibuja como unidades suyas (Åland en Finlandia). */
+  covers?: string[];
   regions: Record<RegionKey, RegionInfo>;
   /** Nombre de cada continente, en el orden en que se ofrecen como respuesta. */
   continents: Record<ContinentKey, string>;

@@ -31,7 +31,7 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   de estudio y el reto del día son, de momento, solo del mapa del mundo.
 - **Más países por dentro.** Estados Unidos (los 50 estados con sus capitales y las cuatro regiones
   del censo), Alemania y Austria (estados federados), Suiza (cantones), Países Bajos, Bélgica,
-  Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia, Grecia, Bielorrusia y Ucrania (regiones), Suecia, Irlanda,
+  Turquía y Bulgaria (provincias), Francia, Italia, Chequia, Eslovaquia, Grecia, Bielorrusia, Ucrania y Finlandia (regiones), Suecia, Irlanda,
   Lituania, Croacia, Albania y Hungría (condados), Reino Unido (naciones), Polonia (voivodatos) y
   Portugal, Rumanía y Serbia (distritos). El país se elige en un
   desplegable de la portada, que ofrece primero el del visitante; se irán añadiendo más: ver
@@ -174,7 +174,7 @@ src/
 
 ### Añadir otro país por provincias
 
-Hay veintisiete (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
+Hay veintiocho (ver `src/game/countryMaps.ts`); el resto se añade sobre todo con datos:
 
 1. `scripts/data/mapas/<país>.mjs`, copiando `us.mjs` (o `es.mjs`, que además lleva páginas
    estáticas): subdivisiones con su capital y su región, países de alrededor y correcciones de
@@ -252,6 +252,8 @@ que la lista sea coherente y avisa si no.
   [topojson](https://github.com/topojson) (`scripts/build-subdivisions.mjs`).
 - Nombres de provincias, estados, comunidades y capitales en otros idiomas: [Wikidata](https://www.wikidata.org) (CC0).
 - Regiones de Estados Unidos: las cuatro de la Oficina del Censo (U.S. Census Bureau, Census Regions).
+- Fronteras de las regiones de Finlandia: [Statistics Finland](https://stat.fi/org/avoindata/paikkatietoaineistot_en.html),
+  unidades estadísticas por municipios de 2026 (CC BY 4.0). Natural Earth es anterior a los cambios de 2021.
 - Códigos ISO y superficies: [mledoze/countries](https://github.com/mledoze/countries) (ODbL).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
