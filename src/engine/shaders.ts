@@ -6,6 +6,7 @@
 // dos texturas de 1 píxel de alto con un téxel por país. Así, pintar o levantar un país es escribir
 // 4 bytes, sin tocar la geometría.
 
+import { iconGlsl } from '../satellites/icons';
 import { GRID_ROWS, GRID_WIDTH, TEMP_MAX, TEMP_MIN, TEMP_STOPS, WIND_MAX } from '../weather/format';
 
 const glsl = String.raw;
@@ -1011,31 +1012,46 @@ void main() {
 
 // ───────────────────────── Satélites ─────────────────────────
 //
-// Un punto por satélite, a su distancia real del globo (la posición ya viene en radios terrestres,
-// en el marco que gira con la Tierra). Pasan la prueba de profundidad: el globo tapa los que
-// quedan detrás. Solo en el globo: en el mapa plano no hay «alrededor».
+// Un icono por satélite, a su distancia real del globo (la posición ya viene en radios terrestres,
+// en el marco que gira con la Tierra). La silueta de su grupo (src/satellites/icons.ts) se dibuja
+// con distancias en el sombreador de fragmentos, sin texturas. Pasan la prueba de profundidad: el
+// globo tapa los que quedan detrás. Solo en el globo: en el mapa plano no hay «alrededor».
+
+const SAT_ICON = iconGlsl();
 
 export const SAT_VERT = glsl`
 uniform float uMorph;
 uniform float uDpr;
 attribute vec3 aColor;
 attribute float aSize; // diámetro, en píxeles CSS
+attribute float aKind; // grupo: su índice en SAT_GROUPS
 varying vec3 vColor;
+varying float vKind;
+varying float vPx;
 
 void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mv;
+  // De lejos, algo más pequeños (hasta el 60 %): el globo entero cabe a unos 5 radios.
+  float size = aSize * clamp(5.0 / max(-mv.z, 0.001), 0.6, 1.0) * uDpr;
   // Los que SGP4 no ha podido situar llegan en el centro de la Tierra: no se dibujan.
-  gl_PointSize = dot(position, position) > 0.25 ? aSize * uDpr * smoothstep(0.98, 1.0, uMorph) : 0.0;
+  gl_PointSize = dot(position, position) > 0.25 ? size * smoothstep(0.98, 1.0, uMorph) : 0.0;
   vColor = aColor;
+  vKind = aKind;
+  vPx = 2.0 / max(size, 1.0); // un píxel, en las unidades de la silueta (de -1 a 1)
 }
 `;
 
 export const SAT_FRAG = glsl`
 varying vec3 vColor;
+varying float vKind;
+varying float vPx;
+
+${SAT_ICON}
 
 void main() {
-  float r = length(gl_PointCoord * 2.0 - 1.0);
-  float a = 1.0 - smoothstep(0.6, 1.0, r);
+  vec2 p = vec2(gl_PointCoord.x * 2.0 - 1.0, 1.0 - gl_PointCoord.y * 2.0);
+  float a = 1.0 - smoothstep(-vPx, vPx, satIcon(p, vKind));
   if (a <= 0.01) discard;
   gl_FragColor = vec4(vColor, a);
 }

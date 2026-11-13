@@ -96,7 +96,7 @@ const days = (value: number) => t('{n} días', { n: num(value) });
  * Ficha de un astro, al pasar el cursor por él. Cifras de las hojas de datos de la NASA (Sun y Moon
  * Fact Sheet, science.nasa.gov): valores medios y redondeados.
  */
-function SkyCard({ title, rows }: { title: string; rows: [string, string][] }) {
+export function SkyCard({ title, rows }: { title: string; rows: [string, string][] }) {
   return (
     <span className="sky-tip sky-card">
       <strong className="block">{title}</strong>

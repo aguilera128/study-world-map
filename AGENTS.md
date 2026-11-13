@@ -221,6 +221,11 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   (`MAX_ORBIT_RADII`): con la capa encendida la cámara puede alejarse hasta verlas enteras (`reach`
   en `camera.ts`). Las geoestacionarias (6,6 radios) obligarían a alejarse tanto que el globo
   quedaría diminuto: no se dibujan, y la leyenda lo dice.
+  Cada satélite es un icono con la silueta de su grupo (`src/satellites/icons.ts`, de donde salen la
+  función GLSL y el SVG de la leyenda); Starlink va como punto. Las órbitas (menos las de Starlink)
+  se trazan con SGP4 cada diez minutos y el motor solo las gira con la Tierra entre tanto. La ficha
+  al pasar el cursor solo enseña lo que trae CelesTrak (nombre, número NORAD, año del designador
+  internacional) y lo calculado con SGP4: nada de país, operador ni propósito.
 - La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
   detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
   nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`

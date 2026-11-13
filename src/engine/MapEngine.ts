@@ -7,7 +7,11 @@ import {
   InstancedBufferGeometry,
   DataTexture,
   DoubleSide,
+  Color,
+  Line,
   LineLoop,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
   NearestFilter,
   Points,
@@ -35,6 +39,7 @@ import { faintStarGeometry, fillGeometry, frameGeometry, lineGeometry, markerGeo
 import { FeatureLabels, type MapFeature } from './labels';
 import { rgb, Style, STYLE_COUNT, type Palette } from './palette';
 import { DEG, wrapLon } from './projection';
+import { hiddenByEarth, nearestOnScreen } from '../satellites/pick';
 import {
   FILL_FRAG,
   FILL_VERT,
@@ -74,9 +79,23 @@ export interface SatelliteSet {
   count: number;
   colors: Float32Array;
   sizes: Float32Array;
+  /** Silueta de cada uno: el índice de su grupo (src/satellites/icons.ts). */
+  kinds: Float32Array;
   /** Hasta dónde llegan sus órbitas, en radios desde el centro: la cámara se aleja lo que haga falta para verlas. */
   reach: number;
+  /** El giro alrededor del eje norte que lleva al globo, en un momento dado, las órbitas trazadas en el espacio (src/satellites/orbit.ts). */
+  angle(date: Date): number;
   update(date: Date, positions: Float32Array, from: number, to: number): void;
+}
+
+/**
+ * Las órbitas de los satélites como tramos de línea (dos vértices por tramo), en el marco inercial
+ * con los ejes del globo (src/satellites/orbit.ts, «orbitPath»), y el color de cada vértice. El
+ * motor las gira cada fotograma con `SatelliteSet.angle`: la Tierra gira debajo de ellas.
+ */
+export interface SatelliteOrbits {
+  positions: Float32Array;
+  colors: Float32Array;
 }
 
 /** Satélites a los que se recalcula la posición en cada fotograma: con miles, el resto espera turno. */
@@ -387,6 +406,10 @@ export class MapEngine {
   /** Los satélites: con ellos a la vista el mapa se sigue redibujando, para que avancen. */
   private sats: { set: SatelliteSet; points: Points; positions: BufferAttribute; cursor: number } | null = null;
   private satMaterial: ShaderMaterial | null = null;
+  private orbits: LineSegments | null = null;
+  private orbitMaterial: LineBasicMaterial | null = null;
+  /** El satélite señalado: su índice, su tamaño de antes y su órbita, más visible que las demás. */
+  private satFocus: { index: number; size: number; line: Line | null } | null = null;
   private readonly disposables: { dispose(): void }[] = [];
   /** De dónde sale cada textura de imagen, para volver a pedirla si se pierde el contexto WebGL. */
   private readonly sources = new Map<Texture, { url: string; onLoad: () => void }>();
@@ -1200,6 +1223,7 @@ export class MapEngine {
 
   /** Los satélites que se dibujan alrededor del globo; `null` los retira. */
   setSatellites(set: SatelliteSet | null) {
+    this.setSatelliteFocus(-1, null);
     if (this.sats) {
       this.scene.remove(this.sats.points);
       this.sats.points.geometry.dispose();
@@ -1212,6 +1236,7 @@ export class MapEngine {
       geometry.setAttribute('position', positions);
       geometry.setAttribute('aColor', new BufferAttribute(set.colors, 3));
       geometry.setAttribute('aSize', new BufferAttribute(set.sizes, 1));
+      geometry.setAttribute('aKind', new BufferAttribute(set.kinds, 1));
       this.satMaterial ??= this.material(SAT_VERT, SAT_FRAG, 0, { uDpr: this.own.stars.uDpr }, { transparent: true, depthWrite: false });
       const points = new Points(geometry, this.satMaterial);
       points.frustumCulled = false;
@@ -1226,10 +1251,105 @@ export class MapEngine {
     this.invalidate();
   }
 
-  /** Avanza una tanda de satélites hasta la hora actual. */
+  /** Las órbitas de los satélites, una línea fina y tenue por satélite; `null` las retira. */
+  setSatelliteOrbits(orbits: SatelliteOrbits | null) {
+    if (this.orbits) {
+      this.scene.remove(this.orbits);
+      this.orbits.geometry.dispose();
+      this.orbits = null;
+    }
+    if (orbits) {
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', new BufferAttribute(orbits.positions, 3));
+      geometry.setAttribute('color', new BufferAttribute(orbits.colors, 3));
+      if (!this.orbitMaterial) {
+        // Muy tenue y sin escribir profundidad; la prueba de profundidad sí: el globo tapa lo de detrás.
+        this.orbitMaterial = new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.2, depthWrite: false });
+        this.disposables.push(this.orbitMaterial);
+      }
+      const lines = new LineSegments(geometry, this.orbitMaterial);
+      lines.frustumCulled = false;
+      lines.renderOrder = 6;
+      this.scene.add(lines);
+      this.orbits = lines;
+    }
+    this.invalidate();
+  }
+
+  /** Índice del satélite que se ve más cerca de (x, y) en pantalla, a menos de `radius` píxeles; −1 si ninguno. */
+  satelliteAt(x: number, y: number, radius = 12): number {
+    const sats = this.sats;
+    if (!sats?.points.visible) return -1;
+    const p = sats.positions.array as Float32Array;
+    const cam = this.rig.camera;
+    const eye = [cam.position.x, cam.position.y, cam.position.z] as const;
+    const v = new Vector3();
+    return nearestOnScreen(
+      sats.set.count,
+      (i, out) => {
+        const point = [p[i * 3], p[i * 3 + 1], p[i * 3 + 2]] as const;
+        if (point[0] * point[0] + point[1] * point[1] + point[2] * point[2] < 0.25) return false; // sin posición
+        if (hiddenByEarth(eye, point)) return false;
+        v.set(point[0], point[1], point[2]).project(cam);
+        if (v.z > 1) return false;
+        out.x = ((v.x + 1) / 2) * this.rig.width;
+        out.y = ((1 - v.y) / 2) * this.rig.height;
+        return true;
+      },
+      x,
+      y,
+      radius,
+    );
+  }
+
+  /**
+   * Señala un satélite (−1, ninguno): su icono algo mayor y su órbita (`path`, una vuelta de
+   * «orbitPath»; null si no hay) dibujada más visible que las demás.
+   */
+  setSatelliteFocus(index: number, path: Float32Array | null) {
+    const sats = this.sats;
+    const sizes = sats?.points.geometry.getAttribute('aSize') as BufferAttribute | undefined;
+    if (this.satFocus) {
+      if (sizes && this.satFocus.index < sizes.count) {
+        sizes.setX(this.satFocus.index, this.satFocus.size);
+        sizes.needsUpdate = true;
+      }
+      if (this.satFocus.line) {
+        this.scene.remove(this.satFocus.line);
+        this.satFocus.line.geometry.dispose();
+        (this.satFocus.line.material as LineBasicMaterial).dispose();
+      }
+      this.satFocus = null;
+    }
+    if (sats && sizes && index >= 0 && index < sats.set.count) {
+      const size = sizes.getX(index);
+      sizes.setX(index, size * 1.4);
+      sizes.needsUpdate = true;
+      let line: Line | null = null;
+      if (path) {
+        const geometry = new BufferGeometry();
+        geometry.setAttribute('position', new BufferAttribute(path, 3));
+        const [r, g, b] = sats.set.colors.subarray(index * 3, index * 3 + 3);
+        line = new Line(geometry, new LineBasicMaterial({ color: new Color(r, g, b), transparent: true, opacity: 0.75, depthWrite: false }));
+        line.frustumCulled = false;
+        line.renderOrder = 6;
+        this.scene.add(line);
+      }
+      this.satFocus = { index, size, line };
+    }
+    this.invalidate();
+  }
+
+  /** Avanza una tanda de satélites hasta la hora actual, y gira sus órbitas con la Tierra. */
   private stepSatellites() {
     const sats = this.sats;
     if (!sats) return;
+    const angle = sats.set.angle(new Date());
+    for (const lines of [this.orbits, this.satFocus?.line]) {
+      if (!lines) continue;
+      lines.visible = this.rig.morph > 0.98;
+      lines.rotation.y = angle;
+    }
     sats.points.visible = this.rig.morph > 0.98;
     if (!sats.points.visible) return;
     const { set } = sats;
@@ -2325,6 +2445,7 @@ export class MapEngine {
     this.resizeObserver.disconnect();
     this.tracked.clear();
     this.sats?.points.geometry.dispose();
+    this.orbits?.geometry.dispose();
     for (const d of this.disposables) d.dispose();
     this.renderer.dispose();
   }

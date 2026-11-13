@@ -98,6 +98,8 @@ interface SettingsState {
   layers: Layers;
   /** Qué grupos de satélites se ven con su capa encendida. */
   satGroups: Record<SatGroup, boolean>;
+  /** Con la capa de satélites, sus órbitas. */
+  satOrbits: boolean;
   config: GameConfig;
   /** Lo último elegido en los otros mapas, para recuperarlo al volver a ellos. */
   configs: Partial<Record<MapId, GameConfig>>;
@@ -110,6 +112,7 @@ interface SettingsState {
   setRealTime(on: boolean): void;
   setLayer(id: LayerId, on: boolean): void;
   setSatGroup(group: SatGroup, on: boolean): void;
+  setSatOrbits(on: boolean): void;
   /** Deja las capas como vienen de entrada. */
   resetLayers(): void;
   setConfig(patch: Partial<GameConfig>): void;
@@ -126,6 +129,7 @@ export const useSettings = create<SettingsState>()(
       realTime: true,
       layers: ALL_LAYERS,
       satGroups: SAT_GROUPS_ON,
+      satOrbits: true,
       config: DEFAULT_CONFIG,
       configs: {},
       lists: [SAMPLE_LIST],
@@ -136,7 +140,8 @@ export const useSettings = create<SettingsState>()(
       setRealTime: (realTime) => set({ realTime }),
       setLayer: (id, on) => set((s) => ({ layers: { ...s.layers, [id]: on } })),
       setSatGroup: (group, on) => set((s) => ({ satGroups: { ...s.satGroups, [group]: on } })),
-      resetLayers: () => set({ layers: ALL_LAYERS, satGroups: SAT_GROUPS_ON }),
+      setSatOrbits: (satOrbits) => set({ satOrbits }),
+      resetLayers: () => set({ layers: ALL_LAYERS, satGroups: SAT_GROUPS_ON, satOrbits: true }),
       setConfig: (patch) =>
         set((s) => {
           // Al cambiar de mapa se guarda lo elegido en el que se deja y se recupera lo del que se abre.
@@ -171,7 +176,7 @@ export const useSettings = create<SettingsState>()(
         // «merge» valida después lo que salga de aquí.
         return (version < 3 ? { ...saved, layers: { ...saved.layers, satellite: false } } : saved) as SettingsState;
       },
-      partialize: ({ theme, viewMode, realTime, layers, satGroups, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, satGroups, config, configs, lists, langHintSeen }),
+      partialize: ({ theme, viewMode, realTime, layers, satGroups, satOrbits, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, satGroups, satOrbits, config, configs, lists, langHintSeen }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<SettingsState>;
@@ -187,6 +192,7 @@ export const useSettings = create<SettingsState>()(
             Object.keys(LAYERS).map((id) => [id, typeof saved.layers?.[id as LayerId] === 'boolean' ? saved.layers[id as LayerId] : ALL_LAYERS[id as LayerId]]),
           ) as Layers,
           satGroups: Object.fromEntries(SAT_GROUPS.map((g) => [g, typeof saved.satGroups?.[g] === 'boolean' ? saved.satGroups[g] : SAT_GROUPS_ON[g]])) as Record<SatGroup, boolean>,
+          satOrbits: saved.satOrbits !== false,
           lists,
           config: sanitizeConfig(saved.config, lists),
           configs: Object.fromEntries(

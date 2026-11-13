@@ -24,7 +24,7 @@ import { Icon } from './Icon';
 import { DISCONTINUITIES, INTERIOR } from './planetLayers';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
-import { SatelliteLabels } from './SatelliteLabels';
+import { SatelliteCard, SatelliteLabels } from './SatelliteLabels';
 import { ScaleRuler } from './ScaleRuler';
 import { lang, LOCALE, t } from '../i18n';
 import { density } from '../game/population';
@@ -178,6 +178,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     const moon = useMemo(() => sublunarPoint(now), [now]);
     const chosenLayers = useSettings((s) => s.layers);
     const satGroups = useSettings((s) => s.satGroups);
+    const satOrbits = useSettings((s) => s.satOrbits);
     // Jugando, el mapa lleva las capas del juego y no las que hubiera puestas: ver «gameLayers».
     const inGame = screen === 'play' || screen === 'results';
     // Huevo de pascua (cinco clics en «Globo 3D»): planeta y espacio de dibujos, sin foto ni relieve.
@@ -331,7 +332,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   useWeather(engine, { temp: layers.weatherTemp && !toon, cloud: layers.weatherCloud && !toon, rain: layers.weatherRain && !toon, wind: layers.weatherWind && !toon });
   // Los satélites, tampoco; y solo en el globo: en el mapa plano no hay «alrededor».
   const satellites = layers.satellites && !toon && viewMode === 'globe';
-  useSatellites(engine, satellites, satGroups);
+  useSatellites(engine, satellites, satGroups, satOrbits);
   useEffect(() => {
     engine?.setGuides(
       layers.guides
@@ -420,6 +421,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
       {engine && satellites && <SatelliteLabels engine={engine} />}
+      {engine && satellites && <SatelliteCard engine={engine} canvas={canvasRef.current} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
       {toon && (
         <Suspense fallback={null}>

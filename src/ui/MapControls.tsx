@@ -5,7 +5,8 @@ import { getEngine } from '../app/engineRef';
 import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
 import { useWeatherInfo } from '../app/weather';
 import { useSatelliteInfo } from '../app/satellites';
-import { SAT_COLORS, SAT_GROUPS, type SatGroup } from '../satellites/format';
+import { SAT_GROUPS, type SatGroup } from '../satellites/format';
+import { SatIcon } from './SatelliteLabels';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -108,6 +109,8 @@ function LayersMenu() {
   const resetLayers = useSettings((s) => s.resetLayers);
   const satGroups = useSettings((s) => s.satGroups);
   const setSatGroup = useSettings((s) => s.setSatGroup);
+  const satOrbits = useSettings((s) => s.satOrbits);
+  const setSatOrbits = useSettings((s) => s.setSatOrbits);
   // Durante una partida hay capas que se apartan: su interruptor se ve apagado y no se puede tocar.
   const playing = useApp((s) => s.screen === 'play' || s.screen === 'results');
   const map = useApp((s) => s.atlas?.map ?? 'world');
@@ -165,7 +168,16 @@ function LayersMenu() {
   const satelliteLegend = layers.satellites && !parked('satellites') && (
     <div className="pl-3">
       {SAT_GROUPS.map((g) =>
-        row(`sat-${g}`, <span aria-hidden="true" className="mx-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: SAT_COLORS[g] }} />, SAT_NAMES[g], satGroups[g], (on) => setSatGroup(g, on)),
+        row(`sat-${g}`, <SatIcon group={g} className="shrink-0" />, SAT_NAMES[g], satGroups[g], (on) => setSatGroup(g, on)),
+      )}
+      {row(
+        'sat-orbits',
+        <svg aria-hidden="true" width="22" height="22" viewBox="-11 -11 22 22" className="shrink-0 text-ink-soft">
+          <ellipse rx="9" ry="4" transform="rotate(-25)" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.7" />
+        </svg>,
+        t('Órbitas'),
+        satOrbits,
+        setSatOrbits,
       )}
       <SatelliteLegend />
     </div>

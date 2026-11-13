@@ -791,6 +791,11 @@ p {
   opacity: 1;
 }
 
+/* La ficha de un satélite: se ve mientras está señalado, sin pasar el cursor por ella. */
+.sat-card .sky-tip {
+  opacity: 1;
+}
+
 /* Junto al borde de abajo, la ficha sale encima del astro. */
 .sky-marker[data-up] .sky-tip {
   top: auto;

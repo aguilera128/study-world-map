@@ -4,7 +4,9 @@
 // La fuente son los elementos orbitales GP de CelesTrak (https://celestrak.org), en el formato OMM
 // en JSON. De cada satélite se queda lo que necesita SGP4 para calcular dónde está, en una fila:
 // [nombre, número NORAD, época, movimiento medio, excentricidad, inclinación, nodo ascendente,
-// argumento del perigeo, anomalía media, BSTAR, derivada del movimiento medio, segunda derivada].
+// argumento del perigeo, anomalía media, BSTAR, derivada del movimiento medio, segunda derivada,
+// designador internacional]. El designador («1998-067A»: año de lanzamiento, número de lanzamiento
+// de ese año y pieza) llegó después: lo que aún tenga guardado la red de Vercel puede no traerlo.
 
 /** Los grupos de la capa, en el orden en que se pintan encima unos de otros (el primero, arriba). */
 export const SAT_GROUPS = ['estaciones', 'navegacion', 'meteorologicos', 'starlink'] as const;
@@ -27,7 +29,7 @@ export const SAT_COLORS: Record<SatGroup, string> = {
   starlink: '#b8c4d6',
 };
 
-export type SatRow = [name: string, norad: number, epoch: string, meanMotion: number, eccentricity: number, inclination: number, raan: number, argPericenter: number, meanAnomaly: number, bstar: number, meanMotionDot: number, meanMotionDdot: number];
+export type SatRow = [name: string, norad: number, epoch: string, meanMotion: number, eccentricity: number, inclination: number, raan: number, argPericenter: number, meanAnomaly: number, bstar: number, meanMotionDot: number, meanMotionDdot: number, designator?: string];
 
 /** Lo que devuelve /api/satelites: de cuándo son los elementos (cuando se pidieron a CelesTrak) y los satélites. */
 export interface SatPayload {
@@ -47,12 +49,23 @@ export function toRow(omm: Record<string, unknown>): SatRow | null {
   const fields = ['NORAD_CAT_ID', 'MEAN_MOTION', 'ECCENTRICITY', 'INCLINATION', 'RA_OF_ASC_NODE', 'ARG_OF_PERICENTER', 'MEAN_ANOMALY', 'BSTAR', 'MEAN_MOTION_DOT', 'MEAN_MOTION_DDOT'].map((key) => num(omm[key]));
   if (!name || !epoch || fields.some((f) => f === null)) return null;
   const [norad, ...rest] = fields as number[];
-  return [name, norad, epoch, ...(rest as [number, number, number, number, number, number, number, number, number])];
+  const designator = typeof omm.OBJECT_ID === 'string' ? omm.OBJECT_ID.trim() : '';
+  return [name, norad, epoch, ...(rest as [number, number, number, number, number, number, number, number, number]), designator];
 }
 
 /** ¿Es una fila válida? (lo que llega al navegador no se da por bueno sin mirarlo). */
 export const isSatRow = (row: unknown): row is SatRow =>
-  Array.isArray(row) && row.length === 12 && typeof row[0] === 'string' && typeof row[2] === 'string' && row.every((v, i) => i === 0 || i === 2 || (typeof v === 'number' && Number.isFinite(v)));
+  Array.isArray(row) &&
+  (row.length === 12 || (row.length === 13 && typeof row[12] === 'string')) &&
+  typeof row[0] === 'string' &&
+  typeof row[2] === 'string' &&
+  row.every((v, i) => i === 0 || i === 2 || i === 12 || (typeof v === 'number' && Number.isFinite(v)));
+
+/** Año de lanzamiento, del designador internacional («1998-067A» → 1998); null si no viene o no tiene esa forma. */
+export const launchYear = (designator: string | undefined): number | null => {
+  const m = /^(\d{4})-\d{3}/.exec(designator ?? '');
+  return m ? Number(m[1]) : null;
+};
 
 /** Radio de la Tierra con el que se escala todo el mapa (el globo mide 1), en km. */
 export const EARTH_RADIUS_KM = 6371;
