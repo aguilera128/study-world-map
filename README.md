@@ -14,8 +14,8 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
 
 - **El tiempo de ahora.** Cuatro capas de meteorología, apagadas de entrada: temperatura, nubes y
   viento según el modelo GFS de la NOAA (un dato por grado, del paso de tres horas más cercano) y
-  la lluvia y la nieve que ha medido la misión GPM de la NASA (cada media hora, con unas cinco
-  horas de retraso). La leyenda dice de qué hora es cada dato. Los pide una función propia
+  la lluvia y la nieve que ha medido la misión GPM de la NASA (cada media hora, con entre cinco
+  y ocho horas de retraso). La leyenda dice de qué hora es cada dato. Los pide una función propia
   (`api/tiempo.ts`): el navegador no habla con ningún tercero.
 - **Dos vistas del mismo mapa.** Globo 3D y mapa plano (proyección Natural Earth), con una
   transición animada entre ambos. Se arrastra, se hace zoom con la rueda o pellizcando, y los

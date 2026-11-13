@@ -9,7 +9,7 @@
 //     usan (unos 300 kB en total). El modelo corre cuatro veces al día y da un paso cada tres horas:
 //     «ahora» es el paso más cercano de la última pasada publicada.
 //   · Lluvia: IMERG (GPM), NASA, vía GIBS, dominio público. Es una observación de satélite, cada
-//     media hora y con unas cinco horas de retraso.
+//     media hora y con entre cinco y ocho horas de retraso (medido el 12-nov-2026).
 
 import { crc32, deflateSync } from 'node:zlib';
 import { decodeGrib2, type Grid } from './grib2.ts';

@@ -132,7 +132,9 @@ export function ResultsPanel() {
                     className="flex w-full items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-[rgb(var(--shadow)/0.07)]"
                     title={t('Ver en el mapa')}
                   >
-                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${TONE[session.marks[index] ?? 'failed']}`} />
+                    {/* El color de cómo salió la pregunta, que es lo que cuentan los recuadros de arriba: si después se
+                        acertó el repaso, el mapa lo anota, pero aquí sigue contando como fallo. */}
+                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${TONE[session.results.find((r) => !r.review && r.country === index)?.outcome ?? 'failed']}`} />
                     {/* (las unidades de un país no tienen bandera: sin esto salía un hueco gris) */}
                     {(country.a2 || !atlas.frame) && <Flag a2={country.a2} height={18} />}
                     <span className="min-w-0 flex-1 truncate font-semibold">{country.name}</span>

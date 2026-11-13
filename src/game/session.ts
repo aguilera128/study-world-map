@@ -289,6 +289,22 @@ export const currentQuestion = (session: Session): Question | null =>
 export const attemptsLeft = (session: Session): number =>
   MAX_ATTEMPTS[inputOf(session.config.answer)] - session.wrong.length;
 
+/** Si una opción es la correcta para la pregunta; `target` es el país preguntado. */
+export function isRightOption(config: GameConfig, target: Country, question: Question, option: Option): boolean {
+  switch (config.mode) {
+    case 'continent':
+      return target.continents.includes(option.id as ContinentKey);
+    case 'climate':
+      return target.climate.includes(option.id as ClimateKey);
+    case 'region':
+      return target.regions.includes(option.id);
+    case 'population':
+      return levelOf(target) === option.id;
+    default:
+      return option.country === question.country;
+  }
+}
+
 function isRightText(atlas: Atlas, session: Session, question: Question, text: string): boolean {
   const target = atlas.countries[question.country];
   const others = atlas.quizzable.filter((i) => i !== question.country).map((i) => atlas.countries[i]);
@@ -363,16 +379,7 @@ export function submit(atlas: Atlas, session: Session, answer: Answer, now: numb
       const option = question.options.find((o) => o.id === answer.id);
       if (input !== 'choice' || !option) return ignored;
       key = option.id;
-      right =
-        session.config.mode === 'continent'
-          ? target.continents.includes(option.id as ContinentKey)
-          : session.config.mode === 'climate'
-            ? target.climate.includes(option.id as ClimateKey)
-            : session.config.mode === 'region'
-              ? target.regions.includes(option.id)
-              : session.config.mode === 'population'
-                ? levelOf(target) === option.id
-              : option.country === question.country;
+      right = isRightOption(session.config, target, question, option);
       break;
     }
     case 'text': {

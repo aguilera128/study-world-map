@@ -621,7 +621,9 @@ export const useApp = create<AppState>()((set, get) => {
       // Los aciertos pasan solos a la siguiente; un fallo espera a que se lea la solución.
       if (outcome !== 'failed') {
         clearTimeout(advanceTimer);
-        advanceTimer = setTimeout(() => get().next(), outcome === 'first' ? 1100 : 1500);
+        // Si la solución trae un dato que leer (habitantes, clima, la nota de una capital), se deja algo más.
+        const reading = session.config.mode === 'population' || session.config.mode === 'inhabitants' || session.config.mode === 'climate' || (session.config.mode === 'capital' && !!country.capitalNote);
+        advanceTimer = setTimeout(() => get().next(), (outcome === 'first' ? 1100 : 1500) + (reading ? 900 : 0));
       }
     },
 

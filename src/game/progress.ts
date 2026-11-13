@@ -87,15 +87,33 @@ export function mergeProgress(a: Progress, b: Progress): Progress {
 
 const DAY = 86_400_000;
 const BOX_WEIGHT = [4, 6, 4, 2, 1.2, 0.6];
+/** Días que tiene que pasar cada caja sin preguntarse para que «toque» repasarla (índice = caja). */
+const REVIEW_DAYS = [0, 0, 1, 3, 7, 21];
+/** Peso de lo que aún no toca: lo recién acertado se aparta un poco para no repetirlo enseguida. */
+const NOT_DUE = 0.6;
 
-/** Peso con el que un país entra en el sorteo de preguntas: más alto cuanto peor se sabe. */
+/**
+ * Peso con el que un país entra en el sorteo de preguntas: más alto cuanto peor se sabe y cuanto
+ * más tiempo lleva sin repasarse respecto a lo que le toca por su caja (repetición espaciada).
+ *
+ * Una vez vencido el intervalo, el peso sube en línea recta desde el de su caja hasta el de algo
+ * nunca visto (4), y llega a él cuando el retraso es el doble del intervalo: así algo dominado y muy
+ * olvidado vuelve a pesar como algo a medias, pero nunca más que algo nunca visto ni que algo
+ * fallado (6). La caja 1 no depende del tiempo.
+ */
 export function selectionWeight(progress: Progress, country: string, mode: ModeId, now: number): number {
   const stats = progress[country]?.[mode];
   if (!stats) return BOX_WEIGHT[0];
-  let weight = BOX_WEIGHT[Math.min(MAX_BOX, Math.max(1, stats.box))];
-  // Lo que se sabía pero lleva tiempo sin repasarse vuelve a ganar peso.
-  if (stats.box >= 3 && now - stats.last > 10 * DAY) weight *= 1.8;
-  return weight;
+  const box = Math.min(MAX_BOX, Math.max(1, Math.round(stats.box) || 1));
+  const base = BOX_WEIGHT[box];
+  if (box === 1) return base;
+  // Una fecha en el futuro (reloj cambiado) o un valor no numérico cuentan como «recién preguntado».
+  const elapsed = (now - stats.last) / DAY;
+  const days = Number.isFinite(elapsed) ? Math.max(0, elapsed) : 0;
+  const interval = REVIEW_DAYS[box];
+  if (days < interval) return base * NOT_DUE;
+  const overdue = Math.min((days - interval) / (2 * interval), 1);
+  return base + (BOX_WEIGHT[0] - base) * overdue;
 }
 
 /** Nivel de dominio para pintar el mapa de progreso: 0 sin ver · 1 aprendiendo · 2 · 3 · 4 dominado. */

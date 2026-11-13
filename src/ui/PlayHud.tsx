@@ -4,11 +4,11 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type R
 import { formatCoords, formatTime } from '../app/format';
 import { useApp, useMapDef } from '../app/store';
 import type { Atlas } from '../atlas/atlas';
-import type { ClimateKey, ContinentKey, Country } from '../atlas/types';
+import type { Country } from '../atlas/types';
 import { climateText } from '../game/climate';
 import { inputOf, MAX_ATTEMPTS, modeDef, type GameConfig } from '../game/config';
 import type { Outcome } from '../game/progress';
-import { currentQuestion, type Question, type Session } from '../game/session';
+import { currentQuestion, isRightOption, type Question, type Session } from '../game/session';
 import { hint } from '../game/text';
 import { MODE_ICONS } from './modeIcons';
 import { useElapsed, useLast, usePad } from './hooks';
@@ -150,21 +150,11 @@ function Solution({ atlas, config, country }: { atlas: Atlas; config: GameConfig
 function Options({ session, question, country }: { session: Session; question: Question; country: Country }) {
   const answer = useApp((s) => s.answer);
   const resolved = session.status === 'resolved';
-  const isRight = (id: string, optionCountry: number) =>
-    session.config.mode === 'continent'
-      ? country.continents.includes(id as ContinentKey)
-      : session.config.mode === 'climate'
-        ? country.climate.includes(id as ClimateKey)
-        : session.config.mode === 'region'
-          ? country.regions.includes(id)
-          : session.config.mode === 'population'
-            ? levelOf(country) === id
-          : optionCountry === question.country;
   return (
     <div className={`grid gap-2 ${question.options.length > 4 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'}`}>
       {question.options.map((option, i) => {
         const wrong = session.wrong.includes(option.id);
-        const right = resolved && isRight(option.id, option.country);
+        const right = resolved && isRightOption(session.config, country, question, option);
         return (
           <button
             key={option.id}
