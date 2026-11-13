@@ -33,6 +33,7 @@ pnpm atlas      # solo regenera public/data (atlas del mundo, de España y de ge
 api/sync.ts            función de Vercel: sincronización del progreso por código (Neon)
 api/ranking.ts         función de Vercel: los diez mejores resultados de cada reto (Neon)
 api/tiempo.ts          función de Vercel: el tiempo de ahora para las capas de meteorología (NOAA y NASA)
+api/satelites.ts       función de Vercel: los elementos orbitales de la capa de satélites (CelesTrak)
 scripts/               generadores de datos y de páginas estáticas (se ejecutan a mano o en el build)
 scripts/data/          fuentes editables: países, idiomas, legales, temario físico, correcciones
 public/data/           datos generados que sí van al repositorio (texturas, capas, atlas físico)
@@ -42,6 +43,7 @@ src/game/countryMaps.ts  los países que se estudian por dentro (España, EE. UU
 src/engine/            motor del mapa: MapEngine, cámara, sombreadores, paletas, rótulos
 src/app/               estado (Zustand), sincronización, exportar imagen, hora
 src/weather/           el tiempo de ahora: lectura del modelo (GRIB2) y formato de la imagen (con pruebas)
+src/satellites/        satélites: formato de los elementos orbitales y posición con SGP4 (con pruebas)
 src/ui/                componentes de React
 src/i18n/              un diccionario por idioma; el texto en español es la clave
 docs/                  planes y propuestas con fecha
@@ -159,6 +161,7 @@ cabecera la fuente, la licencia y cómo se vuelve a ejecutar.
 | Ilustraciones del huevo de pascua (`public/toon/`) | a mano, sin generador | diseños originales generados con IA (imágenes de Codex) a partir de una descripción propia; no son de ninguna serie |
 | Temperatura, nubes y viento de ahora | `api/tiempo.ts` (`src/weather/model.ts`), en vivo | modelo GFS de NOAA/NCEP (dominio público), del almacén abierto de la NOAA en AWS |
 | Lluvia y nieve de ahora | `api/tiempo.ts`, en vivo | IMERG (GPM), NASA, vía GIBS |
+| Satélites | `api/satelites.ts` (`src/satellites/`), en vivo; posición con SGP4 (`satellite.js`) en el navegador | elementos orbitales GP de CelesTrak |
 | Interior de la Tierra, atmósfera, Sol y Luna | `src/ui/planetLayers.ts`, `RealTime.tsx` | USGS, IGN, PREM, artículos citados, NASA |
 
 Los ficheros grandes de origen (Natural Earth, EXR de la NASA, rejilla de Köppen) **no** van al
@@ -168,7 +171,7 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - Bajo `api/` solo puede haber rutas reales: todo `.ts`/`.js` que haya ahí se despliega como función
   y Vercel la arranca sin que nadie la llame. Los scripts van en `scripts/`, con guarda de módulo
   principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
-- Hoy hay **tres** funciones (`api/sync.ts`, `api/ranking.ts` y `api/tiempo.ts`). Si en *Resources*
+- Hoy hay **cuatro** funciones (`api/sync.ts`, `api/ranking.ts`, `api/tiempo.ts` y `api/satelites.ts`). Si en *Resources*
   aparecen más, algo se despliega de más.
 - `vercel.json` manda una política de contenido (cabecera `Content-Security-Policy`): solo se carga
   lo propio, el Blob de las teselas y Google Tag Manager. Consecuencias al tocar las páginas:
@@ -208,6 +211,16 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   desarrollo la sirve Vite (`devWeather` en `vite.config.ts`). Lo que comparten la función y la
   aplicación está en `src/weather/format.ts`, que no puede importar nada que se ejecute; lo que
   carga la función se escribe sin «propiedades de parámetro» ni nada que Node no sepa quitar.
+- La capa de satélites funciona igual: pregunta a `/api/satelites?grupo=…` (solo los grupos de
+  `src/satellites/format.ts`), y la función habla con CelesTrak y guarda la respuesta seis horas en
+  la red de Vercel. CelesTrak renueva los datos cada dos horas y pide descargarlos como mucho una
+  vez por renovación y dejar de preguntar en cuanto contesta con un error
+  (https://celestrak.org/usage-policy.php): la función se calla media hora tras un error. Lo comparte
+  con la aplicación `src/satellites/format.ts`; `satellite.js` solo lo carga `src/satellites/orbit.ts`,
+  y este con `import()` al encender la capa. Solo se dibujan órbitas de hasta 5 radios terrestres
+  (`MAX_ORBIT_RADII`): con la capa encendida la cámara puede alejarse hasta verlas enteras (`reach`
+  en `camera.ts`). Las geoestacionarias (6,6 radios) obligarían a alejarse tanto que el globo
+  quedaría diminuto: no se dibujan, y la leyenda lo dice.
 - La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
   detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
   nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`

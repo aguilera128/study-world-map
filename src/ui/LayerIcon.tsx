@@ -201,6 +201,16 @@ const ICONS: Record<LayerId, ReactNode> = {
       <path d="M3 18h6.500" {...fine} />
     </>
   ),
+  // Satélites: el cuerpo con sus dos paneles solares, y la órbita que recorre.
+  satellites: (
+    <>
+      <path d="M3.500 15.500a10 10 0 0 0 15 4" {...fine} />
+      <path d="M8.700 8.700l6.600 6.600" />
+      <rect x="9.900" y="9.900" width="4.200" height="4.200" rx="0.800" transform="rotate(45 12 12)" {...solid} />
+      <path d="M4.200 8.400l4.200-4.200 2.400 2.400-4.200 4.200zM13.200 17.400l4.200-4.200 2.400 2.400-4.200 4.200z" {...wash} />
+      <path d="M4.200 8.400l4.200-4.200 2.400 2.400-4.200 4.200zM13.200 17.400l4.200-4.200 2.400 2.400-4.200 4.200z" />
+    </>
+  ),
   // Mi ubicación: la chincheta clavada en el suelo, con el cerco de donde estás.
   you: (
     <>

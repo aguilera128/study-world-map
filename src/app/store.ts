@@ -25,6 +25,7 @@ import { COUNTRY_IDS, COUNTRY_MAPS, type CountryMapId } from '../game/countryMap
 import { isCountryMap, isMapId, MAPS, type MapDef } from '../game/maps';
 import { getEngine } from './engineRef';
 import { deviceZone } from './time';
+import { SAT_GROUPS, type SatGroup } from '../satellites/format';
 import { lang, t } from '../i18n';
 
 // Estado de la aplicación en tres almacenes:
@@ -53,6 +54,8 @@ export const LAYERS = {
   weatherCloud: t('Nubes'),
   weatherRain: t('Lluvia y nieve'),
   weatherWind: t('Viento'),
+  // los satélites de ahora: sus grupos se encienden aparte, en la leyenda (./satellites.ts)
+  satellites: t('Satélites'),
   glint: t('Reflejo del agua'),
   // solo se ven en el globo con el tema oscuro
   stars: t('Estrellas'),
@@ -66,14 +69,14 @@ export type LayerId = keyof typeof LAYERS;
 export type Layers = Record<LayerId, boolean>;
 /** Capas que empiezan ocultas; las demás se ven salvo que se hayan quitado. */
 const WEATHER: LayerId[] = ['weatherTemp', 'weatherCloud', 'weatherRain', 'weatherWind'];
-const OFF_BY_DEFAULT: LayerId[] = ['satellite', 'climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', ...WEATHER];
+const OFF_BY_DEFAULT: LayerId[] = ['satellite', 'climate', 'features', 'guides', 'currents', 'timezones', 'tectonics', 'population', ...WEATHER, 'satellites'];
 /**
  * Capas que se apartan durante una partida, las tenga puestas o no quien juega: tapan el mapa mudo
  * (la foto de satélite), lo llenan de líneas y rótulos (ríos, placas, corrientes, líneas
  * imaginarias, husos) o son colores de otro tema (climas, densidad, el tiempo de ahora). Al salir
  * vuelven como estaban.
  */
-const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population', ...WEATHER];
+const OFF_IN_GAME: readonly LayerId[] = ['satellite', 'features', 'currents', 'tectonics', 'guides', 'timezones', 'climate', 'population', ...WEATHER, 'satellites'];
 /**
  * Las capas que se apartan jugando en un mapa. En los de países también el relieve: su sombreado
  * compite con las fronteras, que es lo que hay que leer. En el de geografía física se queda, porque
@@ -84,6 +87,8 @@ export const offInGame = (map: MapId): readonly LayerId[] => (map === 'fisico' ?
 export const gameLayers = (layers: Layers, map: MapId): Layers => ({ ...layers, ...Object.fromEntries(offInGame(map).map((id) => [id, false])) });
 
 const ALL_LAYERS = Object.fromEntries(Object.keys(LAYERS).map((id) => [id, !OFF_BY_DEFAULT.includes(id as LayerId)])) as Layers;
+/** Grupos de la capa de satélites que se ven al encenderla: todos menos Starlink, que son miles. */
+const SAT_GROUPS_ON = Object.fromEntries(SAT_GROUPS.map((g) => [g, g !== 'starlink'])) as Record<SatGroup, boolean>;
 
 interface SettingsState {
   theme: ThemeChoice;
@@ -91,6 +96,8 @@ interface SettingsState {
   /** Día y noche en tiempo real sobre el mapa. */
   realTime: boolean;
   layers: Layers;
+  /** Qué grupos de satélites se ven con su capa encendida. */
+  satGroups: Record<SatGroup, boolean>;
   config: GameConfig;
   /** Lo último elegido en los otros mapas, para recuperarlo al volver a ellos. */
   configs: Partial<Record<MapId, GameConfig>>;
@@ -102,6 +109,7 @@ interface SettingsState {
   setViewMode(mode: ViewMode): void;
   setRealTime(on: boolean): void;
   setLayer(id: LayerId, on: boolean): void;
+  setSatGroup(group: SatGroup, on: boolean): void;
   /** Deja las capas como vienen de entrada. */
   resetLayers(): void;
   setConfig(patch: Partial<GameConfig>): void;
@@ -117,6 +125,7 @@ export const useSettings = create<SettingsState>()(
       // Encendido de entrada: el globo de la portada se ve con su día y su noche de ahora mismo.
       realTime: true,
       layers: ALL_LAYERS,
+      satGroups: SAT_GROUPS_ON,
       config: DEFAULT_CONFIG,
       configs: {},
       lists: [SAMPLE_LIST],
@@ -126,7 +135,8 @@ export const useSettings = create<SettingsState>()(
       setViewMode: (viewMode) => set({ viewMode }),
       setRealTime: (realTime) => set({ realTime }),
       setLayer: (id, on) => set((s) => ({ layers: { ...s.layers, [id]: on } })),
-      resetLayers: () => set({ layers: ALL_LAYERS }),
+      setSatGroup: (group, on) => set((s) => ({ satGroups: { ...s.satGroups, [group]: on } })),
+      resetLayers: () => set({ layers: ALL_LAYERS, satGroups: SAT_GROUPS_ON }),
       setConfig: (patch) =>
         set((s) => {
           // Al cambiar de mapa se guarda lo elegido en el que se deja y se recupera lo del que se abre.
@@ -161,7 +171,7 @@ export const useSettings = create<SettingsState>()(
         // «merge» valida después lo que salga de aquí.
         return (version < 3 ? { ...saved, layers: { ...saved.layers, satellite: false } } : saved) as SettingsState;
       },
-      partialize: ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, config, configs, lists, langHintSeen }),
+      partialize: ({ theme, viewMode, realTime, layers, satGroups, config, configs, lists, langHintSeen }) => ({ theme, viewMode, realTime, layers, satGroups, config, configs, lists, langHintSeen }),
       // Lo guardado puede venir de una versión anterior: se valida antes de usarlo.
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<SettingsState>;
@@ -176,6 +186,7 @@ export const useSettings = create<SettingsState>()(
           layers: Object.fromEntries(
             Object.keys(LAYERS).map((id) => [id, typeof saved.layers?.[id as LayerId] === 'boolean' ? saved.layers[id as LayerId] : ALL_LAYERS[id as LayerId]]),
           ) as Layers,
+          satGroups: Object.fromEntries(SAT_GROUPS.map((g) => [g, typeof saved.satGroups?.[g] === 'boolean' ? saved.satGroups[g] : SAT_GROUPS_ON[g]])) as Record<SatGroup, boolean>,
           lists,
           config: sanitizeConfig(saved.config, lists),
           configs: Object.fromEntries(

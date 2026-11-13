@@ -768,6 +768,20 @@ const gl: Record<string, string> = {
   'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatura, nubes e vento: modelo GFS (NOAA), previsión para {time}.',
   'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Chuvia e neve: satélites GPM (NASA), medido {time}. Verde, feble; vermello, forte; azul, neve.',
   'No se ha podido cargar el tiempo de ahora.': 'Non se puido cargar o tempo de agora.',
+  // capa de satélites
+  'Satélites': 'Satélites',
+  'Espacio': 'Espazo',
+  'Estaciones espaciales': 'Estacións espaciais',
+  'Navegación (GPS y Galileo)': 'Navegación (GPS e Galileo)',
+  'Meteorológicos': 'Meteorolóxicos',
+  'Starlink': 'Starlink',
+  '{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.': '{n} satélites, na súa posición de agora. Órbitas: CelesTrak, datos de {time}.',
+  'Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.': 'Os xeoestacionarios, a 36.000 km, non caben na vista e non se debuxan.',
+  'No se han podido cargar los satélites.': 'Non se puideron cargar os satélites.',
+  'Cargando los satélites…': 'Cargando os satélites…',
+  'Los satélites solo se ven en el globo.': 'Os satélites só se ven no globo.',
+  'Estación Espacial Internacional': 'Estación Espacial Internacional',
+  'Estación espacial Tiangong': 'Estación espacial Tiangong',
   'Cargando el tiempo de ahora…': 'Cargando o tempo de agora…',
 };
 

@@ -9,7 +9,7 @@ import { LOCALE, lang, t } from '../i18n';
 import { tx } from '../i18n/tx';
 
 /** Elemento que el motor mantiene centrado sobre un punto del mapa. */
-function Tracked({ engine, lon, lat, alt = 0, children }: { engine: MapEngine; lon: number; lat: number; alt?: number; children: ReactNode }) {
+export function Tracked({ engine, lon, lat, alt = 0, children }: { engine: MapEngine; lon: number; lat: number; alt?: number; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current) return engine.track(ref.current, lon, lat, alt);

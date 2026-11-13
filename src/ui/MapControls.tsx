@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
 import { useWeatherInfo } from '../app/weather';
+import { useSatelliteInfo } from '../app/satellites';
+import { SAT_COLORS, SAT_GROUPS, type SatGroup } from '../satellites/format';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
 import { resolveScope } from '../game/config';
@@ -33,6 +35,7 @@ const LAYER_GROUPS: { title: string; ids: LayerId[] }[] = [
   { title: t('Relieve y mar'), ids: ['relief', 'features', 'depth', 'currents', 'tectonics'] },
   { title: t('Datos por país'), ids: ['climate', 'population', 'timezones'] },
   { title: t('Meteorología'), ids: ['weatherTemp', 'weatherCloud', 'weatherRain', 'weatherWind'] },
+  { title: t('Espacio'), ids: ['satellites'] },
   { title: t('Líneas'), ids: ['grid', 'guides'] },
   { title: t('Aspecto'), ids: ['satellite', 'glint', 'stars'] },
 ];
@@ -68,6 +71,32 @@ function WeatherLegend({ model, rain, temp }: { model: boolean; rain: boolean; t
   );
 }
 
+const SAT_NAMES: Record<SatGroup, string> = {
+  estaciones: t('Estaciones espaciales'),
+  navegacion: t('Navegación (GPS y Galileo)'),
+  meteorologicos: t('Meteorológicos'),
+  starlink: t('Starlink'),
+};
+
+/** Leyenda de la capa de satélites: cuántos hay, de dónde salen sus órbitas y de cuándo son. */
+function SatelliteLegend() {
+  const info = useSatelliteInfo();
+  const flat = useSettings((s) => s.viewMode === 'flat');
+  const total = Object.values(info.counts).reduce((a, b) => a + b, 0);
+  return (
+    <div className="flex flex-col gap-1.5 text-xs text-ink-faint">
+      {info.fetched && (
+        <p>
+          {t('{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.', { n: total.toLocaleString(LOCALE), time: weatherTime(info.fetched) })}
+        </p>
+      )}
+      {info.fetched && info.beyond > 0 && <p>{t('Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.')}</p>}
+      {flat && <p>{t('Los satélites solo se ven en el globo.')}</p>}
+      {!info.fetched && !flat && <p role="status">{info.failed ? t('No se han podido cargar los satélites.') : t('Cargando los satélites…')}</p>}
+    </div>
+  );
+}
+
 /** Botón de capas: qué se dibuja sobre el mapa. */
 function LayersMenu() {
   const [open, setOpen] = useState(false);
@@ -77,6 +106,8 @@ function LayersMenu() {
   const layers = useSettings((s) => s.layers);
   const setLayer = useSettings((s) => s.setLayer);
   const resetLayers = useSettings((s) => s.resetLayers);
+  const satGroups = useSettings((s) => s.satGroups);
+  const setSatGroup = useSettings((s) => s.setSatGroup);
   // Durante una partida hay capas que se apartan: su interruptor se ve apagado y no se puede tocar.
   const playing = useApp((s) => s.screen === 'play' || s.screen === 'results');
   const map = useApp((s) => s.atlas?.map ?? 'world');
@@ -130,6 +161,15 @@ function LayersMenu() {
   const weatherModel = (['weatherTemp', 'weatherCloud', 'weatherWind'] as const).some((id) => layers[id] && !parked(id));
   const weatherRain = layers.weatherRain && !parked('weatherRain');
   const weatherLegend = (weatherModel || weatherRain) && <WeatherLegend model={weatherModel} rain={weatherRain} temp={layers.weatherTemp && !parked('weatherTemp')} />;
+  // Con la capa de satélites encendida, un interruptor por grupo, con su color.
+  const satelliteLegend = layers.satellites && !parked('satellites') && (
+    <div className="pl-3">
+      {SAT_GROUPS.map((g) =>
+        row(`sat-${g}`, <span aria-hidden="true" className="mx-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: SAT_COLORS[g] }} />, SAT_NAMES[g], satGroups[g], (on) => setSatGroup(g, on)),
+      )}
+      <SatelliteLegend />
+    </div>
+  );
   const legends = (
     <>
       {layers.climate && (
@@ -167,7 +207,7 @@ function LayersMenu() {
       {playing && <p className="text-xs text-ink-faint">{t('Durante la partida algunas capas se apartan para que el mapa se lea mejor. Al terminar vuelven como estaban.')}</p>}
       {LAYER_GROUPS.map((g, i) => (
         // La leyenda del tiempo va con sus interruptores: dice de qué hora es lo que se acaba de encender.
-        <div key={g.title}>{group(g.title, g.ids, i === LAYER_GROUPS.length - 1 ? toonRow : g.ids.includes('weatherTemp') ? weatherLegend : undefined)}</div>
+        <div key={g.title}>{group(g.title, g.ids, i === LAYER_GROUPS.length - 1 ? toonRow : g.ids.includes('weatherTemp') ? weatherLegend : g.ids.includes('satellites') ? satelliteLegend : undefined)}</div>
       ))}
       {legends}
       {realTime ? (

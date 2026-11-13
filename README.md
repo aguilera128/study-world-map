@@ -6,7 +6,8 @@ que insiste en lo que todavía no te sabes.
 
 Casi todo funciona en el navegador y no hay cuentas: el progreso se guarda en el propio dispositivo.
 Solo si se crea un código para seguir en otro dispositivo, se guarda también en una base de datos
-(una función de Vercel, `api/sync.ts`); otra guarda los rankings y una tercera sirve el tiempo de ahora.
+(una función de Vercel, `api/sync.ts`); otra guarda los rankings, una tercera sirve el tiempo de ahora
+y una cuarta, las órbitas de los satélites.
 
 Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.md](DESIGN.md) (diseño).
 
@@ -17,6 +18,10 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
   la lluvia y la nieve que ha medido la misión GPM de la NASA (cada media hora, con entre cinco
   y ocho horas de retraso). La leyenda dice de qué hora es cada dato. Los pide una función propia
   (`api/tiempo.ts`): el navegador no habla con ningún tercero.
+- **Satélites.** Una capa, apagada de entrada, con los satélites en su posición de ahora alrededor del
+  globo (estaciones espaciales, GPS y Galileo, meteorológicos y, si se enciende, Starlink), calculada
+  en el navegador con SGP4 (`satellite.js`) a partir de los elementos orbitales de CelesTrak, que
+  sirve `api/satelites.ts`.
 - **Dos vistas del mismo mapa.** Globo 3D y mapa plano (proyección Natural Earth), con una
   transición animada entre ambos. Se arrastra, se hace zoom con la rueda o pellizcando, y los
   países se levantan al pasar el cursor.
@@ -273,6 +278,8 @@ que la lista sea coherente y avisa si no.
 - Temperatura, nubes y viento de ahora: modelo GFS de NOAA/NCEP (dominio público), del
   [programa de datos abiertos de la NOAA](https://registry.opendata.aws/noaa-gfs-bdp-pds/).
 - Lluvia y nieve de ahora: IMERG (misión GPM), NASA, vía [GIBS](https://www.earthdata.nasa.gov/engage/open-data-services-software/earthdata-developer-portal/gibs-api).
+- Satélites: elementos orbitales GP de [CelesTrak](https://celestrak.org/); posiciones con
+  [satellite.js](https://github.com/shashwatak/satellite-js) (MIT).
 - Zonas horarias: base de datos de la IANA, vía
   [moment-timezone](https://github.com/moment/moment-timezone) (solo al generar el atlas).
 - Banderas: [flag-icons](https://github.com/lipis/flag-icons) (MIT).

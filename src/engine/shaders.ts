@@ -418,8 +418,24 @@ uniform sampler2D uLights; // luces de las ciudades de noche (scripts/build-nigh
 uniform float uLightsAmt;  // 0 = apagadas
 uniform sampler2D uLightsPatch; // las mismas luces con más detalle, de la zona que se está mirando
 uniform float uLightsPatchAmt;  // 0 = sin detalle
+uniform float uTime;
+uniform float uTwinkle;         // 0 = luces quietas (movimiento reducido)
 varying float vPhoto;
 varying float vTint;
+
+// Centelleo de las luces: cada celda de la textura de luces (4096 × 2048, unos 10 km) con su fase y
+// sus dos ritmos, de 2 a 7 segundos y sin relación entre ellos, para que no se note el ciclo. La
+// suma de los dos senos casi nunca llega a su máximo: la mayoría de las celdas varía bastante menos
+// del 8 %. Solo hash y senos (nada de ruido: alargaría la compilación).
+float twinkle(vec2 uv) {
+  vec2 cell = mod(floor(uv * vec2(4096.0, 2048.0)), 289.0);
+  float h1 = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
+  float h2 = fract(sin(dot(cell, vec2(269.5, 183.3))) * 43758.5453);
+  float w1 = 6.2831853 / (2.0 + 5.0 * h1);
+  float w2 = 6.2831853 / (2.0 + 5.0 * h2);
+  float wave = 0.5 * sin(uTime * w1 + 6.2831853 * h2) + 0.5 * sin(uTime * w2 + 6.2831853 * h1);
+  return 1.0 + 0.08 * uTwinkle * wave;
+}
 
 void main() {
   if (inCut(normalize(vGeo))) discard;
@@ -461,7 +477,7 @@ void main() {
       vec4 fine = texture2D(uLightsPatch, clamp(q, 0.0, 1.0));
       glow = mix(glow, fine.r, inside * fine.a * uLightsPatchAmt);
     }
-    lit += vec3(1.0, 0.8, 0.52) * (glow * night * uLightsAmt * vTint);
+    lit += vec3(1.0, 0.8, 0.52) * (glow * night * uLightsAmt * vTint * twinkle(uv));
   }
   gl_FragColor = vec4(lit, 1.0);
 }
@@ -990,6 +1006,38 @@ void main() {
   float a = (1.0 - smoothstep(0.35, 1.0, r)) * vAlpha * uStars * smoothstep(0.7, 1.0, uMorph);
   if (a <= 0.003) discard;
   gl_FragColor = vec4(vTint, a);
+}
+`;
+
+// ───────────────────────── Satélites ─────────────────────────
+//
+// Un punto por satélite, a su distancia real del globo (la posición ya viene en radios terrestres,
+// en el marco que gira con la Tierra). Pasan la prueba de profundidad: el globo tapa los que
+// quedan detrás. Solo en el globo: en el mapa plano no hay «alrededor».
+
+export const SAT_VERT = glsl`
+uniform float uMorph;
+uniform float uDpr;
+attribute vec3 aColor;
+attribute float aSize; // diámetro, en píxeles CSS
+varying vec3 vColor;
+
+void main() {
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  // Los que SGP4 no ha podido situar llegan en el centro de la Tierra: no se dibujan.
+  gl_PointSize = dot(position, position) > 0.25 ? aSize * uDpr * smoothstep(0.98, 1.0, uMorph) : 0.0;
+  vColor = aColor;
+}
+`;
+
+export const SAT_FRAG = glsl`
+varying vec3 vColor;
+
+void main() {
+  float r = length(gl_PointCoord * 2.0 - 1.0);
+  float a = 1.0 - smoothstep(0.6, 1.0, r);
+  if (a <= 0.01) discard;
+  gl_FragColor = vec4(vColor, a);
 }
 `;
 

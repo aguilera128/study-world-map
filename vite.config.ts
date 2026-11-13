@@ -44,35 +44,41 @@ function preloadCritical(): Plugin {
 }
 
 /**
- * En desarrollo, sirve /api/tiempo con la misma función que despliega Vercel (api/tiempo.ts), para
- * poder ver las capas del tiempo de ahora. Las otras dos funciones necesitan la base de datos y no
- * se sirven aquí.
+ * En desarrollo, sirve /api/tiempo y /api/satelites con las mismas funciones que despliega Vercel
+ * (api/tiempo.ts y api/satelites.ts), para poder ver las capas del tiempo de ahora y de los
+ * satélites. Las otras dos funciones necesitan la base de datos y no se sirven aquí.
  */
 function devWeather(): Plugin {
   return {
     name: 'dev-weather',
     apply: 'serve',
     configureServer(server) {
-      server.middlewares.use('/api/tiempo', (req, res) => {
-        void (async () => {
-          try {
-            const { default: handler } = (await server.ssrLoadModule('/api/tiempo.ts')) as { default: { fetch(request: Request): Promise<Response> } };
-            const response = await handler.fetch(new Request(`http://localhost${req.originalUrl ?? '/api/tiempo'}`, { method: req.method }));
-            res.statusCode = response.status;
-            response.headers.forEach((value, key) => res.setHeader(key, value));
-            res.end(Buffer.from(await response.arrayBuffer()));
-          } catch (e) {
-            res.statusCode = 500;
-            res.end(String(e));
-          }
-        })();
-      });
+      for (const name of ['tiempo', 'satelites']) {
+        server.middlewares.use(`/api/${name}`, (req, res) => {
+          void (async () => {
+            try {
+              const { default: handler } = (await server.ssrLoadModule(`/api/${name}.ts`)) as { default: { fetch(request: Request): Promise<Response> } };
+              const response = await handler.fetch(new Request(`http://localhost${req.originalUrl ?? `/api/${name}`}`, { method: req.method }));
+              res.statusCode = response.status;
+              response.headers.forEach((value, key) => res.setHeader(key, value));
+              res.end(Buffer.from(await response.arrayBuffer()));
+            } catch (e) {
+              res.statusCode = 500;
+              res.end(String(e));
+            }
+          })();
+        });
+      }
     },
   };
 }
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), preloadCritical(), devWeather()],
+  // Los hilos aparte salen como módulos (el de la malla ya se crea con type: 'module'). Hace falta
+  // por satellite.js: trae una versión WebAssembly con hilos que no se usa, pero Vite la empaqueta
+  // igual, y en el formato clásico no se puede.
+  worker: { format: 'es' },
   build: {
     target: 'es2022',
     // three.js va en su propio chunk (se carga con el motor del mapa) y supera el aviso por defecto

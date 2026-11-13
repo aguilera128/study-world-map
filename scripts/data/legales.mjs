@@ -5,8 +5,9 @@
 // se crea un código, también en la base de datos; ubicación solo en memoria; nada de Google sin
 // consentimiento; y en el ranking (src/app/ranking.ts y api/ranking.ts) solo lo que se publica a
 // propósito: apodo, nota, tiempo, fecha y país. Las capas de meteorología piden sus datos a este
-// mismo sitio (api/tiempo.ts), que es quien habla con la NOAA y la NASA: a ellas no les llega nada de
-// quien visita la web. Si eso cambia, hay que cambiar también estos textos.
+// mismo sitio (api/tiempo.ts), que es quien habla con la NOAA y la NASA, y la de satélites también
+// (api/satelites.ts, que habla con CelesTrak): a ellos no les llega nada de quien visita la web. Si
+// eso cambia, hay que cambiar también estos textos.
 
 import { DONAR_URL, REVISION_LEGAL, SITE, TITULAR } from './sitio.mjs';
 
@@ -57,6 +58,7 @@ ${titularBlock()}
       <li>Distritos de Moldavia: ACNUR y OCHA, límites administrativos de Moldavia de 2020 (licencia CC BY 3.0 IGO), vía <a href="https://www.geoboundaries.org/">geoBoundaries</a>, recortados y simplificados.</li>
       <li>Temperatura, nubes y viento de ahora: modelo GFS (Global Forecast System) de NOAA/NCEP (dominio público), del programa de datos abiertos de la NOAA. Es una previsión, no una medición.</li>
       <li>Lluvia y nieve de ahora: IMERG, de la misión GPM de la NASA, servido por los Global Imagery Browse Services (GIBS) del sistema ESDIS de la NASA.</li>
+      <li>Satélites: elementos orbitales GP de <a href="https://celestrak.org/">CelesTrak</a> (T. S. Kelso), a partir de los datos de la U.S. Space Force; la posición de cada satélite se calcula en el navegador con el modelo SGP4 (<a href="https://github.com/shashwatak/satellite-js">satellite.js</a>, licencia MIT).</li>
       <li>Códigos ISO y superficies: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Banderas: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licencia MIT).</li>
       <li>Luces nocturnas de las ciudades: Black Marble 2016, NASA Earth Observatory (dominio público).</li>
@@ -107,6 +109,9 @@ ${titularBlock()}
 
     <h3>Meteorología</h3>
     <p>Si enciendes alguna de las capas de meteorología (temperatura, nubes, lluvia o viento), la aplicación pide esos datos a este mismo sitio, que a su vez los obtiene de la NOAA y de la NASA. A esos organismos no les llega nada tuyo, ni siquiera tu dirección IP, y no se guarda nada.</p>
+
+    <h3>Satélites</h3>
+    <p>Si enciendes la capa de satélites, la aplicación pide sus órbitas a este mismo sitio, que a su vez las obtiene de CelesTrak. A CelesTrak no le llega nada tuyo, ni siquiera tu dirección IP, y no se guarda nada. La posición de cada satélite se calcula en tu navegador.</p>
 
     <h3>Analítica (solo con tu consentimiento)</h3>
     <p>Si aceptas las cookies de analítica, se carga Google Tag Manager y Google Analytics 4 para contar las visitas y saber qué partes de la web se usan, con el único fin de mejorarla. Se tratan datos técnicos y de uso: identificadores de cookie, páginas vistas, tipo de dispositivo y navegador, idioma, y país o ciudad aproximados. No se usan para publicidad ni para crear perfiles comerciales.</p>

@@ -50,6 +50,8 @@ import {
   MARKER_VERT,
   OCEAN_FRAG,
   OCEAN_VERT,
+  SAT_FRAG,
+  SAT_VERT,
   SKY_FRAG,
   SKY_VERT,
   STAR_FRAG,
@@ -63,6 +65,22 @@ import {
 import type { ToonScene } from './toonScene';
 
 export type ViewMode = 'globe' | 'flat';
+
+/**
+ * Los satélites que se dibujan (src/app/satellites.ts): un color (RGB, 0–1) y un tamaño (píxeles CSS)
+ * por satélite, y cómo escribir sus posiciones de un momento dado en el marco del globo (radios).
+ */
+export interface SatelliteSet {
+  count: number;
+  colors: Float32Array;
+  sizes: Float32Array;
+  /** Hasta dónde llegan sus órbitas, en radios desde el centro: la cámara se aleja lo que haga falta para verlas. */
+  reach: number;
+  update(date: Date, positions: Float32Array, from: number, to: number): void;
+}
+
+/** Satélites a los que se recalcula la posición en cada fotograma: con miles, el resto espera turno. */
+const SAT_BATCH = 1500;
 
 /** Lo que hay bajo el cursor. `index` es −1 sobre el mar; lon/lat en grados. */
 export interface PointerInfo {
@@ -326,7 +344,7 @@ export class MapEngine {
   };
   private readonly own = {
     ocean: { uOcean: { value: new Vector3() }, uGrid: { value: new Vector3() }, uGridAlpha: { value: 0 }, uGlint: { value: 0 }, uSwell: { value: 0 }, uTime: { value: 0 }, uFlow: { value: null as Texture | null }, uFlowAmt: { value: 0 }, uFlowShow: { value: 0 }, uStreak: { value: 60 }, uZones: { value: 0 }, uSeabed: { value: null as Texture | null }, uDepth: { value: 0 }, uShade: { value: null as Texture | null }, uShadeAmt: { value: 0 } },
-    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 } },
+    fill: { uRelief: { value: null as Texture | null }, uReliefAmt: { value: 0 }, uPhoto: { value: null as Texture | null }, uPhotoAmt: { value: 0 }, uPatch: { value: null as Texture | null }, uPatchBox: { value: new Vector4() }, uPatchAmt: { value: 0 }, uLights: { value: null as Texture | null }, uLightsAmt: { value: 0 }, uLightsPatch: { value: null as Texture | null }, uLightsPatchAmt: { value: 0 }, uTwinkle: { value: 1 } },
     wall: { uWallTint: { value: 0.7 } },
     weather: { uModel: { value: null as Texture | null }, uRain: { value: null as Texture | null }, uTemp: { value: 0 }, uCloud: { value: 0 }, uRainAmt: { value: 0 }, uWind: { value: 0 }, uInk: { value: new Vector3() } },
     stars: { uSidereal: { value: 0 }, uDpr: { value: 1 }, uStars: { value: 0 } },
@@ -366,6 +384,9 @@ export class MapEngine {
   private rainTexture: Texture | null = null;
   /** El viento se mueve: con él a la vista el mapa se sigue redibujando aunque esté quieto. */
   private windy = false;
+  /** Los satélites: con ellos a la vista el mapa se sigue redibujando, para que avancen. */
+  private sats: { set: SatelliteSet; points: Points; positions: BufferAttribute; cursor: number } | null = null;
+  private satMaterial: ShaderMaterial | null = null;
   private readonly disposables: { dispose(): void }[] = [];
   /** De dónde sale cada textura de imagen, para volver a pedirla si se pierde el contexto WebGL. */
   private readonly sources = new Map<Texture, { url: string; onLoad: () => void }>();
@@ -410,6 +431,7 @@ export class MapEngine {
     this.palette = options.palette;
     this.mode = options.mode;
     this.reducedMotion = options.reducedMotion ?? false;
+    this.own.fill.uTwinkle.value = this.reducedMotion ? 0 : 1;
     this.rig.morph = options.mode === 'globe' ? 1 : 0;
 
     this.renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -483,8 +505,9 @@ export class MapEngine {
     this.seaLite = this.material(OCEAN_VERT, OCEAN_FRAG, 0, this.own.ocean);
     this.sea = new Mesh(ocean, this.seaLite);
     this.add(this.sea, 0);
-    this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, this.own.fill)), 1);
-    this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, { ...this.own.wall, ...this.own.fill })), 2);
+    // El reloj del agua sirve también para el centelleo de las luces de las ciudades.
+    this.add(new Mesh(fillGeometry(mesh), this.material(FILL_VERT, FILL_FRAG, ALT.fill, { ...this.own.fill, uTime: this.own.ocean.uTime })), 1);
+    this.add(new Mesh(wallGeometry(mesh), this.material(WALL_VERT, FILL_FRAG, ALT.fill, { ...this.own.wall, ...this.own.fill, uTime: this.own.ocean.uTime })), 2);
 
     const blended = { transparent: true, depthWrite: false };
     this.halo = new Mesh(quadGeometry(), this.material(HALO_VERT, HALO_FRAG, 0, this.own.halo, blended));
@@ -1175,6 +1198,47 @@ export class MapEngine {
     this.invalidate();
   }
 
+  /** Los satélites que se dibujan alrededor del globo; `null` los retira. */
+  setSatellites(set: SatelliteSet | null) {
+    if (this.sats) {
+      this.scene.remove(this.sats.points);
+      this.sats.points.geometry.dispose();
+      this.sats = null;
+    }
+    if (set) {
+      const positions = new BufferAttribute(new Float32Array(set.count * 3), 3);
+      set.update(new Date(), positions.array as Float32Array, 0, set.count);
+      const geometry = new BufferGeometry();
+      geometry.setAttribute('position', positions);
+      geometry.setAttribute('aColor', new BufferAttribute(set.colors, 3));
+      geometry.setAttribute('aSize', new BufferAttribute(set.sizes, 1));
+      this.satMaterial ??= this.material(SAT_VERT, SAT_FRAG, 0, { uDpr: this.own.stars.uDpr }, { transparent: true, depthWrite: false });
+      const points = new Points(geometry, this.satMaterial);
+      points.frustumCulled = false;
+      points.renderOrder = 6;
+      this.scene.add(points);
+      this.sats = { set, points, positions, cursor: 0 };
+    }
+    // Para ver las órbitas enteras la cámara puede alejarse más; al quitarlas, vuelve a su límite.
+    this.rig.reach = set?.reach ?? 0;
+    // (Si ya va de camino a otra parte, por ejemplo al mapa plano, ese vuelo manda.)
+    if (!this.flight && this.rig.h > this.rig.maxHeight()) this.fly({ h: this.rig.maxHeight() }, { duration: 600 });
+    this.invalidate();
+  }
+
+  /** Avanza una tanda de satélites hasta la hora actual. */
+  private stepSatellites() {
+    const sats = this.sats;
+    if (!sats) return;
+    sats.points.visible = this.rig.morph > 0.98;
+    if (!sats.points.visible) return;
+    const { set } = sats;
+    const to = Math.min(set.count, sats.cursor + SAT_BATCH);
+    set.update(new Date(), sats.positions.array as Float32Array, sats.cursor, to);
+    sats.positions.needsUpdate = true;
+    sats.cursor = to >= set.count ? 0 : to;
+  }
+
   /** Pinta el mar con su profundidad real o de un solo color. */
   setSeaDepth(on: boolean) {
     this.showDepth = on;
@@ -1571,6 +1635,8 @@ export class MapEngine {
 
   setReducedMotion(on: boolean) {
     this.reducedMotion = on;
+    this.own.fill.uTwinkle.value = on ? 0 : 1;
+    this.invalidate();
     if (on) this.autoRotate = false;
   }
 
@@ -1983,13 +2049,14 @@ export class MapEngine {
         this.patchTimer = window.setTimeout(() => this.requestPatch(), 120);
       }
     }
+    this.stepSatellites();
     this.render();
     // Con la nave del huevo de pascua a la vista se dibuja cada fotograma: está siempre en marcha.
     const flying = this.toon && !!this.toonShip?.object.visible && this.rig.morph > 0.999 && !this.reducedMotion && !this.weak;
     if (busyCamera || busyState || flying) {
       this.raf = requestAnimationFrame(this.tick);
       this.lastFrame = now;
-    } else if ((this.wavy || this.windy || this.planetView === 'interior' || this.twinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
+    } else if ((this.wavy || this.windy || !!this.sats?.points.visible || this.planetView === 'interior' || this.twinkling || this.citiesTwinkling) && !this.reducedMotion && !this.weak && !this.seaTimer) {
       // Con el mapa quieto, el agua se sigue moviendo a unos 10 fotogramas por segundo: basta para
       // un vaivén lento y gasta mucho menos que dibujar a 60. En una pestaña oculta el navegador
       // no atiende el requestAnimationFrame y esto se para solo.
@@ -2125,6 +2192,20 @@ export class MapEngine {
     return this.showStars && this.palette.stars > 0 && this.rig.morph > 0.7;
   }
 
+  /**
+   * Las luces de las ciudades centellean: están puestas y algo del lado de noche queda a la vista
+   * (en el globo, si el casquete que se ve desde la cámara toca la noche; en el plano, siempre).
+   */
+  private get citiesTwinkling() {
+    if (this.uniforms.uNight.value <= 0 || this.own.fill.uLightsAmt.value <= 0) return false;
+    if (this.rig.morph < 0.999) return true;
+    const c = this.rig.camera.position;
+    const d = c.length();
+    const fromNight = Math.acos(clamp(-c.dot(this.uniforms.uSun.value) / d, -1, 1));
+    // Lo que se ve llega hasta el horizonte; la noche, hasta algo más allá de 90° del punto antisolar (crepúsculo).
+    return fromNight < Math.acos(1 / d) + Math.acos(-0.05);
+  }
+
   /** Qué se está viendo del planeta sobre el globo, si algo. */
   get planet() {
     return this.planetView;
@@ -2243,6 +2324,7 @@ export class MapEngine {
     this.abort.abort();
     this.resizeObserver.disconnect();
     this.tracked.clear();
+    this.sats?.points.geometry.dispose();
     for (const d of this.disposables) d.dispose();
     this.renderer.dispose();
   }

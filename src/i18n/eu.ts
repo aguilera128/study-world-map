@@ -769,6 +769,20 @@ const eu: Record<string, string> = {
   'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Tenperatura, hodeiak eta haizea: GFS eredua (NOAA), {time}rako iragarpena.',
   'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Euria eta elurra: GPM sateliteak (NASA), {time} neurtua. Berdea, ahula; gorria, handia; urdina, elurra.',
   'No se ha podido cargar el tiempo de ahora.': 'Ezin izan da oraingo eguraldia kargatu.',
+  // capa de satélites
+  'Satélites': 'Sateliteak',
+  'Espacio': 'Espazioa',
+  'Estaciones espaciales': 'Espazio-estazioak',
+  'Navegación (GPS y Galileo)': 'Nabigazioa (GPS eta Galileo)',
+  'Meteorológicos': 'Meteorologikoak',
+  'Starlink': 'Starlink',
+  '{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.': '{n} satelite, oraingo kokapenean. Orbitak: CelesTrak, {time}(e)ko datuak.',
+  'Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.': 'Satelite geoestazionarioak, 36.000 km-ra, ez dira ikuspegian sartzen eta ez dira marrazten.',
+  'No se han podido cargar los satélites.': 'Ezin izan dira sateliteak kargatu.',
+  'Cargando los satélites…': 'Sateliteak kargatzen…',
+  'Los satélites solo se ven en el globo.': 'Sateliteak globoan bakarrik ikusten dira.',
+  'Estación Espacial Internacional': 'Nazioarteko Espazio Estazioa',
+  'Estación espacial Tiangong': 'Tiangong espazio-estazioa',
   'Cargando el tiempo de ahora…': 'Oraingo eguraldia kargatzen…',
 };
 

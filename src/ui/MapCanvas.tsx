@@ -6,6 +6,7 @@ import { computeMapState } from '../app/mapState';
 import { gameLayers, useApp, useProgress, useSettings, type MapLabel, type Tone } from '../app/store';
 import { clockIn } from '../app/time';
 import { useWeather } from '../app/weather';
+import { useSatellites } from '../app/satellites';
 import type { Atlas } from '../atlas/atlas';
 import { takeMesh } from '../atlas/meshAsync';
 import { MapEngine, type PlanetLayer } from '../engine/MapEngine';
@@ -23,6 +24,7 @@ import { Icon } from './Icon';
 import { DISCONTINUITIES, INTERIOR } from './planetLayers';
 import { Flag } from './primitives';
 import { RealTimeMarkers } from './RealTime';
+import { SatelliteLabels } from './SatelliteLabels';
 import { ScaleRuler } from './ScaleRuler';
 import { lang, LOCALE, t } from '../i18n';
 import { density } from '../game/population';
@@ -175,6 +177,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
     const sun = useMemo(() => subsolarPoint(now), [now]);
     const moon = useMemo(() => sublunarPoint(now), [now]);
     const chosenLayers = useSettings((s) => s.layers);
+    const satGroups = useSettings((s) => s.satGroups);
     // Jugando, el mapa lleva las capas del juego y no las que hubiera puestas: ver «gameLayers».
     const inGame = screen === 'play' || screen === 'results';
     // Huevo de pascua (cinco clics en «Globo 3D»): planeta y espacio de dibujos, sin foto ni relieve.
@@ -326,6 +329,9 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
   useEffect(() => engine?.setCurrents(layers.currents), [engine, layers.currents]);
   // El tiempo de ahora no va con el planeta de dibujos, que es una broma y no un mapa.
   useWeather(engine, { temp: layers.weatherTemp && !toon, cloud: layers.weatherCloud && !toon, rain: layers.weatherRain && !toon, wind: layers.weatherWind && !toon });
+  // Los satélites, tampoco; y solo en el globo: en el mapa plano no hay «alrededor».
+  const satellites = layers.satellites && !toon && viewMode === 'globe';
+  useSatellites(engine, satellites, satGroups);
   useEffect(() => {
     engine?.setGuides(
       layers.guides
@@ -413,6 +419,7 @@ function useOverlay(engine: MapEngine | null, key: string, url: string, on: bool
       {/* La regla de escala: solo donde hay sitio y fuera de la partida. */}
       {engine && wideScreen && !playing && <ScaleRuler engine={engine} />}
       {engine && live && <RealTimeMarkers engine={engine} sun={sun} moon={moon} layers={layers} showUser={!playing} />}
+      {engine && satellites && <SatelliteLabels engine={engine} />}
       {engine && labels.map((label) => <Pin key={label.key} engine={engine} atlas={atlas} label={label} />)}
       {toon && (
         <Suspense fallback={null}>

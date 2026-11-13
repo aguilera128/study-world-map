@@ -951,6 +951,20 @@ const zh: Record<string, string> = {
   'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': '气温、云和风：GFS 模式（NOAA），{time} 的预报。',
   'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': '雨雪：GPM 卫星（NASA），{time} 测得。绿色为小雨，红色为大雨，蓝色为雪。',
   'No se ha podido cargar el tiempo de ahora.': '无法加载当前天气。',
+  // capa de satélites
+  'Satélites': '人造卫星',
+  'Espacio': '太空',
+  'Estaciones espaciales': '空间站',
+  'Navegación (GPS y Galileo)': '导航卫星（GPS 和伽利略）',
+  'Meteorológicos': '气象卫星',
+  'Starlink': '星链',
+  '{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.': '{n} 颗卫星，显示当前位置。轨道：CelesTrak，数据时间 {time}。',
+  'Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.': '地球静止卫星位于 36000 千米高处，超出视野，不予绘制。',
+  'No se han podido cargar los satélites.': '无法加载卫星。',
+  'Cargando los satélites…': '正在加载卫星…',
+  'Los satélites solo se ven en el globo.': '卫星只在地球仪上显示。',
+  'Estación Espacial Internacional': '国际空间站',
+  'Estación espacial Tiangong': '天宫空间站',
   'Cargando el tiempo de ahora…': '正在加载当前天气…',
 };
 

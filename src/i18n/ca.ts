@@ -769,6 +769,20 @@ const ca: Record<string, string> = {
   'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Temperatura, núvols i vent: model GFS (NOAA), previsió per a {time}.',
   'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Pluja i neu: satèl·lits GPM (NASA), mesurat {time}. Verd, feble; roig, forta; blau, neu.',
   'No se ha podido cargar el tiempo de ahora.': 'No s’ha pogut carregar l’oratge d’ara.',
+  // capa de satélites
+  'Satélites': 'Satèl·lits',
+  'Espacio': 'Espai',
+  'Estaciones espaciales': 'Estacions espacials',
+  'Navegación (GPS y Galileo)': 'Navegació (GPS i Galileo)',
+  'Meteorológicos': 'Meteorològics',
+  'Starlink': 'Starlink',
+  '{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.': '{n} satèl·lits, en la seua posició d’ara. Òrbites: CelesTrak, dades de {time}.',
+  'Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.': 'Els geoestacionaris, a 36.000 km, no caben en la vista i no es dibuixen.',
+  'No se han podido cargar los satélites.': 'No s’han pogut carregar els satèl·lits.',
+  'Cargando los satélites…': 'Carregant els satèl·lits…',
+  'Los satélites solo se ven en el globo.': 'Els satèl·lits només es veuen en el globus.',
+  'Estación Espacial Internacional': 'Estació Espacial Internacional',
+  'Estación espacial Tiangong': 'Estació espacial Tiangong',
   'Cargando el tiempo de ahora…': 'Carregant l’oratge d’ara…',
 };
 

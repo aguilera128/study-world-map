@@ -76,6 +76,11 @@ export class CameraRig {
    * mundo, el país entero no llenaría la pantalla y sus cantones no se distinguirían. Lo fija el motor.
    */
   minHeight = MIN_HEIGHT;
+  /**
+   * Radio (desde el centro) de lo más lejano que tiene que caber al alejarse del globo: con la capa
+   * de satélites, sus órbitas. 0 = solo el globo. Lo fija el motor.
+   */
+  reach = 0;
 
   private readonly sample = newSample();
   private readonly basis = new Matrix4();
@@ -97,8 +102,13 @@ export class CameraRig {
 
   /** Altura desde la que el globo entero cabe en el hueco disponible. */
   globeMaxHeight(): number {
+    return this.fitDistance(1) - 1;
+  }
+
+  /** Distancia al centro desde la que cabe en el hueco disponible una esfera de radio `r`. */
+  private fitDistance(r: number): number {
     const k = Math.min(this.kx, this.ky) * FIT;
-    return Math.sqrt(1 + 1 / (k * k)) - 1;
+    return r * Math.sqrt(1 + 1 / (k * k));
   }
 
   /** Altura desde la que cabe el mapa plano entero. */
@@ -114,11 +124,12 @@ export class CameraRig {
 
   /**
    * Lo más lejos que se puede ir. El mapa plano, hasta verlo entero; el globo, un poco más allá
-   * (se ve un cuarto más pequeño que en la vista general), para verlo suelto en el cielo.
+   * (se ve un cuarto más pequeño que en la vista general), para verlo suelto en el cielo; y con
+   * `reach`, hasta que quepa entero lo que está a esa distancia.
    */
   maxHeight(morph = this.morph): number {
     const flat = this.flatMaxHeight();
-    const globe = (1 + this.globeMaxHeight()) * GLOBE_FAR - 1;
+    const globe = Math.max(this.fitDistance(1) * GLOBE_FAR, this.fitDistance(this.reach)) - 1;
     return flat + (globe - flat) * morph;
   }
 

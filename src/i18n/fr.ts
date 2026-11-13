@@ -871,6 +871,20 @@ const fr: Record<string, string> = {
   'Temperatura, nubes y viento: modelo GFS (NOAA), previsión para {time}.': 'Température, nuages et vent : modèle GFS (NOAA), prévision pour {time}.',
   'Lluvia y nieve: satélites GPM (NASA), medido {time}. Verde, débil; rojo, fuerte; azul, nieve.': 'Pluie et neige : satellites GPM (NASA), mesuré {time}. Vert, faible ; rouge, forte ; bleu, neige.',
   'No se ha podido cargar el tiempo de ahora.': 'Impossible de charger la météo actuelle.',
+  // capa de satélites
+  'Satélites': 'Satellites',
+  'Espacio': 'Espace',
+  'Estaciones espaciales': 'Stations spatiales',
+  'Navegación (GPS y Galileo)': 'Navigation (GPS et Galileo)',
+  'Meteorológicos': 'Météorologiques',
+  'Starlink': 'Starlink',
+  '{n} satélites, en su posición de ahora. Órbitas: CelesTrak, datos de {time}.': '{n} satellites, à leur position actuelle. Orbites : CelesTrak, données de {time}.',
+  'Los geoestacionarios, a 36 000 km, no caben en la vista y no se dibujan.': 'Les satellites géostationnaires, à 36 000 km, ne tiennent pas dans la vue et ne sont pas dessinés.',
+  'No se han podido cargar los satélites.': 'Impossible de charger les satellites.',
+  'Cargando los satélites…': 'Chargement des satellites…',
+  'Los satélites solo se ven en el globo.': 'Les satellites ne s’affichent que sur le globe.',
+  'Estación Espacial Internacional': 'Station spatiale internationale',
+  'Estación espacial Tiangong': 'Station spatiale Tiangong',
   'Cargando el tiempo de ahora…': 'Chargement de la météo actuelle…',
 };
 
