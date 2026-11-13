@@ -424,18 +424,24 @@ uniform float uTwinkle;         // 0 = luces quietas (movimiento reducido)
 varying float vPhoto;
 varying float vTint;
 
-// Centelleo de las luces: cada celda de la textura de luces (4096 × 2048, unos 10 km) con su fase y
-// sus dos ritmos, de 2 a 7 segundos y sin relación entre ellos, para que no se note el ciclo. La
-// suma de los dos senos casi nunca llega a su máximo: la mayoría de las celdas varía bastante menos
-// del 8 %. Solo hash y senos (nada de ruido: alargaría la compilación).
+// Centelleo de las luces, en dos escalas. La fina: cada celda de unos 2,5 km con su fase y sus dos
+// ritmos, de 0,7 a 3 segundos y sin relación entre ellos, para que no se note el ciclo, y con su
+// propia hondura (del 10 al 40 %: unas apenas tiemblan y otras se nota). La gruesa: cada zona de
+// unos 80 km baja un 20 % un momento cada 8 a 25 segundos, como una caída de tensión. Solo resta
+// luz (así se ve también donde la ciudad satura) y solo con hash y senos: el ruido alargaría la
+// compilación.
 float twinkle(vec2 uv) {
-  vec2 cell = mod(floor(uv * vec2(4096.0, 2048.0)), 289.0);
+  vec2 cell = mod(floor(uv * vec2(16384.0, 8192.0)), 289.0);
   float h1 = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
   float h2 = fract(sin(dot(cell, vec2(269.5, 183.3))) * 43758.5453);
-  float w1 = 6.2831853 / (2.0 + 5.0 * h1);
-  float w2 = 6.2831853 / (2.0 + 5.0 * h2);
-  float wave = 0.5 * sin(uTime * w1 + 6.2831853 * h2) + 0.5 * sin(uTime * w2 + 6.2831853 * h1);
-  return 1.0 + 0.08 * uTwinkle * wave;
+  float w1 = 6.2831853 / (0.7 + 2.3 * h1);
+  float w2 = 6.2831853 / (0.7 + 2.3 * h2);
+  float wave = 0.5 + 0.25 * sin(uTime * w1 + 6.2831853 * h2) + 0.25 * sin(uTime * w2 + 6.2831853 * h1);
+  float depth = 0.1 + 0.3 * fract((h1 + h2) * 5.3);
+  vec2 zone = mod(floor(uv * vec2(512.0, 256.0)), 289.0);
+  float z = fract(sin(dot(zone, vec2(41.3, 289.1))) * 43758.5453);
+  float sag = pow(max(sin(uTime * (0.25 + 0.5 * z) + 6.2831853 * z), 0.0), 12.0);
+  return 1.0 - uTwinkle * (depth * wave + 0.2 * sag);
 }
 
 void main() {
