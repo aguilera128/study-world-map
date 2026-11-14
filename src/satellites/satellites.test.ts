@@ -1,6 +1,9 @@
 import { eciToGeodetic, gstime, propagate } from 'satellite.js';
+import { Vector3 } from 'three';
 import { describe, expect, it } from 'vitest';
-import { fitsOnMap, isSatRow, launchYear, periodMinutes, toRow, type SatRow } from './format';
+import { CameraRig } from '../engine/camera';
+import { DEG } from '../engine/projection';
+import { fitsOnMap, isSatRow, launchYear, MAX_ORBIT_RADII, periodMinutes, toRow, type SatRow } from './format';
 import { iconGlsl, iconSvg } from './icons';
 import { geoOf, orbitPath, positionAt, satNow, satrecOf, toGlobe } from './orbit';
 import { hiddenByEarth, nearestOnScreen } from './pick';
@@ -167,6 +170,53 @@ describe('ficha de la ISS', () => {
     expect(now.inclinationDeg).toBeCloseTo(51.63, 2);
     expect(Math.abs(now.lat)).toBeLessThanOrEqual(51.7);
     expect(Math.abs(now.lon)).toBeLessThanOrEqual(180);
+  });
+});
+
+describe('ficha de un satélite de navegación', () => {
+  // Un GPS: dos vueltas al día, a unos 20 200 km (3,2 radios: más de media altura de la cámara).
+  const rec = satrecOf(toRow({ ...ISS_OMM, MEAN_MOTION: 2.0056, ECCENTRICITY: 0.005, INCLINATION: 55 })!)!;
+  // La vista general con la capa de satélites, con un panel de 480 px a la izquierda.
+  const rig = new CameraRig();
+  Object.assign(rig, { width: 1920, height: 1000, pad: { left: 480, right: 0, top: 0, bottom: 0 }, reach: MAX_ORBIT_RADII });
+  rig.h = rig.fitHeight(1);
+
+  it('queda sobre el icono que dibuja el motor, y no se ve cuando el icono no se dibuja', () => {
+    const here = new Float32Array(3);
+    const card = { x: 0, y: 0, visible: false };
+    let drawn = 0;
+    let notDrawn = 0;
+    for (let m = 0; m < 720; m += 30) {
+      const date = new Date(EPOCH + m * 60_000);
+      positionAt(rec, date, gstime(date), here);
+      const at = geoOf(here[0], here[1], here[2]);
+      // La cámara, sobre la vertical del satélite (lo tiene tan cerca que lo deja delante de su plano
+      // cercano) y apartada de ella.
+      for (const off of [0, 40, 80]) {
+        rig.lon = (at.lon + off) * DEG;
+        rig.lat = 0;
+        rig.apply();
+        // Como lo dibuja el motor: su posición en el espacio, con la proyección descentrada de la cámara.
+        const icon = new Vector3(here[0], here[1], here[2]).project(rig.camera);
+        const c = rig.camera.position;
+        const seen = Math.abs(icon.z) < 1 && !hiddenByEarth([c.x, c.y, c.z], [here[0], here[1], here[2]]);
+        rig.project(at.lon * DEG, at.lat * DEG, rig.anchorAlt(at.alt, 0.004, false), card, true);
+        expect(card.visible).toBe(seen);
+        if (!seen) {
+          notDrawn++;
+          continue;
+        }
+        drawn++;
+        expect(Math.hypot(card.x - ((icon.x + 1) / 2) * rig.width, card.y - ((1 - icon.y) / 2) * rig.height)).toBeLessThan(0.5);
+      }
+    }
+    expect(drawn).toBeGreaterThan(20);
+    expect(notDrawn).toBeGreaterThan(5);
+  });
+
+  it('el Sol y la Luna, en cambio, no pasan de media altura de la cámara', () => {
+    expect(rig.anchorAlt(59, 0.004, true)).toBeCloseTo(0.004 + rig.h / 2, 9);
+    expect(rig.anchorAlt(0, 0.004, false)).toBe(0.004);
   });
 });
 

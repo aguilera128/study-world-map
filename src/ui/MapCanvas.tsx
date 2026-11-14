@@ -30,9 +30,9 @@ import { lang, LOCALE, t } from '../i18n';
 import { density } from '../game/population';
 
 const TONE_CLASS: Record<Tone, string> = {
-  ok: 'bg-ok text-white',
-  help: 'bg-help text-white',
-  bad: 'bg-bad text-white',
+  ok: 'bg-ok-tone text-on-tone',
+  help: 'bg-help-tone text-on-tone',
+  bad: 'bg-bad-tone text-on-tone',
   info: 'bg-ink text-paper',
 };
 

@@ -1,5 +1,5 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
-import { cleanNick, compare, isCategory, plausible, qualifies, TOP, type RankBoard, type RankRow } from '../src/game/ranking.ts';
+import { cleanNick, compare, isCategory, isPublishable, plausible, qualifies, TOP, type RankBoard, type RankRow } from '../src/game/ranking.ts';
 
 // Ranking de resultados: los diez mejores de cada categoría (mapa, reto, forma de responder, zona y
 // número de preguntas), sin cuentas.
@@ -84,7 +84,7 @@ export default {
         }
         if (!body || typeof body !== 'object') return fail(400, 'petición no válida');
         const category = typeof body.category === 'string' ? body.category : '';
-        if (!isCategory(category)) return fail(400, 'categoría no válida');
+        if (!isPublishable(category)) return fail(400, 'categoría no válida');
         const nick = cleanNick(body.nick);
         if (!nick) return fail(422, 'apodo no válido');
         const result = { grade: body.grade as number, ms: body.ms as number, total: body.total as number };

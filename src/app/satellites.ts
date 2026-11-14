@@ -45,6 +45,11 @@ export interface SatCard {
   norad: number;
   launchYear: number | null;
   now: SatNow;
+  /**
+   * Dónde lo dibuja el motor (grados y radios sobre la esfera, como los rótulos de las estaciones), y
+   * ahí va la ficha. No es lo de `now`, que va sobre el elipsoide: de un sitio al otro hay píxeles.
+   */
+  at: { lon: number; lat: number; alt: number };
 }
 
 /** Los satélites que se ven, para su ficha: los datos de cada uno y su órbita (por su índice en el motor). */
@@ -173,7 +178,9 @@ async function build(groups: SatGroup[]): Promise<{ set: SatelliteSet; info: Sat
     card(index, date) {
       const s = chosen[index];
       const now = s && orbit.satNow(s.rec, date);
-      return now ? { name: s.row[0], group: s.group, norad: s.row[1], launchYear: launchYear(s.row[12]), now } : null;
+      const here = [0, 0, 0];
+      if (!now || !orbit.positionAt(s.rec, date, orbit.siderealTime(date), here)) return null;
+      return { name: s.row[0], group: s.group, norad: s.row[1], launchYear: launchYear(s.row[12]), now, at: orbit.geoOf(here[0], here[1], here[2]) };
     },
     orbit: (index, date) => (chosen[index] ? orbit.orbitPath(chosen[index].rec, date) : null),
   };

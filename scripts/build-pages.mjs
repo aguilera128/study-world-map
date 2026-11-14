@@ -8,6 +8,7 @@
 //       provincias, capitales de provincia y comunidades de cada mapa de scripts/data/mapas/
 //   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs (solo en español)
 //   <idioma>/index.html   la portada de la aplicación traducida (otra entrada de Vite; ver vite.config.ts)
+//   public/<idioma>/manifest.webmanifest   el de public/manifest.webmanifest en ese idioma y con su portada
 //   public/sitemap.xml    todas las páginas anteriores menos las legales, con sus equivalentes en otros idiomas
 //
 // Se ejecuta después de build-atlas.mjs y build-maps.mjs (lee public/data/atlas.json, los atlas de
@@ -795,6 +796,7 @@ for (const legal of legalPages()) write(legal.path, page({ ...legal, prose: true
 // título, su descripción y su contenido para buscadores.
 
 const index = readFileSync('index.html', 'utf8').replace(/\r/g, '');
+const manifest = JSON.parse(readFileSync('public/manifest.webmanifest', 'utf8'));
 for (const lang of LANGS) {
   if (!index.includes(`hreflang="${lang}"`)) throw new Error(`build-pages: index.html no enlaza al idioma «${lang}» (hreflang).`);
   if (lang === 'es') continue;
@@ -806,6 +808,7 @@ for (const lang of LANGS) {
     ['content="es_ES"', `content="${T.locale}"`],
     [`<meta property="og:url" content="${SITE}/" />`, `<meta property="og:url" content="${home}" />`],
     [`<link rel="canonical" href="${SITE}/" />`, `<link rel="canonical" href="${home}" />`],
+    ['<link rel="manifest" href="/manifest.webmanifest" />', `<link rel="manifest" href="${base(lang)}manifest.webmanifest" />`],
     [`"@type": "WebApplication",
             "name": "Study World Map",
             "url": "${SITE}/",`, `"@type": "WebApplication",
@@ -841,6 +844,10 @@ ${grupos.map((g) => `          <li>${g.join(' · ')}</li>`).join('\n')}
   }
   mkdirSync(lang, { recursive: true });
   writeFileSync(`${lang}/index.html`, html);
+  // Su manifiesto: la aplicación instalada desde esta portada se llama y arranca en su idioma. El
+  // nombre y la descripción son el título y la descripción de Open Graph de index.html.
+  const traducido = { ...manifest, name: T.index[2], description: T.index[3], lang, start_url: base(lang), scope: base(lang) };
+  writeFileSync(`public/${lang}/manifest.webmanifest`, `${JSON.stringify(traducido, null, 2)}\n`);
 }
 
 // ───────────────────────── sitemap ─────────────────────────

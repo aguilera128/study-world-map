@@ -117,7 +117,7 @@ export function SatelliteCard({ engine, canvas }: { engine: MapEngine; canvas: H
         {spoken}
       </span>
       {card && (
-        <Tracked engine={engine} lon={card.now.lon} lat={card.now.lat} alt={card.now.altitudeKm / 6371}>
+        <Tracked engine={engine} lon={card.at.lon} lat={card.at.lat} alt={card.at.alt}>
           <div className="sat-card relative h-5 w-5" aria-hidden="true">
             <SkyCard title={card.name} rows={rowsOf(card)} />
           </div>

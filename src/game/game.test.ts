@@ -209,6 +209,14 @@ describe('progreso', () => {
     };
     expect(sanitizeProgress(raw)).toEqual({ ESP: { locate: { box: 5, seen: 2, right: 1, last: NOW } } });
   });
+
+  it('el progreso del mapa de geografía física sobrevive a guardarlo y leerlo', () => {
+    const ids = (JSON.parse(readFileSync('public/data/fisico/atlas.json', 'utf8')) as RawAtlas).countries.map((c) => c.id);
+    expect(ids).toContain('lago-baikal');
+    let p: Progress = {};
+    for (const id of ids) p = record(p, id, 'locate', 'first', NOW);
+    expect(sanitizeProgress(JSON.parse(JSON.stringify(p)))).toEqual(p);
+  });
 });
 
 describe('partida', () => {

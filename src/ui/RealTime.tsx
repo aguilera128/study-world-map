@@ -246,7 +246,6 @@ export function RealTimeStatus() {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
       className={`float fixed right-3 top-[4.25rem] z-30 px-3 py-2 text-sm wide:right-8 wide:top-[5.25rem] wide:px-3.5 wide:py-2.5 ${open ? 'w-[13rem] wide:w-[15.5rem]' : ''}`}
-      role="status"
     >
       <button
         type="button"
@@ -291,8 +290,12 @@ export function RealTimeStatus() {
           {locating === 'asking' ? t('Buscándote…') : t('Usar mi ubicación exacta')}
         </button>
       )}
-      {locating === 'denied' && <p className="mt-1 text-xs text-ink-faint">{t('Sin permiso de ubicación: se usa la zona horaria.')}</p>}
-      {locating === 'unavailable' && <p className="mt-1 text-xs text-ink-faint">{t('Este dispositivo no ha podido dar su ubicación.')}</p>}
+      {/* Solo se anuncia el resultado de pedir la ubicación (no la tarjeta, que lleva el reloj).
+          La región está siempre puesta para que el lector de pantalla note el cambio. */}
+      <p role="status" className={locating === 'denied' || locating === 'unavailable' ? 'mt-1 text-xs text-ink-faint' : undefined}>
+        {locating === 'denied' && t('Sin permiso de ubicación: se usa la zona horaria.')}
+        {locating === 'unavailable' && t('Este dispositivo no ha podido dar su ubicación.')}
+      </p>
         </>
       )}
     </motion.div>

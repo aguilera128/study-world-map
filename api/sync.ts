@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import { cleanSyncData } from '../src/game/progressData.ts';
 
 // Sincronización del progreso entre dispositivos, sin cuentas. Es la única función del proyecto.
 //
@@ -12,7 +13,8 @@ import { neon } from '@neondatabase/serverless';
 // y dos fechas. Tampoco la dirección IP. Quien tiene el código puede leer y cambiar ese progreso:
 // el código hace de contraseña, por eso es largo y lo genera el servidor.
 //
-// Contra el abuso, sin identificar a nadie: tamaño máximo por progreso, tope de códigos nuevos por
+// Contra el abuso, sin identificar a nadie: solo se guarda lo que tiene forma de progreso
+// (src/game/progressData.ts), con un tamaño máximo, un tope de códigos nuevos por
 // hora en todo el servicio y borrado de lo que lleva un año sin usarse.
 //
 // Este fichero no hace nada al importarse (ver la regla de funciones de Vercel): la conexión se
@@ -48,12 +50,12 @@ const cleanCode = (raw: unknown): string | null => {
   return CODE.test(code) ? code : null;
 };
 
-/** El progreso que llega: un objeto JSON de tamaño razonable. Lo que contiene lo valida la web al leerlo. */
+/** El progreso que llega: un objeto JSON de tamaño razonable (en bytes, no en caracteres). Lo que contiene lo limpia `cleanSyncData`. */
 async function readBody(request: Request): Promise<{ code?: unknown; data?: unknown } | null> {
-  const text = await request.text();
-  if (text.length > MAX_BYTES) return null;
+  const bytes = await request.arrayBuffer();
+  if (bytes.byteLength > MAX_BYTES) return null;
   try {
-    const body = JSON.parse(text) as unknown;
+    const body = JSON.parse(new TextDecoder().decode(bytes)) as unknown;
     return body && typeof body === 'object' && !Array.isArray(body) ? (body as { code?: unknown; data?: unknown }) : null;
   } catch {
     return null;
@@ -85,7 +87,7 @@ export default {
         const recent = await sql`select count(*)::int as n from progress_sync where created_at > now() - interval '1 hour'`;
         if (recent[0].n >= MAX_NEW_PER_HOUR) return fail(429, 'demasiados códigos nuevos; prueba más tarde');
         const code = newCode();
-        await sql`insert into progress_sync (code, data) values (${code}, ${JSON.stringify(body.data)}::jsonb)`;
+        await sql`insert into progress_sync (code, data) values (${code}, ${JSON.stringify(cleanSyncData(body.data))}::jsonb)`;
         return json({ code }, 201);
       }
 
@@ -93,7 +95,7 @@ export default {
         const body = await readBody(request);
         const code = cleanCode(body?.code);
         if (!body || !code || !isData(body.data)) return fail(400, 'petición no válida');
-        const rows = await sql`update progress_sync set data = ${JSON.stringify(body.data)}::jsonb, updated_at = now() where code = ${code} returning updated_at`;
+        const rows = await sql`update progress_sync set data = ${JSON.stringify(cleanSyncData(body.data))}::jsonb, updated_at = now() where code = ${code} returning updated_at`;
         if (!rows.length) return fail(404, 'código desconocido');
         return json({ updatedAt: rows[0].updated_at });
       }

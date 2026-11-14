@@ -32,10 +32,11 @@ de noche. El botón del tema solo guarda claro u oscuro.
 | `--sunken` | `#e7dfcd` | `#0a111a` | pistas de barras, huecos |
 | `--ink` | `#1b2a3a` | `#efe7d6` | texto |
 | `--ink-soft` | `#485868` | `#b3bcc7` | texto secundario |
-| `--ink-faint` | `#848b8c` | `#76828f` | notas, créditos |
+| `--ink-faint` | `#5f6667` | `#86919e` | notas, créditos (≥ 4,5:1 sobre papel y superficie; no sobre `--sunken`) |
 | `--rule` / `--rule-strong` | tinta al 16 % / 34 % | tinta al 15 % / 34 % | líneas y bordes |
 | `--accent` | `#d5462a` | `#ff7654` | la acción principal y lo que se subraya |
 | `--ok` / `--help` / `--bad` | `#2c8a57` / `#b97a08` / `#c4412e` | `#5ccb8d` / `#f1bd57` / `#f37e6b` | acierto, ayuda, fallo |
+| `--on-tone` | `#fff` | `#0d1520` | texto sobre un tono (`bg-ok-tone`, `bg-help-tone`, `bg-bad-tone`: el tono oscurecido `--tone-shade`, 15 % en `paper` y nada en `night`). Da 5,64 / 4,75 / 6,52:1 en `paper` y 9,07 / 10,62 / 6,99:1 en `night` |
 | `--highlight` | `#ffd95a` | `#ffd866` | país señalado |
 
 El acento se usa **una vez por pantalla** (el botón de empezar, el enlace activo). Los colores del

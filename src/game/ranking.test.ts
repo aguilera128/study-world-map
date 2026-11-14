@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SAMPLE_LIST, type GameConfig } from './config';
 import { MAPS } from './maps';
-import { categoryOf, cleanNick, compare, dailyCategory, isCategory, plausible, qualifies, RANKED, suggestNick, TOP } from './ranking';
+import { categoryOf, cleanNick, compare, dailyCategory, isCategory, isPublishable, plausible, qualifies, RANKED, suggestNick, TOP } from './ranking';
 
 describe('categorías', () => {
   it('lo que se clasifica coincide con los retos y las zonas de cada mapa', () => {
@@ -30,12 +30,24 @@ describe('categorías', () => {
     expect(isCategory('')).toBe(false);
   });
 
-  it('el reto del día vale con la fecha de estos días', () => {
+  it('el reto del día se publica solo con la fecha de estos días', () => {
     const now = Date.parse('2026-11-11T18:00:00Z');
-    expect(isCategory(dailyCategory('2026-11-11'), now)).toBe(true);
-    expect(isCategory(dailyCategory('2026-11-12'), now)).toBe(true);
-    expect(isCategory(dailyCategory('2026-11-20'), now)).toBe(false);
-    expect(isCategory('dia/hoy', now)).toBe(false);
+    expect(isPublishable(dailyCategory('2026-11-11'), now)).toBe(true);
+    expect(isPublishable(dailyCategory('2026-11-12'), now)).toBe(true);
+    expect(isPublishable(dailyCategory('2026-11-08'), now)).toBe(false);
+    expect(isPublishable(dailyCategory('2026-11-20'), now)).toBe(false);
+    expect(isPublishable('dia/hoy', now)).toBe(false);
+    expect(isPublishable('world/locate/map/europa/10', now)).toBe(true);
+    expect(isPublishable('world/locate/map/europa/15', now)).toBe(false);
+  });
+
+  it('el reto del día de cualquier fecha que exista se puede leer', () => {
+    // Los de hace semanas siguen en la lista del ranking (se guardan 45 días).
+    expect(isCategory(dailyCategory('2026-09-30'))).toBe(true);
+    expect(isCategory(dailyCategory('2024-02-29'))).toBe(true);
+    for (const bad of ['dia/2026-11-31', 'dia/2026-02-29', 'dia/2026-13-01', 'dia/hoy', 'dia/2026-11-11/x', 'dia/']) {
+      expect(isCategory(bad), bad).toBe(false);
+    }
   });
 });
 

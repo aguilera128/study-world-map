@@ -43,19 +43,29 @@ export function categoryOf(config: GameConfig): string | null {
 /** La categoría del reto del día: las mismas diez preguntas para todos, un ranking por fecha. */
 export const dailyCategory = (key: string) => `dia/${key}`;
 
-/** ¿Es una categoría que existe? Las del reto del día, solo con una fecha de estos días. */
-export function isCategory(category: string, now = Date.now()): boolean {
+/** Mediodía (UTC) de una fecha «AAAA-MM-DD» que existe, o NaN. */
+function noonOf(date: string): number {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return Number.NaN;
+  const day = Date.parse(`${date}T12:00:00Z`);
+  // Date.parse admite el 31 de noviembre (lo pasa al 1 de diciembre): la fecha tiene que volver igual.
+  return Number.isFinite(day) && new Date(day).toISOString().startsWith(date) ? day : Number.NaN;
+}
+
+/** ¿Es una categoría que existe? Las del reto del día, con una fecha que exista: así se leen. */
+export function isCategory(category: string): boolean {
   const parts = category.split('/');
-  if (parts[0] === 'dia') {
-    if (parts.length !== 2 || !/^\d{4}-\d{2}-\d{2}$/.test(parts[1])) return false;
-    // La fecha es la del dispositivo de quien juega: se admite un día de margen por los husos.
-    const day = Date.parse(`${parts[1]}T12:00:00Z`);
-    return Number.isFinite(day) && Math.abs(day - now) < 2 * 86_400_000;
-  }
+  if (parts[0] === 'dia') return parts.length === 2 && Number.isFinite(noonOf(parts[1]));
   if (parts.length !== 5) return false;
   const [map, mode, answer, scope, length] = parts;
   const ranked = Object.hasOwn(RANKED, map) ? RANKED[map] : null;
   return !!ranked && ranked.modes.includes(mode) && ranked.scopes.includes(scope) && ANSWERS.includes(answer) && LENGTHS.includes(length);
+}
+
+/** ¿Se puede publicar en ella? Las del reto del día, solo con una fecha de estos días. */
+export function isPublishable(category: string, now = Date.now()): boolean {
+  if (!isCategory(category)) return false;
+  // La fecha es la del dispositivo de quien juega: se admite un día de margen por los husos.
+  return !category.startsWith('dia/') || Math.abs(noonOf(category.slice(4)) - now) < 2 * 86_400_000;
 }
 
 /** Un resultado, como se envía y como se guarda. */

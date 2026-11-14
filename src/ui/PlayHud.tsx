@@ -163,7 +163,7 @@ function Options({ session, question, country }: { session: Session; question: Q
             onClick={() => answer({ kind: 'option', id: option.id })}
             className={`tile flex min-h-13 items-center gap-2.5 px-3 py-2 text-left font-bold leading-tight disabled:opacity-100 ${
               right
-                ? 'border-ok! bg-ok! text-white!'
+                ? 'border-ok-tone! bg-ok-tone! text-on-tone!'
                 : wrong
                   ? 'border-bad! bg-bad-soft! text-bad! line-through'
                   : resolved

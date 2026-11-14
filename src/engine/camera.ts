@@ -294,8 +294,10 @@ export class CameraRig {
     const v = this.tmp.set(s.px, s.py, s.pz).project(cam);
     out.x = ((v.x + 1) / 2) * this.width;
     out.y = ((1 - v.y) / 2) * this.height;
-    out.visible = facing > 0 && v.z < 1;
-    if (floating && this.morph > 0.5 && !out.visible && v.z < 1) {
+    // Fuera de −1…1 queda detrás de la cámara o más cerca que su plano cercano: no se dibujaría.
+    const inView = Math.abs(v.z) < 1;
+    out.visible = facing > 0 && inView;
+    if (floating && this.morph > 0.5 && !out.visible && inView) {
       // ¿La recta de la cámara al punto atraviesa la esfera (radio 1, centrada en el origen)?
       const c = cam.position;
       const dx = s.px - c.x;
@@ -305,6 +307,18 @@ export class CameraRig {
       out.visible = Math.hypot(c.x + dx * t, c.y + dy * t, c.z + dz * t) > 1;
     }
     return out;
+  }
+
+  /**
+   * Altura (radios) a la que se ancla en pantalla algo que flota `alt` radios sobre su punto del
+   * globo (ya multiplicada por `morph`); `marker`, la de lo que va pegado al mapa. Un astro (el Sol,
+   * la Luna, mientras no van con «projectFar») nunca pasa de media altura de la cámara, donde empieza
+   * su plano cercano: al acercarse baja hasta su punto del mapa en vez de quedar detrás del
+   * observador. Lo demás (un satélite, su rótulo, su ficha) va a su altura real, la misma a la que se
+   * dibuja: si queda fuera de la vista, «project» ya lo da por oculto.
+   */
+  anchorAlt(alt: number, marker: number, astro: boolean): number {
+    return astro ? marker + Math.min(alt, this.h * 0.5) : Math.max(marker, alt);
   }
 
   /**

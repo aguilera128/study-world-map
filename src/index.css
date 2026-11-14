@@ -17,7 +17,7 @@
   --sunken: #e7dfcd;
   --ink: #1b2a3a;
   --ink-soft: #485868;
-  --ink-faint: #848b8c;
+  --ink-faint: #5f6667; /* 4,89:1 sobre --paper, 5,43:1 sobre --surface */
   --rule: rgb(27 42 58 / 0.16);
   --rule-strong: rgb(27 42 58 / 0.34);
   --accent: #d5462a;
@@ -28,6 +28,10 @@
   --help-soft: #f8e7bd;
   --bad: #c4412e;
   --bad-soft: #f8dcd4;
+  /* Texto sobre un tono (rótulos del mapa, opción acertada). Los fondos -tone se oscurecen un 15 %
+     para que el blanco llegue a 4,5:1: 5,64 (ok), 4,75 (help) y 6,52:1 (bad). */
+  --on-tone: #fff;
+  --tone-shade: 15%;
   --highlight: #ffd95a;
   --shadow: 27 42 58;
   --grain-opacity: 0.5;
@@ -40,7 +44,7 @@
   --sunken: #0a111a;
   --ink: #efe7d6;
   --ink-soft: #b3bcc7;
-  --ink-faint: #76828f;
+  --ink-faint: #86919e; /* 5,73:1 sobre --paper, 5,02:1 sobre --surface */
   --rule: rgb(239 231 214 / 0.15);
   --rule-strong: rgb(239 231 214 / 0.34);
   --accent: #ff7654;
@@ -51,6 +55,9 @@
   --help-soft: #3d3014;
   --bad: #f37e6b;
   --bad-soft: #43211b;
+  /* Los tonos son claros: texto oscuro encima, 9,07 (ok), 10,62 (help) y 6,99:1 (bad). */
+  --on-tone: #0d1520;
+  --tone-shade: 0%;
   --highlight: #ffd866;
   --shadow: 0 0 0;
   --grain-opacity: 0.22;
@@ -73,6 +80,10 @@
   --color-help-soft: var(--help-soft);
   --color-bad: var(--bad);
   --color-bad-soft: var(--bad-soft);
+  --color-on-tone: var(--on-tone);
+  --color-ok-tone: color-mix(in srgb, var(--ok), black var(--tone-shade));
+  --color-help-tone: color-mix(in srgb, var(--help), black var(--tone-shade));
+  --color-bad-tone: color-mix(in srgb, var(--bad), black var(--tone-shade));
   --color-highlight: var(--highlight);
   --font-display: 'Besley Variable', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'Atkinson Hyperlegible Next Variable', 'Segoe UI', system-ui, sans-serif;

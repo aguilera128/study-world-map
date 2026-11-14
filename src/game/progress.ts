@@ -1,5 +1,6 @@
 import type { ModeId } from './config';
 import { t } from '../i18n';
+import { MAX_BOX } from './progressData';
 
 // Progreso entre partidas. Cada país lleva, por reto, una "caja" de Leitner (1–5): los aciertos
 // a la primera lo suben de caja y los fallos lo devuelven a la primera. Las cajas bajas se
@@ -21,7 +22,8 @@ export interface SkillStats {
 /** id del país (ISO3) o de la provincia (ISO 3166-2, «ES-A») → reto → estadísticas. Los dos mapas no se pisan. */
 export type Progress = Record<string, Partial<Record<ModeId, SkillStats>>>;
 
-export const MAX_BOX = 5;
+// La validación de lo guardado la comparte el servidor, que no puede cargar este fichero (importa ../i18n).
+export { MAX_BOX, sanitizeProgress } from './progressData';
 
 /** Devuelve un progreso nuevo con el resultado anotado (no modifica el original). */
 export function record(progress: Progress, country: string, mode: ModeId, outcome: Outcome, now: number): Progress {
@@ -42,30 +44,6 @@ export function record(progress: Progress, country: string, mode: ModeId, outcom
     last: now,
   };
   return { ...progress, [country]: { ...progress[country], [mode]: stats } };
-}
-
-const MODE_IDS: readonly ModeId[] = ['locate', 'continent', 'name', 'capital', 'flag', 'climate', 'region', 'coords', 'population', 'inhabitants'];
-const ENTITY_ID = /^([A-Z]{3}|[A-Z]{2}-[A-Z0-9]{1,3})$/;
-const isCount = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
-
-/**
- * Limpia un progreso leído del navegador: descarta lo que no tenga la forma esperada (datos de otra
- * versión, almacenamiento corrupto) en lugar de dejar que rompa la partida.
- */
-export function sanitizeProgress(raw: unknown): Progress {
-  const out: Progress = {};
-  if (!raw || typeof raw !== 'object') return out;
-  for (const [country, modes] of Object.entries(raw)) {
-    if (!ENTITY_ID.test(country) || !modes || typeof modes !== 'object') continue;
-    const clean: Partial<Record<ModeId, SkillStats>> = {};
-    for (const mode of MODE_IDS) {
-      const s = (modes as Record<string, Partial<SkillStats> | undefined>)[mode];
-      if (!s || !isCount(s.box) || !isCount(s.seen) || !isCount(s.right) || !isCount(s.last)) continue;
-      clean[mode] = { box: Math.min(MAX_BOX, Math.max(1, Math.round(s.box))), seen: s.seen, right: s.right, last: s.last };
-    }
-    if (Object.keys(clean).length) out[country] = clean;
-  }
-  return out;
 }
 
 /**

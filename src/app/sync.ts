@@ -12,6 +12,8 @@ import { useProgress } from './store';
 const STORAGE_KEY = 'mapamundi:sync';
 const CODE = /^[A-Z0-9]{12}$/;
 const PUSH_DELAY = 4000;
+/** Por debajo de los 64 KiB que admite el navegador en las peticiones keepalive, con margen para otras en vuelo. */
+const KEEPALIVE_BYTES = 60_000;
 
 export type SyncStatus = 'off' | 'syncing' | 'ok' | 'offline';
 
@@ -56,12 +58,15 @@ const local = () => {
 };
 
 async function request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: unknown, code?: string): Promise<{ status: number; body: Record<string, unknown> }> {
+  const text = body ? JSON.stringify(body) : undefined;
   // El código va en una cabecera, no en la dirección: así no queda en los registros del alojamiento.
   const res = await fetch('/api/sync', {
     method,
     headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(code && method === 'GET' ? { 'X-Sync-Code': code } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-    keepalive: method === 'PUT',
+    body: text,
+    // keepalive deja acabar la subida aunque se cierre la pestaña, pero el navegador rechaza esos
+    // cuerpos si pasan de 64 KiB (contando los que ya estén en vuelo): solo con la pestaña oculta y si cabe.
+    keepalive: method === 'PUT' && document.visibilityState === 'hidden' && new TextEncoder().encode(text).length < KEEPALIVE_BYTES,
   });
   return { status: res.status, body: (await res.json().catch(() => ({}))) as Record<string, unknown> };
 }

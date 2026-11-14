@@ -1291,7 +1291,8 @@ export class MapEngine {
         if (point[0] * point[0] + point[1] * point[1] + point[2] * point[2] < 0.25) return false; // sin posición
         if (hiddenByEarth(eye, point)) return false;
         v.set(point[0], point[1], point[2]).project(cam);
-        if (v.z > 1) return false;
+        // Detrás de la cámara o más cerca que su plano cercano: no se dibuja, así que no se señala.
+        if (Math.abs(v.z) > 1) return false;
         out.x = ((v.x + 1) / 2) * this.rig.width;
         out.y = ((1 - v.y) / 2) * this.rig.height;
         return true;
@@ -1811,8 +1812,7 @@ export class MapEngine {
   }
 
   private place(item: Tracked) {
-    // Lo que flota (el Sol, la Luna) solo se separa en el globo, y nunca más allá de media altura de
-    // la cámara: al acercarse baja hasta su punto del mapa en vez de quedar detrás del observador.
+    // Lo que flota solo se separa en el globo; a qué altura, lo dice «anchorAlt».
     const rig = this.rig;
     const alt = item.alt * rig.morph;
     // Los astros (la Luna a 60 radios, el Sol a 23 500) van a su distancia real con el globo formado:
@@ -1820,7 +1820,7 @@ export class MapEngine {
     const p =
       item.alt > 10 && rig.morph > 0.999
         ? this.placeFar(item)
-        : rig.project(item.lon, item.lat, ALT.marker + Math.min(alt, rig.h * 0.5), this.screen, alt > 0);
+        : rig.project(item.lon, item.lat, rig.anchorAlt(alt, ALT.marker, item.alt > 10), this.screen, alt > 0);
     // Con el planeta abierto, lo que cae sobre el gajo quitado no tiene dónde apoyarse.
     if (this.planetView === 'interior' && rig.morph > 0.999 && item.alt <= 10 && item.lat > 0) {
       const { x, y } = this.uniforms.uCutLon.value;

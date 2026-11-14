@@ -564,17 +564,22 @@ export const useApp = create<AppState>()((set, get) => {
     },
 
     start: (only) => {
-      const { atlas } = get();
+      const { atlas, session: last } = get();
       if (!atlas) return;
       clearTimers();
       const { config: chosen, lists } = useSettings.getState();
-      const scope = resolveScope(atlas, chosen.scope, lists);
+      // El repaso de fallos repite el reto y la zona de la partida que acaba de terminar (también la
+      // del reto del día), no los elegidos en la portada.
+      const base = only && last ? last.config : chosen;
+      const scope = resolveScope(atlas, base.scope, lists);
       // La forma de responder elegida puede no tener nada que preguntar en esta zona (la capital de
       // una provincia que se llama como ella): se pasa a la primera que sí.
-      const answers = answersOf(atlas, modeDef(chosen.mode, atlas.map), scope.countries);
-      const config = answers.length && !answers.includes(chosen.answer) ? { ...chosen, answer: answers[0] } : chosen;
-      if (config !== chosen) useSettings.getState().setConfig({ answer: config.answer });
+      const answers = answersOf(atlas, modeDef(base.mode, atlas.map), scope.countries);
+      const config = answers.length && !answers.includes(base.answer) ? { ...base, answer: answers[0] } : base;
+      if (base === chosen && config !== chosen) useSettings.getState().setConfig({ answer: config.answer });
       const session = createSession(atlas, config, scope, useProgress.getState().progress, Date.now(), { only });
+      // Sin preguntas la partida nacería terminada y la pantalla de juego se quedaría vacía y sin salida.
+      if (!session.total) return;
       set({ session, screen: 'play', reviewOnly: !!only, newBest: false, daily: null, labels: [], selected: -1 });
       frameQuestion(session, true);
     },
