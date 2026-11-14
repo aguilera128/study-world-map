@@ -173,6 +173,11 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   principal (`if (process.argv[1] === fileURLToPath(import.meta.url)) main()`).
 - Hoy hay **cuatro** funciones (`api/sync.ts`, `api/ranking.ts`, `api/tiempo.ts` y `api/satelites.ts`). Si en *Resources*
   aparecen más, algo se despliega de más.
+- El firewall de Vercel tiene una regla que **no está en el repositorio**: «Limite crear codigo sync».
+  Limita `POST /api/sync` a 40 por IP cada 10 min y después responde 429. Se ve con
+  `vercel firewall rules list` y se cambia con la CLI o en el panel; no hace falta redesplegar.
+  No limitar GET ni PUT: un aula entera sale por la misma IP. Y nunca usar «Challenge» ni una
+  respuesta 404: con un 404 la aplicación borra el código guardado (`src/app/sync.ts`).
 - `vercel.json` manda una política de contenido (cabecera `Content-Security-Policy`): solo se carga
   lo propio, el Blob de las teselas y Google Tag Manager. Consecuencias al tocar las páginas:
   - Nada de `onclick` ni otros atributos con código: se escucha desde un `.js` (así abre el aviso de

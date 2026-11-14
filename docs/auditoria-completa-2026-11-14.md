@@ -38,7 +38,7 @@ Sobre el commit `f0f28d2` (`main`, árbol limpio). Es una auditoría de solo lec
 
 **Pendiente que salió al arreglarlos:**
 
-- **Límite por IP:** el cupo de 400 códigos nuevos por hora sigue siendo global. Para que una sola persona no pueda agotarlo, hace falta una regla por IP en el firewall de Vercel, fuera del código.
+- ~~**Límite por IP**~~ **Hecho el 14-nov-2026:** regla «Limite crear codigo sync» en el firewall de Vercel. Solo afecta a `POST /api/sync` y deja 40 por IP cada 10 minutos (ventana fija); a partir de ahí devuelve 429. Probada en producción con POST inválidos, que no llegan a la base: 40 respuestas 400 y después 429, mientras el GET sigue respondiendo. Una IP sola ya no puede agotar el cupo global (como mucho 240 por hora); dos sí. GET, PUT y DELETE no se limitan porque un aula entera sale por la misma IP.
 - **Tamaño máximo de `/api/sync`:** `MAX_BYTES = 300.000` se queda corto en el peor caso: con todas las unidades de los 40 atlas en todos los retos, unos 333 KB (ver A95). Subirlo amplía el margen de abuso; hay que decidirlo.
 - **Validación duplicada:** `cleanSaved` en `store.ts` repite parte de `cleanSyncData`. Se podría unificar.
 - **Comentario desfasado:** `api/sync.ts` sigue diciendo «Es la única función del proyecto».
