@@ -26,7 +26,7 @@ Sobre el commit `52ca7b7` (`main`, árbol limpio). Es una auditoría de solo lec
 
 **Arreglados el 14-nov-2026: los 2 altos y los 8 medios** (A1–A10). Cada arreglo pasó por un revisor independiente, que los aprobó todos. Pasan `pnpm typecheck`, las 323 pruebas y `VERCEL=1 pnpm build`.
 
-**Arreglados el 17-nov-2026:** A12 (base legal de la sincronización y del alojamiento, y Neon como encargado; es un borrador pendiente de revisión profesional), A15 y A19 (créditos que faltaban en el aviso legal), A16 (el código del enlace QR se quita de la dirección en `consent.js`, antes de que cargue Tag Manager), A17 (la elección de cookies caduca a los dos años) y A62 (`llms.txt`).
+**Arreglados el 17-nov-2026:** A12 (base legal de la sincronización y del alojamiento, y Neon como encargado; es un borrador pendiente de revisión profesional), A15 y A19 (créditos que faltaban en el aviso legal), A16 (el código del enlace QR se quita de la dirección en `consent.js`, antes de que cargue Tag Manager), A17 (la elección de cookies caduca a los dos años) y A62 (`llms.txt`). También A14: las páginas legales están traducidas a los nueve idiomas, a título informativo y sin revisión de hablantes nativos.
 
 - **A1:** `ENTITY_ID` admite los ids del mapa físico. Una prueba recorre los 314 del atlas.
 - **A3:** la parte pura del progreso está en `src/game/progressData.ts`. `/api/sync` guarda solo `{progress, bests, daily}` limpio (`cleanSyncData`) y mide el tamaño en bytes. Lo que mandan los clientes ya desplegados se conserva.

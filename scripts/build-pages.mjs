@@ -6,7 +6,8 @@
 //       países, capitales y banderas por continente, con enlace al reto ya elegido
 //   public/juego/provincias-de-espana/ · public/en/game/provinces-of-spain/ …
 //       provincias, capitales de provincia y comunidades de cada mapa de scripts/data/mapas/
-//   public/aviso-legal/, privacidad/, cookies/, donar/   textos de scripts/data/legales.mjs (solo en español)
+//   public/aviso-legal/, privacidad/, cookies/, donar/ · public/en/legal-notice/ …
+//       textos legales y de donaciones de scripts/data/legales/<idioma>.mjs (el original es el español)
 //   <idioma>/index.html   la portada de la aplicación traducida (otra entrada de Vite; ver vite.config.ts)
 //   public/<idioma>/manifest.webmanifest   el de public/manifest.webmanifest en ese idioma y con su portada
 //   public/sitemap.xml    todas las páginas anteriores menos las legales, con sus equivalentes en otros idiomas
@@ -17,7 +18,7 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { CLIMAS } from './data/climas.mjs';
-import { legalPages } from './data/legales.mjs';
+import { legalPages, legalRuta } from './data/legales.mjs';
 import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
 import { MAPAS } from './data/mapas/index.mjs';
 import { textosDe } from './data/mapas/plantillas.mjs';
@@ -157,10 +158,10 @@ ${body}
       <nav aria-label="${T.pie.info}">
         <a href="${base(lang)}">${T.pie.mapa}</a>
         <a href="${base(lang)}${T.ruta.paises}/">${T.pie.paises}</a>
-${DONAR_URL ? `        <a href="/donar/">${T.pie.donar}</a>
-` : ''}        <a href="/aviso-legal/">${T.pie.avisoLegal}</a>
-        <a href="/privacidad/">${T.pie.privacidad}</a>
-        <a href="/cookies/">${T.pie.cookies}</a>
+${DONAR_URL ? `        <a href="${legalRuta(lang, 'donar')}">${T.pie.donar}</a>
+` : ''}        <a href="${legalRuta(lang, 'aviso')}">${T.pie.avisoLegal}</a>
+        <a href="${legalRuta(lang, 'privacidad')}">${T.pie.privacidad}</a>
+        <a href="${legalRuta(lang, 'cookies')}">${T.pie.cookies}</a>
         <a href="#cookies">${T.pie.configurar}</a>
 ${CONTACTO ? `        <a href="mailto:${CONTACTO}?subject=${encodeURIComponent('Study World Map: error')}">${T.pie.error}</a>
 ` : ''}      </nav>${
@@ -788,11 +789,21 @@ writeFileSync(
   }).replace('<link rel="canonical" href="' + SITE + '/404.html" />', '<meta name="robots" content="noindex" />'),
 );
 
-// ───────────────────────── textos legales y donaciones (solo en español) ─────────────────────────
+// ───────────────────────── textos legales y donaciones ─────────────────────────
 
 // Sin enlace de donación (VITE_DONATE_URL) no hay página de donar.
-if (!DONAR_URL) rmSync('public/donar', { recursive: true, force: true });
-for (const legal of legalPages()) if (legal.path !== '/donar/' || DONAR_URL) write(legal.path, page({ ...legal, prose: true }));
+for (const lang of LANGS) {
+  for (const legal of legalPages(lang)) {
+    if (legal.id !== 'donar' || DONAR_URL) write(legal.path, page({ ...legal, prose: true }));
+    else rmSync(`public${legal.path}`, { recursive: true, force: true });
+  }
+}
+// El aviso de cookies (public/consent.js) enlaza a la política de cookies de cada idioma y no puede
+// leer estas rutas: lleva su propia lista, que tiene que coincidir.
+const consentJs = readFileSync('public/consent.js', 'utf8');
+for (const lang of LANGS) {
+  if (!consentJs.includes(`${lang}: '${legalRuta(lang, 'cookies')}'`)) throw new Error(`build-pages: public/consent.js no enlaza a ${legalRuta(lang, 'cookies')} en «${lang}» (lista COOKIES).`);
+}
 
 // ───────────────────────── portada de la aplicación en cada idioma ─────────────────────────
 // index.html (en español) es la entrada de Vite; cada idioma tiene la suya, <idioma>/index.html,
@@ -879,8 +890,7 @@ writeFileSync(
   `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}
-${DONAR_URL ? `  <url><loc>${SITE}/donar/</loc></url>
-` : ''}</urlset>
+${DONAR_URL ? LANGS.map((lang) => `  <url><loc>${SITE}${legalRuta(lang, 'donar')}</loc></url>\n`).join('') : ''}</urlset>
 `,
 );
 

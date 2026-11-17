@@ -77,6 +77,12 @@ docs/                  planes y propuestas con fecha
 - El catalán usa formas valencianas (aprén, meua, eixir) y el portugués es el de Brasil.
 - Los nombres de países, accidentes, corrientes y placas no están en los diccionarios sino en los
   datos (`public/data/**/names.<idioma>.json`, `corrientes.json`, `tectonica.json`).
+- Los textos legales van aparte, un fichero por idioma con la misma estructura
+  (`scripts/data/legales/<idioma>.mjs`): el original es `es.mjs` y los demás son su traducción, que
+  empieza avisando de que en caso de duda manda el español. Cada fichero da también el tramo de la
+  dirección de sus páginas (`rutas`); esas direcciones están repetidas en el diccionario de la
+  aplicación (`'/aviso-legal/'`…) y en la lista `COOKIES` de `public/consent.js`, y el build falla si
+  esta última no coincide. Los botones que citan llevan el nombre exacto que tienen en la interfaz.
 - Las traducciones las ha escrito un modelo: están pendientes de revisión por hablantes nativos.
 
 ### Mapas de un país
@@ -211,7 +217,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   moderación de apodos.
 - `node scripts/db-init.mjs --probar` pasa las dos funciones por un ciclo completo contra la base
   real y borra las filas de prueba.
-- **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
+- **Si cambia lo que la aplicación guarda o envía, hay que cambiar los textos legales** (el original,
+  `scripts/data/legales/es.mjs`, y sus nueve traducciones, que tienen la misma estructura) y la
   fecha de revisión de `scripts/data/sitio.mjs`. Los textos legales son los de studyworldmap.com: quien
   despliegue otra copia tiene que revisarlos.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).

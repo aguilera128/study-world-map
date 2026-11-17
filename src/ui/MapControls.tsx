@@ -328,7 +328,7 @@ export function MapControls() {
         <ExportMenu />
       </div>
       {donate && (
-        <a href="/donar/" className="fixed bottom-3 right-8 z-30 inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-ink-soft transition-colors hover:text-accent">
+        <a href={t('/donar/')} className="fixed bottom-3 right-8 z-30 inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-ink-soft transition-colors hover:text-accent">
           <Icon name="heart" size={15} />
           {t('Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto')}
         </a>

@@ -90,8 +90,9 @@ If you deploy your own copy:
 
 - Set the site owner's details: without them the build fails on purpose, so a half-filled legal
   notice is never published.
-- **Review the legal texts** (`scripts/data/legales.mjs`). They are the ones of studyworldmap.com,
-  written in Spanish for Spanish law, and they describe its services (Vercel, Neon, Google Analytics).
+- **Review the legal texts** (`scripts/data/legales/`, one file per language). They are the ones of
+  studyworldmap.com, written for Spanish law, and they describe its services (Vercel, Neon, Google
+  Analytics). The Spanish file is the original; the other nine are translations of it.
 - The AGPL requires you to offer the source code of your version to everyone who uses it over the network.
 - If your tile store is not a Vercel Blob, add its domain to `connect-src` in `vercel.json`.
 
@@ -124,7 +125,7 @@ docs/       dated plans, proposals and audits
 Spanish at the root and, each under its own prefix, English (`/en/`), French, German, Italian,
 Brazilian Portuguese, Valencian/Catalan, Galician, Basque and Simplified Chinese. The translations
 were written by a language model and have not been reviewed by native speakers: corrections are
-very welcome. The legal texts exist only in Spanish.
+very welcome. The legal texts are translated too, for information only: the Spanish original prevails.
 
 ## Contributing
 

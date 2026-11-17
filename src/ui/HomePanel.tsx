@@ -288,7 +288,7 @@ export function HomePanel() {
       {/* En pantallas anchas este enlace va abajo a la derecha, bajo los controles del mapa (MapControls). */}
       {DONATE && (
         <a
-          href="/donar/"
+          href={t('/donar/')}
           className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent wide:hidden"
           style={order(8)}
         >
@@ -300,9 +300,9 @@ export function HomePanel() {
       <p className="mt-4 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
         {[
           [t('/paises-y-capitales/'), t('Países y capitales')],
-          ['/aviso-legal/', t('Aviso legal')],
-          ['/privacidad/', t('Privacidad')],
-          ['/cookies/', t('Cookies')],
+          [t('/aviso-legal/'), t('Aviso legal')],
+          [t('/privacidad/'), t('Privacidad')],
+          [t('/cookies/'), t('Cookies')],
         ].map(([href, label], i) => (
           <span key={href}>
             {i > 0 && ' · '}

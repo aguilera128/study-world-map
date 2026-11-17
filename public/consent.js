@@ -111,66 +111,81 @@
     en: [
       'May we use Google Analytics cookies to count visits and see which parts of the site are used? ' +
         'They only help us improve it: no advertising. If you decline, the site works just the same.',
-      'More about cookies (in Spanish)',
+      'More about cookies',
       'Decline',
       'Accept',
     ],
     fr: [
       'Acceptez-vous que nous utilisions les cookies de Google Analytics pour compter les visites et voir quelles parties du site sont utilisées ? ' +
         'Ils servent uniquement à l’améliorer : aucune publicité. Si vous refusez, le site fonctionne de la même façon.',
-      'En savoir plus sur les cookies (en espagnol)',
+      'En savoir plus sur les cookies',
       'Refuser',
       'Accepter',
     ],
     de: [
       'Dürfen wir Cookies von Google Analytics verwenden, um Besuche zu zählen und zu sehen, welche Teile der Seite genutzt werden? ' +
         'Sie dienen nur der Verbesserung: keine Werbung. Wenn du ablehnst, funktioniert die Seite genauso.',
-      'Mehr über Cookies (auf Spanisch)',
+      'Mehr über Cookies',
       'Ablehnen',
       'Akzeptieren',
     ],
     it: [
       'Possiamo usare i cookie di Google Analytics per contare le visite e vedere quali parti del sito vengono usate? ' +
         'Servono solo a migliorarlo: niente pubblicità. Se rifiuti, il sito funziona lo stesso.',
-      'Maggiori informazioni sui cookie (in spagnolo)',
+      'Maggiori informazioni sui cookie',
       'Rifiuta',
       'Accetta',
     ],
     pt: [
       'Podemos usar cookies do Google Analytics para contar as visitas e ver quais partes do site são usadas? ' +
         'Servem só para melhorá-lo: nada de publicidade. Se você recusar, o site funciona do mesmo jeito.',
-      'Mais sobre os cookies (em espanhol)',
+      'Mais sobre os cookies',
       'Recusar',
       'Aceitar',
     ],
     ca: [
       'Ens deixes usar galetes de Google Analytics per a comptar les visites i veure quines parts del web s’usen? ' +
         'Només serveixen per a millorar-lo: res de publicitat. Si no acceptes, el web funciona igual.',
-      'Més informació sobre les galetes (en castellà)',
+      'Més informació sobre les galetes',
       'Rebutjar',
       'Acceptar',
     ],
     gl: [
       'Déixasnos usar cookies de Google Analytics para contar as visitas e ver que partes da web se usan? ' +
         'Só serven para mellorala: nada de publicidade. Se non aceptas, a web funciona igual.',
-      'Máis información sobre as cookies (en castelán)',
+      'Máis información sobre as cookies',
       'Rexeitar',
       'Aceptar',
     ],
     eu: [
       'Google Analytics-en cookieak erabiltzen uzten diguzu, bisitak zenbatzeko eta webgunearen zein atal erabiltzen diren ikusteko? ' +
         'Hobetzeko bakarrik balio dute: publizitaterik ez. Onartzen ez baduzu, webguneak berdin funtzionatzen du.',
-      'Cookieei buruzko informazio gehiago (gaztelaniaz)',
+      'Cookieei buruzko informazio gehiago',
       'Baztertu',
       'Onartu',
     ],
     zh: [
       '可以让我们使用 Google Analytics 的 Cookie 来统计访问量、了解网站哪些部分被使用吗？' +
         '它们只用于改进网站，不用于广告。如果你拒绝，网站照常可用。',
-      '了解 Cookie 详情（西班牙语）',
+      '了解 Cookie 详情',
       '拒绝',
       '接受',
     ],
+  };
+
+  // La política de cookies de cada idioma (las rutas de scripts/data/legales/<idioma>.mjs: el build
+  // comprueba que coincidan).
+  var COOKIES = {
+    es: '/cookies/',
+    en: '/en/cookies/',
+    fr: '/fr/cookies/',
+    de: '/de/cookies/',
+    it: '/it/cookie/',
+    pt: '/pt/cookies/',
+    ca: '/ca/galetes/',
+    gl: '/gl/cookies/',
+    eu: '/eu/cookieak/',
+    zh: '/zh/cookies/',
   };
 
   var banner = null;
@@ -234,7 +249,7 @@
     var lang = location.pathname.split('/')[1];
     var text = TEXTS[lang] || TEXTS.es;
     banner.innerHTML =
-      '<p>' + text[0] + ' ' + (MINORS[lang] || MINORS.es) + ' <a href="/cookies/" style="color:inherit">' + text[1] + '</a>.</p>' +
+      '<p>' + text[0] + ' ' + (MINORS[lang] || MINORS.es) + ' <a href="' + (COOKIES[lang] || COOKIES.es) + '" style="color:inherit">' + text[1] + '</a>.</p>' +
       '<div><button type="button" data-v="denied">' + text[2] + '</button>' +
       '<button type="button" data-v="granted">' + text[3] + '</button></div>';
     banner.addEventListener('click', function (e) {

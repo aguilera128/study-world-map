@@ -30,5 +30,5 @@ export const DONAR_URL = env('VITE_DONATE_URL');
 /** Contenedor de Google Tag Manager (GTM-…). Vacío: no hay analítica ni aviso de cookies. */
 export const GTM_ID = env('VITE_GTM_ID');
 
-/** Fecha de la última revisión de los textos legales (se muestra al pie de cada uno). */
-export const REVISION_LEGAL = '17 de noviembre de 2026';
+/** Fecha de la última revisión de los textos legales (AAAA-MM-DD; al pie de cada uno sale escrita en su idioma). */
+export const REVISION_LEGAL = '2026-11-17';

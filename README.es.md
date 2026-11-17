@@ -144,7 +144,7 @@ Si despliegas tu propia copia:
 
 - Define los datos del titular: sin ellos el build falla a propósito, para no publicar un aviso
   legal a medias.
-- **Revisa los textos legales** (`scripts/data/legales.mjs`): son los de studyworldmap.com y describen
+- **Revisa los textos legales** (`scripts/data/legales/`, un fichero por idioma): son los de studyworldmap.com y describen
   sus servicios (Vercel, Neon, Google Analytics).
 - La AGPL te obliga a ofrecer el código fuente de tu versión a quien la use por la red.
 - Si tu almacén de teselas no es un Blob de Vercel, añade su dominio a `connect-src` en `vercel.json`.
@@ -197,7 +197,7 @@ scripts/
   fetch-capitals.mjs     trae de Wikidata los nombres de las capitales en cada idioma (solo al añadir un idioma)
   data/idiomas/          un fichero por idioma: textos de las páginas, nombres, alias y notas
   data/sitio.mjs         dirección del sitio, titular y enlace de donación, leídos de variables de entorno
-  data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
+  data/legales/          textos legales, un fichero por idioma (el original es es.mjs); revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)
   data/mapas/            un país por provincias: datos en español (es.mjs), fronteras (es.topo.json) y nombres de Wikidata (es.wikidata.json)
 src/
@@ -254,7 +254,10 @@ estáticas y sus `hreflang`. Las traducciones no las ha revisado un hablante nat
    Los países salen de CLDR (el `Intl` de Node) y las capitales de `scripts/data/capitales.wikidata.json`.
 3. `index.html` (un `hreflang` más) y `public/consent.js` (aviso de cookies).
 
-Los textos legales solo están en español.
+Los textos legales están en los diez idiomas (`scripts/data/legales/<idioma>.mjs`). El original es el
+español; los demás son traducciones a título informativo y lo dicen al principio de cada página. Un
+idioma nuevo necesita además su fichero ahí, sus cuatro rutas en el diccionario de la aplicación y su
+línea en la lista `COOKIES` de `public/consent.js`.
 
 ## Decisiones sobre los datos
 
