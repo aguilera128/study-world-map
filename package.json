@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "description": "Mapamundi interactivo (globo 3D y mapa plano 2D) para aprender los países del mundo jugando.",
+  "license": "AGPL-3.0-only",
+  "repository": "github:aguilera128/study-world-map",
   "type": "module",
   "packageManager": "pnpm@8.11.0",
   "engines": {
