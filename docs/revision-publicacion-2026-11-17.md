@@ -1,7 +1,10 @@
 # Revisión para publicar el código — 17 de noviembre de 2026
 
-Preparación de `study-world-map` para hacerlo público en GitHub. Todo lo de este informe está hecho
-**en local**: no se ha hecho push, ni cambiado la visibilidad, ni tocado Vercel ni GitHub.
+Preparación y publicación de `study-world-map` como código abierto en GitHub. El repositorio es
+público desde el 17 de noviembre de 2026: <https://github.com/aguilera128/study-world-map>.
+
+Las primeras secciones describen la preparación, hecha en local antes de publicar. Lo que vino
+después está en «Publicación» y «Después de publicar».
 
 ## Decisiones tomadas
 
@@ -12,6 +15,8 @@ Preparación de `study-world-map` para hacerlo público en GitHub. Todo lo de es
 | README | Inglés (`README.md`) y copia en español (`README.es.md`) |
 | Nombre, NIF y domicilio del titular | Fuera del repositorio y del historial; salen de variables de entorno |
 | Servicios propios (dominio, correo, PayPal, Tag Manager, Blob) | Configurables por variables de entorno; sin valor, se apagan |
+| Commits antiguos en GitHub | Repositorio nuevo con el historial limpio; el antiguo, renombrado y privado |
+| Páginas legales en otros idiomas | Traducidas a los nueve, a título informativo |
 
 ## Qué se comprobó
 
@@ -28,7 +33,7 @@ Sobre los 160 commits que había (10 a 14 de noviembre de 2026), con `git log --
 - **Datos personales:**
   - El correo personal estaba en los 160 commits (autor y confirmador). Corregido.
   - `scripts/data/sitio.mjs` llevaba nombre completo, NIF y domicilio desde el primer commit que lo añadió (`5f98e55` tras la reescritura). Corregido.
-  - No hay IPs reales, teléfonos, matrículas, rutas de la máquina (`C:\Users\…`), nombres de
+  - No hay IPs reales, teléfonos, matrículas, rutas de la máquina, nombres de
     dispositivos ni datos de clientes. Las pruebas usan datos inventados (`ana@correo.es`, `666123456`).
 - **Ficheros subidos alguna vez:** solo cuatro rutas ya no están en el árbol (`public/sitemap.xml`,
   `scripts/data/nombres.mjs`, `scripts/data/paginas.mjs`, `src/app/climate.ts`), ninguna con nada privado.
@@ -62,8 +67,8 @@ Sobre los 160 commits que había (10 a 14 de noviembre de 2026), con `git log --
   (comprobadas hoy): `actions/checkout` v7.0.1, `pnpm/action-setup` v6.1.1, `actions/setup-node` v7.1.0.
   El proyecto no tiene linter: la CI pasa build (con `tsc`) y pruebas.
 - `.gitignore`: `.claude/`, `.agents/`, `skills-lock.json`, `.vscode/`; `.env.example` sí se versiona.
-- En local, `.env.local` tiene ya tus valores (sitio y titular), y `git config user.email` de este
-  repositorio es el `noreply`, para que los commits nuevos no vuelvan a llevar el Gmail.
+- En local, `.env.local` tiene los valores del sitio y del titular, y `git config user.email` de este
+  repositorio es el `noreply`, para que los commits nuevos no vuelvan a llevar el correo personal.
 
 ## Verificación
 
@@ -73,50 +78,87 @@ Sobre los 160 commits que había (10 a 14 de noviembre de 2026), con `git log --
 - **Build con tus valores:** `dist/index.html` es igual al de producción salvo la etiqueta de
   `consent.js`, que ahora lleva `data-gtm`.
 
+## Publicación
+
+Hecho el 17 de noviembre de 2026, cada paso con el visto bueno del titular.
+
+1. **Variables en Vercel.** Las ocho, en producción y en preview. Las cinco `VITE_*` van como
+   legibles y las tres del titular como secretas.
+2. **Push forzado** de `main` con el historial reescrito.
+3. **Repositorio nuevo.** Tras el push, el commit antiguo seguía accesible por su SHA en GitHub, con
+   el correo personal. En vez de borrar el repositorio, el antiguo se renombró a
+   `study-world-map-antiguo` (sigue privado) y se creó uno nuevo con el mismo nombre, al que se subió
+   solo el historial limpio. Comprobado: en el nuevo, GitHub responde «No commit found» para el SHA
+   antiguo. El antiguo no tenía incidencias, PR, releases, etiquetas, secretos ni webhooks.
+4. **Vercel** reconectado al repositorio nuevo, rama `main`.
+5. **Repositorio público.** Antes de abrirlo: 0 commits con el correo personal, 0 apariciones del
+   NIF, una sola rama. GitHub detecta la licencia como AGPL-3.0.
+6. **Seguridad en GitHub:** activados el aviso privado de vulnerabilidades, secret scanning (0
+   alertas) y push protection.
+7. **Release `v0.1.0`**, con las notas en inglés.
+
+## Después de publicar
+
+- **Aviso legal:** dice que el código es libre, con su licencia y el enlace al repositorio. Se
+  añadieron las fuentes de datos que faltaban (Wikidata, Banco Mundial, Oficina del Censo de EE. UU.,
+  OSCAR, PB2002 de Bird, NOAA NCEI, Deep Star Maps, IANA y el origen de las ilustraciones) y se
+  corrigió el enlace de Statistics Finland, que daba 404. «Objeto» describe todo lo que hoy enseña la web.
+- **Privacidad (borrador, pendiente de revisión profesional):** base legal de la sincronización
+  (consentimiento, art. 6.1.a) y del alojamiento (interés legítimo, art. 6.1.f), y Neon como encargado
+  del tratamiento. No se ha comprobado el contrato de encargo de Neon.
+- **Código del enlace QR:** `consent.js` quita `?codigo=` de la dirección antes de que pueda cargarse
+  Tag Manager. Probado en navegador.
+- **Consentimiento de cookies:** se guarda con su fecha y caduca a los dos años. Probado en navegador.
+- **`llms.txt`:** ya no dice «no hay cuentas ni servidor» ni «cinco retos».
+- **Páginas legales en los diez idiomas** (`scripts/data/legales/<idioma>.mjs`). El original es el
+  español; las nueve traducciones avisan al principio de que son informativas y de que prevalece el
+  original. El pie de las páginas, el aviso de cookies y la aplicación enlazan a la de cada idioma.
+- **Revisión de las traducciones:** un revisor independiente por idioma las comparó con el original.
+  Ninguno encontró errores de sentido; se corrigieron fallos de expresión (el más serio, en alemán:
+  «Daten deiner Karte» se leía como «los datos de tu mapa»). Traductores y revisores son modelos.
+- **Blob de teselas:** la clave de escritura se rotó, porque su principio había salido en la salida
+  de un comando, y la conexión pasó a OIDC. `scripts/upload-tiles.mjs` acepta OIDC o la clave permanente.
+- **Auditoría del 14-nov:** quedan anotados como arreglados A12, A14, A15, A16, A17, A19 y A62.
+
 ## Qué queda sin verificar
 
-- **En navegador:** no se ha probado en pantalla la portada sin variables (sin botón de donar, sin
-  «Configurar cookies») ni que el aviso de cookies y Tag Manager sigan cargando con `data-gtm`.
-- **Licencias de datos de terceros** para redistribuirlos en un repositorio público. Lo que hay en el
-  repositorio viene de fuentes de dominio público o con licencia abierta (Natural Earth, NASA, NOAA,
-  Wikidata, CC BY de Finlandia, Noruega y Moldavia), pero conviene revisar tres:
+- **Con Tag Manager cargado de verdad:** los arreglos del aviso de cookies se probaron en local sin
+  aceptar la analítica, para no mandar visitas de `localhost` a la propiedad real. En producción no se
+  han probado con un navegador.
+- **Portada sin variables** (como la vería un fork): se comprobó el HTML generado, no en pantalla.
+- **Traducciones legales:** no las ha revisado un hablante nativo ni un jurista. En euskera quedan dos
+  términos sin cotejar con la versión oficial: «adostasuna» (consentimiento) y el nombre de la Ley 34/2002.
+- **Licencias de datos de terceros** para redistribuirlos. Lo que hay en el repositorio viene de
+  fuentes de dominio público o con licencia abierta, pero conviene revisar tres:
   - Distritos de Chipre (Department of Lands and Surveys): no consta una licencia explícita.
   - `mledoze/countries` es ODbL, que obliga a compartir igual la base derivada.
   - Rejilla de Köppen-Geiger (Kottek et al.): en el repositorio solo están los porcentajes derivados.
 - **Compatibilidad de la AGPL con las dependencias:** no se ha hecho una revisión formal. Son MIT, BSD,
   ISC, Apache-2.0 u OFL, en principio compatibles.
-- **Commits antiguos en GitHub:** tras forzar el push, GitHub puede conservar los commits viejos
-  accesibles por su SHA. Ver «Antes de publicar».
 
-## Decisiones que son tuyas
+## Pendiente, en manos del titular
 
-1. **`AGPL-3.0-only` o `-or-later`.** He puesto `only`. Con `or-later` aceptas de antemano versiones
-   futuras de la licencia.
-2. **`docs/auditoria-completa-2026-11-14.md`** lista 86 hallazgos menores sin arreglar, algunos de
-   seguridad y de privacidad (A11–A19). Publicarlo enseña por dónde flojea el sitio. Se puede dejar,
-   recortar o sacar del repositorio. Los otros tres documentos de `docs/` no tienen nada privado.
-3. **`AGENTS.md`** se queda: es la guía para contribuir. Menciona la regla del firewall de Vercel
-   (40 por IP cada 10 min), que es información útil para quien quiera abusar justo por debajo.
-4. **Identificadores públicos que siguen en el historial:** el contenedor `GTM-TW2XCZJM` y el dominio
-   del Blob de teselas. Ya son visibles en la web; no los he borrado del historial.
-5. **Textos legales** (`scripts/data/legales.mjs`): siguen siendo los de studyworldmap.com. Quien
-   despliegue una copia tiene que cambiarlos; está avisado en el README y en `.env.example`.
-6. **Enlace al código en la web.** La AGPL pide ofrecer el código a quien usa el sitio. Como titular
-   no te obliga, pero un enlace «Código fuente» en el pie ayudaría a los forks a cumplir. Son diez
-   traducciones; no lo he añadido.
+1. **Borrar `study-world-map-antiguo`** en GitHub, o dejarlo privado. Contiene los commits con el
+   correo personal y el NIF.
+2. **Copia del historial anterior:** hay un `.bundle` en la carpeta temporal de la sesión en la que se
+   hizo este trabajo. Contiene el NIF y el correo: moverlo a un sitio seguro o borrarlo.
+3. **`BLOB_READ_WRITE_TOKEN` en Vercel:** sigue existiendo como variable legible, aunque con OIDC ya no
+   hace falta.
+4. **Revisión profesional de los textos legales**, sobre todo el borrador de privacidad.
+5. **Revisión nativa de las traducciones**, las legales en primer lugar.
 
-## Antes de publicar (nada de esto está hecho)
+## Decisiones que siguen abiertas
 
-1. **Variables en Vercel.** Hay que crear las ocho (`VITE_SITE_URL`, `VITE_CONTACT_EMAIL`,
-   `VITE_DONATE_URL`, `VITE_GTM_ID`, `VITE_TILE_STORE`, `TITULAR_NOMBRE`, `TITULAR_NIF`,
-   `TITULAR_DOMICILIO`) **antes del push**. Sin las del titular el build falla a propósito; sin las
-   demás, producción se quedaría sin analítica, sin teselas y sin donar.
-2. **Push forzado** de `main` (el historial es otro). Hay copia del historial anterior en
-   `%USERPROFILE%\AppData\Local\Temp\claude\bfdb7f6fa8524afc\388306e9-5959-4d11-a695-cdf117b11651\scratchpad\study-world-map-antes-de-reescribir.bundle`
-   (carpeta temporal: muévela si quieres conservarla; contiene el NIF y el correo).
-3. **Commits antiguos en GitHub.** Para que no queden accesibles por SHA, lo más seguro es borrar el
-   repositorio y crearlo de nuevo con el mismo nombre (y volver a conectarlo a Vercel), o pedir a
-   GitHub Support que purgue los objetos huérfanos antes de hacerlo público.
-4. **Hacer público** el repositorio.
-5. **Activar** private vulnerability reporting, secret scanning y push protection.
-6. **Release:** no hace falta; si quieres, una `v0.1.0` con el estado actual.
+1. **`AGPL-3.0-only` o `-or-later`.** Está puesto `only`. Con `or-later` se aceptan de antemano
+   versiones futuras de la licencia.
+2. **`docs/auditoria-completa-2026-11-14.md`** es público y lista unos 80 hallazgos menores sin
+   arreglar, algunos de seguridad y de privacidad. Se puede dejar, recortar o sacar del repositorio.
+3. **`AGENTS.md`** menciona la regla del firewall de Vercel (40 por IP cada 10 min), que es
+   información útil para quien quiera abusar justo por debajo.
+4. **Identificadores públicos que siguen en el historial:** el contenedor de Tag Manager y el dominio
+   del Blob de teselas. Ya son visibles en la web.
+5. **Enlace «Código fuente» en el pie de la aplicación.** El enlace está en el aviso legal, no en la
+   interfaz. La AGPL pide ofrecer el código a quien usa el sitio; como titular no obliga, pero ayudaría
+   a los forks a cumplir. Son diez traducciones.
+6. **Enlace a donar en «Objeto» del aviso legal:** en una copia sin enlace de donación apunta a una
+   página que no existe.
