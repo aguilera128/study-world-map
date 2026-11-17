@@ -31,4 +31,4 @@ export const DONAR_URL = env('VITE_DONATE_URL');
 export const GTM_ID = env('VITE_GTM_ID');
 
 /** Fecha de la última revisión de los textos legales (se muestra al pie de cada uno). */
-export const REVISION_LEGAL = '13 de noviembre de 2026';
+export const REVISION_LEGAL = '17 de noviembre de 2026';

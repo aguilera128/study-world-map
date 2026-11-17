@@ -49,7 +49,9 @@ ${titularBlock()}
     <p>Los datos geográficos tienen fines educativos y se revisan con cuidado, pero pueden contener errores o quedar desactualizados. Las fronteras proceden de Natural Earth y algunas decisiones (por ejemplo, qué territorios se cuentan como países) se explican en la propia aplicación; no expresan ninguna posición política. Si encuentras un error, escribe a ${email()} y lo corregiremos.</p>
 
     <h2>Propiedad intelectual</h2>
-    <p>El diseño, el código y los textos de Study World Map son obra de su titular. Los datos de terceros se usan conforme a sus licencias:</p>
+    <p>El diseño, el código y los textos de Study World Map son obra de su titular.</p>
+    <p>Study World Map es software libre: su código fuente está publicado en <a href="https://github.com/aguilera128/study-world-map">GitHub</a> bajo la licencia <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License, versión 3 (AGPL-3.0)</a>. Cualquiera puede usarlo, estudiarlo, modificarlo y redistribuirlo en las condiciones de esa licencia; quien publique una versión modificada en una web tiene que ofrecer también su código fuente. La licencia no cubre el nombre «Study World Map», el dominio ni el icono.</p>
+    <p>Los datos de terceros se usan conforme a sus licencias:</p>
     <ul>
       <li>Cartografía: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (dominio público).</li>
       <li>Regiones de Finlandia: <a href="https://stat.fi/org/avoindata/paikkatietoaineistot_en.html">Statistics Finland</a>, unidades estadísticas por municipios de 2026 (licencia CC BY 4.0), simplificadas.</li>
