@@ -290,7 +290,7 @@ que la lista sea coherente y avisa si no.
   [topojson](https://github.com/topojson) (`scripts/build-subdivisions.mjs`).
 - Nombres de provincias, estados, comunidades y capitales en otros idiomas: [Wikidata](https://www.wikidata.org) (CC0).
 - Regiones de Estados Unidos: las cuatro de la Oficina del Censo (U.S. Census Bureau, Census Regions).
-- Fronteras de las regiones de Finlandia: [Statistics Finland](https://stat.fi/org/avoindata/paikkatietoaineistot_en.html),
+- Fronteras de las regiones de Finlandia: [Statistics Finland](https://stat.fi/en/services/statistical-data-services/geographic-data),
   unidades estadísticas por municipios de 2026 (CC BY 4.0). Natural Earth es anterior a los cambios de 2021.
 - Fronteras de los condados de Noruega: [Kartverket](https://kartkatalog.geonorge.no/), «Administrative enheter
   fylker» de 2026 (CC BY 4.0), recortadas por la costa de Natural Earth con

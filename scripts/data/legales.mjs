@@ -54,7 +54,10 @@ ${titularBlock()}
     <p>Los datos de terceros se usan conforme a sus licencias:</p>
     <ul>
       <li>Cartografía: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (dominio público).</li>
-      <li>Regiones de Finlandia: <a href="https://stat.fi/org/avoindata/paikkatietoaineistot_en.html">Statistics Finland</a>, unidades estadísticas por municipios de 2026 (licencia CC BY 4.0), simplificadas.</li>
+      <li>Nombres de países, subdivisiones, capitales y accidentes geográficos en otros idiomas: <a href="https://www.wikidata.org/">Wikidata</a> (CC0).</li>
+      <li>Población: Banco Mundial, indicador «Población, total» (SP.POP.TOTL), licencia CC BY 4.0; la de los países que no están en esa serie, Wikidata.</li>
+      <li>Regiones de Estados Unidos: las cuatro regiones de la Oficina del Censo (U.S. Census Bureau).</li>
+      <li>Regiones de Finlandia: <a href="https://stat.fi/en/services/statistical-data-services/geographic-data">Statistics Finland</a>, unidades estadísticas por municipios de 2026 (licencia CC BY 4.0), simplificadas.</li>
       <li>Condados de Noruega: <a href="https://kartkatalog.geonorge.no/">Kartverket</a>, «Administrative enheter fylker» de 2026 (licencia CC BY 4.0), recortados por la costa y simplificados.</li>
       <li>Condados de Estonia: división administrativa de Estonia (EHAK), Junta de Tierras y Ordenación del Territorio de Estonia (Republic of Estonia Land and Spatial Development Board), datos del 01.11.2026, simplificados, con su <a href="https://geoportaal.maaruum.ee/opendata-licence">licencia de datos abiertos</a>.</li>
       <li>Distritos de Chipre: Departamento de Tierras y Catastro de la República de Chipre (Department of Lands and Surveys), unidades administrativas INSPIRE, simplificados.</li>
@@ -67,7 +70,12 @@ ${titularBlock()}
       <li>Luces nocturnas de las ciudades: Black Marble 2016, NASA Earth Observatory (dominio público).</li>
       <li>Imagen de satélite: Blue Marble Next Generation, NASA Earth Observatory (julio de 2004, dominio público).</li>
       <li>Relieve del fondo marino: ETOPO2v2, NOAA National Geophysical Data Center (dominio público).</li>
+      <li>Corrientes oceánicas: OSCAR (Ocean Surface Current Analyses Real-time, Earth &amp; Space Research), media de diciembre de 2011 a septiembre de 2014, del servidor ERDDAP de NOAA CoastWatch; el rumbo general de cada corriente, de su artículo en la Wikipedia en inglés.</li>
+      <li>Placas tectónicas: modelo PB2002 de Peter Bird (2003), <em>Geochemistry, Geophysics, Geosystems</em>, en la conversión de Hugo Ahlenius (Nordpil), licencia <a href="https://github.com/fraxen/tectonicplates">ODC-By 1.0</a>. Volcanes: base de datos de volcanes de NOAA NCEI (dominio público).</li>
       <li>Estrellas: Yale Bright Star Catalogue, 5.ª edición (dominio público), y catálogo Hipparcos de la Agencia Espacial Europea (ESA, 1997).</li>
+      <li>Vía Láctea: «Deep Star Maps 2020», NASA/Goddard Space Flight Center Scientific Visualization Studio, con datos de Gaia DR2 (ESA/Gaia/DPAC).</li>
+      <li>Zonas horarias: base de datos de zonas horarias de la IANA, vía <a href="https://github.com/moment/moment-timezone">moment-timezone</a> (licencia MIT).</li>
+      <li>Ilustraciones de la capa «Planeta de dibujos»: diseños originales generados con inteligencia artificial a partir de una descripción propia.</li>
       <li>Climas: mapa mundial de Köppen-Geiger de Kottek, Grieser, Beck, Rudolf y Rubel (2006), <em>Meteorologische Zeitschrift</em> 15, 259-263, agrupado en los climas que se estudian en secundaria.</li>
       <li>Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).</li>
     </ul>
