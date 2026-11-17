@@ -1,6 +1,6 @@
 # Auditoría completa — 14 de noviembre de 2026
 
-Sobre el commit `f0f28d2` (`main`, árbol limpio). Es una auditoría de solo lectura: no se cambió ningún fichero, ni la base de datos, ni Vercel.
+Sobre el commit `52ca7b7` (`main`, árbol limpio). Es una auditoría de solo lectura: no se cambió ningún fichero, ni la base de datos, ni Vercel.
 
 ## Cómo se hizo
 
