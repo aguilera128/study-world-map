@@ -1,5 +1,7 @@
 # Study World Map
 
+[English](README.md) · **Español**
+
 Mapamundi interactivo para **estudiar los países del mundo jugando**: un globo 3D que se desenrolla
 hasta convertirse en un mapa plano 2D, cinco retos con corrección inmediata y un sistema de repaso
 que insiste en lo que todavía no te sabes.
@@ -8,6 +10,8 @@ Casi todo funciona en el navegador y no hay cuentas: el progreso se guarda en el
 Solo si se crea un código para seguir en otro dispositivo, se guarda también en una base de datos
 (una función de Vercel, `api/sync.ts`); otra guarda los rankings, una tercera sirve el tiempo de ahora
 y una cuarta, las órbitas de los satélites.
+
+En producción: <https://www.studyworldmap.com>. Código abierto bajo [AGPL-3.0](LICENSE).
 
 Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.md](DESIGN.md) (diseño).
 
@@ -90,46 +94,70 @@ Para tocar el proyecto: [AGENTS.md](AGENTS.md) (reglas y estructura) y [DESIGN.m
 
 ## Puesta en marcha
 
-Requiere Node 24 y [pnpm](https://pnpm.io).
+Requiere **Node 24** y [pnpm](https://pnpm.io) (la versión de `packageManager` en `package.json`).
+No hace falta ninguna cuenta ni ninguna variable de entorno para arrancarlo en local.
 
 ```bash
 pnpm install
-pnpm dev        # genera el atlas y arranca en http://localhost:5173
+pnpm dev        # genera el atlas y las páginas y arranca en http://localhost:5173
 ```
 
 Otros comandos:
 
 ```bash
-pnpm build      # genera el atlas, comprueba tipos y compila a dist/
+pnpm build      # genera el atlas y las páginas, comprueba tipos y compila a dist/
 pnpm preview    # sirve dist/ en local
 pnpm test       # pruebas (vitest): atlas, malla, proyección y lógica del juego
 pnpm typecheck
 pnpm atlas --audit      # regenera el atlas y lista nombres y capitales frente a la fuente
 ```
 
+En desarrollo funcionan el mapa, los retos y las capas del tiempo y de los satélites. La
+sincronización por código y los rankings necesitan la base de datos (ver abajo).
+
+## Variables de entorno
+
+Todas son opcionales en local. Copia `.env.example` a `.env.local` y rellena las que quieras; sin
+valor, lo que depende de cada una se apaga. `.env.local` no va al repositorio.
+
+| Variable | Para qué | Sin ella |
+| --- | --- | --- |
+| `VITE_SITE_URL` | Dirección pública (canonical, hreflang, sitemap, robots.txt) | `http://localhost:5173` |
+| `VITE_CONTACT_EMAIL` | Correo de contacto e «informar de un error» | No salen esos enlaces |
+| `VITE_DONATE_URL` | Enlace de donación | No hay página ni botón de donar |
+| `VITE_GTM_ID` | Contenedor de Google Tag Manager | No hay analítica ni aviso de cookies |
+| `VITE_TILE_STORE` | Almacén de las teselas de detalle (satélite y luces) | Se ve la imagen general |
+| `TITULAR_NOMBRE`, `TITULAR_NIF`, `TITULAR_DOMICILIO` | Titular del sitio en el aviso legal | Salen como «PENDIENTE»; el build de Vercel falla |
+| `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | PostgreSQL (Neon): sincronización y rankings | Esas dos funciones no responden |
+| `BLOB_READ_WRITE_TOKEN` | Subir teselas al Blob de Vercel (`scripts/upload-tiles.mjs`) | No se pueden subir |
+
+Las `VITE_*` acaban en el HTML y en el JavaScript que recibe el navegador: no pongas secretos con ese
+prefijo. Las tablas de la base se crean con `node scripts/db-init.mjs`.
+
 ## Despliegue en Vercel
 
-El proyecto es un sitio estático (Vite). `vercel.json` ya indica el comando de compilación, la
-carpeta de salida y las cabeceras de caché, así que basta con importar el repositorio en Vercel, o
-desde la terminal:
+El proyecto es un sitio estático (Vite) con cuatro funciones bajo `api/`. `vercel.json` ya indica el
+comando de compilación, la carpeta de salida, las cabeceras de caché y la política de contenido
+(CSP), así que basta con importar el repositorio en Vercel y definir las variables de arriba.
 
-```bash
-pnpm dlx vercel          # despliegue de vista previa
-pnpm dlx vercel --prod   # producción
-```
+Si despliegas tu propia copia:
 
-La sincronización por código necesita `DATABASE_URL` (Neon), definida en Vercel como variable
-*Sensitive* y, en local, en `.env.local`. Sin ella, el resto de la web funciona igual.
+- Define los datos del titular: sin ellos el build falla a propósito, para no publicar un aviso
+  legal a medias.
+- **Revisa los textos legales** (`scripts/data/legales.mjs`): son los de studyworldmap.com y describen
+  sus servicios (Vercel, Neon, Google Analytics).
+- La AGPL te obliga a ofrecer el código fuente de tu versión a quien la use por la red.
+- Si tu almacén de teselas no es un Blob de Vercel, añade su dominio a `connect-src` en `vercel.json`.
 
 ## Tecnología
 
 - **Vite + React 19 + TypeScript**, estado con **Zustand**, estilos con **Tailwind CSS 4** y
   transiciones de interfaz con **Motion**.
-- **three.js** para el mapa, con sombreadores propios. No hay texturas ni teselas: los países son
-  geometría vectorial, nítida a cualquier zoom.
+- **three.js** para el mapa, con sombreadores propios. Los países son geometría vectorial, nítida a
+  cualquier zoom.
 - Tipografías autoalojadas (Besley y Atkinson Hyperlegible Next).
 - **Analítica con consentimiento.** `public/consent.js` muestra un aviso de cookies y solo carga
-  Google Tag Manager (`GTM-TW2XCZJM`, con GA4) si la persona acepta; con modo de consentimiento,
+  Google Tag Manager (el contenedor de `VITE_GTM_ID`, con GA4) si la persona acepta; con modo de consentimiento,
   solo analítica y nada de publicidad. Sin aceptar, la página no hace ninguna petición a terceros.
   La elección se cambia desde el enlace «Cookies» del pie.
 
@@ -168,7 +196,7 @@ scripts/
   build-pages.mjs        páginas estáticas por idioma: países y capitales, juegos por continente, portadas, legales y sitemap
   fetch-capitals.mjs     trae de Wikidata los nombres de las capitales en cada idioma (solo al añadir un idioma)
   data/idiomas/          un fichero por idioma: textos de las páginas, nombres, alias y notas
-  data/sitio.mjs         datos del titular y enlace de donación (el build de Vercel falla si faltan)
+  data/sitio.mjs         dirección del sitio, titular y enlace de donación, leídos de variables de entorno
   data/legales.mjs       textos legales; revisarlos si cambia lo que la app guarda o envía
   data/paises.mjs        nombres, capitales, regiones y continentes en español (editable a mano)
   data/mapas/            un país por provincias: datos en español (es.mjs), fronteras (es.topo.json) y nombres de Wikidata (es.wikidata.json)
@@ -290,3 +318,33 @@ que la lista sea coherente y avisa si no.
   generado con `scripts/build-stars.mjs`. Las débiles (magnitud 6,5 a 9), del catálogo Hipparcos de la ESA (1997): `public/data/stars.bin`,
   generado con `scripts/build-stars-faint.mjs`.
 - Tipografías: Besley y Atkinson Hyperlegible Next (SIL Open Font License).
+
+## Contribuir
+
+Las propuestas y los avisos de errores (un nombre, una capital, una frontera, una traducción) son
+bienvenidos en las [incidencias](https://github.com/aguilera128/study-world-map/issues).
+
+- Lee antes [AGENTS.md](AGENTS.md): recoge las reglas que no se ven en el código.
+- Todo dato que ve un estudiante tiene que ser real y tener fuente.
+- Antes de abrir una *pull request*: `pnpm typecheck`, `pnpm test` y `pnpm build`.
+- Commits en [Conventional Commits](https://www.conventionalcommits.org/es/), en español.
+- No añadas dependencias sin comentarlo antes en una incidencia.
+- Las traducciones las ha escrito un modelo: las correcciones de hablantes nativos son especialmente útiles.
+
+Al contribuir aceptas que tu aportación se publique bajo la misma licencia.
+
+## Seguridad
+
+No abras una incidencia pública para un fallo de seguridad. Usa el aviso privado de GitHub:
+pestaña **Security → Report a vulnerability** del repositorio
+([enlace directo](https://github.com/aguilera128/study-world-map/security/advisories/new)).
+
+## Licencia
+
+El código es software libre bajo la [GNU Affero General Public License v3.0](LICENSE). Si publicas
+una versión modificada en una web, tienes que ofrecer su código fuente a quienes la usen.
+
+Los datos de terceros (cartografía, imágenes de la NASA y la NOAA, catálogos de estrellas, banderas,
+tipografías…) conservan su propia licencia: ver «Créditos». El nombre «Study World Map», el dominio
+y el icono no entran en la licencia. Las ilustraciones de `public/toon/` son diseños originales
+generados con IA.
