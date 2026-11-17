@@ -72,7 +72,7 @@ ${titularBlock()}
     </ul>
 
     <h2>Ligazóns externas</h2>
-    <p>O sitio enlaza a páxinas de terceiros, como PayPal para as doazóns, GitHub para o código fonte e as webs das fontes dos datos. O titular non controla esas páxinas nin responde dos seus contidos ou das súas políticas.</p>
+    <p>O sitio ten ligazóns a páxinas de terceiros, como PayPal para as doazóns, GitHub para o código fonte e as webs das fontes dos datos. O titular non controla esas páxinas nin responde dos seus contidos ou das súas políticas.</p>
 
     <h2>Responsabilidade</h2>
     <p>O titular non garante que o sitio estea dispoñible en todo momento nin libre de erros, e non responde dos danos que poidan derivarse do seu uso, salvo nos casos en que a lei o esixa.</p>
@@ -105,12 +105,12 @@ ${titularBlock()}
     <p><strong>Provedor:</strong> Neon, o servizo de base de datos, que actúa como encargado do tratamento. Os datos gárdanse no seu centro de Fráncfort. Neon pertence a unha empresa dos Estados Unidos: se accedese a eles desde fóra do Espazo Económico Europeo, faríao coas garantías que esixe o RGPD para as transferencias internacionais.</p>
 
     <h3>Clasificación de resultados (opcional)</h3>
-    <p>Ao rematar unha partida podes publicar o teu resultado na clasificación dese reto. Non se envía nada se non premes «Publicar». Gárdanse na base de datos, e veos calquera que consulte esa clasificación, o alcume que escribas, a túa nota, o teu tempo, a data e o país desde o que te conectas (só as súas dúas letras, para ensinar a bandeira). O país indícao o aloxamento a partir do teu enderezo IP no momento de publicar; o enderezo IP non se garda na base de datos.</p>
+    <p>Ao rematar unha partida podes publicar o teu resultado na clasificación dese reto. Non se envía nada se non premes «Publicar». Gárdanse na base de datos, e poden velos todos os que consulten esa clasificación: o alcume que escribas, a túa nota, o teu tempo, a data e o país desde o que te conectas (só as súas dúas letras, para ensinar a bandeira). O país indícao o aloxamento a partir do teu enderezo IP no momento de publicar; o enderezo IP non se garda na base de datos.</p>
     <p>O alcume non debe conter o teu nome, os teus apelidos nin outros datos persoais: a aplicación proponche un e lémbracho ao escribilo. Non está asociado a ningunha conta nin a ningunha persoa, e calquera pode usar o mesmo. Só se conservan os dez mellores resultados de cada clasificación: os demais bórranse ao seren superados, e os do reto do día, aos 45 días. Se queres que se borre un resultado que publicaches, ou ves un alcume que non debería estar, escribe a ${email()} indicando o alcume e o reto.</p>
     <p><strong>Base legal:</strong> o teu consentimento, que dás ao premer «Publicar» (art. 6.1.a do RGPD).</p>
 
     <h3>Localización</h3>
-    <p>A función «Tempo real» sitúa a túa posición no mapa a partir da zona horaria do teu dispositivo, sen pedirche nada. Se premes o botón de localización exacta, o teu navegador pedirache permiso e a aplicación usará a túa posición arredondada (uns 1 km). En ambos os casos a localización só se usa na pantalla: non se garda nin se envía a ningún sitio.</p>
+    <p>A función «Tempo real» sitúa a túa posición no mapa a partir da zona horaria do teu dispositivo, sen pedirche nada. Se premes o botón de localización exacta, o teu navegador pedirache permiso e a aplicación usará a túa posición arredondada (a 1 km, aproximadamente). En ambos os casos a localización só se usa na pantalla: non se garda nin se envía a ningún sitio.</p>
 
     <h3>Meteoroloxía</h3>
     <p>Se acendes algunha das capas de meteoroloxía (temperatura, nubes, chuvia ou vento), a aplicación pide eses datos a este mesmo sitio, que pola súa vez os obtén da NOAA e da NASA. A eses organismos non lles chega nada teu, nin sequera o teu enderezo IP, e non se garda nada.</p>
@@ -119,10 +119,10 @@ ${titularBlock()}
     <p>Se acendes a capa de satélites, a aplicación pide as súas órbitas a este mesmo sitio, que pola súa vez as obtén de CelesTrak. A CelesTrak non lle chega nada teu, nin sequera o teu enderezo IP, e non se garda nada. A posición de cada satélite calcúlase no teu navegador.</p>
 
     <h3>Analítica (só co teu consentimento)</h3>
-    <p>Se aceptas as cookies de analítica, cárgase Google Tag Manager e Google Analytics 4 para contar as visitas e saber que partes da web se usan, co único fin de mellorala. Trátanse datos técnicos e de uso: identificadores de cookie, páxinas vistas, tipo de dispositivo e navegador, idioma, e país ou cidade aproximados. Non se usan para publicidade nin para crear perfís comerciais.</p>
+    <p>Se aceptas as cookies de analítica, cárganse Google Tag Manager e Google Analytics 4 para contar as visitas e saber que partes da web se usan, co único fin de mellorala. Trátanse datos técnicos e de uso: identificadores de cookie, páxinas vistas, tipo de dispositivo e navegador, idioma, e país ou cidade aproximados. Non se usan para publicidade nin para crear perfís comerciais.</p>
     <ul>
       <li><strong>Base legal:</strong> o teu consentimento (art. 6.1.a do RGPD). Podes retiralo cando queiras desde a ${consentLink}, sen que afecte ao tratado antes.</li>
-      <li><strong>Provedor:</strong> Google Ireland Limited, que actúa como encargado do tratamento. Google pode transferir datos aos Estados Unidos, amparado polo Marco de Privacidade de Datos UE-EE. UU. e por cláusulas contractuais tipo.</li>
+      <li><strong>Provedor:</strong> Google Ireland Limited, que actúa como encargado do tratamento. Google pode transferir datos aos Estados Unidos, amparado polo Marco de Privacidade de Datos UE-EUA e por cláusulas contractuais tipo.</li>
       <li><strong>Conservación:</strong> a que teña configurada a propiedade de Google Analytics, como máximo 14 meses.</li>
     </ul>
     <p>Se rexeitas ou non respondes, a web non carga nada de Google.</p>

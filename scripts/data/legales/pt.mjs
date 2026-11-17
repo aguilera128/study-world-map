@@ -42,7 +42,7 @@ ${titularBlock()}
 
     <h2>Propriedade intelectual</h2>
     <p>O design, o código e os textos do Study World Map são obra do seu titular e, se for o caso, das pessoas que contribuem com o projeto, que publicam suas contribuições sob a mesma licença.</p>
-    <p>O Study World Map é software livre: seu código-fonte está publicado no <a href="https://github.com/aguilera128/study-world-map">GitHub</a> sob a licença <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License, versão 3 (AGPL-3.0)</a>. Qualquer pessoa pode usá-lo, estudá-lo, modificá-lo e redistribuí-lo nas condições dessa licença; quem publicar uma versão modificada em um site tem de oferecer também o seu código-fonte. A licença não cobre o nome “Study World Map”, o domínio nem o ícone.</p>
+    <p>O Study World Map é software livre: seu código-fonte está publicado no <a href="https://github.com/aguilera128/study-world-map">GitHub</a> sob a licença <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License, versão 3 (AGPL-3.0)</a>. Qualquer pessoa pode usá-lo, estudá-lo, modificá-lo e redistribuí-lo nas condições dessa licença; quem publicar uma versão modificada em um site tem que oferecer também o seu código-fonte. A licença não cobre o nome “Study World Map”, o domínio nem o ícone.</p>
     <p>Os dados de terceiros são usados conforme as suas licenças:</p>
     <ul>
       <li>Cartografia: <a href="https://www.naturalearthdata.com/">Natural Earth</a> (domínio público).</li>
@@ -68,12 +68,12 @@ ${titularBlock()}
       <li>Via Láctea: “Deep Star Maps 2020”, NASA/Goddard Space Flight Center Scientific Visualization Studio, com dados do Gaia DR2 (ESA/Gaia/DPAC).</li>
       <li>Fusos horários: base de dados de fusos horários da IANA, via <a href="https://github.com/moment/moment-timezone">moment-timezone</a> (licença MIT).</li>
       <li>Ilustrações da camada “Planeta de desenho animado”: desenhos originais gerados com inteligência artificial a partir de uma descrição própria.</li>
-      <li>Climas: mapa-múndi de Köppen-Geiger de Kottek, Grieser, Beck, Rudolf e Rubel (2006), <em>Meteorologische Zeitschrift</em> 15, 259-263, agrupado nos climas que se estudam no ensino secundário.</li>
+      <li>Climas: mapa-múndi de Köppen-Geiger de Kottek, Grieser, Beck, Rudolf e Rubel (2006), <em>Meteorologische Zeitschrift</em> 15, 259-263, agrupado nos climas estudados na escola (ensino fundamental e médio).</li>
       <li>Tipografias: Besley e Atkinson Hyperlegible Next (SIL Open Font License).</li>
     </ul>
 
     <h2>Links externos</h2>
-    <p>O site tem links para páginas de terceiros, como o PayPal para as doações, o GitHub para o código-fonte e os sites das fontes dos dados. O titular não controla essas páginas nem responde pelos seus conteúdos ou pelas suas políticas.</p>
+    <p>O site tem links para páginas de terceiros, como o PayPal para as doações, o GitHub para o código-fonte e os sites das fontes dos dados. O titular não controla essas páginas nem responde pelo conteúdo nem pelas políticas delas.</p>
 
     <h2>Responsabilidade</h2>
     <p>O titular não garante que o site esteja disponível a todo momento nem livre de erros, e não responde pelos danos que possam decorrer do seu uso, salvo nos casos em que a lei o exija.</p>
@@ -86,7 +86,7 @@ ${revision}`,
     {
       id: 'privacidad',
       title: 'Política de privacidade · Study World Map',
-      description: 'Quais dados o Study World Map trata, para quê e como exercer os seus direitos. O aplicativo não tem contas e guarda o seu progresso no seu dispositivo; só se você pedir ele é guardado também com um código para usá-lo em outro.',
+      description: 'Quais dados o Study World Map trata, para quê e como exercer os seus direitos. O aplicativo não tem contas e guarda o seu progresso no seu dispositivo; só se você pedir, ele também é guardado com um código para usá-lo em outro.',
       body: `    <h1>Política de privacidade</h1>
 ${traduccion('privacidad', 'Política de privacidad')}
     <p class="lead">Resumo: não há contas nem formulários. O seu progresso fica no seu dispositivo, a menos que você crie um código para levá-lo a outro. Só se você aceitar os cookies de análise são enviados dados de uso ao Google Analytics.</p>
@@ -99,15 +99,15 @@ ${titularBlock()}
     <h3>Progresso, configurações e listas de estudo</h3>
     <p>São guardados apenas no armazenamento local do seu navegador, para que você não perca o que aprendeu. Não são enviados a nenhum servidor e o titular não tem acesso a eles, a menos que você use a sincronização explicada a seguir. Você pode apagá-los no próprio aplicativo (“Progresso”) ou apagando os dados do site no seu navegador.</p>
     <h3>Continuar em outro dispositivo (opcional)</h3>
-    <p>Se em “Progresso” você tocar em “Criar meu código”, o seu progresso é guardado também em um banco de dados para que você possa continuar em outro dispositivo. Guarda-se unicamente um código de doze letras e números gerado ao acaso, o progresso (quais países ou acidentes geográficos você sabe, as suas melhores notas e o resultado do desafio do dia) e a data. No banco de dados não se guarda o seu nome, o seu e-mail nem o seu endereço IP, e o código não está associado a nenhuma pessoa. As listas de estudo e as configurações não são enviadas.</p>
-    <p>O banco de dados fica na União Europeia (Frankfurt), no serviço Neon, e as requisições passam pela hospedagem do site (Vercel), que, como em qualquer site, registra durante um tempo limitado dados técnicos de cada requisição, entre eles o endereço IP e o endereço solicitado. Quem conhecer o código pode ver e alterar esse progresso, então compartilhe-o só com quem você quiser. Se você abrir um link que leva o código (o do código QR), esse código faz parte do endereço dessa visita e, portanto, do que a hospedagem registra. O aplicativo o retira do endereço assim que é aberto, antes de carregar a análise, para que não chegue ao Google.</p>
+    <p>Se em “Progresso” você tocar em “Criar meu código”, o seu progresso é guardado também em um banco de dados para que você possa continuar em outro dispositivo. Guarda-se unicamente um código de doze letras e números gerado aleatoriamente, o progresso (quais países ou acidentes geográficos você sabe, as suas melhores notas e o resultado do desafio do dia) e a data. No banco de dados não são guardados o seu nome, o seu e-mail nem o seu endereço IP, e o código não está associado a nenhuma pessoa. As listas de estudo e as configurações não são enviadas.</p>
+    <p>O banco de dados fica na União Europeia (Frankfurt), no serviço Neon, e as requisições passam pela hospedagem do site (Vercel), que, como em qualquer site, registra durante um tempo limitado dados técnicos de cada requisição, entre eles o endereço IP e o endereço solicitado. Quem conhecer o código pode ver e alterar esse progresso, então compartilhe-o só com quem você quiser. Se você abrir um link que contém o código (o do código QR), esse código faz parte do endereço dessa visita e, portanto, do que a hospedagem registra. O aplicativo o retira do endereço assim que é aberto, antes de carregar a análise, para que não chegue ao Google.</p>
     <p>Você pode apagar o que foi guardado a qualquer momento com “Apagar o que foi salvo com este código”. “Parar de sincronizar” só desconecta o dispositivo em que você toca nesse botão: o que foi guardado continua lá para os seus outros dispositivos. O que ficar mais de um ano sem uso é apagado.</p>
     <p><strong>Base legal:</strong> o seu consentimento, que você dá ao tocar em “Criar meu código” (art. 6.1.a do RGPD). Você pode retirá-lo quando quiser, apagando o que foi guardado.</p>
-    <p><strong>Fornecedor:</strong> Neon, o serviço de banco de dados, que atua como operador (“subcontratante”, na versão em português do RGPD). Os dados são guardados no seu centro de Frankfurt. O Neon pertence a uma empresa dos Estados Unidos: se ela acessasse esses dados de fora do Espaço Econômico Europeu, o faria com as garantias que o RGPD exige para as transferências internacionais.</p>
+    <p><strong>Fornecedor:</strong> Neon, o serviço de banco de dados, que atua como subcontratante (o “operador” da LGPD brasileira). Os dados são guardados no data center do Neon em Frankfurt. O Neon pertence a uma empresa dos Estados Unidos: se ela acessasse esses dados de fora do Espaço Econômico Europeu, o faria com as garantias que o RGPD exige para as transferências internacionais.</p>
 
     <h3>Ranking de resultados (opcional)</h3>
-    <p>Ao terminar uma partida, você pode publicar o seu resultado no ranking desse desafio. Nada é enviado se você não tocar em “Publicar”. Guardam-se no banco de dados, e qualquer pessoa que consultar esse ranking os vê, o apelido que você escrever, a sua nota, o seu tempo, a data e o país de onde você se conecta (só as suas duas letras, para mostrar a bandeira). O país é indicado pela hospedagem a partir do seu endereço IP no momento de publicar; o endereço IP não é guardado no banco de dados.</p>
-    <p>O apelido não deve conter o seu nome, o seu sobrenome nem outros dados pessoais: o aplicativo propõe um e lembra você disso ao escrevê-lo. Ele não está associado a nenhuma conta nem a nenhuma pessoa, e qualquer um pode usar o mesmo. Só se conservam os dez melhores resultados de cada ranking: os demais são apagados ao serem superados, e os do desafio do dia, aos 45 dias. Se você quiser que seja apagado um resultado que publicou, ou vir um apelido que não deveria estar lá, escreva para ${email()} indicando o apelido e o desafio.</p>
+    <p>Ao terminar uma partida, você pode publicar o seu resultado no ranking desse desafio. Nada é enviado se você não tocar em “Publicar”. No banco de dados são guardados (e qualquer pessoa que consultar esse ranking pode vê-los) o apelido que você escrever, a sua nota, o seu tempo, a data e o país de onde você se conecta (só a sigla de duas letras, para mostrar a bandeira). O país é indicado pela hospedagem a partir do seu endereço IP no momento de publicar; o endereço IP não é guardado no banco de dados.</p>
+    <p>O apelido não deve conter o seu nome, o seu sobrenome nem outros dados pessoais: o aplicativo propõe um e lembra você disso ao escrevê-lo. Ele não está associado a nenhuma conta nem a nenhuma pessoa, e qualquer um pode usar o mesmo. Só se conservam os dez melhores resultados de cada ranking: os demais são apagados ao serem superados, e os do desafio do dia, após 45 dias. Se você quiser que seja apagado um resultado que publicou, ou vir um apelido que não deveria estar lá, escreva para ${email()} indicando o apelido e o desafio.</p>
     <p><strong>Base legal:</strong> o seu consentimento, que você dá ao tocar em “Publicar” (art. 6.1.a do RGPD).</p>
 
     <h3>Localização</h3>
@@ -123,7 +123,7 @@ ${titularBlock()}
     <p>Se você aceitar os cookies de análise, são carregados o Google Tag Manager e o Google Analytics 4 para contar as visitas e saber quais partes do site são usadas, com a única finalidade de melhorá-lo. São tratados dados técnicos e de uso: identificadores de cookie, páginas vistas, tipo de dispositivo e navegador, idioma, e país ou cidade aproximados. Não são usados para publicidade nem para criar perfis comerciais.</p>
     <ul>
       <li><strong>Base legal:</strong> o seu consentimento (art. 6.1.a do RGPD). Você pode retirá-lo quando quiser na ${consentLink}, sem que isso afete o que foi tratado antes.</li>
-      <li><strong>Fornecedor:</strong> Google Ireland Limited, que atua como operador (“subcontratante”, na versão em português do RGPD). O Google pode transferir dados para os Estados Unidos, amparado pelo Quadro de Privacidade de Dados UE-EUA e por cláusulas contratuais-tipo.</li>
+      <li><strong>Fornecedor:</strong> Google Ireland Limited, que atua como subcontratante (o “operador” da LGPD brasileira). O Google pode transferir dados para os Estados Unidos, amparado pelo Quadro de Privacidade de Dados UE-EUA e por cláusulas contratuais-tipo.</li>
       <li><strong>Conservação:</strong> a que estiver configurada na propriedade do Google Analytics, no máximo 14 meses.</li>
     </ul>
     <p>Se você recusar ou não responder, o site não carrega nada do Google.</p>
@@ -132,10 +132,10 @@ ${titularBlock()}
     <p>Se você escrever para ${email()}, o seu endereço e a sua mensagem são usados para responder a você, com base no seu próprio pedido. São conservados enquanto durar a conversa e apagados depois, salvo se for preciso guardá-los por obrigação legal.</p>
 
     <h3>Doações</h3>
-    <p>As doações são feitas no PayPal, que trata os dados do pagamento como responsável independente, de acordo com a sua própria política de privacidade. O titular recebe do PayPal o nome, o e-mail e o valor de quem doa, e os usa apenas para gerir a doação, agradecê-la e cumprir as suas obrigações fiscais, durante o prazo que a lei exigir.</p>
+    <p>As doações são feitas no PayPal, que trata os dados do pagamento como responsável independente, de acordo com a sua própria política de privacidade. O titular recebe do PayPal o nome, o e-mail e o valor de quem doa, e os usa apenas para gerenciar a doação, agradecê-la e cumprir as suas obrigações fiscais, durante o prazo que a lei exigir.</p>
 
     <h3>Hospedagem</h3>
-    <p>O site é hospedado na Vercel Inc. Como qualquer servidor web, ela registra dados técnicos de cada visita (como o endereço IP) durante um tempo limitado, para servir o site e protegê-lo de abusos. A Vercel atua como operador (“subcontratante”, na versão em português do RGPD), com as garantias do RGPD para as transferências internacionais.</p>
+    <p>O site é hospedado na Vercel Inc. Como qualquer servidor web, ela registra dados técnicos de cada visita (como o endereço IP) durante um tempo limitado, para servir o site e protegê-lo de abusos. A Vercel atua como subcontratante (o “operador” da LGPD brasileira), com as garantias do RGPD para as transferências internacionais.</p>
     <p><strong>Base legal:</strong> o interesse legítimo do titular em poder servir o site e mantê-lo seguro (art. 6.1.f do RGPD).</p>
 
     <h2>Menores de idade</h2>
@@ -170,11 +170,11 @@ ${traduccion('cookies', 'Política de cookies')}
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Nome</th><th scope="col">Para que serve</th><th scope="col">Duração</th></tr></thead>
       <tbody>
-        <tr><td><code>mapamundi:ajustes</code></td><td>Tema, visualização, desafio escolhido, listas de estudo e se você fechou o aviso de idioma.</td><td>Até você apagá-la</td></tr>
-        <tr><td><code>mapamundi:progreso</code></td><td>O que você já sabe e as suas melhores notas.</td><td>Até você apagá-la</td></tr>
+        <tr><td><code>mapamundi:ajustes</code></td><td>Tema, visualização, desafio escolhido, listas de estudo e se você fechou o aviso de idioma.</td><td>Até você apagar</td></tr>
+        <tr><td><code>mapamundi:progreso</code></td><td>O que você já sabe e as suas melhores notas.</td><td>Até você apagar</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>O seu código para continuar em outro dispositivo, se você o criou.</td><td>Até você parar de sincronizar</td></tr>
-        <tr><td><code>swm:apodo</code></td><td>O último apelido com que você publicou no ranking, para propô-lo a você na próxima vez.</td><td>Até você apagá-la</td></tr>
-        <tr><td><code>swm:sin-oferta</code></td><td>Lembrar que você disse “Agora não” quando lhe é oferecido criar um código ao terminar uma partida.</td><td>Até você apagá-la</td></tr>
+        <tr><td><code>swm:apodo</code></td><td>O último apelido com que você publicou no ranking, para propô-lo a você na próxima vez.</td><td>Até você apagar</td></tr>
+        <tr><td><code>swm:sin-oferta</code></td><td>Lembrar que você disse “Agora não” quando lhe é oferecido criar um código ao terminar uma partida.</td><td>Até você apagar</td></tr>
         <tr><td><code>swm:consent</code></td><td>Lembrar se você aceitou ou recusou os cookies, e quando.</td><td>Dois anos; depois a pergunta é feita de novo</td></tr>
         <tr><td>Cache <code>swm-*</code></td><td>Cópia do aplicativo para usá-lo sem conexão.</td><td>Até a versão seguinte</td></tr>
       </tbody>

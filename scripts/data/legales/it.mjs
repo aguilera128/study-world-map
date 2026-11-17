@@ -32,7 +32,7 @@ ${traduccion('aviso')}
 ${titularBlock()}
 
     <h2>Oggetto</h2>
-    <p>Study World Map è un progetto educativo personale: un atlante interattivo per studiare la geografia giocando. Insegna i paesi del mondo, i loro continenti, le loro capitali e le loro bandiere; le province, gli stati o le regioni di più di trenta paesi; la geografia fisica, i climi e la popolazione; l’interno della Terra e gli strati dell’atmosfera; e, dal vivo, il giorno e la notte, il meteo e i satelliti. È gratuito, non ha pubblicità, non vende nulla e non richiede registrazione. Si mantiene con il tempo del suo autore e con le <a href="${ruta('donar')}">donazioni volontarie</a> di chi voglia sostenerlo.</p>
+    <p>Study World Map è un progetto educativo personale: un atlante interattivo per studiare la geografia giocando. Insegna i paesi del mondo, i loro continenti, le loro capitali e le loro bandiere; le province, gli stati o le regioni di più di trenta paesi; la geografia fisica, i climi e la popolazione; l’interno della Terra e gli strati dell’atmosfera; e, dal vivo, il giorno e la notte, il meteo e i satelliti. È gratuito, non ha pubblicità, non vende nulla e non richiede registrazione. Va avanti grazie al tempo del suo autore e alle <a href="${ruta('donar')}">donazioni volontarie</a> di chi voglia sostenerlo.</p>
 
     <h2>Condizioni d’uso</h2>
     <p>L’uso del sito è libero e gratuito. Usandolo ti impegni a farlo in modo lecito, senza danneggiare il sito né impedire ad altri di usarlo. Puoi condividere i link e gli elenchi di studio con chi vuoi, per esempio con la tua classe.</p>
@@ -51,11 +51,11 @@ ${titularBlock()}
       <li>Regioni degli Stati Uniti: le quattro regioni dell’Ufficio del Censimento (U.S. Census Bureau).</li>
       <li>Regioni della Finlandia: <a href="https://stat.fi/en/services/statistical-data-services/geographic-data">Statistics Finland</a>, unità statistiche per comuni del 2026 (licenza CC BY 4.0), semplificate.</li>
       <li>Contee della Norvegia: <a href="https://kartkatalog.geonorge.no/">Kartverket</a>, «Administrative enheter fylker» del 2026 (licenza CC BY 4.0), ritagliate lungo la costa e semplificate.</li>
-      <li>Contee dell’Estonia: divisione amministrativa dell’Estonia (EHAK), Ente estone per il territorio e lo sviluppo territoriale (Republic of Estonia Land and Spatial Development Board), dati del 01.11.2026, semplificati, con la sua <a href="https://geoportaal.maaruum.ee/opendata-licence">licenza di dati aperti</a>.</li>
+      <li>Contee dell’Estonia: divisione amministrativa dell’Estonia (EHAK), Ente estone per il territorio e la pianificazione territoriale (Republic of Estonia Land and Spatial Development Board), dati del 01.11.2026, semplificati, con la sua <a href="https://geoportaal.maaruum.ee/opendata-licence">licenza di dati aperti</a>.</li>
       <li>Distretti di Cipro: Dipartimento del territorio e del catasto della Repubblica di Cipro (Department of Lands and Surveys), unità amministrative INSPIRE, semplificati.</li>
       <li>Distretti della Moldavia: UNHCR e OCHA, confini amministrativi della Moldavia del 2020 (licenza CC BY 3.0 IGO), tramite <a href="https://www.geoboundaries.org/">geoBoundaries</a>, ritagliati e semplificati.</li>
-      <li>Temperatura, nuvole e vento di adesso: modello GFS (Global Forecast System) di NOAA/NCEP (pubblico dominio), del programma di dati aperti della NOAA. È una previsione, non una misurazione.</li>
-      <li>Pioggia e neve di adesso: IMERG, della missione GPM della NASA, fornito dai Global Imagery Browse Services (GIBS) del sistema ESDIS della NASA.</li>
+      <li>Temperatura, nuvole e vento attuali: modello GFS (Global Forecast System) di NOAA/NCEP (pubblico dominio), del programma di dati aperti della NOAA. È una previsione, non una misurazione.</li>
+      <li>Pioggia e neve attuali: IMERG, della missione GPM della NASA, fornito dai Global Imagery Browse Services (GIBS) del sistema ESDIS della NASA.</li>
       <li>Satelliti: elementi orbitali GP di <a href="https://celestrak.org/">CelesTrak</a> (T. S. Kelso), a partire dai dati della U.S. Space Force; la posizione di ogni satellite è calcolata nel browser con il modello SGP4 (<a href="https://github.com/shashwatak/satellite-js">satellite.js</a>, licenza MIT).</li>
       <li>Codici ISO e superfici: <a href="https://github.com/mledoze/countries">mledoze/countries</a> (Open Database License).</li>
       <li>Bandiere: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (licenza MIT).</li>
@@ -103,11 +103,11 @@ ${titularBlock()}
     <p>La banca dati si trova nell’Unione Europea (Francoforte), nel servizio Neon, e le richieste passano per l’hosting del sito (Vercel), che come in qualsiasi sito registra per un tempo limitato dati tecnici di ogni richiesta, tra cui l’indirizzo IP e l’indirizzo richiesto. Chi conosce il codice può vedere e modificare quei progressi, quindi condividilo solo con chi vuoi. Se apri un link che contiene il codice (quello del codice QR), quel codice fa parte dell’indirizzo di quella visita, e quindi di ciò che registra l’hosting. L’applicazione lo toglie dall’indirizzo appena si apre, prima di caricare l’analisi, perché non arrivi a Google.</p>
     <p>Puoi cancellare ciò che è salvato in qualsiasi momento con «Elimina ciò che è salvato con questo codice». «Interrompi la sincronizzazione» scollega soltanto il dispositivo su cui lo premi: ciò che è salvato resta lì per i tuoi altri dispositivi. Ciò che non viene usato da più di un anno viene cancellato.</p>
     <p><strong>Base giuridica:</strong> il tuo consenso, che dai premendo «Crea il mio codice» (art. 6.1.a del GDPR). Puoi revocarlo quando vuoi cancellando ciò che è salvato.</p>
-    <p><strong>Fornitore:</strong> Neon, il servizio di banca dati, che agisce come responsabile del trattamento. I dati sono conservati nel suo centro di Francoforte. Neon appartiene a un’impresa degli Stati Uniti: se vi accedesse da fuori dello Spazio Economico Europeo, lo farebbe con le garanzie che il GDPR esige per i trasferimenti internazionali.</p>
+    <p><strong>Fornitore:</strong> Neon, il servizio di banca dati, che agisce come responsabile del trattamento. I dati sono conservati nel suo centro di Francoforte. Neon appartiene a un’impresa degli Stati Uniti: se vi accedesse dall’esterno dello Spazio Economico Europeo, lo farebbe con le garanzie che il GDPR esige per i trasferimenti internazionali.</p>
 
     <h3>Classifica dei risultati (facoltativo)</h3>
-    <p>Al termine di una partita puoi pubblicare il tuo risultato nella classifica di quella sfida. Non viene inviato nulla se non premi «Pubblica». Vengono salvati nella banca dati, e li vede chiunque consulti quella classifica, il soprannome che scrivi, il tuo voto, il tuo tempo, la data e il paese da cui ti colleghi (solo le sue due lettere, per mostrare la bandiera). Il paese lo indica l’hosting a partire dal tuo indirizzo IP nel momento della pubblicazione; l’indirizzo IP non viene salvato nella banca dati.</p>
-    <p>Il soprannome non deve contenere il tuo nome, il tuo cognome né altri dati personali: l’applicazione te ne propone uno e te lo ricorda mentre lo scrivi. Non è associato a nessun account né a nessuna persona, e chiunque può usare lo stesso. Si conservano solo i dieci migliori risultati di ogni classifica: gli altri vengono cancellati quando sono superati, e quelli della sfida del giorno, dopo 45 giorni. Se vuoi che venga cancellato un risultato che hai pubblicato, o vedi un soprannome che non dovrebbe esserci, scrivi a ${email()} indicando il soprannome e la sfida.</p>
+    <p>Al termine di una partita puoi pubblicare il tuo risultato nella classifica di quella sfida. Non viene inviato nulla se non premi «Pubblica». Vengono salvati nella banca dati, e chiunque consulti quella classifica può vederli: il soprannome che scrivi, il tuo voto, il tuo tempo, la data e il paese da cui ti colleghi (solo le sue due lettere, per mostrare la bandiera). Il paese lo indica l’hosting a partire dal tuo indirizzo IP nel momento della pubblicazione; l’indirizzo IP non viene salvato nella banca dati.</p>
+    <p>Il soprannome non deve contenere il tuo nome, il tuo cognome né altri dati personali: l’applicazione te ne propone uno e te lo ricorda mentre lo scrivi. Non è associato a nessun account né a nessuna persona, e chiunque può usarne uno uguale. Si conservano solo i dieci migliori risultati di ogni classifica: gli altri vengono cancellati quando sono superati, e quelli della sfida del giorno, dopo 45 giorni. Se vuoi che venga cancellato un risultato che hai pubblicato, o vedi un soprannome che non dovrebbe esserci, scrivi a ${email()} indicando il soprannome e la sfida.</p>
     <p><strong>Base giuridica:</strong> il tuo consenso, che dai premendo «Pubblica» (art. 6.1.a del GDPR).</p>
 
     <h3>Posizione</h3>
@@ -123,16 +123,16 @@ ${titularBlock()}
     <p>Se accetti i cookie di analisi, vengono caricati Google Tag Manager e Google Analytics 4 per contare le visite e sapere quali parti del sito vengono usate, al solo fine di migliorarlo. Vengono trattati dati tecnici e d’uso: identificatori di cookie, pagine viste, tipo di dispositivo e browser, lingua, e paese o città approssimativi. Non vengono usati per la pubblicità né per creare profili commerciali.</p>
     <ul>
       <li><strong>Base giuridica:</strong> il tuo consenso (art. 6.1.a del GDPR). Puoi revocarlo quando vuoi dalle ${consentLink}, senza che ciò incida su quanto trattato prima.</li>
-      <li><strong>Fornitore:</strong> Google Ireland Limited, che agisce come responsabile del trattamento. Google può trasferire dati negli Stati Uniti, nel quadro del Data Privacy Framework UE-USA e di clausole contrattuali tipo.</li>
+      <li><strong>Fornitore:</strong> Google Ireland Limited, che agisce come responsabile del trattamento. Google può trasferire dati negli Stati Uniti, nell’ambito del Quadro UE-USA per la protezione dei dati personali (EU-U.S. Data Privacy Framework) e di clausole contrattuali tipo.</li>
       <li><strong>Conservazione:</strong> quella configurata nella proprietà di Google Analytics, al massimo 14 mesi.</li>
     </ul>
     <p>Se rifiuti o non rispondi, il sito non carica nulla di Google.</p>
 
     <h3>Posta elettronica</h3>
-    <p>Se scrivi a ${email()}, il tuo indirizzo e il tuo messaggio vengono usati per risponderti, sulla base della tua stessa richiesta. Si conservano finché dura la conversazione e vengono cancellati dopo, salvo che si debbano conservare per obbligo di legge.</p>
+    <p>Se scrivi a ${email()}, il tuo indirizzo e il tuo messaggio vengono usati per risponderti, sulla base della tua stessa richiesta. Si conservano finché dura la conversazione e poi vengono cancellati, salvo che si debbano conservare per obbligo di legge.</p>
 
     <h3>Donazioni</h3>
-    <p>Le donazioni si fanno su PayPal, che tratta i dati del pagamento come titolare autonomo secondo la propria informativa sulla privacy. Il titolare riceve da PayPal il nome, la posta elettronica e l’importo di chi dona, e li usa solo per gestire la donazione, ringraziare e adempiere ai propri obblighi fiscali, per il periodo che la legge esige.</p>
+    <p>Le donazioni si fanno su PayPal, che tratta i dati del pagamento come titolare autonomo secondo la propria informativa sulla privacy. Il titolare del sito riceve da PayPal il nome, la posta elettronica e l’importo di chi dona, e li usa solo per gestire la donazione, ringraziare chi dona e adempiere ai propri obblighi fiscali, per il periodo previsto dalla legge.</p>
 
     <h3>Hosting</h3>
     <p>Il sito è ospitato da Vercel Inc. Come qualsiasi server web, registra dati tecnici di ogni visita (come l’indirizzo IP) per un tempo limitato, per servire il sito e proteggerlo dagli abusi. Vercel agisce come responsabile del trattamento, con le garanzie del GDPR per i trasferimenti internazionali.</p>
@@ -142,7 +142,7 @@ ${titularBlock()}
     <p>Study World Map è pensato per studenti. Non chiede dati personali per essere usato. Se hai meno di 14 anni, chiedi a tua madre, a tuo padre o alla persona che si prende cura di te di decidere se accettare i cookie di analisi e se puoi pubblicare i tuoi risultati nella classifica (art. 7 della Ley Orgánica 3/2018, la legge organica spagnola sulla protezione dei dati).</p>
 
     <h2>I tuoi diritti</h2>
-    <p>Puoi chiedere l’accesso, la rettifica o la cancellazione dei tuoi dati, la limitazione del loro trattamento, opporti ad esso o chiederne la portabilità, scrivendo a ${email()}. Poiché non sappiamo di chi sia ciascun codice di sincronizzazione, per dare seguito a una richiesta su dei progressi salvati abbiamo bisogno che tu ci indichi il codice. Se ritieni che i tuoi diritti non siano stati rispettati, puoi presentare reclamo all’<a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a> (l’autorità spagnola per la protezione dei dati).</p>
+    <p>Puoi chiedere l’accesso, la rettifica o la cancellazione dei tuoi dati, la limitazione del loro trattamento, opporti ad esso o chiederne la portabilità, scrivendo a ${email()}. Poiché non sappiamo di chi sia ciascun codice di sincronizzazione, per dare seguito a una richiesta relativa a progressi salvati abbiamo bisogno che tu ci indichi il codice. Se ritieni che i tuoi diritti non siano stati rispettati, puoi presentare reclamo all’<a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a> (l’autorità spagnola per la protezione dei dati).</p>
 ${revision}`,
     },
 
@@ -163,34 +163,34 @@ ${traduccion('cookies')}
         <tr><td><code>_ga_&lt;id&gt;</code></td><td>Google Analytics</td><td>Mantenere lo stato della sessione.</td><td>2 anni</td></tr>
       </tbody>
     </table></div>
-    <p>Sono cookie propri del dominio, ma li gestisce Google. Maggiori informazioni nell’<a href="${ruta('privacidad')}">informativa sulla privacy</a> e nella <a href="https://policies.google.com/technologies/cookies?hl=es">spiegazione di Google</a>.</p>
+    <p>Sono cookie di prima parte, impostati sul dominio di questo sito, ma li gestisce Google. Maggiori informazioni nell’<a href="${ruta('privacidad')}">informativa sulla privacy</a> e nella <a href="https://policies.google.com/technologies/cookies?hl=es">spiegazione di Google</a>.</p>
 
     <h2>Memoria tecnica (non richiede il consenso)</h2>
     <p>Non sono cookie: sono salvati solo nel tuo browser, non vengono inviati a nessun server (salvo i progressi, se crei un codice per portarli su un altro dispositivo, e il soprannome, se pubblichi un risultato nella classifica) e sono necessari perché l’applicazione funzioni come chiedi.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Nome</th><th scope="col">A che cosa serve</th><th scope="col">Durata</th></tr></thead>
       <tbody>
-        <tr><td><code>mapamundi:ajustes</code></td><td>Tema, vista, sfida scelta, elenchi di studio e se hai chiuso l’avviso sulla lingua.</td><td>Finché non la cancelli</td></tr>
-        <tr><td><code>mapamundi:progreso</code></td><td>Ciò che sai già e i tuoi voti migliori.</td><td>Finché non la cancelli</td></tr>
+        <tr><td><code>mapamundi:ajustes</code></td><td>Tema, vista, sfida scelta, elenchi di studio e se hai chiuso l’avviso sulla lingua.</td><td>Finché non cancelli i dati del sito</td></tr>
+        <tr><td><code>mapamundi:progreso</code></td><td>Ciò che sai già e i tuoi voti migliori.</td><td>Finché non cancelli i dati del sito</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>Il tuo codice per continuare su un altro dispositivo, se lo hai creato.</td><td>Finché non interrompi la sincronizzazione</td></tr>
-        <tr><td><code>swm:apodo</code></td><td>L’ultimo soprannome con cui hai pubblicato nella classifica, per proportelo la prossima volta.</td><td>Finché non la cancelli</td></tr>
-        <tr><td><code>swm:sin-oferta</code></td><td>Ricordare che hai detto «Non ora» quando ti viene offerto di creare un codice al termine di una partita.</td><td>Finché non la cancelli</td></tr>
+        <tr><td><code>swm:apodo</code></td><td>L’ultimo soprannome con cui hai pubblicato nella classifica, per proportelo la prossima volta.</td><td>Finché non cancelli i dati del sito</td></tr>
+        <tr><td><code>swm:sin-oferta</code></td><td>Ricordare che hai detto «Non ora» quando ti viene offerto di creare un codice al termine di una partita.</td><td>Finché non cancelli i dati del sito</td></tr>
         <tr><td><code>swm:consent</code></td><td>Ricordare se hai accettato o rifiutato i cookie, e quando.</td><td>Due anni; dopo ti viene chiesto di nuovo</td></tr>
         <tr><td>Cache <code>swm-*</code></td><td>Copia dell’applicazione per usarla offline.</td><td>Fino alla versione successiva</td></tr>
       </tbody>
     </table></div>
 
     <h2>Come cambiare o revocare il tuo consenso</h2>
-    <p>In qualsiasi momento, dalle ${consentLink} (anche nel piè di ogni pagina). Se rifiuti, il sito smette di caricare Google Analytics e cancella i suoi cookie. La tua scelta, qualunque essa sia, vale due anni: trascorso quel tempo ti viene chiesto di nuovo. Inoltre, puoi cancellare i cookie e i dati del sito dalle impostazioni del tuo browser; se lo fai, verranno cancellati anche i tuoi progressi.</p>
+    <p>In qualsiasi momento, dalle ${consentLink} (anche in fondo a ogni pagina). Se rifiuti, il sito smette di caricare Google Analytics e cancella i suoi cookie. La tua scelta, qualunque essa sia, vale due anni: trascorso quel tempo ti viene chiesto di nuovo. Inoltre, puoi cancellare i cookie e i dati del sito dalle impostazioni del tuo browser; se lo fai, verranno cancellati anche i tuoi progressi.</p>
 ${revision}`,
     },
 
     {
       id: 'donar',
       title: 'Sostieni Study World Map con una donazione',
-      description: 'Study World Map è gratis, senza annunci e senza registrazione. Se ti aiuta a studiare, puoi sostenerlo con una donazione.',
+      description: 'Study World Map è gratis, senza pubblicità e senza registrazione. Se ti aiuta a studiare, puoi sostenerlo con una donazione.',
       body: `    <h1>Sostieni Study World Map</h1>
-    <p class="lead">Study World Map è gratis per tutti gli studenti e continuerà a esserlo: senza annunci, senza account e senza vendere i tuoi dati. Se ha aiutato te o la tua classe, una donazione aiuta a mantenerlo vivo.</p>
+    <p class="lead">Study World Map è gratis per tutti gli studenti e continuerà a esserlo: senza pubblicità, senza account e senza vendere i tuoi dati. Se ha aiutato te o la tua classe, una donazione aiuta a mantenerlo vivo.</p>
     <p><a class="cta" href="${esc(DONAR_URL)}" rel="noopener" target="_blank">Dona con PayPal →</a></p>
 
     <h2>A che cosa è destinata</h2>

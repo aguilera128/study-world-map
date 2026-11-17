@@ -62,20 +62,20 @@ ${titularBlock()}
       <li>Image satellite : Blue Marble Next Generation, NASA Earth Observatory (juillet 2004, domaine public).</li>
       <li>Relief des fonds marins : ETOPO2v2, NOAA National Geophysical Data Center (domaine public).</li>
       <li>Courants océaniques : OSCAR (Ocean Surface Current Analyses Real-time, Earth &amp; Space Research), moyenne de décembre 2011 à septembre 2014, du serveur ERDDAP de NOAA CoastWatch ; la direction générale de chaque courant, de son article dans la Wikipédia en anglais.</li>
-      <li>Plaques tectoniques : modèle PB2002 de Peter Bird (2003), <em>Geochemistry, Geophysics, Geosystems</em>, dans la conversion de Hugo Ahlenius (Nordpil), licence <a href="https://github.com/fraxen/tectonicplates">ODC-By 1.0</a>. Volcans : base de données des volcans de NOAA NCEI (domaine public).</li>
+      <li>Plaques tectoniques : modèle PB2002 de Peter Bird (2003), <em>Geochemistry, Geophysics, Geosystems</em>, converti par Hugo Ahlenius (Nordpil), licence <a href="https://github.com/fraxen/tectonicplates">ODC-By 1.0</a>. Volcans : base de données des volcans de NOAA NCEI (domaine public).</li>
       <li>Étoiles : Yale Bright Star Catalogue, 5e édition (domaine public), et catalogue Hipparcos de l’Agence spatiale européenne (ESA, 1997).</li>
       <li>Voie lactée : « Deep Star Maps 2020 », NASA/Goddard Space Flight Center Scientific Visualization Studio, avec des données de Gaia DR2 (ESA/Gaia/DPAC).</li>
       <li>Fuseaux horaires : base de données des fuseaux horaires de l’IANA, via <a href="https://github.com/moment/moment-timezone">moment-timezone</a> (licence MIT).</li>
-      <li>Illustrations de la couche « Planète de dessin animé » : créations originales générées par intelligence artificielle à partir d’une description propre.</li>
+      <li>Illustrations de la couche « Planète de dessin animé » : créations originales générées par intelligence artificielle à partir d’une description rédigée par l’auteur.</li>
       <li>Climats : carte mondiale de Köppen-Geiger de Kottek, Grieser, Beck, Rudolf et Rubel (2006), <em>Meteorologische Zeitschrift</em> 15, 259-263, regroupée selon les climats étudiés dans l’enseignement secondaire.</li>
       <li>Polices de caractères : Besley et Atkinson Hyperlegible Next (SIL Open Font License).</li>
     </ul>
 
     <h2>Liens externes</h2>
-    <p>Le site renvoie à des pages de tiers, comme PayPal pour les dons, GitHub pour le code source et les sites des sources des données. Le titulaire ne contrôle pas ces pages et ne répond ni de leurs contenus ni de leurs politiques.</p>
+    <p>Le site renvoie à des pages de tiers, comme PayPal pour les dons, GitHub pour le code source et les sites des sources des données. Le titulaire ne contrôle pas ces pages et n’est responsable ni de leurs contenus ni de leurs politiques.</p>
 
     <h2>Responsabilité</h2>
-    <p>Le titulaire ne garantit pas que le site soit disponible à tout moment ni exempt d’erreurs, et ne répond pas des dommages qui pourraient découler de son utilisation, sauf dans les cas où la loi l’exige.</p>
+    <p>Le titulaire ne garantit pas que le site soit disponible à tout moment ni exempt d’erreurs, et n’est pas responsable des dommages qui pourraient découler de son utilisation, sauf dans les cas où la loi l’exige.</p>
 
     <h2>Législation applicable</h2>
     <p>Les présentes mentions légales sont régies par la législation espagnole. Les informations sur le traitement des données personnelles figurent dans la <a href="${ruta('privacidad')}">politique de confidentialité</a> et celles sur les cookies, dans la <a href="${ruta('cookies')}">politique de cookies</a>.</p>
@@ -99,13 +99,13 @@ ${titularBlock()}
     <p>Ils sont enregistrés uniquement dans le stockage local de votre navigateur, pour que vous ne perdiez pas ce que vous avez appris. Ils ne sont envoyés à aucun serveur et le titulaire n’y a pas accès, sauf si vous utilisez la synchronisation expliquée ci-après. Vous pouvez les effacer depuis l’application elle-même (« Progrès ») ou en effaçant les données du site dans votre navigateur.</p>
     <h3>Continuer sur un autre appareil (facultatif)</h3>
     <p>Si, dans « Progrès », vous appuyez sur « Créer mon code », vos progrès sont également enregistrés dans une base de données pour que vous puissiez continuer sur un autre appareil. Sont enregistrés uniquement un code de douze lettres et chiffres généré au hasard, les progrès (quels pays ou éléments géographiques vous connaissez, vos meilleures notes et le résultat du défi du jour) et la date. La base de données n’enregistre ni votre nom, ni votre adresse électronique, ni votre adresse IP, et le code n’est associé à aucune personne. Les listes de révision et les réglages ne sont pas envoyés.</p>
-    <p>La base de données se trouve dans l’Union européenne (Francfort), dans le service Neon, et les requêtes passent par l’hébergement du site (Vercel), qui, comme pour tout site, enregistre pendant une durée limitée des données techniques de chaque requête, parmi lesquelles l’adresse IP et l’adresse demandée. Toute personne qui connaît le code peut voir et modifier ces progrès : ne le partagez donc qu’avec qui vous voulez. Si vous ouvrez un lien qui contient le code (celui du code QR), ce code fait partie de l’adresse de cette visite, et donc de ce qu’enregistre l’hébergement. L’application le retire de l’adresse dès son ouverture, avant de charger l’outil d’analyse, pour qu’il ne parvienne pas à Google.</p>
-    <p>Vous pouvez effacer à tout moment ce qui est enregistré avec « Supprimer ce qui est enregistré avec ce code ». « Arrêter la synchronisation » ne déconnecte que l’appareil sur lequel vous appuyez dessus : ce qui est enregistré reste disponible pour vos autres appareils. Ce qui n’a pas été utilisé depuis plus d’un an est effacé.</p>
+    <p>La base de données se trouve dans l’Union européenne (Francfort), dans le service Neon, et les requêtes passent par l’hébergeur du site (Vercel), qui, comme pour tout site, enregistre pendant une durée limitée des données techniques de chaque requête, parmi lesquelles l’adresse IP et l’adresse demandée. Toute personne qui connaît le code peut voir et modifier ces progrès : ne le partagez donc qu’avec qui vous voulez. Si vous ouvrez un lien qui contient le code (celui du code QR), ce code fait partie de l’adresse de cette visite, et donc de ce qu’enregistre l’hébergeur. L’application le retire de l’adresse dès son ouverture, avant de charger l’outil d’analyse, pour qu’il ne parvienne pas à Google.</p>
+    <p>Vous pouvez effacer à tout moment ce qui est enregistré avec « Supprimer ce qui est enregistré avec ce code ». « Arrêter la synchronisation » ne déconnecte que l’appareil où vous appuyez sur ce bouton : ce qui est enregistré reste disponible pour vos autres appareils. Ce qui n’a pas été utilisé depuis plus d’un an est effacé.</p>
     <p><strong>Base juridique :</strong> votre consentement, que vous donnez en appuyant sur « Créer mon code » (art. 6.1.a du RGPD). Vous pouvez le retirer quand vous voulez en effaçant ce qui est enregistré.</p>
     <p><strong>Prestataire :</strong> Neon, le service de base de données, qui agit en qualité de sous-traitant. Les données sont conservées dans son centre de Francfort. Neon appartient à une entreprise des États-Unis : si elle y accédait depuis l’extérieur de l’Espace économique européen, elle le ferait avec les garanties qu’exige le RGPD pour les transferts internationaux.</p>
 
     <h3>Classement des résultats (facultatif)</h3>
-    <p>À la fin d’une partie, vous pouvez publier votre résultat dans le classement de ce défi. Rien n’est envoyé si vous n’appuyez pas sur « Publier ». Sont enregistrés dans la base de données, et visibles par toute personne qui consulte ce classement, le pseudo que vous écrivez, votre note, votre temps, la date et le pays depuis lequel vous vous connectez (seulement ses deux lettres, pour afficher le drapeau). Le pays est indiqué par l’hébergement à partir de votre adresse IP au moment de la publication ; l’adresse IP n’est pas enregistrée dans la base de données.</p>
+    <p>À la fin d’une partie, vous pouvez publier votre résultat dans le classement de ce défi. Rien n’est envoyé si vous n’appuyez pas sur « Publier ». Sont enregistrés dans la base de données, et visibles par toute personne qui consulte ce classement, le pseudo que vous écrivez, votre note, votre temps, la date et le pays depuis lequel vous vous connectez (seulement son code à deux lettres, pour afficher le drapeau). Le pays est indiqué par l’hébergeur à partir de votre adresse IP au moment de la publication ; l’adresse IP n’est pas enregistrée dans la base de données.</p>
     <p>Le pseudo ne doit contenir ni votre prénom, ni votre nom de famille, ni d’autres données personnelles : l’application vous en propose un et vous le rappelle au moment de l’écrire. Il n’est associé à aucun compte ni à aucune personne, et n’importe qui peut utiliser le même. Seuls les dix meilleurs résultats de chaque classement sont conservés : les autres sont effacés lorsqu’ils sont dépassés, et ceux du défi du jour, au bout de 45 jours. Si vous voulez que soit effacé un résultat que vous avez publié, ou si vous voyez un pseudo qui ne devrait pas s’y trouver, écrivez à ${email()} en indiquant le pseudo et le défi.</p>
     <p><strong>Base juridique :</strong> votre consentement, que vous donnez en appuyant sur « Publier » (art. 6.1.a du RGPD).</p>
 
@@ -122,7 +122,7 @@ ${titularBlock()}
     <p>Si vous acceptez les cookies d’analyse, Google Tag Manager et Google Analytics 4 sont chargés pour compter les visites et savoir quelles parties du site sont utilisées, dans le seul but de l’améliorer. Sont traitées des données techniques et d’utilisation : identifiants de cookie, pages vues, type d’appareil et de navigateur, langue, et pays ou ville approximatifs. Elles ne sont utilisées ni à des fins publicitaires ni pour créer des profils commerciaux.</p>
     <ul>
       <li><strong>Base juridique :</strong> votre consentement (art. 6.1.a du RGPD). Vous pouvez le retirer quand vous voulez depuis les ${consentLink}, sans que cela affecte ce qui a été traité auparavant.</li>
-      <li><strong>Prestataire :</strong> Google Ireland Limited, qui agit en qualité de sous-traitant. Google peut transférer des données vers les États-Unis, sous couvert du Cadre de protection des données UE-États-Unis et de clauses contractuelles types.</li>
+      <li><strong>Prestataire :</strong> Google Ireland Limited, qui agit en qualité de sous-traitant. Google peut transférer des données vers les États-Unis, sur la base du cadre de protection des données UE-États-Unis et de clauses contractuelles types.</li>
       <li><strong>Conservation :</strong> celle qui est configurée dans la propriété Google Analytics, au maximum 14 mois.</li>
     </ul>
     <p>Si vous refusez ou ne répondez pas, le site ne charge rien de Google.</p>
@@ -162,7 +162,7 @@ ${traduccion('cookies')}
         <tr><td><code>_ga_&lt;id&gt;</code></td><td>Google Analytics</td><td>Conserver l’état de la session.</td><td>2 ans</td></tr>
       </tbody>
     </table></div>
-    <p>Ce sont des cookies propres au domaine, mais c’est Google qui les gère. Plus d’informations dans la <a href="${ruta('privacidad')}">politique de confidentialité</a> et dans l’<a href="https://policies.google.com/technologies/cookies?hl=es">explication de Google</a>.</p>
+    <p>Ce sont des cookies internes (déposés sous le domaine du site), mais c’est Google qui les gère. Plus d’informations dans la <a href="${ruta('privacidad')}">politique de confidentialité</a> et dans l’<a href="https://policies.google.com/technologies/cookies?hl=es">explication de Google</a>.</p>
 
     <h2>Stockage technique (ne nécessite pas le consentement)</h2>
     <p>Ce ne sont pas des cookies : ils sont enregistrés uniquement dans votre navigateur, ne sont envoyés à aucun serveur (sauf les progrès, si vous créez un code pour les emporter sur un autre appareil, et le pseudo, si vous publiez un résultat dans le classement) et sont nécessaires pour que l’application fonctionne comme vous le demandez.</p>
@@ -173,14 +173,14 @@ ${traduccion('cookies')}
         <tr><td><code>mapamundi:progreso</code></td><td>Ce que vous savez déjà et vos meilleures notes.</td><td>Jusqu’à ce que vous l’effaciez</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>Votre code pour continuer sur un autre appareil, si vous l’avez créé.</td><td>Jusqu’à ce que vous arrêtiez la synchronisation</td></tr>
         <tr><td><code>swm:apodo</code></td><td>Le dernier pseudo avec lequel vous avez publié dans le classement, pour vous le proposer la prochaine fois.</td><td>Jusqu’à ce que vous l’effaciez</td></tr>
-        <tr><td><code>swm:sin-oferta</code></td><td>Se souvenir que vous avez répondu « Pas maintenant » lorsqu’on vous propose de créer un code à la fin d’une partie.</td><td>Jusqu’à ce que vous l’effaciez</td></tr>
-        <tr><td><code>swm:consent</code></td><td>Se souvenir si vous avez accepté ou refusé les cookies, et quand.</td><td>Deux ans ; ensuite, la question vous est posée à nouveau</td></tr>
+        <tr><td><code>swm:sin-oferta</code></td><td>Mémoriser que vous avez répondu « Pas maintenant » lorsqu’on vous propose de créer un code à la fin d’une partie.</td><td>Jusqu’à ce que vous l’effaciez</td></tr>
+        <tr><td><code>swm:consent</code></td><td>Mémoriser si vous avez accepté ou refusé les cookies, et quand.</td><td>Deux ans ; ensuite, la question vous est posée à nouveau</td></tr>
         <tr><td>Cache <code>swm-*</code></td><td>Copie de l’application pour l’utiliser hors connexion.</td><td>Jusqu’à la version suivante</td></tr>
       </tbody>
     </table></div>
 
     <h2>Comment modifier ou retirer votre consentement</h2>
-    <p>À tout moment, depuis les ${consentLink} (également dans le pied de chaque page). En cas de refus, le site cesse de charger Google Analytics et efface ses cookies. Votre choix, quel qu’il soit, vaut deux ans : passé ce délai, la question vous est posée à nouveau. Vous pouvez en outre effacer les cookies et les données du site depuis les réglages de votre navigateur ; si vous le faites, vos progrès seront également effacés.</p>
+    <p>À tout moment, depuis les ${consentLink} (également en bas de chaque page). En cas de refus, le site cesse de charger Google Analytics et efface ses cookies. Votre choix, quel qu’il soit, est valable deux ans : passé ce délai, la question vous est posée à nouveau. Vous pouvez en outre effacer les cookies et les données du site depuis les réglages de votre navigateur ; si vous le faites, vos progrès seront également effacés.</p>
 ${revision}`,
     },
 
@@ -192,7 +192,7 @@ ${revision}`,
     <p class="lead">Study World Map est gratuit pour tous les élèves et le restera : sans publicité, sans comptes et sans vendre vos données. S’il vous a aidé, vous ou votre classe, un don aide à le maintenir en vie.</p>
     <p><a class="cta" href="${esc(DONAR_URL)}" rel="noopener" target="_blank">Faire un don avec PayPal →</a></p>
 
-    <h2>À quoi il est destiné</h2>
+    <h2>À quoi sert votre don</h2>
     <ul>
       <li>Maintenir le domaine et l’hébergement.</li>
       <li>Vérifier et corriger les données : pays, capitales, frontières, drapeaux, géographie physique et traductions.</li>

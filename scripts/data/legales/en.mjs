@@ -98,15 +98,15 @@ ${titularBlock()}
     <h3>Progress, settings and study lists</h3>
     <p>They are stored only in the local storage of your browser, so that you do not lose what you have learnt. They are not sent to any server and the owner has no access to them, unless you use the syncing explained below. You can delete them from the app itself (‘Progress’) or by deleting the site data in your browser.</p>
     <h3>Continuing on another device (optional)</h3>
-    <p>If you press ‘Create my code’ in ‘Progress’, your progress is also saved in a database so that you can continue on another device. Only a randomly generated code of twelve letters and digits, the progress (which countries or geographical features you know, your best marks and the result of the daily challenge) and the date are saved. Your name, your email address and your IP address are not saved in the database, and the code is not associated with any person. Study lists and settings are not sent.</p>
-    <p>The database is in the European Union (Frankfurt), on the Neon service, and requests pass through the website’s hosting (Vercel), which, as on any site, logs technical data about each request for a limited time, including the IP address and the address requested. Anyone who knows the code can see and change that progress, so share it only with people you choose. If you open a link that carries the code (the one in the QR code), that code is part of the address of that visit, and therefore of what the hosting logs. The app removes it from the address as soon as it opens, before loading analytics, so that it does not reach Google.</p>
+    <p>If you press ‘Create my code’ in ‘Progress’, your progress is also saved in a database so that you can continue on another device. Only a randomly generated code of twelve letters and digits, the progress (which countries or geographical features you know, your best scores and the result of the daily challenge) and the date are saved. Your name, your email address and your IP address are not saved in the database, and the code is not associated with any person. Study lists and settings are not sent.</p>
+    <p>The database is in the European Union (Frankfurt), on the Neon service, and requests pass through the website’s hosting provider (Vercel), which, as on any site, logs technical data about each request for a limited time, including the IP address and the URL requested. Anyone who knows the code can see and change that progress, so share it only with people you choose. If you open a link that carries the code (the one in the QR code), that code is part of the address of that visit, and therefore of what the hosting provider logs. The app removes it from the address as soon as it opens, before loading analytics, so that it does not reach Google.</p>
     <p>You can delete what is saved at any time with ‘Delete what is saved with this code’. ‘Stop syncing’ only disconnects the device on which you press it: what is saved is still there for your other devices. Anything that has not been used for more than a year is deleted.</p>
     <p><strong>Legal basis:</strong> your consent, which you give by pressing ‘Create my code’ (art. 6.1.a of the GDPR). You can withdraw it whenever you like by deleting what is saved.</p>
-    <p><strong>Provider:</strong> Neon, the database service, which acts as data processor. The data are stored in its Frankfurt data centre. Neon belongs to a United States company: if it were to access them from outside the European Economic Area, it would do so with the safeguards that the GDPR requires for international transfers.</p>
+    <p><strong>Provider:</strong> Neon, the database service, which acts as a data processor. The data are stored in its Frankfurt data centre. Neon is owned by a United States company: if it were to access them from outside the European Economic Area, it would do so with the safeguards that the GDPR requires for international transfers.</p>
 
-    <h3>Results ranking (optional)</h3>
-    <p>When you finish a game you can publish your result in the ranking for that challenge. Nothing is sent unless you press ‘Publish’. What is saved in the database, and seen by anyone who looks at that ranking, is the nickname you type, your mark, your time, the date and the country you are connecting from (only its two letters, to show the flag). The country is indicated by the hosting from your IP address at the moment of publishing; the IP address is not saved in the database.</p>
-    <p>The nickname must not contain your first name, your surname or other personal data: the app suggests one and reminds you of this when you type it. It is not associated with any account or any person, and anyone can use the same one. Only the ten best results in each ranking are kept: the others are deleted when they are beaten, and those of the daily challenge after 45 days. If you want a result you have published to be deleted, or you see a nickname that should not be there, write to ${email()} stating the nickname and the challenge.</p>
+    <h3>Leaderboard (optional)</h3>
+    <p>When you finish a game you can publish your result on the leaderboard for that challenge. Nothing is sent unless you press ‘Publish’. What is saved in the database, and seen by anyone who looks at that leaderboard, is the nickname you type, your score, your time, the date and the country you are connecting from (only its two letters, to show the flag). The country is determined by the hosting provider from your IP address at the moment of publishing; the IP address is not saved in the database.</p>
+    <p>The nickname must not contain your first name, your surname or other personal data: the app suggests one and reminds you of this when you type it. It is not associated with any account or any person, and anyone can use the same one. Only the ten best results on each leaderboard are kept: the others are deleted when they are beaten, and those of the daily challenge after 45 days. If you want a result you have published to be deleted, or you see a nickname that should not be there, write to ${email()} stating the nickname and the challenge.</p>
     <p><strong>Legal basis:</strong> your consent, which you give by pressing ‘Publish’ (art. 6.1.a of the GDPR).</p>
 
     <h3>Location</h3>
@@ -122,7 +122,7 @@ ${titularBlock()}
     <p>If you accept analytics cookies, Google Tag Manager and Google Analytics 4 are loaded to count visits and find out which parts of the website are used, for the sole purpose of improving it. Technical and usage data are processed: cookie identifiers, pages viewed, type of device and browser, language, and approximate country or city. They are not used for advertising or to build commercial profiles.</p>
     <ul>
       <li><strong>Legal basis:</strong> your consent (art. 6.1.a of the GDPR). You can withdraw it whenever you like from the ${consentLink}, without affecting what was processed before.</li>
-      <li><strong>Provider:</strong> Google Ireland Limited, which acts as data processor. Google may transfer data to the United States, under the EU-U.S. Data Privacy Framework and standard contractual clauses.</li>
+      <li><strong>Provider:</strong> Google Ireland Limited, which acts as a data processor. Google may transfer data to the United States, under the EU-U.S. Data Privacy Framework and standard contractual clauses.</li>
       <li><strong>Retention:</strong> whatever is configured in the Google Analytics property, at most 14 months.</li>
     </ul>
     <p>If you refuse or do not answer, the website loads nothing from Google.</p>
@@ -134,14 +134,14 @@ ${titularBlock()}
     <p>Donations are made on PayPal, which processes the payment data as an independent controller under its own privacy policy. The owner receives from PayPal the name, the email address and the amount of the person donating, and uses them only to manage the donation, to say thank you for it and to comply with tax obligations, for the period required by law.</p>
 
     <h3>Hosting</h3>
-    <p>The site is hosted by Vercel Inc. Like any web server, it logs technical data about each visit (such as the IP address) for a limited time, in order to serve the website and protect it from abuse. Vercel acts as data processor, with the GDPR safeguards for international transfers.</p>
+    <p>The site is hosted by Vercel Inc. Like any web server, it logs technical data about each visit (such as the IP address) for a limited time, in order to serve the website and protect it from abuse. Vercel acts as a data processor, with the GDPR safeguards for international transfers.</p>
     <p><strong>Legal basis:</strong> the legitimate interest of the owner in being able to serve the website and keep it secure (art. 6.1.f of the GDPR).</p>
 
     <h2>Minors</h2>
-    <p>Study World Map is designed for students. It does not ask for personal data in order to be used. If you are under 14, ask your mother, your father or the person who looks after you to decide whether analytics cookies are accepted and whether you can publish your results in the ranking (art. 7 of Ley Orgánica 3/2018, the Spanish data protection act).</p>
+    <p>Study World Map is designed for students. It does not ask for personal data in order to be used. If you are under 14, ask your mother, your father or the person who looks after you to decide whether analytics cookies are accepted and whether you can publish your results on the leaderboard (art. 7 of Ley Orgánica 3/2018, the Spanish data protection act).</p>
 
     <h2>Your rights</h2>
-    <p>You can request access to, rectification or erasure of your data, the restriction of their processing, object to it or request their portability, by writing to ${email()}. As we do not know whose each sync code is, to deal with a request about saved progress we need you to tell us the code. If you believe your rights have not been respected, you can lodge a complaint with the <a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a> (the Spanish data protection authority).</p>
+    <p>You can request access to your data, its rectification or erasure, or the restriction of its processing, and you can object to its processing or request its portability, by writing to ${email()}. As we do not know who each sync code belongs to, to deal with a request about saved progress we need you to tell us the code. If you believe your rights have not been respected, you can lodge a complaint with the <a href="https://www.aepd.es/">Agencia Española de Protección de Datos</a> (the Spanish data protection authority).</p>
 ${revision}`,
     },
 
@@ -162,17 +162,17 @@ ${traduccion('cookies')}
         <tr><td><code>_ga_&lt;id&gt;</code></td><td>Google Analytics</td><td>Keeping the session state.</td><td>2 years</td></tr>
       </tbody>
     </table></div>
-    <p>They are first-party cookies of the domain, but they are managed by Google. More information in the <a href="${ruta('privacidad')}">privacy policy</a> and in <a href="https://policies.google.com/technologies/cookies?hl=es">Google’s explanation</a>.</p>
+    <p>They are first-party cookies set on this domain, but they are managed by Google. More information in the <a href="${ruta('privacidad')}">privacy policy</a> and in <a href="https://policies.google.com/technologies/cookies?hl=es">Google’s explanation</a>.</p>
 
     <h2>Technical storage (does not require consent)</h2>
-    <p>These are not cookies: they are stored only in your browser, they are not sent to any server (except the progress, if you create a code to take it to another device, and the nickname, if you publish a result in the ranking) and they are necessary for the app to work the way you ask.</p>
+    <p>These are not cookies: they are stored only in your browser, they are not sent to any server (except the progress, if you create a code to take it to another device, and the nickname, if you publish a result on the leaderboard) and they are necessary for the app to work the way you ask.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Name</th><th scope="col">What it is for</th><th scope="col">Duration</th></tr></thead>
       <tbody>
         <tr><td><code>mapamundi:ajustes</code></td><td>Theme, view, chosen challenge, study lists and whether you have closed the language notice.</td><td>Until you delete it</td></tr>
-        <tr><td><code>mapamundi:progreso</code></td><td>What you already know and your best marks.</td><td>Until you delete it</td></tr>
+        <tr><td><code>mapamundi:progreso</code></td><td>What you already know and your best scores.</td><td>Until you delete it</td></tr>
         <tr><td><code>mapamundi:sync</code></td><td>Your code for continuing on another device, if you have created one.</td><td>Until you stop syncing</td></tr>
-        <tr><td><code>swm:apodo</code></td><td>The last nickname you published in the ranking with, to suggest it to you next time.</td><td>Until you delete it</td></tr>
+        <tr><td><code>swm:apodo</code></td><td>The last nickname you used on the leaderboard, to suggest it to you next time.</td><td>Until you delete it</td></tr>
         <tr><td><code>swm:sin-oferta</code></td><td>Remembering that you said ‘Not now’ when you were offered the chance to create a code at the end of a game.</td><td>Until you delete it</td></tr>
         <tr><td><code>swm:consent</code></td><td>Remembering whether you accepted or refused cookies, and when.</td><td>Two years; after that you are asked again</td></tr>
         <tr><td><code>swm-*</code> cache</td><td>A copy of the app so you can use it offline.</td><td>Until the next version</td></tr>
@@ -203,7 +203,7 @@ ${revision}`,
     <ul>
       <li>The donation is voluntary and gives no access to anything extra: the app is the same for everyone.</li>
       <li>The payment is made on PayPal; Study World Map does not see or store your card details.</li>
-      <li>Study World Map is a personal project, not a foundation or an association, so the donation is not tax-deductible in the Spanish income tax return.</li>
+      <li>Study World Map is a personal project, not a foundation or an association, so donations are not tax-deductible.</li>
     </ul>
     <p>Would you rather help in another way? Share it with your class or write to ${email()} if you find an error.</p>`,
     },

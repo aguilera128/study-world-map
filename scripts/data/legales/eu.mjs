@@ -38,7 +38,7 @@ ${titularBlock()}
     <p>Webgunearen erabilera librea eta doakoa da. Erabiltzean, legez erabiltzeko konpromisoa hartzen duzu, webguneari kalterik egin gabe eta besteei erabiltzea eragotzi gabe. Estekak eta ikasketa-zerrendak nahi duzunarekin parteka ditzakezu, adibidez zure ikasgelarekin.</p>
 
     <h2>Edukien zehaztasuna</h2>
-    <p>Datu geografikoek hezkuntza-helburuak dituzte eta arretaz berrikusten dira, baina akatsak izan ditzakete edo zaharkituta gera daitezke. Mugak Natural Earthetik datoz, eta erabaki batzuk (adibidez, zein lurralde hartzen diren herrialdetzat) aplikazioan bertan azaltzen dira; ez dute inolako jarrera politikorik adierazten. Akatsen bat aurkitzen baduzu, idatzi helbide honetara, eta zuzenduko dugu: ${email()}.</p>
+    <p>Datu geografikoek hezkuntza-helburuak dituzte eta arretaz berrikusten dira, baina akatsak izan ditzakete edo zaharkituta gera daitezke. Mugak Natural Earthetik datoz, eta erabaki batzuk (adibidez, zein lurralde hartzen diren herrialdetzat) aplikazioan bertan azaltzen dira; ez dute inolako jarrera politikorik adierazten. Akatsen bat aurkitzen baduzu, idatzi ${email()} helbidera, eta zuzendu egingo dugu.</p>
 
     <h2>Jabetza intelektuala</h2>
     <p>Study World Mapen diseinua, kodea eta testuak haren titularraren lana dira eta, hala badagokio, proiektuan laguntzen duten pertsonena, zeinek beren ekarpenak lizentzia beraren pean argitaratzen baitituzte.</p>
@@ -50,7 +50,7 @@ ${titularBlock()}
       <li>Biztanleria: Munduko Bankua, «Biztanleria, guztira» adierazlea (SP.POP.TOTL), CC BY 4.0 lizentzia; serie horretan ez dauden herrialdeena, Wikidata.</li>
       <li>Estatu Batuetako eskualdeak: Errolda Bulegoaren (U.S. Census Bureau) lau eskualdeak.</li>
       <li>Finlandiako eskualdeak: <a href="https://stat.fi/en/services/statistical-data-services/geographic-data">Statistics Finland</a>, 2026ko udalerrikako unitate estatistikoak (CC BY 4.0 lizentzia), sinplifikatuta.</li>
-      <li>Norvegiako konderriak: <a href="https://kartkatalog.geonorge.no/">Kartverket</a>, 2026ko «Administrative enheter fylker» (CC BY 4.0 lizentzia), kostaldetik moztuta eta sinplifikatuta.</li>
+      <li>Norvegiako konderriak: <a href="https://kartkatalog.geonorge.no/">Kartverket</a>, 2026ko «Administrative enheter fylker» (CC BY 4.0 lizentzia), kosta-lerroaren arabera moztuta eta sinplifikatuta.</li>
       <li>Estoniako konderriak: Estoniako banaketa administratiboa (EHAK), Estoniako Lurren eta Lurralde Antolamenduaren Batzordea (Republic of Estonia Land and Spatial Development Board), 2026.11.01eko datuak, sinplifikatuta, bere <a href="https://geoportaal.maaruum.ee/opendata-licence">datu irekien lizentziarekin</a>.</li>
       <li>Zipreko barrutiak: Zipreko Errepublikako Lurren eta Katastroaren Saila (Department of Lands and Surveys), INSPIRE unitate administratiboak, sinplifikatuta.</li>
       <li>Moldaviako barrutiak: ACNUR eta OCHA, Moldaviako 2020ko muga administratiboak (CC BY 3.0 IGO lizentzia), <a href="https://www.geoboundaries.org/">geoBoundaries</a>en bidez, moztuta eta sinplifikatuta.</li>
@@ -106,33 +106,33 @@ ${titularBlock()}
     <p><strong>Hornitzailea:</strong> Neon, datu-basearen zerbitzua, tratamenduaren eragile gisa jarduten duena. Datuak Frankfurteko zentroan gordetzen dira. Neon Estatu Batuetako enpresa batena da: Europako Esparru Ekonomikotik kanpotik datu horietara sartuko balitz, DBEOk nazioarteko transferentzietarako eskatzen dituen bermeekin egingo luke.</p>
 
     <h3>Emaitzen sailkapena (aukerakoa)</h3>
-    <p>Partida bat amaitzean, zure emaitza erronka horren sailkapenean argitara dezakezu. Ez da ezer bidaltzen «Argitaratu» sakatzen ez baduzu. Datu-basean gordetzen dira, eta sailkapen hori kontsultatzen duen edonork ikusten ditu, idazten duzun ezizena, zure nota, zure denbora, data eta zein herrialdetatik konektatzen zaren (haren bi letrak bakarrik, bandera erakusteko). Herrialdea ostatatzeak adierazten du, argitaratzeko unean duzun IP helbidetik abiatuta; IP helbidea ez da datu-basean gordetzen.</p>
-    <p>Ezizenak ez du zure izena, zure abizenak edo beste datu pertsonalik izan behar: aplikazioak bat proposatzen dizu eta idaztean gogorarazten dizu. Ez dago inongo konturekin ez pertsonarekin lotuta, eta edonork erabil dezake bera. Sailkapen bakoitzeko hamar emaitzarik onenak baino ez dira gordetzen: gainerakoak beste batek gainditzean ezabatzen dira, eta eguneko erronkarenak, 45 egunera. Argitaratu duzun emaitza bat ezabatzea nahi baduzu, edo egon behar ez lukeen ezizen bat ikusten baduzu, idatzi helbide honetara, ezizena eta erronka adierazita: ${email()}.</p>
+    <p>Partida bat amaitzean, zure emaitza erronka horren sailkapenean argitara dezakezu. Ez da ezer bidaltzen «Argitaratu» sakatzen ez baduzu. Hauek gordetzen dira datu-basean, eta sailkapen hori kontsultatzen duen edonork ikus ditzake: idazten duzun ezizena, zure nota, zure denbora, data eta zein herrialdetatik konektatzen zaren (haren bi letrak bakarrik, bandera erakusteko). Herrialdea ostatatzeak adierazten du, argitaratzeko unean duzun IP helbidetik abiatuta; IP helbidea ez da datu-basean gordetzen.</p>
+    <p>Ezizenak ez du zure izena, zure abizenak edo beste datu pertsonalik izan behar: aplikazioak bat proposatzen dizu eta idaztean gogorarazten dizu. Ez dago inongo konturekin ez pertsonarekin lotuta, eta edonork erabil dezake ezizen bera. Sailkapen bakoitzeko hamar emaitzarik onenak baino ez dira gordetzen: gainerakoak beste batek gainditzean ezabatzen dira, eta eguneko erronkarenak, 45 egunera. Argitaratu duzun emaitza bat ezabatzea nahi baduzu, edo egon behar ez lukeen ezizen bat ikusten baduzu, idatzi helbide honetara, ezizena eta erronka adierazita: ${email()}.</p>
     <p><strong>Lege-oinarria:</strong> zure adostasuna, «Argitaratu» sakatzean ematen duzuna (DBEO, 6.1.a art.).</p>
 
     <h3>Kokapena</h3>
     <p>«Denbora erreala» funtzioak zure posizioa mapan kokatzen du zure gailuaren ordu-eremutik abiatuta, zuri ezer eskatu gabe. Kokapen zehatzaren botoia sakatzen baduzu, nabigatzaileak baimena eskatuko dizu eta aplikazioak zure posizio biribildua erabiliko du (1 km inguru). Bi kasuetan kokapena pantailan bakarrik erabiltzen da: ez da gordetzen, ezta inora bidaltzen ere.</p>
 
     <h3>Eguraldia</h3>
-    <p>Eguraldiaren geruzetako bat pizten baduzu (tenperatura, hodeiak, euria edo haizea), aplikazioak datu horiek webgune honi berari eskatzen dizkio, eta honek, bere aldetik, NOAAtik eta NASAtik lortzen ditu. Erakunde horiei ez zaie zure ezer iristen, ezta zure IP helbidea ere, eta ez da ezer gordetzen.</p>
+    <p>Eguraldiaren geruzetako bat pizten baduzu (tenperatura, hodeiak, euria edo haizea), aplikazioak datu horiek webgune honi berari eskatzen dizkio, eta honek, bere aldetik, NOAAtik eta NASAtik lortzen ditu. Erakunde horiei ez zaie zuri buruzko ezer iristen, ezta zure IP helbidea ere, eta ez da ezer gordetzen.</p>
 
     <h3>Sateliteak</h3>
-    <p>Sateliteen geruza pizten baduzu, aplikazioak haien orbitak webgune honi berari eskatzen dizkio, eta honek, bere aldetik, CelesTraketik lortzen ditu. CelesTraki ez zaio zure ezer iristen, ezta zure IP helbidea ere, eta ez da ezer gordetzen. Satelite bakoitzaren posizioa zure nabigatzailean kalkulatzen da.</p>
+    <p>Sateliteen geruza pizten baduzu, aplikazioak haien orbitak webgune honi berari eskatzen dizkio, eta honek, bere aldetik, CelesTraketik lortzen ditu. CelesTraki ez zaio zuri buruzko ezer iristen, ezta zure IP helbidea ere, eta ez da ezer gordetzen. Satelite bakoitzaren posizioa zure nabigatzailean kalkulatzen da.</p>
 
     <h3>Analitika (zure adostasunarekin bakarrik)</h3>
     <p>Analitika-cookieak onartzen badituzu, Google Tag Manager eta Google Analytics 4 kargatzen dira, bisitak zenbatzeko eta webgunearen zein zati erabiltzen diren jakiteko, hura hobetzeko helburu bakarrarekin. Datu teknikoak eta erabilera-datuak tratatzen dira: cookie-identifikatzaileak, ikusitako orriak, gailu- eta nabigatzaile-mota, hizkuntza, eta gutxi gorabeherako herrialdea edo hiria. Ez dira erabiltzen publizitaterako, ezta profil komertzialak sortzeko ere.</p>
     <ul>
       <li><strong>Lege-oinarria:</strong> zure adostasuna (DBEO, 6.1.a art.). Nahi duzunean ken dezakezu, aurretik tratatutakoari eragin gabe, esteka honetatik: ${consentLink}.</li>
       <li><strong>Hornitzailea:</strong> Google Ireland Limited, tratamenduaren eragile gisa jarduten duena. Googlek datuak Estatu Batuetara transferi ditzake, EB-AEB Datuen Pribatutasun Esparruaren eta kontratu-klausula tipoen babesean.</li>
-      <li><strong>Kontserbazioa:</strong> Google Analyticsen jabetzak konfiguratuta duena, gehienez 14 hilabete.</li>
+      <li><strong>Kontserbazioa:</strong> Google Analyticseko propietateak («property») konfiguratuta duena, gehienez 14 hilabete.</li>
     </ul>
-    <p>Uko egiten badiozu edo erantzuten ez baduzu, webguneak ez du Googleren ezer kargatzen.</p>
+    <p>Baztertzen badituzu edo erantzuten ez baduzu, webguneak ez du Googleren ezer kargatzen.</p>
 
     <h3>Posta elektronikoa</h3>
-    <p>Helbide honetara idazten baduzu, zure helbidea eta zure mezua zuri erantzuteko erabiltzen dira, zure eskaera bera oinarri hartuta: ${email()}. Elkarrizketak dirauen bitartean gordetzen dira eta gero ezabatu egiten dira, legezko betebeharren batengatik gorde behar direnean izan ezik.</p>
+    <p>${email()} helbidera idazten baduzu, zure helbide elektronikoa eta mezua zuri erantzuteko erabiltzen dira, zuk zeuk egindako eskaeran oinarrituta. Elkarrizketak dirauen bitartean gordetzen dira eta gero ezabatu egiten dira, legezko betebeharren batengatik gorde behar direnean izan ezik.</p>
 
     <h3>Dohaintzak</h3>
-    <p>Dohaintzak PayPalen egiten dira, zeinak ordainketaren datuak arduradun independente gisa tratatzen baititu, bere pribatutasun-politikaren arabera. Titularrak PayPaletik jasotzen ditu dohaintza egiten duenaren izena, posta elektronikoa eta zenbatekoa, eta dohaintza kudeatzeko, eskertzeko eta bere zerga-betebeharrak betetzeko baino ez ditu erabiltzen, legeak eskatzen duen epean.</p>
+    <p>Dohaintzak PayPalen egiten dira; PayPalek ordainketaren datuak tratatzen ditu, arduradun independente gisa, bere pribatutasun-politikaren arabera. Titularrak PayPaletik jasotzen ditu dohaintza egiten duenaren izena, posta elektronikoa eta zenbatekoa, eta dohaintza kudeatzeko, eskertzeko eta bere zerga-betebeharrak betetzeko baino ez ditu erabiltzen, legeak eskatzen duen epean.</p>
 
     <h3>Ostatatzea</h3>
     <p>Webgunea Vercel Inc. enpresan ostatatzen da. Edozein web-zerbitzarik bezala, bisita bakoitzaren datu teknikoak (hala nola IP helbidea) erregistratzen ditu denbora mugatu batez, webgunea zerbitzatzeko eta abusuetatik babesteko. Vercelek tratamenduaren eragile gisa jarduten du, DBEOk nazioarteko transferentzietarako ezartzen dituen bermeekin.</p>
@@ -206,7 +206,7 @@ ${revision}`,
       <li>Ordainketa PayPalen egiten da; Study World Mapek ez ditu zure txartelaren datuak ikusten, ezta gordetzen ere.</li>
       <li>Study World Map proiektu pertsonal bat da, ez fundazio bat ez elkarte bat; beraz, dohaintzak ez du kenkaririk ematen errenta-aitorpenean.</li>
     </ul>
-    <p>Beste modu batean lagundu nahiago duzu? Partekatu zure ikasgelarekin, edo, akatsen bat aurkitzen baduzu, idatzi helbide honetara: ${email()}</p>`,
+    <p>Beste modu batean lagundu nahiago duzu? Partekatu Study World Map zure ikasgelarekin, edo idatzi ${email()} helbidera akatsen bat aurkitzen baduzu.</p>`,
     },
   ];
 }

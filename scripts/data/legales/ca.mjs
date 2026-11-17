@@ -100,7 +100,7 @@ ${titularBlock()}
     <p>Es guarden només en l’emmagatzematge local del teu navegador, perquè no perdes el que has aprés. No s’envien a cap servidor i el titular no hi té accés, llevat que uses la sincronització que s’explica a continuació. Pots esborrar-los des de la mateixa aplicació («Progrés») o esborrant les dades del lloc en el teu navegador.</p>
     <h3>Continuar en un altre dispositiu (opcional)</h3>
     <p>Si en «Progrés» prems «Crear el meu codi», el teu progrés es guarda també en una base de dades perquè pugues continuar en un altre dispositiu. Es guarda únicament un codi de dotze lletres i xifres generat a l’atzar, el progrés (quins països o accidents geogràfics et saps, les teues millors notes i el resultat del repte del dia) i la data. En la base de dades no es guarda el teu nom, el teu correu ni la teua adreça IP, i el codi no està associat a cap persona. Les llistes d’estudi i els ajustos no s’envien.</p>
-    <p>La base de dades està en la Unió Europea (Frankfurt), en el servei Neon, i les peticions passen per l’allotjament del web (Vercel), que com en qualsevol lloc registra durant un temps limitat dades tècniques de cada petició, entre elles l’adreça IP i l’adreça sol·licitada. Qui conega el codi pot veure i canviar eixe progrés, així que comparteix-lo només amb qui vulgues. Si obris un enllaç que porta el codi (el del codi QR), eixe codi forma part de l’adreça d’eixa visita, i per tant del que registra l’allotjament. L’aplicació el lleva de l’adreça només obrir-se, abans de carregar l’analítica, perquè no arribe a Google.</p>
+    <p>La base de dades està en la Unió Europea (Frankfurt), en el servei Neon, i les peticions passen per l’allotjament del web (Vercel), que com en qualsevol lloc registra durant un temps limitat dades tècniques de cada petició, entre elles l’adreça IP i l’adreça sol·licitada. Qui conega el codi pot veure i canviar eixe progrés, així que comparteix-lo només amb qui vulgues. Si obris un enllaç que porta el codi (el del codi QR), eixe codi forma part de l’adreça d’eixa visita, i per tant del que registra l’allotjament. L’aplicació el lleva de l’adreça tan prompte com s’obri, abans de carregar l’analítica, perquè no arribe a Google.</p>
     <p>Pots esborrar el que hi ha guardat en qualsevol moment amb «Esborrar el que hi ha guardat amb este codi». «Deixar de sincronitzar» només desconnecta el dispositiu en què el prems: el que hi ha guardat continua ahí per als teus altres dispositius. El que porte més d’un any sense usar-se s’esborra.</p>
     <p><strong>Base legal:</strong> el teu consentiment, que dones en prémer «Crear el meu codi» (art. 6.1.a de l’RGPD). Pots retirar-lo quan vulgues esborrant el que hi ha guardat.</p>
     <p><strong>Proveïdor:</strong> Neon, el servei de base de dades, que actua com a encarregat del tractament. Les dades es guarden en el seu centre de Frankfurt. Neon pertany a una empresa dels Estats Units: si hi accedira des de fora de l’Espai Econòmic Europeu, ho faria amb les garanties que exigeix l’RGPD per a les transferències internacionals.</p>
@@ -111,7 +111,7 @@ ${titularBlock()}
     <p><strong>Base legal:</strong> el teu consentiment, que dones en prémer «Publicar» (art. 6.1.a de l’RGPD).</p>
 
     <h3>Ubicació</h3>
-    <p>La funció «Temps real» situa la teua posició en el mapa a partir de la zona horària del teu dispositiu, sense demanar-te res. Si prems el botó d’ubicació exacta, el teu navegador et demanarà permís i l’aplicació usarà la teua posició arredonida (uns 1 km). En els dos casos la ubicació només s’usa en la pantalla: no es guarda ni s’envia a cap lloc.</p>
+    <p>La funció «Temps real» situa la teua posició en el mapa a partir de la zona horària del teu dispositiu, sense demanar-te res. Si prems el botó d’ubicació exacta, el teu navegador et demanarà permís i l’aplicació usarà la teua posició arredonida (aproximadament 1 km). En els dos casos la ubicació només s’usa en la pantalla: no es guarda ni s’envia a cap lloc.</p>
 
     <h3>Meteorologia</h3>
     <p>Si encens alguna de les capes de meteorologia (temperatura, núvols, pluja o vent), l’aplicació demana eixes dades a este mateix lloc, que al seu torn les obté de la NOAA i de la NASA. A eixos organismes no els arriba res teu, ni tan sols la teua adreça IP, i no es guarda res.</p>
@@ -120,7 +120,7 @@ ${titularBlock()}
     <p>Si encens la capa de satèl·lits, l’aplicació demana les seues òrbites a este mateix lloc, que al seu torn les obté de CelesTrak. A CelesTrak no li arriba res teu, ni tan sols la teua adreça IP, i no es guarda res. La posició de cada satèl·lit es calcula en el teu navegador.</p>
 
     <h3>Analítica (només amb el teu consentiment)</h3>
-    <p>Si acceptes les galetes d’analítica, es carrega Google Tag Manager i Google Analytics 4 per a comptar les visites i saber quines parts del web s’usen, amb l’única finalitat de millorar-lo. Es tracten dades tècniques i d’ús: identificadors de galeta, pàgines vistes, tipus de dispositiu i navegador, idioma, i país o ciutat aproximats. No s’usen per a publicitat ni per a crear perfils comercials.</p>
+    <p>Si acceptes les galetes d’analítica, es carreguen Google Tag Manager i Google Analytics 4 per a comptar les visites i saber quines parts del web s’usen, amb l’única finalitat de millorar-lo. Es tracten dades tècniques i d’ús: identificadors de galeta, pàgines vistes, tipus de dispositiu i navegador, idioma, i país o ciutat aproximats. No s’usen per a publicitat ni per a crear perfils comercials.</p>
     <ul>
       <li><strong>Base legal:</strong> el teu consentiment (art. 6.1.a de l’RGPD). Pots retirar-lo quan vulgues des de la ${consentLink}, sense que afecte el que s’ha tractat abans.</li>
       <li><strong>Proveïdor:</strong> Google Ireland Limited, que actua com a encarregat del tractament. Google pot transferir dades als Estats Units, emparat pel Marc de Privacitat de Dades UE-EUA i per clàusules contractuals tipus.</li>
@@ -129,17 +129,17 @@ ${titularBlock()}
     <p>Si rebutges o no respons, el web no carrega res de Google.</p>
 
     <h3>Correu electrònic</h3>
-    <p>Si escrius a ${email()}, s’usen la teua adreça i el teu missatge per a respondre’t, amb base en la teua pròpia petició. Es conserven mentre dure la conversa i s’esborren després, llevat que calga guardar-los per obligació legal.</p>
+    <p>Si escrius a ${email()}, s’usen la teua adreça i el teu missatge per a respondre’t, sobre la base de la teua pròpia petició. Es conserven mentre dure la conversa i s’esborren després, llevat que calga guardar-los per obligació legal.</p>
 
     <h3>Donacions</h3>
-    <p>Les donacions es fan en PayPal, que tracta les dades del pagament com a responsable independent segons la seua pròpia política de privacitat. El titular rep de PayPal el nom, el correu electrònic i l’import de qui dona, i els usa només per a gestionar la donació, agrair-la i complir les seues obligacions fiscals, durant el termini que exigisca la llei.</p>
+    <p>Les donacions es fan a través de PayPal, que tracta les dades del pagament com a responsable independent segons la seua pròpia política de privacitat. El titular rep de PayPal el nom, el correu electrònic i l’import de qui dona, i els usa només per a gestionar la donació, agrair-la i complir les seues obligacions fiscals, durant el termini que exigisca la llei.</p>
 
     <h3>Allotjament</h3>
-    <p>El lloc s’allotja en Vercel Inc. Com qualsevol servidor web, registra dades tècniques de cada visita (com l’adreça IP) durant un temps limitat, per a servir el web i protegir-lo d’abusos. Vercel actua com a encarregat del tractament, amb les garanties de l’RGPD per a les transferències internacionals.</p>
+    <p>El lloc s’allotja a Vercel Inc. Com qualsevol servidor web, registra dades tècniques de cada visita (com l’adreça IP) durant un temps limitat, per a servir el web i protegir-lo d’abusos. Vercel actua com a encarregat del tractament, amb les garanties de l’RGPD per a les transferències internacionals.</p>
     <p><strong>Base legal:</strong> l’interés legítim del titular a poder servir el web i mantindre’l segur (art. 6.1.f de l’RGPD).</p>
 
     <h2>Menors d’edat</h2>
-    <p>Study World Map està pensat per a estudiants. No demana dades personals per a usar-se. Si tens menys de 14 anys, demana a ta mare, a ton pare o a la persona que et cuide que decidisca si s’accepten les galetes d’analítica i si pots publicar els teus resultats en el rànquing (art. 7 de la Llei orgànica 3/2018).</p>
+    <p>Study World Map està pensat per a estudiants. No demana dades personals per a usar-se. Si tens menys de 14 anys, demana a la teua mare, al teu pare o a la persona que et cuide que decidisca si s’accepten les galetes d’analítica i si pots publicar els teus resultats en el rànquing (art. 7 de la Llei orgànica 3/2018).</p>
 
     <h2>Els teus drets</h2>
     <p>Pots demanar l’accés, la rectificació o la supressió de les teues dades, la limitació del seu tractament, oposar-t’hi o demanar la seua portabilitat, escrivint a ${email()}. Com que no sabem de qui és cada codi de sincronització, per a atendre una petició sobre un progrés guardat necessitem que ens indiques el codi. Si creus que no s’han respectat els teus drets, pots reclamar davant de l’<a href="https://www.aepd.es/">Agència Espanyola de Protecció de Dades</a>.</p>
@@ -203,7 +203,7 @@ ${revision}`,
     <h2>Abans de donar</h2>
     <ul>
       <li>La donació és voluntària i no dona accés a res extra: l’aplicació és igual per a tots.</li>
-      <li>El pagament es fa en PayPal; Study World Map no veu ni guarda les dades de la teua targeta.</li>
+      <li>El pagament es fa a través de PayPal; Study World Map no veu ni guarda les dades de la teua targeta.</li>
       <li>Study World Map és un projecte personal, no una fundació ni una associació, així que la donació no desgrava en la declaració de la renda.</li>
     </ul>
     <p>Prefereixes ajudar d’una altra manera? Comparteix-lo amb la teua classe o escriu a ${email()} si trobes un error.</p>`,
