@@ -49,7 +49,7 @@ ${titularBlock()}
     <p>Los datos geográficos tienen fines educativos y se revisan con cuidado, pero pueden contener errores o quedar desactualizados. Las fronteras proceden de Natural Earth y algunas decisiones (por ejemplo, qué territorios se cuentan como países) se explican en la propia aplicación; no expresan ninguna posición política. Si encuentras un error, escribe a ${email()} y lo corregiremos.</p>
 
     <h2>Propiedad intelectual</h2>
-    <p>El diseño, el código y los textos de Study World Map son obra de su titular.</p>
+    <p>El diseño, el código y los textos de Study World Map son obra de su titular y, en su caso, de las personas que contribuyen al proyecto, que publican sus aportaciones bajo la misma licencia.</p>
     <p>Study World Map es software libre: su código fuente está publicado en <a href="https://github.com/aguilera128/study-world-map">GitHub</a> bajo la licencia <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License, versión 3 (AGPL-3.0)</a>. Cualquiera puede usarlo, estudiarlo, modificarlo y redistribuirlo en las condiciones de esa licencia; quien publique una versión modificada en una web tiene que ofrecer también su código fuente. La licencia no cubre el nombre «Study World Map», el dominio ni el icono.</p>
     <p>Los datos de terceros se usan conforme a sus licencias:</p>
     <ul>
@@ -81,7 +81,7 @@ ${titularBlock()}
     </ul>
 
     <h2>Enlaces externos</h2>
-    <p>El sitio enlaza a páginas de terceros, como PayPal para las donaciones. El titular no controla esas páginas ni responde de sus contenidos o de sus políticas.</p>
+    <p>El sitio enlaza a páginas de terceros, como PayPal para las donaciones, GitHub para el código fuente y las webs de las fuentes de los datos. El titular no controla esas páginas ni responde de sus contenidos o de sus políticas.</p>
 
     <h2>Responsabilidad</h2>
     <p>El titular no garantiza que el sitio esté disponible en todo momento ni libre de errores, y no responde de los daños que puedan derivarse de su uso, salvo en los casos en que la ley lo exija.</p>
@@ -107,8 +107,10 @@ ${titularBlock()}
     <p>Se guardan solo en el almacenamiento local de tu navegador, para que no pierdas lo aprendido. No se envían a ningún servidor y el titular no tiene acceso a ellos, salvo que uses la sincronización que se explica a continuación. Puedes borrarlos desde la propia aplicación («Progreso») o borrando los datos del sitio en tu navegador.</p>
     <h3>Seguir en otro dispositivo (opcional)</h3>
     <p>Si en «Progreso» pulsas «Crear mi código», tu progreso se guarda también en una base de datos para que puedas continuar en otro dispositivo. Se guarda únicamente un código de doce letras y cifras generado al azar, el progreso (qué países o accidentes geográficos te sabes, tus mejores notas y el resultado del reto del día) y la fecha. En la base de datos no se guarda tu nombre, tu correo ni tu dirección IP, y el código no está asociado a ninguna persona. Las listas de estudio y los ajustes no se envían.</p>
-    <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra durante un tiempo limitado datos técnicos de cada petición, entre ellos la dirección IP y la dirección solicitada. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Si abres un enlace que lleva el código (el del código QR), ese código forma parte de la dirección de esa visita.</p>
+    <p>La base de datos está en la Unión Europea (Fráncfort), en el servicio Neon, y las peticiones pasan por el alojamiento de la web (Vercel), que como en cualquier sitio registra durante un tiempo limitado datos técnicos de cada petición, entre ellos la dirección IP y la dirección solicitada. Quien conozca el código puede ver y cambiar ese progreso, así que compártelo solo con quien quieras. Si abres un enlace que lleva el código (el del código QR), ese código forma parte de la dirección de esa visita, y por tanto de lo que registra el alojamiento. La aplicación lo quita de la dirección nada más abrirse, antes de cargar la analítica, para que no llegue a Google.</p>
     <p>Puedes borrar lo guardado en cualquier momento con «Borrar lo guardado con este código». «Dejar de sincronizar» solo desconecta el dispositivo en el que lo pulsas: lo guardado sigue ahí para tus otros dispositivos. Lo que lleve más de un año sin usarse se borra.</p>
+    <p><strong>Base legal:</strong> tu consentimiento, que das al pulsar «Crear mi código» (art. 6.1.a del RGPD). Puedes retirarlo cuando quieras borrando lo guardado.</p>
+    <p><strong>Proveedor:</strong> Neon, el servicio de base de datos, que actúa como encargado del tratamiento. Los datos se guardan en su centro de Fráncfort. Neon pertenece a una empresa de Estados Unidos: si accediera a ellos desde fuera del Espacio Económico Europeo, lo haría con las garantías que exige el RGPD para las transferencias internacionales.</p>
 
     <h3>Ranking de resultados (opcional)</h3>
     <p>Al terminar una partida puedes publicar tu resultado en el ranking de ese reto. No se envía nada si no pulsas «Publicar». Se guardan en la base de datos, y los ve cualquiera que consulte ese ranking, el apodo que escribas, tu nota, tu tiempo, la fecha y el país desde el que te conectas (solo sus dos letras, para enseñar la bandera). El país lo indica el alojamiento a partir de tu dirección IP en el momento de publicar; la dirección IP no se guarda en la base de datos.</p>
@@ -141,6 +143,7 @@ ${titularBlock()}
 
     <h3>Alojamiento</h3>
     <p>El sitio se aloja en Vercel Inc. Como cualquier servidor web, registra datos técnicos de cada visita (como la dirección IP) durante un tiempo limitado, para servir la web y protegerla de abusos. Vercel actúa como encargado del tratamiento, con las garantías del RGPD para las transferencias internacionales.</p>
+    <p><strong>Base legal:</strong> el interés legítimo del titular en poder servir la web y mantenerla segura (art. 6.1.f del RGPD).</p>
 
     <h2>Menores de edad</h2>
     <p>Study World Map está pensado para estudiantes. No pide datos personales para usarse. Si tienes menos de 14 años, pide a tu madre, a tu padre o a la persona que te cuide que decida si se aceptan las cookies de analítica y si puedes publicar tus resultados en el ranking (art. 7 de la Ley Orgánica 3/2018).</p>
@@ -178,13 +181,13 @@ ${revision}`,
         <tr><td><code>mapamundi:sync</code></td><td>Tu código para seguir en otro dispositivo, si lo has creado.</td><td>Hasta que dejes de sincronizar</td></tr>
         <tr><td><code>swm:apodo</code></td><td>El último apodo con el que publicaste en el ranking, para proponértelo la próxima vez.</td><td>Hasta que la borres</td></tr>
         <tr><td><code>swm:sin-oferta</code></td><td>Recordar que has dicho «Ahora no» cuando se te ofrece crear un código al terminar una partida.</td><td>Hasta que la borres</td></tr>
-        <tr><td><code>swm:consent</code></td><td>Recordar si aceptaste o rechazaste las cookies.</td><td>Hasta que la borres</td></tr>
+        <tr><td><code>swm:consent</code></td><td>Recordar si aceptaste o rechazaste las cookies, y cuándo.</td><td>Dos años; después se te vuelve a preguntar</td></tr>
         <tr><td>Caché <code>swm-*</code></td><td>Copia de la aplicación para usarla sin conexión.</td><td>Hasta la siguiente versión</td></tr>
       </tbody>
     </table></div>
 
     <h2>Cómo cambiar o retirar tu consentimiento</h2>
-    <p>En cualquier momento, desde la ${consentLink} (también en el pie de cada página). Al rechazar, la web deja de cargar Google Analytics y borra sus cookies. Además, puedes borrar las cookies y los datos del sitio desde los ajustes de tu navegador; si lo haces, también se borrará tu progreso.</p>
+    <p>En cualquier momento, desde la ${consentLink} (también en el pie de cada página). Al rechazar, la web deja de cargar Google Analytics y borra sus cookies. Tu elección, sea cual sea, vale dos años: pasado ese tiempo se te vuelve a preguntar. Además, puedes borrar las cookies y los datos del sitio desde los ajustes de tu navegador; si lo haces, también se borrará tu progreso.</p>
 ${revision}`,
     },
 
@@ -199,7 +202,7 @@ ${revision}`,
     <h2>A qué se destina</h2>
     <ul>
       <li>Mantener el dominio y el alojamiento.</li>
-      <li>Revisar y corregir los datos: países, capitales, fronteras y banderas.</li>
+      <li>Revisar y corregir los datos: países, capitales, fronteras, banderas, geografía física y traducciones.</li>
       <li>Añadir nuevos retos y mejorar la accesibilidad.</li>
     </ul>
 

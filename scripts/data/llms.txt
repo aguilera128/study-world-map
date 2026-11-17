@@ -1,16 +1,23 @@
 # Study World Map
 
-> Mapamundi interactivo y gratuito, en español, para aprender los 197 países del mundo, sus continentes, sus capitales y sus banderas jugando. Funciona en el navegador, sin registro ni anuncios, y también sin conexión tras la primera visita.
+> Atlas interactivo y gratuito, en diez idiomas, para estudiar geografía jugando: los 197 países del mundo, sus continentes, sus capitales y sus banderas, más de treinta países por dentro, geografía física, climas y población. Funciona en el navegador, sin registro ni anuncios, y también sin conexión tras la primera visita. Es software libre (AGPL-3.0).
 
-Study World Map muestra un globo 3D que se desenrolla en un mapa plano (proyección Natural Earth). Tiene cinco retos con corrección inmediata y un sistema de repaso espaciado que pregunta más a menudo lo que el jugador falla.
+Study World Map muestra un globo 3D que se desenrolla en un mapa plano (proyección Natural Earth). Tiene diez retos con corrección inmediata y un sistema de repaso espaciado que pregunta más a menudo lo que el jugador falla.
 
 - **Localizar**: se da el nombre de un país y hay que pulsarlo en el mapa.
 - **Continentes**: decir en qué continente está cada país.
 - **Nombrar**: se señala un país en el mapa y hay que decir cuál es (con opciones o escribiendo).
 - **Capitales**: unir cada país con su capital.
 - **Banderas**: reconocer de qué país es cada bandera.
+- **Climas**: decir qué clima tiene cada país.
+- **Población**: decir si la población de cada país es alta, media o baja.
+- **Habitantes**: de cuatro países, decir cuál tiene más habitantes.
+- **Coordenadas**: se da una latitud y una longitud y hay que decir qué país hay ahí.
+- **Región**: en el mapa de un país, decir a qué región o comunidad pertenece cada provincia o estado.
 
-Se puede jugar con el mundo entero, por continente o con una lista de países propia (por ejemplo, la de un examen), que se comparte con un enlace. El progreso se guarda en el propio dispositivo: no hay cuentas ni servidor.
+Se puede jugar con el mundo entero, por continente o con una lista de países propia (por ejemplo, la de un examen), que se comparte con un enlace. También se puede estudiar un país por dentro: España por provincias, Estados Unidos por estados y otros treinta países por sus regiones, condados o distritos.
+
+No hay cuentas. El progreso se guarda en el propio dispositivo y, solo si el jugador crea un código para seguir en otro dispositivo, también en un servidor en la Unión Europea, sin nombre ni correo. Publicar un resultado en el ranking es opcional y solo guarda un apodo, la nota, el tiempo y el país.
 
 Los 197 países son los 193 miembros de la ONU, Ciudad del Vaticano, Palestina, Taiwán y Kosovo.
 
@@ -30,9 +37,9 @@ Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/c
 - [Países de América](%VITE_SITE_URL%/juego/paises-de-america/)
 - [Países de Oceanía](%VITE_SITE_URL%/juego/paises-de-oceania/)
 
-### Geografía física, climas y población (solo en español)
+### Geografía física, climas y población
 
-Además de los países, la aplicación enseña el temario de geografía de Primaria y ESO, con una página por tema:
+Además de los países, la aplicación enseña el temario de geografía de Primaria y ESO, con una página por tema en cada idioma (aquí, las de español):
 
 - [Ríos y lagos del mundo](%VITE_SITE_URL%/juego/rios-y-lagos-del-mundo/)
 - [Cordilleras y montañas del mundo](%VITE_SITE_URL%/juego/cordilleras-y-montanas-del-mundo/), con su altitud
@@ -44,7 +51,9 @@ Además de los países, la aplicación enseña el temario de geografía de Prima
 - [Capas de la atmósfera](%VITE_SITE_URL%/capas-de-la-atmosfera/)
 - [Índice de todos los juegos](%VITE_SITE_URL%/juego/)
 
-El mapa también muestra relieve, profundidad del mar, corrientes oceánicas, placas tectónicas, husos horarios, el día y la noche en tiempo real y el cielo con la Vía Láctea.
+El mapa también muestra relieve, profundidad del mar, corrientes oceánicas, placas tectónicas y volcanes, husos horarios, el día y la noche en tiempo real, el tiempo de ahora (temperatura, nubes, lluvia y viento), los satélites en su posición actual y el cielo con la Vía Láctea.
+
+El código fuente está en https://github.com/aguilera128/study-world-map, bajo la licencia AGPL-3.0.
 
 ## English
 
