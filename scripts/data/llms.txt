@@ -16,33 +16,33 @@ Los 197 países son los 193 miembros de la ONU, Ciudad del Vaticano, Palestina, 
 
 ## Páginas
 
-- [Mapa interactivo y juegos](https://www.studyworldmap.com/): la aplicación.
-- [Países del mundo y sus capitales](https://www.studyworldmap.com/paises-y-capitales/): lista completa de los 197 países por continente, con capital, bandera y superficie, y preguntas frecuentes.
+- [Mapa interactivo y juegos](%VITE_SITE_URL%/): la aplicación.
+- [Países del mundo y sus capitales](%VITE_SITE_URL%/paises-y-capitales/): lista completa de los 197 países por continente, con capital, bandera y superficie, y preguntas frecuentes.
 
 ### Juegos por continente
 
 Cada continente tiene tres páginas, de países, capitales y banderas (`/juego/capitales-de-europa/`, `/juego/banderas-de-europa/`…), con la lista y un enlace que abre el reto ya elegido:
 
-- [Provincias de España](https://www.studyworldmap.com/juego/provincias-de-espana/), [capitales de provincia](https://www.studyworldmap.com/juego/capitales-de-provincia-de-espana/) y [comunidades autónomas](https://www.studyworldmap.com/juego/comunidades-autonomas-de-espana/): el segundo mapa, España por provincias
-- [Países de Europa](https://www.studyworldmap.com/juego/paises-de-europa/)
-- [Países de Asia](https://www.studyworldmap.com/juego/paises-de-asia/)
-- [Países de África](https://www.studyworldmap.com/juego/paises-de-africa/)
-- [Países de América](https://www.studyworldmap.com/juego/paises-de-america/)
-- [Países de Oceanía](https://www.studyworldmap.com/juego/paises-de-oceania/)
+- [Provincias de España](%VITE_SITE_URL%/juego/provincias-de-espana/), [capitales de provincia](%VITE_SITE_URL%/juego/capitales-de-provincia-de-espana/) y [comunidades autónomas](%VITE_SITE_URL%/juego/comunidades-autonomas-de-espana/): el segundo mapa, España por provincias
+- [Países de Europa](%VITE_SITE_URL%/juego/paises-de-europa/)
+- [Países de Asia](%VITE_SITE_URL%/juego/paises-de-asia/)
+- [Países de África](%VITE_SITE_URL%/juego/paises-de-africa/)
+- [Países de América](%VITE_SITE_URL%/juego/paises-de-america/)
+- [Países de Oceanía](%VITE_SITE_URL%/juego/paises-de-oceania/)
 
 ### Geografía física, climas y población (solo en español)
 
 Además de los países, la aplicación enseña el temario de geografía de Primaria y ESO, con una página por tema:
 
-- [Ríos y lagos del mundo](https://www.studyworldmap.com/juego/rios-y-lagos-del-mundo/)
-- [Cordilleras y montañas del mundo](https://www.studyworldmap.com/juego/cordilleras-y-montanas-del-mundo/), con su altitud
-- [Océanos, mares y estrechos](https://www.studyworldmap.com/juego/oceanos-mares-y-estrechos/)
-- [Desiertos, penínsulas e islas](https://www.studyworldmap.com/juego/desiertos-peninsulas-e-islas/)
-- [Climas del mundo por países](https://www.studyworldmap.com/juego/climas-del-mundo/)
-- [Países más poblados](https://www.studyworldmap.com/juego/paises-mas-poblados/), con habitantes y densidad
-- [Capas de la Tierra](https://www.studyworldmap.com/capas-de-la-tierra/): corteza, manto y núcleo, discontinuidades y temperaturas
-- [Capas de la atmósfera](https://www.studyworldmap.com/capas-de-la-atmosfera/)
-- [Índice de todos los juegos](https://www.studyworldmap.com/juego/)
+- [Ríos y lagos del mundo](%VITE_SITE_URL%/juego/rios-y-lagos-del-mundo/)
+- [Cordilleras y montañas del mundo](%VITE_SITE_URL%/juego/cordilleras-y-montanas-del-mundo/), con su altitud
+- [Océanos, mares y estrechos](%VITE_SITE_URL%/juego/oceanos-mares-y-estrechos/)
+- [Desiertos, penínsulas e islas](%VITE_SITE_URL%/juego/desiertos-peninsulas-e-islas/)
+- [Climas del mundo por países](%VITE_SITE_URL%/juego/climas-del-mundo/)
+- [Países más poblados](%VITE_SITE_URL%/juego/paises-mas-poblados/), con habitantes y densidad
+- [Capas de la Tierra](%VITE_SITE_URL%/capas-de-la-tierra/): corteza, manto y núcleo, discontinuidades y temperaturas
+- [Capas de la atmósfera](%VITE_SITE_URL%/capas-de-la-atmosfera/)
+- [Índice de todos los juegos](%VITE_SITE_URL%/juego/)
 
 El mapa también muestra relieve, profundidad del mar, corrientes oceánicas, placas tectónicas, husos horarios, el día y la noche en tiempo real y el cielo con la Vía Láctea.
 
@@ -50,9 +50,9 @@ El mapa también muestra relieve, profundidad del mar, corrientes oceánicas, pl
 
 The app and its pages are also available in English, with country and capital names in English:
 
-- [Interactive map and games](https://www.studyworldmap.com/en/): the app.
-- [Countries of the world and their capitals](https://www.studyworldmap.com/en/countries-and-capitals/): full list of the 197 countries by continent, with capital, flag and area, and frequently asked questions.
-- Games by continent, three pages each (countries, capitals and flags): [Europe](https://www.studyworldmap.com/en/game/countries-of-europe/), [Asia](https://www.studyworldmap.com/en/game/countries-of-asia/), [Africa](https://www.studyworldmap.com/en/game/countries-of-africa/), [the Americas](https://www.studyworldmap.com/en/game/countries-of-the-americas/), [Oceania](https://www.studyworldmap.com/en/game/countries-of-oceania/).
+- [Interactive map and games](%VITE_SITE_URL%/en/): the app.
+- [Countries of the world and their capitals](%VITE_SITE_URL%/en/countries-and-capitals/): full list of the 197 countries by continent, with capital, flag and area, and frequently asked questions.
+- Games by continent, three pages each (countries, capitals and flags): [Europe](%VITE_SITE_URL%/en/game/countries-of-europe/), [Asia](%VITE_SITE_URL%/en/game/countries-of-asia/), [Africa](%VITE_SITE_URL%/en/game/countries-of-africa/), [the Americas](%VITE_SITE_URL%/en/game/countries-of-the-americas/), [Oceania](%VITE_SITE_URL%/en/game/countries-of-oceania/).
 
 ## Otros idiomas
 

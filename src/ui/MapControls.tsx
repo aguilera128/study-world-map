@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { getEngine } from '../app/engineRef';
 import { LAYERS, offInGame, showWhole, useApp, useSettings, type LayerId } from '../app/store';
+import { DONATE } from '../app/site';
 import { useWeatherInfo } from '../app/weather';
 import { useSatelliteInfo } from '../app/satellites';
 import { SAT_GROUPS, type SatGroup } from '../satellites/format';
@@ -308,7 +309,7 @@ export function MapControls() {
 
   // En la portada y con pantalla ancha, el enlace para apoyar el proyecto va en la esquina, bajo los
   // controles (en el móvil esa esquina es de la hoja inferior y el enlace se queda en el panel).
-  const donate = useWide() && screen === 'home';
+  const donate = useWide() && DONATE && screen === 'home';
 
   return (
     <>

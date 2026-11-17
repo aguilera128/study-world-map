@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { formatGrade, formatTime } from '../app/format';
 import { loadTop, publish, startingNick } from '../app/ranking';
+import { CONTACT_EMAIL } from '../app/site';
 import { cleanNick, NICK_MAX, qualifies, suggestNick, type RankResult, type RankRow } from '../game/ranking';
 import { Icon } from './Icon';
 import { Flag } from './primitives';
@@ -130,10 +131,10 @@ export function Ranking({ category, result }: { category: string; result?: RankR
         <p className="mt-2 text-sm text-ink-soft">{t('Tu resultado no entra entre los diez mejores.')}</p>
       )}
 
-      {top && top.length > 0 && (
+      {top && top.length > 0 && CONTACT_EMAIL && (
         <p className="mt-2 text-xs">
           <a
-            href={`mailto:hola@studyworldmap.com?subject=${encodeURIComponent('Study World Map: ranking')}`}
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Study World Map: ranking')}`}
             className="text-ink-faint underline decoration-rule-strong underline-offset-4 hover:text-accent"
           >
             {t('Avisar de un apodo inadecuado')}

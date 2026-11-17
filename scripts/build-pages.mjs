@@ -14,18 +14,20 @@
 // Se ejecuta después de build-atlas.mjs y build-maps.mjs (lee public/data/atlas.json, los atlas de
 // public/data/<mapa>/ y sus names.<idioma>.json); la salida no se versiona.
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { CLIMAS } from './data/climas.mjs';
 import { legalPages } from './data/legales.mjs';
 import { IDIOMAS as PAGINAS } from './data/idiomas/index.mjs';
 import { MAPAS } from './data/mapas/index.mjs';
 import { textosDe } from './data/mapas/plantillas.mjs';
-import { DONAR_URL, SITE, TITULAR } from './data/sitio.mjs';
+import { DONAR_URL, GTM_ID, SITE, TITULAR } from './data/sitio.mjs';
 import { COUNTRY_MAPS } from '../src/game/countryMaps.ts';
 
 const atlas = JSON.parse(readFileSync('public/data/atlas.json', 'utf8'));
 const LANGS = Object.keys(PAGINAS);
+/** El correo de contacto, o nada si no se ha configurado (entonces no sale «informar de un error»). */
+const CONTACTO = TITULAR.email.startsWith('PENDIENTE') ? '' : TITULAR.email;
 
 /** Los diccionarios de la aplicación (src/i18n/<idioma>.ts), de donde salen algunos textos de las páginas. */
 const DICCIONARIOS = Object.fromEntries(
@@ -142,7 +144,7 @@ function page({ lang = 'es', path, alternates = { [lang]: path }, title, descrip
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="theme-color" content="#f1eadb" />
-  <script src="/consent.js" defer></script>${jsonLd ? `\n  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
+  <script src="/consent.js" data-gtm="${GTM_ID}" defer></script>${jsonLd ? `\n  <script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
   <style>${CSS}
   </style>
 </head>
@@ -155,13 +157,13 @@ ${body}
       <nav aria-label="${T.pie.info}">
         <a href="${base(lang)}">${T.pie.mapa}</a>
         <a href="${base(lang)}${T.ruta.paises}/">${T.pie.paises}</a>
-        <a href="/donar/">${T.pie.donar}</a>
-        <a href="/aviso-legal/">${T.pie.avisoLegal}</a>
+${DONAR_URL ? `        <a href="/donar/">${T.pie.donar}</a>
+` : ''}        <a href="/aviso-legal/">${T.pie.avisoLegal}</a>
         <a href="/privacidad/">${T.pie.privacidad}</a>
         <a href="/cookies/">${T.pie.cookies}</a>
         <a href="#cookies">${T.pie.configurar}</a>
-        <a href="mailto:${TITULAR.email}?subject=${encodeURIComponent('Study World Map: error')}">${T.pie.error}</a>
-      </nav>${
+${CONTACTO ? `        <a href="mailto:${CONTACTO}?subject=${encodeURIComponent('Study World Map: error')}">${T.pie.error}</a>
+` : ''}      </nav>${
         others.length
           ? `\n      <nav aria-label="${T.pie.idiomas}">\n${others.map(([l, p]) => `        <a href="${p}" hreflang="${l}" lang="${l}">${PAGINAS[l].nombre}</a>`).join('\n')}\n      </nav>`
           : ''
@@ -788,14 +790,18 @@ writeFileSync(
 
 // ───────────────────────── textos legales y donaciones (solo en español) ─────────────────────────
 
-for (const legal of legalPages()) write(legal.path, page({ ...legal, prose: true }));
+// Sin enlace de donación (VITE_DONATE_URL) no hay página de donar.
+if (!DONAR_URL) rmSync('public/donar', { recursive: true, force: true });
+for (const legal of legalPages()) if (legal.path !== '/donar/' || DONAR_URL) write(legal.path, page({ ...legal, prose: true }));
 
 // ───────────────────────── portada de la aplicación en cada idioma ─────────────────────────
 // index.html (en español) es la entrada de Vite; cada idioma tiene la suya, <idioma>/index.html,
 // con los mismos scripts y el texto traducido. Así cada idioma se sirve en su dirección con su
 // título, su descripción y su contenido para buscadores.
 
-const index = readFileSync('index.html', 'utf8').replace(/\r/g, '');
+// index.html lleva la dirección del sitio y el contenedor de Tag Manager como variables de Vite
+// (%VITE_…%): en la portada en español las pone vite.config.ts; en las demás, se ponen aquí.
+const index = readFileSync('index.html', 'utf8').replace(/\r/g, '').replaceAll('%VITE_SITE_URL%', SITE).replaceAll('%VITE_GTM_ID%', GTM_ID);
 const manifest = JSON.parse(readFileSync('public/manifest.webmanifest', 'utf8'));
 for (const lang of LANGS) {
   if (!index.includes(`hreflang="${lang}"`)) throw new Error(`build-pages: index.html no enlaza al idioma «${lang}» (hreflang).`);
@@ -873,16 +879,20 @@ writeFileSync(
   `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}
-  <url><loc>${SITE}/donar/</loc></url>
-</urlset>
+${DONAR_URL ? `  <url><loc>${SITE}/donar/</loc></url>
+` : ''}</urlset>
 `,
 );
 
-const pending = [...Object.values(TITULAR), DONAR_URL].filter((v) => v.startsWith('PENDIENTE'));
+// robots.txt y llms.txt llevan la dirección del sitio: se generan (el segundo, de scripts/data/llms.txt).
+writeFileSync('public/robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + SITE + '/sitemap.xml\n');
+writeFileSync('public/llms.txt', readFileSync('scripts/data/llms.txt', 'utf8').replaceAll('%VITE_SITE_URL%', SITE));
+
+const pending = Object.values(TITULAR).filter((v) => v.startsWith('PENDIENTE'));
 console.log(
-  `páginas (${LANGS.join(', ')}): países y capitales (${nPaises}) + ${juegos} juegos + ${paginasMapa} de mapas de un país + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES en scripts/data/sitio.mjs` : ''}`,
+  `páginas (${LANGS.join(', ')}): países y capitales (${nPaises}) + ${juegos} juegos + ${paginasMapa} de mapas de un país + ${legalPages().length} legales${pending.length ? ` · ${pending.length} datos PENDIENTES del titular (variables de entorno, ver .env.example)` : ''}`,
 );
 // En Vercel no se publica un aviso legal a medias.
 if (pending.length && process.env.VERCEL) {
-  throw new Error(`build-pages: faltan datos en scripts/data/sitio.mjs:\n  ${pending.join('\n  ')}`);
+  throw new Error(`build-pages: faltan los datos del titular en las variables de entorno (ver .env.example):\n  ${pending.join('\n  ')}`);
 }

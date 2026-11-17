@@ -5,9 +5,15 @@ dist
 # secretos: ningún .env va al repositorio
 .env
 .env.*
+!.env.example
 *.log
 .DS_Store
-.claude/settings.local.json
+
+# carpetas de agentes y herramientas locales
+.claude/
+.agents/
+skills-lock.json
+.vscode/
 
 # Generado por scripts/build-atlas.mjs (se regenera en `pnpm dev` y `pnpm build`)
 public/data/atlas.json
@@ -28,9 +34,8 @@ public/capas-de-la-tierra/
 public/capas-de-la-atmosfera/
 public/404.html
 public/sitemap.xml
-
-.vercel
-.env*
+public/robots.txt
+public/llms.txt
 
 # teselas de detalle descargadas de la NASA (scripts/download-tiles.mjs): van al Blob, no al repositorio
 /teselas/

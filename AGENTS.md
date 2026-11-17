@@ -14,7 +14,12 @@ Este fichero recoge lo que hay que saber para tocar el proyecto sin romper nada.
   Antes de `git push` se pregunta siempre.
 - **Commits:** Conventional Commits, en español, sin firmas de agentes ni `Co-Authored-By`.
 - **Antes de dar algo por terminado:** `pnpm typecheck`, `pnpm test` y `VERCEL=1 pnpm build`
-  (el build de Vercel falla si faltan los datos del titular en `scripts/data/sitio.mjs`).
+  (el build de Vercel falla si faltan los datos del titular, que salen de variables de entorno).
+- **Código abierto (AGPL-3.0).** Nada propio de un despliegue va en el repositorio: el dominio, el
+  correo, el enlace de donación, el contenedor de Tag Manager, el almacén de teselas y los datos del
+  titular salen de variables de entorno (`.env.example`; las leen `scripts/data/sitio.mjs`,
+  `vite.config.ts` y `src/app/site.ts`). Sin valor, lo que depende de cada una se apaga. `index.html`
+  y `scripts/data/llms.txt` llevan `%VITE_SITE_URL%`; `public/robots.txt` y `public/llms.txt` se generan.
 - **No añadir dependencias sin preguntar.** Casi todo se resuelve con lo que hay.
 
 ## Comandos
@@ -184,7 +189,9 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
     cookies `public/consent.js` con los enlaces a `#cookies`).
   - El único script en línea permitido es el del tema, en `index.html`, por su huella. Si se cambia,
     `src/app/csp.test.ts` falla hasta que se actualice la huella en `vercel.json`.
-  - Un servicio externo nuevo hay que añadirlo a la política, además de a `legales.mjs`.
+  - Un servicio externo nuevo hay que añadirlo a la política, además de a `legales.mjs`. `connect-src`
+    admite cualquier Blob público de Vercel (`*.public.blob.vercel-storage.com`) para que el almacén de
+    teselas sea configurable; `vercel.json` no puede leer variables de entorno.
   - No lleva `frame-ancestors` a propósito: la web se puede incrustar (aulas virtuales).
 
 ### Sincronización y datos personales
@@ -205,7 +212,8 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
 - `node scripts/db-init.mjs --probar` pasa las dos funciones por un ciclo completo contra la base
   real y borra las filas de prueba.
 - **Si cambia lo que la aplicación guarda o envía, hay que cambiar `scripts/data/legales.mjs`** y la
-  fecha de revisión de `scripts/data/sitio.mjs`.
+  fecha de revisión de `scripts/data/sitio.mjs`. Los textos legales son los de studyworldmap.com: quien
+  despliegue otra copia tiene que revisarlos.
 - Google Analytics solo se carga con consentimiento (`public/consent.js`).
 - Las capas de meteorología (temperatura, nubes, lluvia y viento de ahora) tampoco piden nada a
   terceros desde el navegador: preguntan a `/api/tiempo`, y es la función la que habla con la NOAA
@@ -233,7 +241,7 @@ repositorio: se descargan a una carpeta temporal cuando hay que regenerar.
   internacional) y lo calculado con SGP4: nada de país, operador ni propósito.
 - La aplicación no pide nada a terceros (salvo Google Analytics, con consentimiento). Las teselas de
   detalle de la imagen de satélite y de las luces nocturnas son de la NASA, pero se sirven desde
-  nuestro Blob de Vercel `study-world-map-teselas` (público, Fráncfort): `scripts/download-tiles.mjs`
+  un almacén propio (`VITE_TILE_STORE`; en producción, el Blob de Vercel `study-world-map-teselas`, público, Fráncfort): `scripts/download-tiles.mjs`
   las baja a `teselas/` (fuera del repositorio), `scripts/convert-tiles.py` las pasa a WebP (la foto
   con pérdida, las luces sin ella) y `scripts/upload-tiles.mjs` sube los `.webp`. Si se añade
   un servicio externo, va a `legales.mjs`.

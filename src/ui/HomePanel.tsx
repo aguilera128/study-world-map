@@ -1,6 +1,7 @@
 import { useMemo, useState, type CSSProperties } from 'react';
 import { formatGrade, plural } from '../app/format';
 import { rankingOf } from '../app/ranking';
+import { ANALYTICS, CONTACT_EMAIL, DONATE } from '../app/site';
 import { bestFor, useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import { answerLabel, modeDef, modesOf, resolveScope, type ModeId } from '../game/config';
 import { currentStreak, dailyConfig, dailyKey } from '../game/daily';
@@ -285,14 +286,16 @@ export function HomePanel() {
       )}
 
       {/* En pantallas anchas este enlace va abajo a la derecha, bajo los controles del mapa (MapControls). */}
-      <a
-        href="/donar/"
-        className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent wide:hidden"
-        style={order(8)}
-      >
-        <Icon name="heart" size={16} />
-        {t('Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto')}
-      </a>
+      {DONATE && (
+        <a
+          href="/donar/"
+          className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft transition-colors hover:text-accent wide:hidden"
+          style={order(8)}
+        >
+          <Icon name="heart" size={16} />
+          {t('Gratis y sin anuncios. ¿Te ayuda? Apoya el proyecto')}
+        </a>
+      )}
 
       <p className="mt-4 text-[0.6875rem] leading-relaxed text-ink-faint" style={order(8)}>
         {[
@@ -300,30 +303,39 @@ export function HomePanel() {
           ['/aviso-legal/', t('Aviso legal')],
           ['/privacidad/', t('Privacidad')],
           ['/cookies/', t('Cookies')],
-        ].map(([href, label]) => (
+        ].map(([href, label], i) => (
           <span key={href}>
+            {i > 0 && ' · '}
             <a href={href} className="underline hover:text-ink">
               {label}
             </a>
-            {' · '}
           </span>
         ))}
-        <button
-          type="button"
-          onClick={() => (window as Window & { swmConsent?: { open(): void } }).swmConsent?.open()}
-          className="underline hover:text-ink"
-        >
-          {t('Configurar cookies')}
-        </button>
-        {' · '}
-        <a
-          href={`mailto:hola@studyworldmap.com?subject=${encodeURIComponent('Study World Map: error')}`}
-          title={t('Informar de un error')}
-          aria-label={t('Informar de un error')}
-          className="inline-block translate-y-[3px] hover:text-ink"
-        >
-          <Icon name="bug" size={14} />
-        </a>
+        {ANALYTICS && (
+          <>
+            {' · '}
+            <button
+              type="button"
+              onClick={() => (window as Window & { swmConsent?: { open(): void } }).swmConsent?.open()}
+              className="underline hover:text-ink"
+            >
+              {t('Configurar cookies')}
+            </button>
+          </>
+        )}
+        {CONTACT_EMAIL && (
+          <>
+            {' · '}
+            <a
+              href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Study World Map: error')}`}
+              title={t('Informar de un error')}
+              aria-label={t('Informar de un error')}
+              className="inline-block translate-y-[3px] hover:text-ink"
+            >
+              <Icon name="bug" size={14} />
+            </a>
+          </>
+        )}
       </p>
     </Panel>
   );

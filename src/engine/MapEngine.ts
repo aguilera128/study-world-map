@@ -184,7 +184,8 @@ const TILE = 512;
 const TILE_SPAN = 288;
 const TILE_LEVELS = 7;
 const TILES_ACROSS = 4;
-const TILE_STORE = 'https://c8oqmmuapex66kvv.public.blob.vercel-storage.com';
+/** Almacén de las teselas de detalle (scripts/upload-tiles.mjs). Sin él, se queda la imagen general. */
+const TILE_STORE = (import.meta.env.VITE_TILE_STORE ?? '').replace(/\/+$/, '');
 const TILE_URL = `${TILE_STORE}/foto`; // Blue Marble Next Generation
 const LIGHT_TILE_URL = `${TILE_STORE}/luces`; // Black Marble 2016: solo la luz, en grises
 const LIFT = 0.024;
@@ -1515,9 +1516,9 @@ export class MapEngine {
       return canvas;
     };
     const fill = this.own.fill;
-    this.patchCanvas = photo ? layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, false) : null;
+    this.patchCanvas = photo && TILE_STORE ? layer(fill.uPatch, fill.uPatchAmt.value > 0 ? this.patchCanvas : null, TILE_URL, false) : null;
     // Las luces, solo si en lo que se ve es de noche en algún punto.
-    this.lightsCanvas = dark ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, true) : null;
+    this.lightsCanvas = dark && TILE_STORE ? layer(fill.uLightsPatch, fill.uLightsPatchAmt.value > 0 ? this.lightsCanvas : null, LIGHT_TILE_URL, true) : null;
     fill.uPatchBox.value.set(box[0] * DEG, box[1] * DEG, box[2] * DEG, box[3] * DEG);
     fill.uPatchAmt.value = this.patchCanvas ? 1 : 0;
     fill.uLightsPatchAmt.value = this.lightsCanvas ? 1 : 0;

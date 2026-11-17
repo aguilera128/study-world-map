@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { existsSync, readdirSync } from 'node:fs';
-import type { Plugin } from 'vite';
+import { loadEnv, type Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 // Una portada por idioma: index.html (español) y las que genera scripts/build-pages.mjs en <idioma>/.
@@ -44,6 +44,22 @@ function preloadCritical(): Plugin {
 }
 
 /**
+ * index.html lleva la dirección del sitio y el contenedor de Tag Manager como %VITE_SITE_URL% y
+ * %VITE_GTM_ID% (.env.example). Vite ya sustituye las variables definidas; aquí se da valor también
+ * a las que faltan, con los mismos valores por defecto que scripts/data/sitio.mjs.
+ */
+function siteVars(env: Record<string, string>): Plugin {
+  const site = (env.VITE_SITE_URL || 'http://localhost:5173').trim().replace(/\/+$/, '');
+  return {
+    name: 'site-vars',
+    transformIndexHtml: {
+      order: 'pre',
+      handler: (html) => html.replaceAll('%VITE_SITE_URL%', site).replaceAll('%VITE_GTM_ID%', (env.VITE_GTM_ID ?? '').trim()),
+    },
+  };
+}
+
+/**
  * En desarrollo, sirve /api/tiempo y /api/satelites con las mismas funciones que despliega Vercel
  * (api/tiempo.ts y api/satelites.ts), para poder ver las capas del tiempo de ahora y de los
  * satélites. Las otras dos funciones necesitan la base de datos y no se sirven aquí.
@@ -73,8 +89,8 @@ function devWeather(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss(), preloadCritical(), devWeather()],
+export default defineConfig(({ mode }) => ({
+  plugins: [react(), tailwindcss(), siteVars(loadEnv(mode, process.cwd(), 'VITE_')), preloadCritical(), devWeather()],
   // Los hilos aparte salen como módulos (el de la malla ya se crea con type: 'module'). Hace falta
   // por satellite.js: trae una versión WebAssembly con hilos que no se usa, pero Vite la empaqueta
   // igual, y en el formato clásico no se puede.
@@ -89,4 +105,4 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.ts'],
   },
-});
+}));

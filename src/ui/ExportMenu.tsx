@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getEngine } from '../app/engineRef';
 import { composeImage, downloadCanvas, type ExportLegend } from '../app/exportImage';
+import { SITE_HOST } from '../app/site';
 import { useApp, useMapDef, useProgress, useSettings } from '../app/store';
 import { PALETTES, Style } from '../engine/palette';
 import { CLIMATE_KEYS, climateLabel } from '../game/climate';
@@ -64,7 +65,7 @@ export function ExportMenu() {
       pad,
       labels: parts.labels,
       header: parts.title
-        ? { title: `Study World Map · ${t(def.text.count, { n: atlas.quizzable.length }).split(/\s*·\s*/)[0]}`, lines: [new Date().toLocaleDateString(LOCALE, { dateStyle: 'long' }), 'studyworldmap.com'] }
+        ? { title: `Study World Map · ${t(def.text.count, { n: atlas.quizzable.length }).split(/\s*·\s*/)[0]}`, lines: [new Date().toLocaleDateString(LOCALE, { dateStyle: 'long' }), SITE_HOST] }
         : undefined,
       legends,
       progress,

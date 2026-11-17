@@ -1,4 +1,6 @@
-// Consentimiento de cookies y Google Tag Manager (GTM-TW2XCZJM).
+// Consentimiento de cookies y Google Tag Manager. El contenedor (GTM-…) llega en el atributo
+// «data-gtm» de la etiqueta que carga este script, que sale de la variable VITE_GTM_ID. Sin él no
+// hay analítica y, por tanto, tampoco aviso.
 //
 // RGPD/LSSI: no se carga nada de Google hasta que la persona acepta. Sin respuesta o si rechaza,
 // la web no hace ninguna petición a terceros. La elección se guarda en este navegador y se puede
@@ -8,7 +10,9 @@
 
 (function () {
   var KEY = 'swm:consent';
-  var GTM_ID = 'GTM-TW2XCZJM';
+  var GTM_ID = (document.currentScript && document.currentScript.getAttribute('data-gtm')) || '';
+  // Una portada servida sin pasar por Vite deja la variable tal cual: es lo mismo que no tenerla.
+  if (GTM_ID.charAt(0) === '%') GTM_ID = '';
   var loaded = false;
 
   function read() {
@@ -186,7 +190,7 @@
   }
 
   function open() {
-    if (banner) return;
+    if (banner || !GTM_ID) return;
     if (!document.getElementById('swm-consent-css')) {
       var style = document.createElement('style');
       style.id = 'swm-consent-css';
@@ -222,6 +226,7 @@
   });
 
   var saved = read();
+  if (!GTM_ID) return;
   if (saved === 'granted') loadGtm();
   else if (saved !== 'denied') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', open);

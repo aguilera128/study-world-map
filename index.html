@@ -16,45 +16,45 @@
       content="Globo 3D y mapa plano interactivos para estudiar países, capitales y banderas."
     />
     <meta property="og:locale" content="es_ES" />
-    <meta property="og:url" content="https://www.studyworldmap.com/" />
-    <meta property="og:image" content="https://www.studyworldmap.com/og.jpg" />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Globo terráqueo con los países coloreados junto al panel de retos de Study World Map" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://www.studyworldmap.com/" />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
     <!-- La misma página en cada idioma (scripts/build-pages.mjs comprueba que estén todos). -->
-    <link rel="alternate" hreflang="es" href="https://www.studyworldmap.com/" />
-    <link rel="alternate" hreflang="en" href="https://www.studyworldmap.com/en/" />
-    <link rel="alternate" hreflang="fr" href="https://www.studyworldmap.com/fr/" />
-    <link rel="alternate" hreflang="de" href="https://www.studyworldmap.com/de/" />
-    <link rel="alternate" hreflang="it" href="https://www.studyworldmap.com/it/" />
-    <link rel="alternate" hreflang="pt" href="https://www.studyworldmap.com/pt/" />
-    <link rel="alternate" hreflang="ca" href="https://www.studyworldmap.com/ca/" />
-    <link rel="alternate" hreflang="gl" href="https://www.studyworldmap.com/gl/" />
-    <link rel="alternate" hreflang="eu" href="https://www.studyworldmap.com/eu/" />
-    <link rel="alternate" hreflang="zh" href="https://www.studyworldmap.com/zh/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.studyworldmap.com/" />
+    <link rel="alternate" hreflang="es" href="%VITE_SITE_URL%/" />
+    <link rel="alternate" hreflang="en" href="%VITE_SITE_URL%/en/" />
+    <link rel="alternate" hreflang="fr" href="%VITE_SITE_URL%/fr/" />
+    <link rel="alternate" hreflang="de" href="%VITE_SITE_URL%/de/" />
+    <link rel="alternate" hreflang="it" href="%VITE_SITE_URL%/it/" />
+    <link rel="alternate" hreflang="pt" href="%VITE_SITE_URL%/pt/" />
+    <link rel="alternate" hreflang="ca" href="%VITE_SITE_URL%/ca/" />
+    <link rel="alternate" hreflang="gl" href="%VITE_SITE_URL%/gl/" />
+    <link rel="alternate" hreflang="eu" href="%VITE_SITE_URL%/eu/" />
+    <link rel="alternate" hreflang="zh" href="%VITE_SITE_URL%/zh/" />
+    <link rel="alternate" hreflang="x-default" href="%VITE_SITE_URL%/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <!-- Cookies y Google Tag Manager: no se carga nada de Google sin consentimiento (public/consent.js). -->
-    <script src="/consent.js" defer></script>
+    <script src="/consent.js" data-gtm="%VITE_GTM_ID%" defer></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "WebSite",
-            "@id": "https://www.studyworldmap.com/#website",
+            "@id": "%VITE_SITE_URL%/#website",
             "name": "Study World Map",
-            "url": "https://www.studyworldmap.com/",
+            "url": "%VITE_SITE_URL%/",
             "inLanguage": "es"
           },
           {
             "@type": "WebApplication",
             "name": "Study World Map",
-            "url": "https://www.studyworldmap.com/",
+            "url": "%VITE_SITE_URL%/",
             "description": "Mapa interactivo (globo 3D y mapa plano) para estudiar geografía: los 197 países del mundo con sus capitales y banderas, las provincias de España, ríos, montañas, mares, climas y población, con retos y repaso espaciado.",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "Cualquiera con un navegador moderno",
@@ -64,8 +64,8 @@
             "educationalUse": "Práctica y repaso",
             "learningResourceType": "Juego educativo",
             "about": ["Geografía", "Países del mundo", "Capitales del mundo", "Banderas del mundo"],
-            "image": "https://www.studyworldmap.com/og.jpg",
-            "isPartOf": { "@id": "https://www.studyworldmap.com/#website" }
+            "image": "%VITE_SITE_URL%/og.jpg",
+            "isPartOf": { "@id": "%VITE_SITE_URL%/#website" }
           }
         ]
       }

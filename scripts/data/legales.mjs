@@ -1,4 +1,5 @@
-// Textos de las páginas legales y de donaciones. Los datos del titular salen de sitio.mjs.
+// Textos de las páginas legales y de donaciones. Los datos del titular salen de sitio.mjs
+// (variables de entorno). Son los textos de studyworldmap.com: otro despliegue debe revisarlos.
 //
 // Lo que se afirma sobre la aplicación está comprobado en el código (src/app/store.ts y
 // public/consent.js, src/app/sync.ts y api/sync.ts): progreso y ajustes en el navegador y, solo si
@@ -183,7 +184,7 @@ ${revision}`,
       description: 'Study World Map es gratis, sin anuncios y sin registro. Si te ayuda a estudiar, puedes apoyarlo con una donación.',
       body: `    <h1>Apoya Study World Map</h1>
     <p class="lead">Study World Map es gratis para todos los estudiantes y lo seguirá siendo: sin anuncios, sin cuentas y sin vender tus datos. Si te ha ayudado a ti o a tu clase, una donación ayuda a mantenerlo vivo.</p>
-    <p>${DONAR_URL.startsWith('PENDIENTE') ? dato(DONAR_URL) : `<a class="cta" href="${esc(DONAR_URL)}" rel="noopener" target="_blank">Donar con PayPal →</a>`}</p>
+    <p><a class="cta" href="${esc(DONAR_URL)}" rel="noopener" target="_blank">Donar con PayPal →</a></p>
 
     <h2>A qué se destina</h2>
     <ul>
