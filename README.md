@@ -75,7 +75,7 @@ with no value, whatever depends on a variable is switched off. `.env.local` is n
 | `VITE_TILE_STORE` | Store with the detail tiles (satellite image, night lights) | Only the overview image |
 | `TITULAR_NOMBRE`, `TITULAR_NIF`, `TITULAR_DOMICILIO` | Site owner's name, tax ID and address for the legal notice | Shown as "PENDIENTE"; the Vercel build fails |
 | `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | PostgreSQL (Neon): sync and leaderboards | Those two functions do not respond |
-| `BLOB_READ_WRITE_TOKEN` | Uploading tiles to Vercel Blob (`scripts/upload-tiles.mjs`) | Tiles cannot be uploaded |
+| `BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN`, or `BLOB_READ_WRITE_TOKEN` | Uploading tiles to Vercel Blob (`scripts/upload-tiles.mjs`) | Tiles cannot be uploaded |
 
 `VITE_*` variables end up in the HTML and JavaScript sent to the browser: never put a secret behind
 that prefix. The database tables are created with `node scripts/db-init.mjs`.

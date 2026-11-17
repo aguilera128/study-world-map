@@ -129,7 +129,7 @@ valor, lo que depende de cada una se apaga. `.env.local` no va al repositorio.
 | `VITE_TILE_STORE` | Almacén de las teselas de detalle (satélite y luces) | Se ve la imagen general |
 | `TITULAR_NOMBRE`, `TITULAR_NIF`, `TITULAR_DOMICILIO` | Titular del sitio en el aviso legal | Salen como «PENDIENTE»; el build de Vercel falla |
 | `DATABASE_URL`, `DATABASE_URL_UNPOOLED` | PostgreSQL (Neon): sincronización y rankings | Esas dos funciones no responden |
-| `BLOB_READ_WRITE_TOKEN` | Subir teselas al Blob de Vercel (`scripts/upload-tiles.mjs`) | No se pueden subir |
+| `BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN`, o `BLOB_READ_WRITE_TOKEN` | Subir teselas al Blob de Vercel (`scripts/upload-tiles.mjs`) | No se pueden subir |
 
 Las `VITE_*` acaban en el HTML y en el JavaScript que recibe el navegador: no pongas secretos con ese
 prefijo. Las tablas de la base se crean con `node scripts/db-init.mjs`.

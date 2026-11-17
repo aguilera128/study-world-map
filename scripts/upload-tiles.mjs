@@ -2,9 +2,12 @@
 // de la NASA): las que scripts/download-tiles.mjs dejó en la carpeta teselas/, ya pasadas a WebP por
 // scripts/convert-tiles.py. Así la aplicación las pide a nuestro propio almacén y no a un tercero.
 //
-// Almacén: «study-world-map-teselas» (público, Fráncfort), conectado al proyecto en Vercel. La clave
-// de escritura, BLOB_READ_WRITE_TOKEN, se lee de .env.local (que no va al repositorio): no se
-// imprime ni se copia a ningún otro sitio.
+// Almacén: un Blob público de Vercel conectado al proyecto (en producción, «study-world-map-teselas»,
+// Fráncfort). Las credenciales se leen de .env.local (que no va al repositorio) y no se imprimen ni
+// se copian a ningún otro sitio. Valen las dos formas de @vercel/blob:
+//   - OIDC: BLOB_STORE_ID y VERCEL_OIDC_TOKEN. El segundo caduca en horas: antes de subir,
+//     «vercel env pull» lo renueva.
+//   - La clave permanente BLOB_READ_WRITE_TOKEN.
 //
 // Se ejecuta a mano:
 //   node scripts/upload-tiles.mjs            todos los .webp de teselas/ que aún no estén subidos
@@ -46,7 +49,10 @@ async function uploaded(prefix) {
 
 async function main() {
   process.loadEnvFile(join(ROOT, '.env.local'));
-  if (!process.env.BLOB_READ_WRITE_TOKEN) throw new Error('Falta BLOB_READ_WRITE_TOKEN en .env.local');
+  const { BLOB_READ_WRITE_TOKEN, BLOB_STORE_ID, VERCEL_OIDC_TOKEN } = process.env;
+  if (!BLOB_READ_WRITE_TOKEN && !(BLOB_STORE_ID && VERCEL_OIDC_TOKEN)) {
+    throw new Error('Faltan las credenciales del Blob en .env.local: BLOB_STORE_ID y VERCEL_OIDC_TOKEN (vercel env pull), o BLOB_READ_WRITE_TOKEN');
+  }
   const only = process.argv[2] ?? '';
   const have = await uploaded(only);
   const jobs = filesUnder(join(TILES, only))
