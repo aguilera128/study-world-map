@@ -40,7 +40,7 @@ export function legalPages() {
 ${titularBlock()}
 
     <h2>Objeto</h2>
-    <p>Study World Map es un proyecto educativo personal: un mapamundi interactivo para aprender los países del mundo, sus continentes, sus capitales y sus banderas. Es gratuito, no tiene publicidad, no vende nada y no requiere registro. Se mantiene con el tiempo de su autor y con las <a href="/donar/">donaciones voluntarias</a> de quien quiera apoyarlo.</p>
+    <p>Study World Map es un proyecto educativo personal: un atlas interactivo para estudiar geografía jugando. Enseña los países del mundo, sus continentes, sus capitales y sus banderas; las provincias, los estados o las regiones de más de treinta países; la geografía física, los climas y la población; el interior de la Tierra y las capas de la atmósfera; y, en vivo, el día y la noche, el tiempo y los satélites. Es gratuito, no tiene publicidad, no vende nada y no requiere registro. Se mantiene con el tiempo de su autor y con las <a href="/donar/">donaciones voluntarias</a> de quien quiera apoyarlo.</p>
 
     <h2>Condiciones de uso</h2>
     <p>El uso del sitio es libre y gratuito. Al usarlo te comprometes a hacerlo de forma lícita, sin dañar el sitio ni impedir que otros lo usen. Puedes compartir los enlaces y las listas de estudio con quien quieras, por ejemplo con tu clase.</p>
