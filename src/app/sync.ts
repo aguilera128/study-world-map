@@ -187,11 +187,17 @@ export function initSync() {
   started = true;
 
   // Enlace con código (el de «Llevar a otro dispositivo»): se pregunta antes de usarlo.
+  // public/consent.js ya lo ha quitado de la dirección (antes de que cargue la analítica) y lo deja
+  // en «swmCodigo»; si ese script no ha llegado a ejecutarse, sigue en la dirección y se quita aquí.
+  const carrier = window as Window & { swmCodigo?: string };
   const params = new URLSearchParams(location.search);
-  const offered = params.get('codigo');
+  const offered = carrier.swmCodigo ?? params.get('codigo');
+  delete carrier.swmCodigo;
   if (offered) {
-    params.delete('codigo');
-    history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}${location.hash}`);
+    if (params.has('codigo')) {
+      params.delete('codigo');
+      history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}${location.hash}`);
+    }
     const code = cleanCode(offered);
     if (CODE.test(code) && code !== useSync.getState().code && window.confirm(t('¿Usar en este dispositivo el progreso guardado con el código {code}?', { code: formatCode(code) }))) {
       void joinCode(code);

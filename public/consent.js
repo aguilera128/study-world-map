@@ -14,10 +14,40 @@
   // Una portada servida sin pasar por Vite deja la variable tal cual: es lo mismo que no tenerla.
   if (GTM_ID.charAt(0) === '%') GTM_ID = '';
   var loaded = false;
+  // La elección vale dos años, lo máximo que recomienda la guía de cookies de la AEPD: pasado ese
+  // tiempo se vuelve a preguntar.
+  var VALID_MS = 730 * 24 * 3600 * 1000;
 
+  // El enlace «Llevar a otro dispositivo» trae el código de sincronización en la dirección
+  // (?codigo=…) y ese código hace de contraseña del progreso. Se quita de la dirección aquí, antes
+  // de que pueda cargarse Tag Manager, para que no llegue a Google con la página vista. La
+  // aplicación lo recoge de «swmCodigo» (initSync, en src/app/sync.ts).
+  try {
+    var query = new URLSearchParams(location.search);
+    var codigo = query.get('codigo');
+    if (codigo) {
+      window.swmCodigo = codigo;
+      query.delete('codigo');
+      var rest = query.toString();
+      history.replaceState(history.state, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    }
+  } catch (e) {
+    // Sin URLSearchParams o sin historial: la aplicación lo quita al arrancar, como antes.
+  }
+
+  // Se guarda «granted:<fecha en ms>» o «denied:<fecha en ms>». Una elección antigua, sin fecha,
+  // empieza a contar ahora.
   function read() {
     try {
-      return localStorage.getItem(KEY);
+      var parts = (localStorage.getItem(KEY) || '').split(':');
+      var value = parts[0];
+      if (value !== 'granted' && value !== 'denied') return null;
+      var when = Number(parts[1]);
+      if (!when) {
+        save(value);
+        return value;
+      }
+      return Date.now() - when > VALID_MS ? null : value;
     } catch (e) {
       return null;
     }
@@ -25,7 +55,7 @@
 
   function save(value) {
     try {
-      localStorage.setItem(KEY, value);
+      localStorage.setItem(KEY, value + ':' + Date.now());
     } catch (e) {
       // Sin almacenamiento (modo privado estricto): la elección dura lo que la visita.
     }
